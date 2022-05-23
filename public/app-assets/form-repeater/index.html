@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>jQuery isiaFormRepeater Plugin Examples</title>
+<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+    <link rel="stylesheet" href="css/isia-form-repeater.min.css">
+    <link rel="stylesheet" href="css/demo.css">
+</head>
+
+<body>
+
+    <!--
+
+/* ========= Fork it on GitHub ========= */
+/*
+https://github.com/vurghus-minar/isiaFormRepeater
+*/
+
+--><div id="jquery-script-menu">
+<div class="jquery-script-center">
+<ul>
+<li><a href="https://www.jqueryscript.net/form/duplicate-form-isiaformrepeater.html">Download This Plugin</a></li>
+<li><a href="https://www.jqueryscript.net/">Back To jQueryScript.Net</a></li>
+</ul>
+<div class="jquery-script-ads"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-2783044520727903";
+/* jQuery_demo */
+google_ad_slot = "2780937993";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+<div class="jquery-script-clear"></div>
+</div>
+</div>
+    <div id="page">
+        <h1>jQuery isiaFormRepeater Plugin Examples</h1>
+        <form class="pure-form pure-form-stacked">
+            <fieldset>
+                <legend>Buttons use Pure CSS</legend>
+                <div class="isiaFormRepeater repeat-section" id="test" data-field-id="test_field_id"
+                    data-items-index-array="[1]">
+                    <div class="repeat-items">
+                        <div class="repeat-item" data-field-index="1">
+
+                            <label>Cars</label>
+                            <select class="repeat-el" name="test_field_id[1][test_sub1]">
+                                <option value="" disabled selected>Select your car</option>
+                                <option value="volvo">Volvo</option>
+                                <option value="saab">Saab</option>
+                                <option value="mercedes">Mercedes</option>
+                                <option value="audi">Audi</option>
+                            </select>
+                            <textarea class="repeat-el" name="test_field_id[1][test_sub2]">
+
+              </textarea>
+                            <label for="option-one" class="pure-checkbox">
+                                <input class="repeat-el" name="test_field_id[1][test_sub3]" type="checkbox" value="">
+                                Here's option one.
+                            </label>
+
+                            <label for="option-two" class="pure-radio">
+                                <input class="repeat-el" name="test_field_id[1][test_sub4]" type="radio" value="option1"
+                                    checked>
+                                Here's a radio button. You can choose this one..
+                            </label>
+
+                            <label for="option-three" class="pure-radio">
+                                <input class="repeat-el" name="test_field_id[1][test_sub4]" type="radio"
+                                    value="option2">
+                                ..Or this one!
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Buttons do not use Pure CSS</legend>
+                <div class="isiaFormRepeater repeat-section" id="test2" data-field-id="test2_field_id"
+                    data-items-index-array="[1]">
+                    <div class="repeat-items">
+                        <div class="repeat-item" data-field-index="1">
+                            <label>Name</label>
+                            <input type="text" class="repeat-el" id="test2_field_id[test_sub1][1]"
+                                name="test2_field_id[test_sub1][1]">
+                            <label>Email</label>
+                            <input type="email" class="repeat-el" id="test2_field_id[test_sub2][1]"
+                                name="test2_field_id[test_sub2][1]">
+
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"
+        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+    <script src="js/isia-form-repeater.min.js"></script>
+    <script src="js/demo.js"></script>
+
+</body>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</html>
