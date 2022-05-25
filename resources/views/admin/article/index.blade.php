@@ -50,24 +50,35 @@
                         <h4 class="card-title"> Liste D'articles</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
-                            <button class="btn btn-primary btn-sm"><i class="ft-plus white"></i> Create Invoice</button>
-                            <span class="dropdown">
-                                <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-warning btn-sm dropdown-toggle dropdown-menu-right"><i class="ft-download-cloud white"></i></button>
-                                <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
-                                    <a href="#" class="dropdown-item"><i class="la la-calendar"></i> Due Date</a>
-                                    <a href="#" class="dropdown-item"><i class="la la-random"></i> Priority </a>
-                                    <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance Due</a>
-                                    <a href="#" class="dropdown-item"><i class="la la-user"></i> Assign to</a>
+                            <button class="btn btn-secondary btn-sm text-capitalize">
+                                <span class="material-icons">
+                                    inventory
                                 </span>
-                            </span>
-                            <button class="btn btn-success btn-sm"><i class="ft-settings white"></i></button>
+                                toutes les factures
+                            </button>
+                            <div class="d-none">
+                                <span class="dropdown">
+                                    <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="true"
+                                        class="btn btn-warning btn-sm dropdown-toggle dropdown-menu-right"><i
+                                            class="ft-download-cloud white"></i></button>
+                                    <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
+                                        <a href="#" class="dropdown-item"><i class="la la-calendar"></i> Due Date</a>
+                                        <a href="#" class="dropdown-item"><i class="la la-random"></i> Priority </a>
+                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance Due</a>
+                                        <a href="#" class="dropdown-item"><i class="la la-user"></i> Assign to</a>
+                                    </span>
+                                </span>
+                                <button class="btn btn-success btn-sm"><i class="ft-settings white"></i></button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <!-- Invoices List table -->
                             <div class="table-responsive">
-                                <table  class="table datatable table-striped table-hover table-white-space table-bordered row-grouping display no-wrap icheck table-middle">
+                                <table
+                                    class="table datatable table-striped table-hover table-white-space table-bordered row-grouping display no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
                                             <th><input type="checkbox" class="input-chk-all"></th>
@@ -88,11 +99,14 @@
                                         @forelse ($articles as $article)
                                             <tr class='text-nowrap' id="article_{{ $article['row_id'] }}">
                                                 <td><input type="checkbox" class="input-chk"></td>
-                                                <td>{{ $article["reference"] }}</td>
+                                                <td>{{ $article['reference'] }}</td>
                                                 <td>{{ $article['designation'] ?? '-' }}</td>
-                                                <td>{{ array_search($article['article_type'], $articleTypes) ?? '-' }}</td>
-                                                <td>{{ array_search($article['category_id'], $articleCategories) ?? '-' }}</td>
-                                                <td>  {{ $article['quantity_bottle'] != 0 ? $article['quantity_bottle'].' Btl' : $article['quantity_type_value'].' Cag' }}</td>
+                                                <td>{{ array_search($article['article_type'], $articleTypes) ?? '-' }}
+                                                </td>
+                                                <td>{{ array_search($article['category_id'], $articleCategories) ?? '-' }}
+                                                </td>
+                                                <td> {{ $article['quantity_bottle'] != 0 ? $article['quantity_bottle'] . ' Btl' : $article['quantity_type_value'] . ' Cag' }}
+                                                </td>
                                                 <td>{{ array_search($article['unity'], $units) ?? '-' }}</td>
                                                 <td>{{ $article['unit_price'] ?? '-' }}</td>
                                                 <td>{{ $article['wholesale_price'] ?? '-' }}</td>
@@ -106,13 +120,20 @@
                                                 </td> --}}
                                                 <td>
                                                     <span class="dropdown">
-                                                        <button id="btnSearchDrop2" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-primary dropdown-toggle dropdown-menu-right"><i class="ft-settings"></i></button>
-                                                        <span aria-labelledby="btnSearchDrop2" class="dropdown-menu mt-1 dropdown-menu-right">
-                                                            <a href="#" class="dropdown-item"><i class="la la-eye"></i> Open Task</a>
-                                                            <a href="#" class="dropdown-item"><i class="la la-pencil"></i> Edit Task</a>
-                                                            <a href="#" class="dropdown-item"><i class="la la-check"></i> Complete Task</a>
-                                                            <a href="#" class="dropdown-item"><i class="ft-upload"></i> Assign to</a>
-                                                            <a href="#" class="dropdown-item"><i class="la la-trash"></i> Delete Task</a>
+                                                        <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="true"
+                                                            class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
+                                                                class="ft-settings"></i></button>
+                                                        <span aria-labelledby="btnSearchDrop2"
+                                                            class="dropdown-menu mt-1 dropdown-menu-right">
+                                                            <a href="{{ route('admin.articles.show',$article['id']) }}" class="dropdown-item"><i
+                                                                    class="la la-eye"></i>Voir</a>
+                                                            <a href="{{  route('admin.articles.edit',$article['id']) }}" class="dropdown-item"><i
+                                                                    class="la la-pencil"></i> Editer</a>
+                                                            <a href="#" class="dropdown-item"><i
+                                                                    class="la la-print"></i> Factures</a>
+                                                            <a data-url="{{  route('admin.articles.destroy',$article['id']) }}" class="dropdown-item"><i
+                                                                    class="la la-trash"></i> Supprimer</a>
                                                         </span>
                                                     </span>
                                                 </td>

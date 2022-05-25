@@ -126,30 +126,33 @@ class ArticleController extends Controller
         ));
     }
 
-    public function update($userId, Request $request)
+    
+
+    public function update(Articles $article, Request $request)
     {
-        $user = "";
-
-        $request->validate($this->rules(true), $this->message());
-
-        //dd($request->all());
-        $data = $request->except("_token");
-
-
-
-        $saved = true;
+        $data = $request->all();
+        $data["user_update_id"] = auth()->user()->id;
+        // dd($article,$data);
+        $saved = $article->update($data);
 
         if ($saved) {
-            return redirect("/admin/utlisateurs")->with("success", CustomMessage::Success("L'utlisateur"));
+            return redirect("/admin/articles")->with("success", CustomMessage::Success("L'article"));
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function edit($id)
+    public function show(Articles $article)
     {
-        $user = [];
-        return view("admin.article.edit", compact("user"));
+        return view("admin.article.show", compact("article"));
+    }
+
+    public function edit(Articles $article)
+    {
+        $suppliers = Supplier::orderBy("identification", "asc")->get();
+
+        $catArticles = Category::orderBy("name", "asc")->get();
+        return view("admin.article.edit", compact("article","catArticles","suppliers"));
     }
 
     public function destroy($id)
