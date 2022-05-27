@@ -9,6 +9,7 @@ use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleValidation;
 use App\Models\Articles;
+use App\Models\Invoice;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,11 +18,11 @@ class ArticleController extends Controller
     public function index()
     {
         $users = [];
-        $articles = Articles::orderBy("id","desc")->get();
+        $articles = Articles::orderBy("id", "desc")->get();
         $articleTypes = Articles::ARTICLE_TYPES;
         $units = Articles::UNITS;
         $articleCategories = Category::pluck("id", "name")->toArray();
-        return view("admin.article.index", compact("articles","articleTypes","units","articleCategories"));
+        return view("admin.article.index", compact("articles", "articleTypes", "units", "articleCategories"));
     }
 
     public function create()
@@ -48,7 +49,17 @@ class ArticleController extends Controller
         }
 
         if (count($request->allItems)) {
+            // dd($request->allItems);
             $invoiceNumber = (string)random_int(10000, 90000);
+
+            $invoiceData = [
+                "number" =>$invoiceNumber,
+                "is_valid" =>true,
+                "user_id" =>auth()->user()->id,
+                "model_type" =>Invoice::TYPE["article"]
+            ];
+
+            Invoice::create($invoiceData);
 
             foreach ($request->allItems as $article) {
                 unset($article["row_id"]);
@@ -56,6 +67,7 @@ class ArticleController extends Controller
                 $article["invoice_number"] = $invoiceNumber;
                 $article["user_id"] = auth()->user()->id;
                 $article = Articles::create($article);
+
                 $response["success"] = true;
                 $response["message"] = CustomMessage::Success("L'article");
             }
@@ -126,7 +138,7 @@ class ArticleController extends Controller
         ));
     }
 
-    
+
 
     public function update(Articles $article, Request $request)
     {
@@ -152,23 +164,25 @@ class ArticleController extends Controller
         $suppliers = Supplier::orderBy("identification", "asc")->get();
 
         $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.article.edit", compact("article","catArticles","suppliers"));
+        return view("admin.article.edit", compact("article", "catArticles", "suppliers"));
     }
 
     public function destroy($id)
     {
-        $user = [];
+        $allIds = request()->all();
 
-        $delete = true;
-        $result = [];
-
-        if ($delete) {
-            $result["success"] = CustomMessage::Delete("L'utilisateur");
-            $result["type"] = "success";
-            $result["reload"] = true;
+        if (count($allIds)) {
+            $articles = Articles::whereIn("id", $allIds);
+            if ($articles->count()) {
+                $articles->delete();
+                $result["success"] = CustomMessage::Delete("L'article");
+                $result["type"] = "success";
+            } else {
+                $result["type"] = "error";
+                $result["error"] = "données indisponibles";
+            }
         } else {
-            $result["type"] = "error";
-            $result["error"] = CustomMessage::DEFAULT_ERROR;
+            $response["error"] = CustomMessage::ErrorDelete("l'article");
         }
 
         return response()->json($result);

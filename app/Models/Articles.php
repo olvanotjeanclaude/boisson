@@ -53,4 +53,8 @@ class Articles extends Model
     public function user_update(){
         return $this->belongsTo(User::class,"user_update_id");
     }
+
+   public function suplier(){
+       return $this->belongsTo(suplier::class);
+   }
 }

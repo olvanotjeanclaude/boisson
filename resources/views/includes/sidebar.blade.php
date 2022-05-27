@@ -74,6 +74,12 @@
                     <span class="menu-title">Articles</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.factures.index') }}">
+                    <span class="material-icons">article</span>
+                    <span class="menu-title">Factures</span>
+                </a>
+            </li>
         </ul>
     </div>
 </div>

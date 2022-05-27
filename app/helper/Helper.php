@@ -16,7 +16,7 @@ function getUserProfile()
 {
     $user = auth()->user();
     $default = asset("app-assets/images/portrait/small/avatar-s-19.png");
-    
+
     if ($user) {
         $path = auth()->user()->image;
         return file_exists($path) ? asset($path) : $default;
@@ -68,4 +68,9 @@ function get_user_name()
         return Auth::user()->name;
     }
     return null;
+}
+
+function  formatPrice($price, $devise = "Ariary")
+{
+    return  number_format($price, 2, ',', ' ') . " $devise";
 }

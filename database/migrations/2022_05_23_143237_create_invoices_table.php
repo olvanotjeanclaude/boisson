@@ -18,8 +18,7 @@ class CreateInvoicesTable extends Migration
             $table->string("number");
             $table->boolean("is_valid")->default(false);
             $table->unsignedBigInteger("customer_id")->nullable();
-            $table->unsignedBigInteger("invoiceable_id");
-            $table->unsignedBigInteger("invoiceable_type");
+            $table->integer("model_type");
             $table->longText("note")->nullable();
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("user_update_id")->nullable();
