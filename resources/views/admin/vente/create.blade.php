@@ -200,7 +200,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-success white">
-                        <h4 class="modal-title white">Messages</h4>
+                        <h4 class="modal-title white" >Messages</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -218,7 +218,228 @@
     </div>
 @endsection
 
-@section('page-js')
-    <script src="{{ asset('app-assets/js/custom/Achat.js') }}"></script>
-    <script src="{{ asset('app-assets/js/custom/articleController.js') }}"></script>
+@section('script')
+    <script>
+        class Achat {
+            constructor(formId = "#addArticleForm") {
+                this.row_id = 0;
+                this.formId = formId;
+                this.items = [];
+                this.action = {
+                    name: "create",
+                };
+                this.preInvoices = [];
+                this.articleTypes = ["article", "consignation", "deconsignation"];
+                this.units = ["pcs", "cageot", "carton"];
+            }
+            initForm() {
+                $("#article_type").html(this.getArticleTypeOptionHtml());
+                this.preSaveArticleUrl = $(this.formId).attr("preSaveArticleUrl");
+                this.preSaveInvoiceUrl = $(this.formId).attr("preSaveInvoiceUrl");
+                this.url = $(this.formId).attr("action");
+            }
+            addItem(item) {
+                this.row_id++;
+                item.row_id = this.row_id;
+                this.items.push(item);
+            }
+            removeItem(itemId) {
+                this.items = this.items.filter((article) => article.row_id != itemId);
+            }
+            editItem(rowId) {
+                const article = this.items.filter((article) => article.row_id == rowId)[0];
+                if (article) {
+                    this.action = {
+                        name: "update",
+                        rowId: article.row_id
+                    };
+                }
+
+                return article;
+            }
+            updateItem(rowId, newItem) {
+                // console.log(rowId);
+                const article = this.items.filter((article) => article.row_id == rowId)[0];
+                const position = this.items.indexOf(article)
+
+                if (position != -1) {
+                    newItem.row_id = rowId;
+                    this.items[position] = newItem;
+                }
+
+                this.action.name = "create";
+            }
+            serializeItem(serializedArray) {
+                const item = {};
+                if (serializedArray.length > 0) {
+                    serializedArray.forEach(current => {
+                        item[current.name] = current.value;
+                    });
+                }
+                return item;
+            }
+            validate(item) {
+                return axios.post(this.url, item)
+                    .then((response) => response.data)
+                    .catch(response => {
+                        alert("Erreur inconnue!")
+                    })
+            }
+            printErrors(serverErrors) {
+                let errorHtml = "";
+                if (serverErrors.length) {
+                    errorHtml += "<ul>";
+                    serverErrors.forEach(errors => {
+                        errors.forEach(error => {
+                            errorHtml += `<li class="text-danger">${error}</li>`;
+                        });
+                    });
+                    errorHtml += "</ul>"
+                }
+                return errorHtml;
+            }
+            checkBottleQuantity(quantityTypeVal, contentace) {
+                let result = 0;
+                if (quantity_bottle > 0 && contentace > 0) {
+                    result = quantity_bottle * contentace
+                }
+
+                return result;
+            }
+            getItems() {
+                return this.items;
+            }
+            getArticleTypeOptionHtml() {
+                // let optionsHtml = "<option value=''>Choisir</option>";
+                let optionsHtml = "";
+                if (this.articleTypes.length > 0) {
+                    this.articleTypes.forEach((articleType, index) => {
+                        optionsHtml += `<option value='${index+1}'>${articleType}</option>`;
+                    });
+
+                    return optionsHtml;
+                }
+            }
+        }
+    </script>
+    <script>
+        const article = new Article();
+
+        $(document).ready(function() {
+            article.initForm();
+
+            $(document).on("click", "#validFacture", async function() {
+                const allItems = article.getItems();
+
+                await axios.post(article.url, {
+                        allItems,
+                        submited: true
+                    })
+                    .then((response) => {
+                        if (response.data.success) {
+                            const html = `
+                            <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette zone.
+                            </p>
+                            `;
+                            $("#ajaxPreArticleTable tbody").html("");
+                            $("#ajaxPreInvoice").html(html);
+                            $("#modalSuccess .modal-body").text(response.data.message);
+                            article.items = [];
+                            $("#modalSuccess").modal("show");
+                        }
+                        // console.log(response);
+                    })
+                    .catch((response) => {
+                        console.log(response);
+                    });
+
+            });
+
+            $("#quantity_type_value, #contenance").keyup(function() {
+                const quantity_type_value = parseInt($("#quantity_type_value").val());
+                const contenance = parseInt($("#contenance").val());
+
+                if (quantity_type_value > 0 && contenance > 0) {
+                    $("#quantity_bottle").val(quantity_type_value * contenance);
+                }
+            });
+
+            $(article.formId).bind("submit", async function(e) {
+                e.preventDefault();
+                const articleForm = $(this);
+                const data = articleForm.serializeArray();
+                const item = article.serializeItem(data);
+                const supplier_id = $("#supplier_id").val();
+
+                const validation = await article.validate(item);
+
+                if (validation && validation.isErrorExist && Object.keys(validation.errors).length) {
+                    //console.log(validation);
+                    let errorHtml = article.printErrors(Object.values(validation.errors));
+                    $("#printErrors").html(errorHtml);
+                    $("#modalMessage").modal("show");
+                    return false;
+                }
+
+                if (article.action.name == "create") {
+                    $("#addArticle").html(`<span class="material-icons">add</span> Ajouter`);
+                    article.addItem(item);
+                } else if (article.action.name == "update" && article.action.rowId) {
+                    article.updateItem(article.action.rowId, item);
+                    $("#addArticle").html(`<span class="material-icons">add</span> Ajouter`);
+                }
+
+                if (article.preSaveArticleUrl) {
+                    await axios.post(article.preSaveArticleUrl, article.getItems()).then((response) => {
+                        $("#ajaxPreArticleTable").html(response.data);
+                    })
+                }
+
+                if (article.preSaveInvoiceUrl) {
+                    await axios.post(article.preSaveInvoiceUrl, article.getItems()).then((response) => {
+                        $("#ajaxPreInvoice").html(response.data);
+                    })
+                }
+
+                article.items["supplier_id"] = supplier_id;
+                articleForm[0].reset();
+
+                $("#supplier_id").val(supplier_id)
+                //console.log(article.items)
+            });
+
+            $(document).on("click", ".remove-article", async function() {
+                const rowId = $(this).data("row_id");
+                article.removeItem(rowId);
+                await axios.post(article.preSaveInvoiceUrl, article.getItems()).then((response) => {
+                    $("#ajaxPreInvoice").html(response.data);
+                })
+                $(`#article_${rowId}`).remove();
+            })
+
+            $(document).on("click", ".edit-article", function() {
+                const rowId = $(this).data("row_id");
+                const item = article.editItem(rowId);
+
+                if (item) {
+                    const article_type = $("#article_type").val(item.article_type);
+                    const category_id = $("#category_id").val(item.category_id);
+                    const designation = $("#designation").val(item.designation);
+                    const quantity_type = $("#quantity_type").val(item.quantity_type);
+                    const quantity_type_value = $("#quantity_type_value").val(item.quantity_type_value);
+                    const quantity_bottle = $("#quantity_bottle").val(item.quantity_bottle);
+                    const contenance = $("#contenance").val(item.contenance);
+                    const unity = $("#unity").val(item.unity);
+                    const unit_price = $("#unit_price").val(item.unit_price);
+                    const buying_price = $("#buying_price").val(item.buying_price);
+                    const wholesale_price = $("#wholesale_price").val(item.wholesale_price);
+                    const detail_price = $("#detail_price").val(item.detail_price);
+
+                    $("#addArticle").html(`<span class="material-icons">save</span> Enregister`);
+                }
+                //console.log(article.items);
+                //console.log(item);
+            })
+        });
+    </script>
 @endsection

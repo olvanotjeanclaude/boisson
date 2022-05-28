@@ -1,7 +1,11 @@
-function loadDatatable(element = ".datatable") {
-    if ($(element).length) {
-        $(element).DataTable({
-            "ordering": false
-        });
+$(document).ready(function() {
+    $(document).on("click", ".delete-btn", deleteItem)
+
+    $("button#confirmDelete").click(confirmeDeleteItem)
+
+    $("#confirmDeleteAllBtn").click(deleteAllItem)
+
+    if ($("table.icheck input").length) {
+        icheckConfig();
     }
-}
+});

@@ -88,7 +88,6 @@ class CustomerController extends Controller
         if ($delete) {
             $result["success"] = CustomMessage::Delete("Le client");
             $result["type"] = "success";
-            $result["reload"] = true;
         } else {
             $result["type"] = "error";
             $result["error"] = CustomMessage::DEFAULT_ERROR;
