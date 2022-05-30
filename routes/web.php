@@ -52,7 +52,11 @@ Route::group(["prefix" =>"admin","as" =>"admin.","middleware"=>"auth"],function(
     Route::post("pre-save-articles",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveArticle"])->name("article.preSaveArticle");
     Route::post("pre-save-invoice-articles",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveInvoiceArticle"])->name("article.preSaveInvoiceArticle");
     Route::resource("articles",\App\Http\Controllers\admin\article\ArticleController::class);
+   
     Route::resource("ventes",\App\Http\Controllers\admin\sale\SaleController::class);
+    Route::post("pre-save-ventes",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveVente"])->name("ventes.preSaveVente");
+    Route::post("pre-save-invoice-ventes",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
+    
     Route::resource("factures",\App\Http\Controllers\admin\invoice\InvoiceController::class);
     
     Route::resource("clients",\App\Http\Controllers\admin\customer\CustomerController::class);

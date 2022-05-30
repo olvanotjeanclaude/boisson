@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Nouveau Article
+   Nouveau Vente
 @endsection
 
 @section('page-css')
@@ -15,130 +15,120 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Article',
+        'page' => 'Vente',
         'breadcrumbs' => [
-            ['text' => 'Articles', 'link' => route('admin.articles.index')],
+            ['text' => 'Ventes', 'link' => route('admin.ventes.index')],
             ['text' => 'Nouveau', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Factures',
-            'link' => route('admin.articles.create'),
+            'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => false,
         ],
     ])
 @endsection
 
 @section('content')
-    <form preSaveInvoiceUrl="{{ route('admin.article.preSaveInvoiceArticle') }}"
-        preSaveArticleUrl="{{ route('admin.article.preSaveArticle') }}" id="addArticleForm"
-        action="{{ route('admin.articles.store') }}" class="row" method="POST">
+    <form preSaveInvoiceUrl="{{ route('admin.ventes.preSaveVente') }}"
+        preSaveArticleUrl="{{ route('admin.ventes.preSaveInvoiceVente') }}" action="{{ route('admin.ventes.store') }}"
+        class="row" method="POST">
 
         <div class="col-md-7">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-6 mt-1">
-                            <label class="text-bold-400 text-dark" for="article_type">Type D'Article</label>
-                            <select name="article_type" id="article_type" class="form-control">
-                            </select>
-                            <div class="invalid-feedback">
-                                le champ de type d'article ne peut pas être vide
-                            </div>
-                        </div>
-                        <div class="col-sm-6 mt-1">
-                            <label class="text-bold-400 text-dark" for="category_id">Famille</label>
-                            <select name="category_id" class="form-control" id="category_id">
+                        <div class="col-12 mt-1">
+                            <label class="text-bold-400 text-dark" for="article_id">Designation d'article</label>
+                            <select name="article_id" class="form-control" id="article_id">
                                 <option value="">Choisir</option>
-                                @foreach ($catArticles as $catArticle)
-                                    <option value="{{ $catArticle->id }}">{{ $catArticle->name }}</option>
+                                @foreach ($articles as $article)
+                                    <option value="{{ $article->id }}">
+                                        {{ Str::upper($article->reference . '-' . $article->designation) }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-6 col-md-4 mt-1">
-                            <label class="text-bold-400 text-dark" for="designation">Designation d'article</label>
-                            <input type="text" class="form-control" placeholder="Designation" id="designation"
-                                name="designation">
-                        </div>
-                        <div class="col-sm-6 col-md-4 mt-1">
-                            <label class="text-center text-bold-400 text-dark" for="quantity_type">Type</label>
-                            <div class="d-flex">
-                                <select class="form-control" id="quantity_type" name="quantity_type">
-                                    <option value="">Choisir</option>
-                                    @foreach (\App\Models\Articles::UNITS as $key => $value)
-                                        @if ($key == 'pcs')
-                                            @continue
-                                        @endif
-                                        <option @if ($key == 'cageot') selected @endif
-                                            value="{{ $value }}">{{ $key }}</option>
-                                    @endforeach
-                                </select>
-                                <input type="number" class="form-control" id="quantity_type_value"
-                                    name="quantity_type_value" placeholder="0">
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-4 mt-1">
-                            <label class="text-bold-400 text-dark" for="contenance">Contenance</label>
-                            <input type="number" placeholder="0" class="form-control" id="contenance" name="contenance">
-                        </div>
-                        <div class="col-sm-6 col-md-4 mt-1">
-                            <label class="text-bold-400 text-dark" for="quantity_bottle">Quantité Bouitelle</label>
-                            <input type="number" class="form-control" placeholder="Qtt Bouteille" id="quantity_bottle"
-                                name="quantity_bottle">
-                        </div>
-                        <div class="col-sm-6 col-md-4 mt-1">
-                            <label class="text-bold-400 text-dark" for="unity">Unite</label>
-                            <select id="unity" name="unity" class="form-control">
-                                @foreach (\App\Models\Articles::UNITS as $key => $value)
-                                    <option @if ($key == 'pcs') selected @endif value="{{ $value }}">
-                                        {{ $key }}</option>
+                        <div class="col-12 mt-1 consignation-container">
+                            <label class="text-bold-400 text-dark" for="consignation_id">Consignation</label>
+                            <select name="consignation_id" class="form-control" id="consignation_id">
+                                <option value="">Choisir</option>
+                                @foreach ($consignations as $consignation)
+                                    <option value="{{ $consignation->id }}">
+                                        {{ Str::upper($consignation->reference . '-' . $consignation->designation) }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-6 col-md-4 mt-1">
-                            <label class="text-bold-400 text-dark" for="unit_price">Prix Unitaire</label>
-                            <input type="text" class="form-control" id="unit_price" name="unit_price" placeholder="0">
+                        <div class="col-12 mt-1">
+                            <label class="text-bold-400 text-dark text-capitalize" for="quantité">quantité à acheter</label>
+                            <input type="number" placeholder="0" class="form-control" id="article_quantity"
+                                name="quantity">
                         </div>
+
                         <div class="col-12">
-                            <div class="card bg-light rounded mt-1">
-                                <div class="card-body pt-0">
-                                    <div class="row" style="margin-top: .3rem">
-                                        <div class="col-sm-5 mt-1 mt-md-0 col-md">
-                                            <div class="">
-                                                <label style="margin-bottom: .3rem" class="text-bold-400 text-dark"
-                                                    for="buying_price">Prix
-                                                    D'Achat</label>
-                                                <input type="text" id="buying_price" name="buying_price"
-                                                    class="w-100" placeholder="0 Ariary">
-                                            </div>
+                            <label for="" class="mt-1">Le client a-t-il apporté l'emballage ?</label>
+                            <div class="">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="d-inline-block custom-control custom-radio mr-1">
+                                            <input type="radio" name="is_with_package" value="1"
+                                                class="is_with_package custom-control-input" id="yes">
+                                            <label class="custom-control-label" for="yes">Oui</label>
                                         </div>
-                                        <div class="col-sm-5 mt-1 mt-md-0 col-md">
-                                            <div class="">
-                                                <label style="margin-bottom: .3rem" class="text-bold-400 text-dark"
-                                                    for="wholesale_price">Prix De
-                                                    Gros
-                                                </label>
-                                                <input type="text" class="w-100" id="wholesale_price"
-                                                    name="wholesale_price" placeholder="0 Ariary">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-5 mt-1 mt-md-0 col-md">
-                                            <div class="">
-                                                <label style="margin-bottom: .3rem" class="text-bold-400 text-dark"
-                                                    for="detail_price">Prix
-                                                    Détail</label>
-                                                <input type="text" class="w-100" id="detail_price"
-                                                    name="detail_price" placeholder="0 Ariary">
-                                            </div>
+                                        <div class="d-inline-block custom-control custom-radio">
+                                            <input checked type="radio" value="0" name="is_with_package"
+                                                class="is_with_package custom-control-input" id="no">
+                                            <label class="custom-control-label" for="no">Non</label>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 d-none deconsignation-container">
+                            <div class="row">
+                                <div class="col-12 mt-1">
+                                    <label class="text-bold-400 text-dark" for="deconsignation_id">deconsignation</label>
+                                    <select name="deconsignation_id" class="form-control" id="deconsignation_id">
+                                        <option value="">Choisir</option>
+                                        @foreach ($deconsignations as $deconsignation)
+                                            <option value="{{ $deconsignation->id }}">
+                                                {{ $deconsignation->reference . '-' . Str::upper($deconsignation->designation) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-6 mt-1">
+                                    <label class="text-center text-bold-400 text-dark" for="package_type">Emballage
+                                        Reçu</label>
+                                    <div class="d-flex">
+                                        <select class="form-control" id="package_type" name="package_type">
+                                            <option value="">Choisir</option>
+                                            @foreach (\App\Models\Articles::UNITS as $key => $value)
+                                                <option value="{{ $value }}">{{ $key }}</option>
+                                            @endforeach
+                                        </select>
+                                        <input type="number" class="form-control" id="package_type_value"
+                                            name="package_type_value" placeholder="0">
+                                    </div>
+                                </div>
+                                <div class="col-sm mt-1">
+                                    <label class="text-bold-400 text-dark" for="package_contenance">Contenance</label>
+                                    <input type="number" placeholder="0" class="form-control" id="package_contenance"
+                                        name="package_contenance">
+                                </div>
+                                <div class="col-sm mt-1">
+                                    <label class="text-bold-400 text-dark" for="Qtt">Bouteille reçu</label>
+                                    <input type="number" placeholder="0" class="form-control" id="Qtt"
+                                        name="received_bottle">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button type="submit" id="addArticle" class="btn float-right btn-primary">
+                            <button type="submit" id="addArticle" class="btn float-right my-1 btn-primary">
                                 <span class="material-icons">add</span>
                                 Ajouter
                             </button>
@@ -152,12 +142,12 @@
         <div class="col-md-5">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="text-capitalize">Information du fournisseur</h5>
+                    <h5 class="text-capitalize">Information du client</h5>
                     <select name="supplier_id" id="supplier_id" class="form-control">
-                        <option value="">Fournisseur</option>
-                        @forelse ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}">
-                                {{ $supplier->code }}-{{ Str::upper($supplier->identification) }}
+                        <option value="">Client</option>
+                        @forelse ($customers as $customer)
+                            <option value="{{ $customer->id }}">
+                                {{ $customer->code }}-{{ Str::upper($customer->identification) }}
                             </option>
                         @empty
                         @endforelse
@@ -200,7 +190,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-success white">
-                        <h4 class="modal-title white" >Messages</h4>
+                        <h4 class="modal-title white">Messages</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -220,226 +210,17 @@
 
 @section('script')
     <script>
-        class Achat {
-            constructor(formId = "#addArticleForm") {
-                this.row_id = 0;
-                this.formId = formId;
-                this.items = [];
-                this.action = {
-                    name: "create",
-                };
-                this.preInvoices = [];
-                this.articleTypes = ["article", "consignation", "deconsignation"];
-                this.units = ["pcs", "cageot", "carton"];
-            }
-            initForm() {
-                $("#article_type").html(this.getArticleTypeOptionHtml());
-                this.preSaveArticleUrl = $(this.formId).attr("preSaveArticleUrl");
-                this.preSaveInvoiceUrl = $(this.formId).attr("preSaveInvoiceUrl");
-                this.url = $(this.formId).attr("action");
-            }
-            addItem(item) {
-                this.row_id++;
-                item.row_id = this.row_id;
-                this.items.push(item);
-            }
-            removeItem(itemId) {
-                this.items = this.items.filter((article) => article.row_id != itemId);
-            }
-            editItem(rowId) {
-                const article = this.items.filter((article) => article.row_id == rowId)[0];
-                if (article) {
-                    this.action = {
-                        name: "update",
-                        rowId: article.row_id
-                    };
-                }
-
-                return article;
-            }
-            updateItem(rowId, newItem) {
-                // console.log(rowId);
-                const article = this.items.filter((article) => article.row_id == rowId)[0];
-                const position = this.items.indexOf(article)
-
-                if (position != -1) {
-                    newItem.row_id = rowId;
-                    this.items[position] = newItem;
-                }
-
-                this.action.name = "create";
-            }
-            serializeItem(serializedArray) {
-                const item = {};
-                if (serializedArray.length > 0) {
-                    serializedArray.forEach(current => {
-                        item[current.name] = current.value;
-                    });
-                }
-                return item;
-            }
-            validate(item) {
-                return axios.post(this.url, item)
-                    .then((response) => response.data)
-                    .catch(response => {
-                        alert("Erreur inconnue!")
-                    })
-            }
-            printErrors(serverErrors) {
-                let errorHtml = "";
-                if (serverErrors.length) {
-                    errorHtml += "<ul>";
-                    serverErrors.forEach(errors => {
-                        errors.forEach(error => {
-                            errorHtml += `<li class="text-danger">${error}</li>`;
-                        });
-                    });
-                    errorHtml += "</ul>"
-                }
-                return errorHtml;
-            }
-            checkBottleQuantity(quantityTypeVal, contentace) {
-                let result = 0;
-                if (quantity_bottle > 0 && contentace > 0) {
-                    result = quantity_bottle * contentace
-                }
-
-                return result;
-            }
-            getItems() {
-                return this.items;
-            }
-            getArticleTypeOptionHtml() {
-                // let optionsHtml = "<option value=''>Choisir</option>";
-                let optionsHtml = "";
-                if (this.articleTypes.length > 0) {
-                    this.articleTypes.forEach((articleType, index) => {
-                        optionsHtml += `<option value='${index+1}'>${articleType}</option>`;
-                    });
-
-                    return optionsHtml;
-                }
-            }
-        }
-    </script>
-    <script>
-        const article = new Article();
-
         $(document).ready(function() {
-            article.initForm();
+            $(".is_with_package").click(function() {
+                const value = $(this).val();
 
-            $(document).on("click", "#validFacture", async function() {
-                const allItems = article.getItems();
+                if (value == "" || value == "1") {
+                    $(".deconsignation-container").removeClass("d-none");
+                } else {
 
-                await axios.post(article.url, {
-                        allItems,
-                        submited: true
-                    })
-                    .then((response) => {
-                        if (response.data.success) {
-                            const html = `
-                            <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette zone.
-                            </p>
-                            `;
-                            $("#ajaxPreArticleTable tbody").html("");
-                            $("#ajaxPreInvoice").html(html);
-                            $("#modalSuccess .modal-body").text(response.data.message);
-                            article.items = [];
-                            $("#modalSuccess").modal("show");
-                        }
-                        // console.log(response);
-                    })
-                    .catch((response) => {
-                        console.log(response);
-                    });
-
-            });
-
-            $("#quantity_type_value, #contenance").keyup(function() {
-                const quantity_type_value = parseInt($("#quantity_type_value").val());
-                const contenance = parseInt($("#contenance").val());
-
-                if (quantity_type_value > 0 && contenance > 0) {
-                    $("#quantity_bottle").val(quantity_type_value * contenance);
+                    $(".deconsignation-container").addClass("d-none");
                 }
-            });
-
-            $(article.formId).bind("submit", async function(e) {
-                e.preventDefault();
-                const articleForm = $(this);
-                const data = articleForm.serializeArray();
-                const item = article.serializeItem(data);
-                const supplier_id = $("#supplier_id").val();
-
-                const validation = await article.validate(item);
-
-                if (validation && validation.isErrorExist && Object.keys(validation.errors).length) {
-                    //console.log(validation);
-                    let errorHtml = article.printErrors(Object.values(validation.errors));
-                    $("#printErrors").html(errorHtml);
-                    $("#modalMessage").modal("show");
-                    return false;
-                }
-
-                if (article.action.name == "create") {
-                    $("#addArticle").html(`<span class="material-icons">add</span> Ajouter`);
-                    article.addItem(item);
-                } else if (article.action.name == "update" && article.action.rowId) {
-                    article.updateItem(article.action.rowId, item);
-                    $("#addArticle").html(`<span class="material-icons">add</span> Ajouter`);
-                }
-
-                if (article.preSaveArticleUrl) {
-                    await axios.post(article.preSaveArticleUrl, article.getItems()).then((response) => {
-                        $("#ajaxPreArticleTable").html(response.data);
-                    })
-                }
-
-                if (article.preSaveInvoiceUrl) {
-                    await axios.post(article.preSaveInvoiceUrl, article.getItems()).then((response) => {
-                        $("#ajaxPreInvoice").html(response.data);
-                    })
-                }
-
-                article.items["supplier_id"] = supplier_id;
-                articleForm[0].reset();
-
-                $("#supplier_id").val(supplier_id)
-                //console.log(article.items)
-            });
-
-            $(document).on("click", ".remove-article", async function() {
-                const rowId = $(this).data("row_id");
-                article.removeItem(rowId);
-                await axios.post(article.preSaveInvoiceUrl, article.getItems()).then((response) => {
-                    $("#ajaxPreInvoice").html(response.data);
-                })
-                $(`#article_${rowId}`).remove();
             })
-
-            $(document).on("click", ".edit-article", function() {
-                const rowId = $(this).data("row_id");
-                const item = article.editItem(rowId);
-
-                if (item) {
-                    const article_type = $("#article_type").val(item.article_type);
-                    const category_id = $("#category_id").val(item.category_id);
-                    const designation = $("#designation").val(item.designation);
-                    const quantity_type = $("#quantity_type").val(item.quantity_type);
-                    const quantity_type_value = $("#quantity_type_value").val(item.quantity_type_value);
-                    const quantity_bottle = $("#quantity_bottle").val(item.quantity_bottle);
-                    const contenance = $("#contenance").val(item.contenance);
-                    const unity = $("#unity").val(item.unity);
-                    const unit_price = $("#unit_price").val(item.unit_price);
-                    const buying_price = $("#buying_price").val(item.buying_price);
-                    const wholesale_price = $("#wholesale_price").val(item.wholesale_price);
-                    const detail_price = $("#detail_price").val(item.detail_price);
-
-                    $("#addArticle").html(`<span class="material-icons">save</span> Enregister`);
-                }
-                //console.log(article.items);
-                //console.log(item);
-            })
-        });
+        })
     </script>
 @endsection

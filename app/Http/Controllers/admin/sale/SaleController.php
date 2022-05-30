@@ -9,6 +9,7 @@ use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleValidation;
 use App\Models\Articles;
+use App\Models\Customers;
 use App\Models\Invoice;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
@@ -27,9 +28,12 @@ class SaleController extends Controller
 
     public function create()
     {
-        $suppliers = Supplier::orderBy("identification", "asc")->get();
-        $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.article.create", compact("suppliers", "catArticles"));
+        $customers = Customers::orderBy("identification", "asc")->get();
+        $articles = Articles::where("article_type", Articles::ARTICLE_TYPES["article"])->orderBy("designation")->get();
+        $consignations = Articles::where("article_type", Articles::ARTICLE_TYPES["consignation"])->orderBy("designation")->get();
+        $deconsignations = Articles::where("article_type", Articles::ARTICLE_TYPES["deconsignation"])->orderBy("designation")->get();
+
+        return view("admin.vente.create", compact("articles", "consignations","deconsignations","customers"));
     }
 
     public function store(Request $request)
@@ -53,10 +57,10 @@ class SaleController extends Controller
             $invoiceNumber = (string)random_int(10000, 90000);
 
             $invoiceData = [
-                "number" =>$invoiceNumber,
-                "is_valid" =>true,
-                "user_id" =>auth()->user()->id,
-                "model_type" =>Invoice::TYPE["article"]
+                "number" => $invoiceNumber,
+                "is_valid" => true,
+                "user_id" => auth()->user()->id,
+                "model_type" => Invoice::TYPE["article"]
             ];
 
             Invoice::create($invoiceData);
