@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-   Nouveau Vente
+    Nouveau Vente
 @endsection
 
 @section('page-css')
@@ -59,12 +59,34 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-12 mt-1">
-                            <label class="text-bold-400 text-dark text-capitalize" for="quantité">quantité à acheter</label>
-                            <input type="number" placeholder="0" class="form-control" id="article_quantity"
-                                name="quantity">
+                        <div class="col-sm-6 mt-1">
+                            <label class="text-center text-bold-400 text-dark" for="package_type">Emballage
+                            </label>
+                            <div class="d-flex">
+                                <select class="form-control" id="package_type" name="package_type">
+                                    <option value="">Choisir</option>
+                                    @foreach (\App\Models\Articles::UNITS as $key => $value)
+                                        <option value="{{ $value }}">{{ $key }}</option>
+                                    @endforeach
+                                </select>
+                                <input type="number" class="form-control" id="package_type_value"
+                                    name="package_type_value" placeholder="0">
+                            </div>
                         </div>
+                        <div class="col-sm mt-1">
+                            <label class="text-bold-400 text-dark" for="package_contenance">Contenance</label>
+                            <input type="number" placeholder="0" class="form-control" id="package_contenance"
+                                name="package_contenance">
+                        </div>
+                        <div class="col-sm mt-1">
+                            <label class="text-bold-400 text-dark" for="Qtt">Bouteille</label>
+                            <input type="number" placeholder="0" class="form-control" id="Qtt" name="received_bottle">
+                        </div>
+                    </div>
 
+                    
+
+                    <div class="row">
                         <div class="col-12">
                             <label for="" class="mt-1">Le client a-t-il apporté l'emballage ?</label>
                             <div class="">
@@ -126,6 +148,8 @@
                             </div>
                         </div>
                     </div>
+
+
                     <div class="row">
                         <div class="col-12">
                             <button type="submit" id="addArticle" class="btn float-right my-1 btn-primary">
