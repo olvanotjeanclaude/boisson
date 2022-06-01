@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleValidation;
+use App\Http\Requests\VenteValidation;
 use App\Models\Articles;
 use App\Models\Customers;
 use App\Models\Invoice;
@@ -33,16 +34,15 @@ class SaleController extends Controller
         $consignations = Articles::where("article_type", Articles::ARTICLE_TYPES["consignation"])->orderBy("designation")->get();
         $deconsignations = Articles::where("article_type", Articles::ARTICLE_TYPES["deconsignation"])->orderBy("designation")->get();
 
-        return view("admin.vente.create", compact("articles", "consignations","deconsignations","customers"));
+        return view("admin.vente.create", compact("articles", "consignations", "deconsignations", "customers"));
     }
 
     public function store(Request $request)
     {
-        // dd($request->submited);
         $response = [];
 
         if (!$request->submited) {
-            $validator = Validator::make($request->all(), ArticleValidation::RULES, ArticleValidation::MESSAGES);
+            $validator = Validator::make($request->all(), VenteValidation::RULES, VenteValidation::MESSAGES);
             $errors = $validator->errors();
             $response = [
                 "isErrorExist" => $validator->fails(),
@@ -51,6 +51,8 @@ class SaleController extends Controller
 
             return response()->json($response);
         }
+
+        dd($request->all());
 
         if (count($request->allItems)) {
             // dd($request->allItems);
@@ -83,8 +85,10 @@ class SaleController extends Controller
         return response()->json($response);
     }
 
-    public function preSaveInvoiceArticle(Request $request)
+    public function preSaveVente(Request $request)
     {
+        dd($request->all());
+
         $preInvoices = $this->articleRequests($request->all()) ?? [];
         $preInvoices = collect($preInvoices);
         $amount = $this->calculateAmount($preInvoices);
@@ -94,6 +98,28 @@ class SaleController extends Controller
             "preInvoices" => $preInvoices->toArray(),
             "amount" => $amount
         ]);
+    }
+
+    private function saveCustomer($request)
+    {
+        $custonerData = [
+            "identification" => $request->customer_identification,
+            "phone" => $request->customer_phone
+        ];
+
+        $customerDB = Customers::where("identification", $request->customer_identification)->first();
+
+        return Customers::create($custonerData);
+    }
+
+    private function saveVente($request){
+        $article = Articles::find($request->article_id);
+        $response = [];
+        if($article){
+           $quantityBottle = $request->quantity_bottle;
+
+           //if($article->quantity_type && $article->quantity_type_value)
+        }
     }
 
     private function articleRequests(array $articleRequests)

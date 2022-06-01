@@ -54,8 +54,8 @@ Route::group(["prefix" =>"admin","as" =>"admin.","middleware"=>"auth"],function(
     Route::resource("articles",\App\Http\Controllers\admin\article\ArticleController::class);
    
     Route::resource("ventes",\App\Http\Controllers\admin\sale\SaleController::class);
-    Route::post("pre-save-ventes",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveVente"])->name("ventes.preSaveVente");
-    Route::post("pre-save-invoice-ventes",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
+    Route::post("pre-save-ventes",[\App\Http\Controllers\admin\sale\SaleController::class,"preSaveVente"])->name("ventes.preSaveVente");
+    Route::post("pre-save-invoice-ventes",[\App\Http\Controllers\admin\sale\SaleController::class,"preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
     
     Route::resource("factures",\App\Http\Controllers\admin\invoice\InvoiceController::class);
     

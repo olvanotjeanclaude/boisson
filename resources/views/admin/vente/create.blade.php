@@ -71,24 +71,24 @@
                         </div>
                         <div class="col-12 d-none" id="newCustomerBlock">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-sm">
                                     <div class="form-group">
                                         <label for="customer_identification">Identification</label>
                                         <input type="text" id="customer_identification" class="form-control border-primary"
                                             placeholder="identification" name="customer_identification">
                                     </div>
                                 </div>
-                                <div class="col-md">
+                                {{-- <div class="col-md">
                                     <div class="form-group">
                                         <label for="customer_code">Code</label>
                                         <input type="text" id="customer_code" class="form-control border-primary"
                                             placeholder="   code" name="customer_code">
                                     </div>
-                                </div>
-                                <div class="col-md">
+                                </div> --}}
+                                <div class="col-sm">
                                     <div class="form-group">
                                         <label for="customer_phone">Téléphone</label>
-                                        <input type="text" id="customer_phone" class="form-control border-primary"
+                                        <input type="tel" id="customer_phone" class="form-control border-primary"
                                             placeholder="Numéro De Téléphone" name="customer_phone">
                                     </div>
                                 </div>
@@ -152,7 +152,8 @@
                         <div class="col-12">
                             <div class="form-group mt-1">
                                 <div class="custom-control custom-switch">
-                                    <input class="custom-control-input" id="withDeconsignation" type="checkbox">
+                                    <input class="custom-control-input" id="withDeconsignation" name="withDeconsignation"
+                                        type="checkbox">
                                     <span class="custom-control-track"></span>
                                     <label class="custom-control-label" for="withDeconsignation">Le client a-t-il apporté un
                                         emballage ?</label>
@@ -288,19 +289,19 @@
 @section('script')
     <script>
         const article = new Achat("#addVenteForm");
+        article.initForm();
 
         $(document).ready(function() {
             $(article.formId).bind("submit", async function(e) {
                 e.preventDefault();
+
+                console.log(article);
+
                 const venteForm = $(this);
                 const data = venteForm.serializeArray();
                 const item = article.serializeItem(data);
                 const customer_id = $("#customer_id").val();
-
-                article.addItem(item);
-                console.log(article.items);
-                return;
-
+                console.log(article);
                 const validation = await article.validate(item);
 
                 if (validation && validation.isErrorExist && Object.keys(validation.errors).length) {
@@ -319,14 +320,9 @@
                     $("#addArticle").html(`<span class="material-icons">add</span> Ajouter`);
                 }
 
-                if (article.preSaveArticleUrl) {
-                    await axios.post(article.preSaveArticleUrl, article.getItems()).then((response) => {
-                        $("#ajaxPreArticleTable").html(response.data);
-                    })
-                }
-
                 if (article.preSaveInvoiceUrl) {
                     await axios.post(article.preSaveInvoiceUrl, article.getItems()).then((response) => {
+                    
                         $("#ajaxPreInvoice").html(response.data);
                     })
                 }
