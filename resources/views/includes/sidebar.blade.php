@@ -50,6 +50,12 @@
                     <span class="menu-title">Fournisseur</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.category-articles.index') }}">
+                    <span class="material-icons">category</span>
+                    <span class="menu-title">Catégorie D'Articles</span>
+                </a>
+            </li>
             <li class=" nav-item">
                 <a href="#">
                     <i class="material-icons">content_paste</i>
@@ -57,19 +63,19 @@
                 </a>
                 <ul class="menu-content">
                     <li>
-                        <a class="menu-item" href="{{route('admin.approvisionnement.articles.index')}}">
+                        <a class="menu-item" href="{{ route('admin.approvisionnement.articles.index') }}">
                             <i class="material-icons"></i>
                             <span>Articles</span>
                         </a>
                     </li>
                     <li>
-                        <a class="menu-item" href="{{route('admin.approvisionnement.consignations.index')}}">
+                        <a class="menu-item" href="{{ route('admin.approvisionnement.consignations.index') }}">
                             <i class="material-icons"></i>
                             <span>Consignation </span>
                         </a>
                     </li>
                     <li>
-                        <a class="menu-item" href="{{route('admin.approvisionnement.packages.index')}}">
+                        <a class="menu-item" href="{{ route('admin.approvisionnement.packages.index') }}">
                             <i class="material-icons"></i>
                             <span>Groupe d'article</span>
                         </a>
@@ -79,7 +85,15 @@
             <li class="nav-item">
                 <a href="{{ route('admin.articles.index') }}">
                     <span class="material-icons">liquor</span>
-                    <span class="menu-title">Document Articles</span>
+                    <span class="menu-title">Document D' Articles</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.ventes.index') }}">
+                    <span class="material-icons">
+                        shopping_basket
+                    </span>
+                    <span class="menu-title">Document De Ventes</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -94,18 +108,7 @@
                     <span class="menu-title">Achat Fournisseurs</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.category-articles.index') }}">
-                    <span class="material-icons">category</span>
-                    <span class="menu-title">Catégorie D'Articles</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.ventes.index') }}">
-                    <span class="material-icons">liquor</span>
-                    <span class="menu-title">ventes</span>
-                </a>
-            </li>
+
             <li class="nav-item">
                 <a href="{{ route('admin.factures.index') }}">
                     <span class="material-icons">article</span>

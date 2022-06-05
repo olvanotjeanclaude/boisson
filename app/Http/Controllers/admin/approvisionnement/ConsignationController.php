@@ -24,9 +24,9 @@ class ConsignationController extends Controller
 
     public function edit($id)
     {
-        $cosnignation = Consignation::findOrFail($id);
+        $consignation = Consignation::findOrFail($id);
         $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.approvisionnement.consignation.edit", compact("catArticles", "cosnignation"));
+        return view("admin.approvisionnement.consignation.edit", compact("catArticles", "consignation"));
     }
 
     public function store(Request $request)
