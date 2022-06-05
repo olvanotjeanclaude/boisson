@@ -44,6 +44,15 @@ class SaleController extends Controller
         if (!$request->submited) {
             $validator = Validator::make($request->all(), VenteValidation::RULES, VenteValidation::MESSAGES);
             $errors = $validator->errors();
+            $stock = Articles::find($request["article_id"]);
+            if ($stock) {
+                if ($request->quantity_bottle > $stock->quantity_bottle) {
+                    $validator->getMessageBag()->add("custom", "Nombre de $stock->designation est insuffisant pour effectuer cette operation. (total disponible: $stock->quantity_bottle) ");
+                }
+            } else {
+                $validator->getMessageBag()->add("custom", "Verifier l'article s'il a ete bien choisi");
+            }
+
             $response = [
                 "isErrorExist" => $validator->fails(),
                 "errors" => $errors
@@ -52,52 +61,21 @@ class SaleController extends Controller
             return response()->json($response);
         }
 
-        dd($request->all());
-
-        if (count($request->allItems)) {
-            // dd($request->allItems);
-            $invoiceNumber = (string)random_int(10000, 90000);
-
-            $invoiceData = [
-                "number" => $invoiceNumber,
-                "is_valid" => true,
-                "user_id" => auth()->user()->id,
-                "model_type" => Invoice::TYPE["article"]
-            ];
-
-            Invoice::create($invoiceData);
-
-            foreach ($request->allItems as $article) {
-                unset($article["row_id"]);
-                $article["reference"] = (string)random_int(10000, 90000);
-                $article["invoice_number"] = $invoiceNumber;
-                $article["user_id"] = auth()->user()->id;
-                $article = Articles::create($article);
-
-                $response["success"] = true;
-                $response["message"] = CustomMessage::Success("L'article");
-            }
-        } else {
-            $response["error"] = true;
-            $response["message"] = CustomMessage::DEFAULT_ERROR;
-        }
-
-        return response()->json($response);
+        return response()->json(["wait" => "..."]);
     }
 
     public function preSaveVente(Request $request)
     {
-        dd($request->all());
-
-        $preInvoices = $this->articleRequests($request->all()) ?? [];
-        $preInvoices = collect($preInvoices);
-        $amount = $this->calculateAmount($preInvoices);
-        //dd($preInvoices);
-        //dd($amount);
-        return view("admin.article.ajax-response.pre-invoice-article", [
-            "preInvoices" => $preInvoices->toArray(),
-            "amount" => $amount
+        // dd($request->all());
+        $allData = $this->venteRequest($request->items ?? []);
+        $preInvoices = collect($allData);
+      
+        return  view("admin.vente.ajax-response.pre-invoice-vente", [
+            "preInvoices" => $preInvoices->all(),
+            "totalPrice" => $preInvoices->sum("sub_amount")
         ]);
+
+        return response()->json(["error" => "out of bound"]);
     }
 
     private function saveCustomer($request)
@@ -112,45 +90,61 @@ class SaleController extends Controller
         return Customers::create($custonerData);
     }
 
-    private function saveVente($request){
+    private function saveVente($request)
+    {
         $article = Articles::find($request->article_id);
         $response = [];
-        if($article){
-           $quantityBottle = $request->quantity_bottle;
+        if ($article) {
+            $quantityBottle = $request->quantity_bottle;
 
-           //if($article->quantity_type && $article->quantity_type_value)
+            //if($article->quantity_type && $article->quantity_type_value)
         }
     }
 
-    private function articleRequests(array $articleRequests)
+    private function venteRequest(array $allData): array
     {
-        return array_map(function ($articles) {
-            if ($articles["quantity_bottle"]) {
-                $articles["sub_amount"] = $articles["quantity_bottle"] * $articles["unit_price"];
-            } else {
-                $articles["sub_amount"] = $articles["quantity_type_value"] * $articles["unit_price"];
+        $allRequest = [];
+
+        $outVente = array_filter($allData, function ($data) {
+            $stock = Articles::find($data["article_id"]);
+            return $data["quantity_bottle"] > $stock->quantity_bottle;
+        });
+
+        if (!count($outVente) && count($allData)) {
+            foreach ($allData as $key => $vente) {
+                $vente = (object) $vente;
+                $sub_amount = 0;
+                $quantityBottle =  $vente->quantity_bottle;
+
+                $stock = Articles::find($vente->article_id);
+                $consignation = Articles::find($vente->consignation_id);
+                $deconsignation = isset($vente->withDeconsignation) ? Articles::find($vente->deconsignation_id) : null;
+
+                //tranform items
+
+        if ($quantityBottle < $stock->contenance) { //utiliser prix detail si nombre de bouteille av @ client < stock bouteille
+            $sub_amount = $quantityBottle * $stock->detail_price;
+        } else if ($quantityBottle >= $stock->contenance) { //sinon utiliser prix gros 
+            $rest = $quantityBottle - $stock->contenance;
+            $sub_amount1 = $stock->contenance * $stock->wholesale_price;//wholesale_price egale priz gros
+            $sub_amount2 = $rest * $stock->detail_price;
+
+            $sub_amount = $sub_amount1 + $sub_amount2;
+        }
+
+                $allRequest[] = [
+                    "row_id" => $vente->row_id, "designation" => $stock->designation, "total" => $quantityBottle, "sub_amount" => $sub_amount, "type" => 1, "data" => []
+                ];
+
+
+                $allRequest[] = ["row_id" => $vente->row_id, "designation" => $consignation->designation, "total" => 0, "sub_amount" => $consignation->unit_price, "type" => 2, "data" => []];
+
+                if ($deconsignation) {
+                    $allRequest[] =  ["row_id" => $vente->row_id, "designation" => $deconsignation->designation, "total" => 0, "sub_amount" => -$deconsignation->unit_price, "type" => 3, "data" => []];
+                }
             }
-            return $articles;
-        }, $articleRequests);
-    }
-
-    private function calculateAmount(Collection $articleRequests)
-    {
-        $amount = 0;
-
-        if ($articleRequests->count()) {
-            $sumArticle = $articleRequests->filter(function ($item) {
-                return $item["article_type"] != Articles::ARTICLE_TYPES["deconsignation"];
-            })->sum("sub_amount");
-
-            $sumDeconsignation = $articleRequests->filter(function ($item) {
-                return $item["article_type"] == Articles::ARTICLE_TYPES["deconsignation"];
-            })->sum("sub_amount");
-
-            $amount = $sumArticle - $sumDeconsignation;
         }
-
-        return $amount;
+        return $allRequest;
     }
 
     public function preSaveArticle(Request $request)

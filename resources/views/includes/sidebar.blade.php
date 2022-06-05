@@ -23,7 +23,7 @@
             </div>
         </div>
     </div>
-    <div class="main-menu-content">
+    <div class="main-menu-content text-capitalize">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class=" nav-item">
                 <a href="/admin">
@@ -50,6 +50,38 @@
                     <span class="menu-title">Fournisseur</span>
                 </a>
             </li>
+            <li class=" nav-item">
+                <a href="#">
+                    <i class="material-icons">content_paste</i>
+                    <span class="menu-title">Approvisionnement</span>
+                </a>
+                <ul class="menu-content">
+                    <li>
+                        <a class="menu-item" href="{{route('admin.approvisionnement.articles.index')}}">
+                            <i class="material-icons"></i>
+                            <span>Articles</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="menu-item" href="{{route('admin.approvisionnement.consignations.index')}}">
+                            <i class="material-icons"></i>
+                            <span>Consignation </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="menu-item" href="{{route('admin.approvisionnement.packages.index')}}">
+                            <i class="material-icons"></i>
+                            <span>Groupe d'article</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.articles.index') }}">
+                    <span class="material-icons">liquor</span>
+                    <span class="menu-title">Document Articles</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a href="{{ route('admin.clients.index') }}">
                     <span class="material-icons">groups</span>
@@ -66,12 +98,6 @@
                 <a href="{{ route('admin.category-articles.index') }}">
                     <span class="material-icons">category</span>
                     <span class="menu-title">Catégorie D'Articles</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.articles.index') }}">
-                    <span class="material-icons">liquor</span>
-                    <span class="menu-title">Articles</span>
                 </a>
             </li>
             <li class="nav-item">

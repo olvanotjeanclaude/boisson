@@ -16,9 +16,9 @@ class VenteValidation
         "deconsignation_id" => "required_if:withDeconsignation,on",
 
         //requested sale
-        "package_type" => "required|numeric|integer",
-        "package_type_value" => "required|numeric|integer",
-        "package_contenance" => ["required", "numeric", "integer"],
+        // "package_type" => "required|numeric|integer",
+        // "package_type_value" => "required|numeric|integer",
+        // "package_contenance" => ["required", "numeric", "integer"],
         "quantity_bottle" => "required|numeric|integer",
 
         //received

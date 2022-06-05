@@ -122,7 +122,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-6 mt-1">
+                        {{-- <div class="col-sm-6 mt-1">
                             <label class="text-center text-bold-400 text-dark" for="package_type">Emballage
                             </label>
                             <div class="d-flex">
@@ -135,14 +135,15 @@
                                 <input type="number" class="form-control" id="package_type_value"
                                     name="package_type_value" placeholder="0">
                             </div>
-                        </div>
-                        <div class="col-sm mt-1">
+                        </div> --}}
+                        {{-- <div class="col-sm mt-1">
                             <label class="text-bold-400 text-dark" for="package_contenance">Contenance</label>
                             <input type="number" placeholder="0" class="form-control" id="package_contenance"
                                 name="package_contenance">
-                        </div>
+                        </div> --}}
                         <div class="col-sm mt-1">
-                            <label class="text-bold-400 text-dark" for="quantity_bottle">Bouteille</label>
+                            <label class="text-bold-400 text-dark" for="quantity_bottle">Nombre de bouteille
+                                Bouteille</label>
                             <input type="number" placeholder="0" class="form-control" id="quantity_bottle"
                                 name="quantity_bottle">
                         </div>
@@ -292,19 +293,22 @@
         article.initForm();
 
         $(document).ready(function() {
-            $(article.formId).bind("submit", async function(e) {
+            $(".newCustomer").click(handleCustomerContainer);
+            $("#withDeconsignation").click(handleWithDeconsignation)
+
+            $(article.formId).on("submit", async function(e) {
                 e.preventDefault();
 
-                console.log(article);
+                //console.log(article);
 
                 const venteForm = $(this);
                 const data = venteForm.serializeArray();
                 const item = article.serializeItem(data);
                 const customer_id = $("#customer_id").val();
-                console.log(article);
+
                 const validation = await article.validate(item);
 
-                if (validation && validation.isErrorExist && Object.keys(validation.errors).length) {
+                if (Object.keys(validation.errors).length) {
                     //console.log(validation);
                     let errorHtml = article.printErrors(Object.values(validation.errors));
                     $("#printErrors").html(errorHtml);
@@ -321,25 +325,36 @@
                 }
 
                 if (article.preSaveInvoiceUrl) {
-                    await axios.post(article.preSaveInvoiceUrl, article.getItems()).then((response) => {
-                    
+                    await axios.post(article.preSaveInvoiceUrl, {
+                        items: article.getItems()
+                    }).then((response) => {
                         $("#ajaxPreInvoice").html(response.data);
                     })
                 }
 
-                article.items["customer_id"] = customer_id;
-                venteForm[0].reset();
+                // article.items["customer_id"] = customer_id;
+                //venteForm[0].reset();
 
-                $("#customer_id").val(customer_id)
+                //$("#customer_id").val(customer_id)
                 //console.log(article.items)
             });
+
+            $(document).on("click", ".remove-vente", async function() {
+                const rowId = $(this).data("row_id");
+                article.items = changeIdItems(article.getItems());
+                article.removeItem(rowId);
+                return;
+                await axios.post(article.preSaveInvoiceUrl, {
+                    rowId: rowId,
+                    action: "delete",
+                    items: article.getItems()
+                }).then((response) => {
+                    $("#ajaxPreInvoice").html(response.data);
+                })
+                $(`#vente_${rowId}`).remove();
+            })
         })
 
-        $(document).ready(function() {
-            $(".newCustomer").click(handleCustomerContainer);
-            $("#withDeconsignation").click(handleWithDeconsignation)
-
-        })
 
         function handleCustomerContainer() {
             const value = $(this).val();
@@ -354,6 +369,18 @@
 
         function handleWithDeconsignation() {
             $("#deconsignationContainer").toggleClass("d-none");
+        }
+
+        function changeIdItems(items) {
+            // console.log(items);
+            if (items.length) {
+                items = items.map(function(item, index) {
+                    item['row_id'] = index;
+                    return item;
+                });
+            }
+
+            return items;
         }
     </script>
 @endsection
