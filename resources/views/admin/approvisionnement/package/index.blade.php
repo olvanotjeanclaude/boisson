@@ -12,7 +12,8 @@
     @include('includes.content-header', [
         'page' => 'Packages',
         'breadcrumbs' => [
-            ['text' => 'package', 'link' => route('admin.approvisionnement.packages.index')],
+            ['text' => 'Produits', 'link' => "#"],
+            ['text' => 'Packages', 'link' => route('admin.approvisionnement.packages.index')],
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
@@ -74,8 +75,7 @@
                                             <th>Ref</th>
                                             <th>Designation</th>
                                             <th>Contenance</th>
-                                            <th>PA</th>
-                                            <th>Prix</th>
+                                            <th>Prix De Gros</th>
                                             <th>Fam</th>
                                             <th>Action</th>
                                         </tr>
@@ -90,7 +90,6 @@
                                                 <td>{{ $package->reference }}</td>
                                                 <td>{{ $package->designation }}</td>
                                                 <td>{{ $package->contenance }}</td>
-                                                <td>{{ $package->buying_price }}</td>
                                                 <td>{{ $package->price }}</td>
                                                 <td>{{ $package->category->name??"-" }}</td>
                                                 <td>
@@ -111,7 +110,6 @@
                                             <th><input type="checkbox" class="input-chk-all"></th>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>PU</th>
                                             <th>Prix</th>
                                             <th>Fam</th>
                                             <th>Action</th>

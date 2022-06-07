@@ -15,10 +15,11 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Article',
+        'page' => 'Produits',
         'breadcrumbs' => [
+            ['text' => 'Produits', 'link' => "#"],
             ['text' => 'Articles', 'link' => route('admin.approvisionnement.articles.index')],
-            ['text' => 'Nouveau', 'link' => route('admin.index')],
+            ['text' => 'Editer', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Factures',
@@ -68,17 +69,6 @@
                             </div>
 
                             <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="unit_price">Prix unitaire d’achat</label>
-                                <div class="col-md-9">
-                                    <input type="number"  value="{{$product->unit_price}}"  id="unit_price" step="0.001" required class="form-control"
-                                        placeholder="Prix d'achat" name="unit_price">
-                                    <div class="invalid-feedback">
-                                        Entrer le prix d'achat
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="price">Prix unitaire de vente</label>
                                 <div class="col-md-9">
                                     <input type="number" id="price"  value="{{$product->price}}" step="0.001" required class="form-control"
@@ -95,7 +85,7 @@
                                     <select name="category_id" class="form-control" required id="category_id">
                                         <option value="">Choisir</option>
                                         @foreach ($catArticles as $catArticle)
-                                            <option @if($catArticle->id==$product->id) selected @endif value="{{ $catArticle->id }}">{{ $catArticle->name }}</option>
+                                            <option @if($catArticle->id==$product->category_id) selected @endif value="{{ $catArticle->id }}">{{ $catArticle->name }}</option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback">

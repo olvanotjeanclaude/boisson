@@ -15,8 +15,9 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Article',
+        'page' => 'Produits',
         'breadcrumbs' => [
+            ['text' => 'Produits', 'link' => "#"],
             ['text' => 'Articles', 'link' => route('admin.approvisionnement.articles.index')],
             ['text' => 'Nouveau', 'link' => route('admin.index')],
         ],
@@ -66,7 +67,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row mx-auto">
+                            {{-- <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="unit_price">Prix unitaire d’achat</label>
                                 <div class="col-md-9">
                                     <input type="number" id="unit_price" step="0.001" required class="form-control"
@@ -75,7 +76,7 @@
                                         Entrer le prix d'achat
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="price">Prix unitaire de vente</label>

@@ -10,10 +10,11 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Articles',
+       'page' => 'Produits',
         'breadcrumbs' => [
-            ['text' => 'Article', 'link' => route('admin.articles.index')],
-            ['text' => 'List', 'link' => route('admin.index')],
+            ['text' => 'Produits', 'link' => "#"],
+            ['text' => 'Articles', 'link' => route('admin.approvisionnement.articles.index')],
+            ['text' => 'Liste', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Nouveau Article',
@@ -88,7 +89,6 @@
                                             <th><input type="checkbox" class="input-chk-all"></th>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>PU</th>
                                             <th>Prix</th>
                                             <th>Fam</th>
                                             <th>Action</th>
@@ -103,7 +103,6 @@
                                                 </td>
                                                 <td>{{ $product->reference }}</td>
                                                 <td>{{ $product->designation }}</td>
-                                                <td>{{ $product->unit_price }}</td>
                                                 <td>{{ $product->price }}</td>
                                                 <td>{{ $product->category->name }}</td>
                                                 <td>
@@ -124,7 +123,6 @@
                                             <th><input type="checkbox" class="input-chk-all"></th>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>PU</th>
                                             <th>Prix</th>
                                             <th>Fam</th>
                                             <th>Action</th>

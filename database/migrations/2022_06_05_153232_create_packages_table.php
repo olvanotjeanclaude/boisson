@@ -18,11 +18,10 @@ class CreatePackagesTable extends Migration
             $table->string("reference");
             $table->string("designation");
             $table->unsignedBigInteger("product_id");
-            $table->decimal("buying_price")->nullable();
             $table->integer("contenance");
             $table->decimal("price")->comment("Prix de vente, pris de gros");
             $table->unsignedBigInteger("category_id");
-            $table->longText("note");
+            $table->longText("note")->nullable();
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("update_user_id")->nullable();
             $table->timestamps();

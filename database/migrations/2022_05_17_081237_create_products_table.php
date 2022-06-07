@@ -17,10 +17,9 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string("reference");
             $table->string("designation");
-            $table->decimal("unit_price")->comment("Prix unitaire d'achat");
             $table->decimal("price")->comment("Prix unitaire de vente");
             $table->unsignedBigInteger("category_id");
-            $table->longText("note");
+            $table->longText("note")->nullable();
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("update_user_id")->nullable();
             $table->timestamps();

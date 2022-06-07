@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Supplier extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         "code",
         "identification",
@@ -17,10 +17,17 @@ class Supplier extends Model
         "phone",
         "address",
         "note",
-        "user_id"
+        "user_id",
+        "bank_number"
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    public static function generateUniqueId()
+    {
+        return (string) random_int(111111, 999999);
     }
 }

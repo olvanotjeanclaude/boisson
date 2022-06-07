@@ -53,11 +53,13 @@ Route::group(["prefix" =>"admin","as" =>"admin.","middleware"=>"auth"],function(
     Route::post("pre-save-invoice-articles",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveInvoiceArticle"])->name("article.preSaveInvoiceArticle");
     
     Route::resource("articles",\App\Http\Controllers\admin\article\ArticleController::class);
+
+    Route::resource("achat-produits",\App\Http\Controllers\admin\article\PurchaseProductController::class);
     
-    Route::group(["prefix" =>"approvisionnement","as" =>"approvisionnement."],function(){
-        Route::resource("articles",\App\Http\Controllers\admin\approvisionnement\ProductController::class);
-        Route::resource("consignations",\App\Http\Controllers\admin\approvisionnement\ConsignationController::class);
-        Route::resource("packages",\App\Http\Controllers\admin\approvisionnement\PackageController::class);
+    Route::group(["prefix" =>"produits","as" =>"approvisionnement."],function(){
+        Route::resource("articles",\App\Http\Controllers\admin\produit\ProductController::class);
+        Route::resource("emballages",\App\Http\Controllers\admin\produit\EmballageController::class);
+        Route::resource("packages",\App\Http\Controllers\admin\produit\PackageController::class);
     });
    
     Route::resource("ventes",\App\Http\Controllers\admin\sale\SaleController::class);

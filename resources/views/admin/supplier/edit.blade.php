@@ -8,7 +8,7 @@
     @include('includes.content-header', [
         'page' => 'Fournisseurs',
         'breadcrumbs' => [
-            ['text' => 'Fournisseurs', 'link' => route('admin.utlisateurs.index')],
+            ['text' => 'Fournisseurs', 'link' => route('admin.fournisseurs.index')],
             ['text' => 'Editer', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
@@ -45,15 +45,10 @@
                     </div>
                     <div class="card-content collpase show">
                         <div class="card-body">
-
-                            <div class="card-text">
-                                <p>Formulaire de mise à jour du fournisseur.</p>
-                            </div>
-
-                            <form novalidate action="{{ route('admin.fournisseurs.update',$supplier->id) }}" method="POST"
+                            <form novalidate action="{{ route('admin.fournisseurs.update', $supplier->id) }}" method="POST"
                                 class="needs-validation form form-horizontal striped-rows form-bordered">
                                 @csrf
-                                @method("put")
+                                @method('put')
                                 <div class="form-body">
                                     <h4 class="form-section"><i class="ft-user"></i>Informations Générales</h4>
                                     <div class="form-group row mx-auto">
@@ -70,19 +65,10 @@
                                         <label class="col-md-3 label-control" for="identification">Identification</label>
                                         <div class="col-md-9">
                                             <input type="text" id="identification" value="{{ $supplier->identification }}"
-                                                class="form-control" required placeholder="Identification" name="identification">
+                                                class="form-control" required placeholder="Identification"
+                                                name="identification">
                                             <div class="invalid-feedback">
                                                 Le champ identification est obligatoire.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row mx-auto">
-                                        <label class="col-md-3 label-control" for="code">Code</label>
-                                        <div class="col-md-9">
-                                            <input type="text" id="code" class="form-control" placeholder="Code"
-                                                name="code" value="{{ $supplier->code }}" required>
-                                            <div class="invalid-feedback">
-                                                Le champ code est obligatoire.
                                             </div>
                                         </div>
                                     </div>
@@ -109,13 +95,19 @@
                                     <div class="form-group row mx-auto">
                                         <label class="col-md-3 label-control" for="address">Adresse</label>
                                         <div class="col-md-9">
-                                            <input type="text" value="{{ $supplier->address }}" id="address" class="form-control" placeholder="Adresse"
-                                                name="address">
+                                            <input type="text" value="{{ $supplier->address }}" id="address"
+                                                class="form-control" placeholder="Adresse" name="address">
                                         </div>
                                     </div>
 
-                                    <h4 class="form-section"><i class="la la-clipboard"></i> Breve Note Ou Commentaire
-                                    </h4>
+                                    <div class="form-group row mx-auto">
+                                        <label class="col-md-3 label-control" for="bank_number">Numéro De Compte
+                                            Bancaire</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="bank_number" value="{{ $supplier->bank_number }}"
+                                                class="form-control" placeholder="Compte Bancaire" name="bank_number">
+                                        </div>
+                                    </div>
 
                                     <div class="form-group row mx-auto last">
                                         <label class="col-md-3 label-control" for="note">Note</label>
@@ -125,8 +117,8 @@
                                     </div>
                                 </div>
 
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-primary">
+                                <div class="form-actions mb-2">
+                                    <button type="submit" class="btn float-right btn-primary">
                                         <i class="la la-save"></i> Sauvegarder
                                     </button>
                                 </div>

@@ -6,9 +6,10 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Approvisionnement',
+        'page' => 'Packages',
         'breadcrumbs' => [
-            ['text' => 'Package', 'link' => route('admin.approvisionnement.packages.index')],
+            ['text' => 'Produits', 'link' => "#"],
+            ['text' => 'Packages', 'link' => route('admin.approvisionnement.packages.index')],
             ['text' => 'Nouveau', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
@@ -96,17 +97,6 @@
                                         placeholder="Contenance" name="contenance">
                                     <div class="invalid-feedback">
                                         Entrer la contenance
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="buying_price">Prix d’achat</label>
-                                <div class="col-md-9">
-                                    <input type="number" value="{{$package->buying_price}}" id="buying_price" step="0.001" required class="form-control"
-                                        placeholder="Prix d'achat" name="buying_price">
-                                    <div class="invalid-feedback">
-                                        Entrer le prix d'achat
                                     </div>
                                 </div>
                             </div>

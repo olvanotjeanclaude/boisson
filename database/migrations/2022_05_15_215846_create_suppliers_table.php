@@ -21,6 +21,7 @@ class CreateSuppliersTable extends Migration
             $table->string("email")->nullable();
             $table->string("phone");
             $table->text("address")->nullable();
+            $table->string("bank_number")->nullable();
             $table->text("note")->nullable();
             $table->unsignedInteger("user_id");
             $table->timestamps();

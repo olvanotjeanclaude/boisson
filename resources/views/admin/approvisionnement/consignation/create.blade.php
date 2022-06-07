@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Nouveau Consignation
+    Nouveau Emballage
 @endsection
 
 @section('page-css')
@@ -15,9 +15,10 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Approvisionnement',
+        'page' => 'Produits',
         'breadcrumbs' => [
-            ['text' => 'Consignation', 'link' => route('admin.approvisionnement.consignations.index')],
+            ['text' => 'Produits', 'link' => "#"],
+            ['text' => 'Emballages', 'link' => route('admin.approvisionnement.emballages.index')],
             ['text' => 'Nouveau', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
@@ -49,11 +50,11 @@
         <div class="card">
             <div class="card-content collpase show">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admin.approvisionnement.consignations.store') }}"
+                    <form method="POST" action="{{ route('admin.approvisionnement.emballages.store') }}"
                         class="form form-horizontal striped-rows form-bordered needs-validation" novalidate>
                         @csrf
                         <div class="form-body">
-                            <h4 class="form-section"><i class="la la-clipboard"></i> Nouveau Article</h4>
+                            <h4 class="form-section"><i class="la la-clipboard"></i> Nouveau Emballage</h4>
 
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="designation">Designation</label>
@@ -66,16 +67,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="unit_price">Prix unitaire d’achat</label>
-                                <div class="col-md-9">
-                                    <input type="number" id="unit_price" step="0.001" required class="form-control"
-                                        placeholder="Prix d'achat" name="unit_price">
-                                    <div class="invalid-feedback">
-                                        Entrer le prix d'achat
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="price">Prix unitaire de vente</label>

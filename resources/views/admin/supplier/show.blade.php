@@ -89,6 +89,19 @@
                     </div>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm">
+                            <h6 class="card-title text-bold-600">Compte Bancaire</h6>
+                        </div>
+                        <div class="col-sm">
+                            <p> {{ $supplier->bank_number ?? '-' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -104,7 +117,7 @@
                             <h6 class="card-title text-bold-600">Date De Création</h6>
                         </div>
                         <div class="col-sm">
-                            <p> {{ $supplier->created_at ?? '-' }}</p>
+                            <p> {{ format_date_time($supplier->created_at) ?? '-' }}</p>
                         </div>
                     </div>
                     <div class="row">
@@ -112,7 +125,7 @@
                             <h6 class="card-title text-bold-600">Date De Modification</h6>
                         </div>
                         <div class="col-sm">
-                            <p> {{ $supplier->updated_at ?? '-' }}</p>
+                            <p> {{ format_date_time($supplier->updated_at) ?? '-' }}</p>
                         </div>
                     </div>
                 </div>

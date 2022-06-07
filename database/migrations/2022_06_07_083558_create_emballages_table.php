@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateConsignationsTable extends Migration
+class CreateEmballagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateConsignationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('consignations', function (Blueprint $table) {
+        Schema::create('emballages', function (Blueprint $table) {
             $table->id();
             $table->string("reference");
             $table->string("designation");
-            $table->decimal("unit_price")->comment("Prix unitaire d'achat");
             $table->decimal("price")->comment("Prix unitaire de vente");
             $table->unsignedBigInteger("category_id");
-            $table->longText("note");
+            $table->longText("note")->nullable();
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("update_user_id")->nullable();
             $table->timestamps();
@@ -34,6 +33,6 @@ class CreateConsignationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('consignations');
+        Schema::dropIfExists('emballages');
     }
 }

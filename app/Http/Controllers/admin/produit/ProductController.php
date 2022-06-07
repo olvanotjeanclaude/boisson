@@ -1,55 +1,52 @@
 <?php
 
-namespace App\Http\Controllers\admin\approvisionnement;
+namespace App\Http\Controllers\admin\produit;
 
-use App\Models\Package;
+use App\Models\Product;
 use App\Models\Category;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 
-class PackageController extends Controller
+class ProductController extends Controller
 {
     public function index()
     {
-        $packages = Package::orderBy("id", "desc")->get();
-        return view("admin.approvisionnement.package.index", compact("packages"));
+        $products = Product::orderBy("id", "desc")->get();
+        return view("admin.approvisionnement.product.index", compact("products"));
     }
 
     public function create()
     {
         $catArticles = Category::orderBy("name", "asc")->get();
-        $products = Product::orderBy("designation")->get();
-        return view("admin.approvisionnement.package.create", compact("catArticles","products"));
+        return view("admin.approvisionnement.product.create", compact("catArticles"));
     }
 
     public function edit($id)
     {
-        $package = Package::findOrFail($id);
-        $products = Product::orderBy("designation")->get();
+        $product = Product::findOrFail($id);
         $catArticles = Category::orderBy("name", "asc")->get();
-        // dd($package);
+        return view("admin.approvisionnement.product.edit", compact("catArticles", "product"));
+    }
 
-        return view("admin.approvisionnement.package.edit", compact("products", "catArticles", "package"));
+    private function rules(){
+        return [
+            "designation" => "required|string",
+            "price" => "required|numeric",
+            "category_id" => "required"
+        ];
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            "designation" => "required|string",
-            "product_id" => "required|numeric",
-            "buying_price" => "required|numeric",
-            "contenance" => "required|numeric",
-            "price" => "required|numeric",
-            "category_id" => "required"
-        ]);
+        $request->validate($this->rules());
 
         $data = $request->except("_token");
-        $data["reference"] = (string) random_int(1111, 9999);
+        $data["reference"] = (string) random_int(111111, 999999);
         $data["user_id"] = auth()->user()->id;
 
-        $saved = Package::create($data);
+        $saved = Product::create($data);
 
         if ($saved) {
             return back()->with("success", CustomMessage::Success("L'article"));
@@ -60,16 +57,9 @@ class PackageController extends Controller
 
     public function update($id, Request $request)
     {
-        $product = Package::findOrFail($id);
+        $product = Product::findOrFail($id);
 
-        $request->validate([
-            "designation" => "required|string",
-            "product_id" => "required|numeric",
-            "buying_price" => "required|numeric",
-            "contenance" => "required|numeric",
-            "price" => "required|numeric",
-            "category_id" => "required"
-        ]);
+        $request->validate($this->rules());
 
         $data = $request->except("_token");
 
@@ -87,7 +77,7 @@ class PackageController extends Controller
     public function destroy($id)
     {
         $result = [];
-        $delete = Package::findOrFail($id);
+        $delete = Product::findOrFail($id);
 
         if ($delete->delete()) {
             $result["success"] = CustomMessage::Delete("L'article");

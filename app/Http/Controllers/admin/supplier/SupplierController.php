@@ -36,7 +36,8 @@ class SupplierController extends Controller
     {
         $data = $request->except("_token");
         $data["user_id"] = auth()->user()->id;
-
+        $data["code"] = Supplier::generateUniqueId();
+       
         $saved = Supplier::create($data);
 
         if ($saved) {

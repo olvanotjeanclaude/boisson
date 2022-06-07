@@ -5,19 +5,20 @@
 @endsection
 
 @section('title')
-    Liste de consignations
+    Liste de Emballages
 @endsection
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Consignations',
+        'page' => 'Emballages',
         'breadcrumbs' => [
-            ['text' => 'Consignation', 'link' => route('admin.approvisionnement.consignations.index')],
+            ['text' => 'Produits', 'link' => "#"],
+            ['text' => 'Emballage', 'link' => route('admin.approvisionnement.emballages.index')],
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Nouveau',
-            'link' => route('admin.approvisionnement.consignations.create'),
+            'link' => route('admin.approvisionnement.emballages.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,
         ],
@@ -42,7 +43,7 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title"> Liste De consignations</h4>
+                        <h4 class="card-title"> Liste D'Emballages</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <button type="button" id="deleteIcheckBtn" data-target="#deleteAllModal" data-toggle="modal"
@@ -73,7 +74,6 @@
                                             <th><input type="checkbox" class="input-chk-all"></th>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>PU</th>
                                             <th>Prix</th>
                                             <th>Fam</th>
                                             <th>Action</th>
@@ -88,16 +88,15 @@
                                                 </td>
                                                 <td>{{ $consignation->reference }}</td>
                                                 <td>{{ $consignation->designation }}</td>
-                                                <td>{{ $consignation->unit_price }}</td>
                                                 <td>{{ $consignation->price }}</td>
                                                 <td>{{ $consignation->category->name??"-" }}</td>
                                                 <td>
-                                                    <a href="{{ route('admin.approvisionnement.consignations.edit', $consignation->id) }}"
+                                                    <a href="{{ route('admin.approvisionnement.emballages.edit', $consignation->id) }}"
                                                         class="btn btn-info">
                                                         Editer
                                                     </a>
                                                     <button class="btn btn-danger delete-btn"
-                                                        data-url="{{ route('admin.approvisionnement.consignations.destroy', $consignation->id) }}"
+                                                        data-url="{{ route('admin.approvisionnement.emballages.destroy', $consignation->id) }}"
                                                         data-id="{{ $consignation->id }}">Supprimer</button>
                                                 </td>
                                             </tr>
@@ -109,7 +108,6 @@
                                             <th><input type="checkbox" class="input-chk-all"></th>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>PU</th>
                                             <th>Prix</th>
                                             <th>Fam</th>
                                             <th>Action</th>

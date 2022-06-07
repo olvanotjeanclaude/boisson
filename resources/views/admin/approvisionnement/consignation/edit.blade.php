@@ -17,8 +17,9 @@
     @include('includes.content-header', [
         'page' => 'Article',
         'breadcrumbs' => [
-            ['text' => 'Articles', 'link' => route('admin.approvisionnement.articles.index')],
-            ['text' => 'Nouveau', 'link' => route('admin.index')],
+            ['text' => 'Produits', 'link' => "#"],
+            ['text' => 'Emballeges', 'link' => route('admin.approvisionnement.emballages.index')],
+            ['text' => 'Editer', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Factures',
@@ -49,12 +50,12 @@
         <div class="card">
             <div class="card-content collpase show">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admin.approvisionnement.consignations.update',$consignation->id) }}"
+                    <form method="POST" action="{{ route('admin.approvisionnement.emballages.update',$consignation->id) }}"
                         class="form form-horizontal striped-rows form-bordered needs-validation" novalidate>
                         @csrf
                         @method("put")
                         <div class="form-body">
-                            <h4 class="form-section"><i class="la la-clipboard"></i> Modification De La Deconsignation</h4>
+                            <h4 class="form-section"><i class="la la-clipboard"></i> Modification D'Amballage</h4>
 
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="designation">Designation</label>
@@ -63,17 +64,6 @@
                                         placeholder="Nom d’article" name="designation">
                                     <div class="invalid-feedback">
                                         Entrer la designation
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="unit_price">Prix unitaire d’achat</label>
-                                <div class="col-md-9">
-                                    <input type="number"  value="{{$consignation->unit_price}}"  id="unit_price" step="0.001" required class="form-control"
-                                        placeholder="Prix d'achat" name="unit_price">
-                                    <div class="invalid-feedback">
-                                        Entrer le prix d'achat
                                     </div>
                                 </div>
                             </div>

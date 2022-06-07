@@ -59,7 +59,7 @@
             <li class=" nav-item">
                 <a href="#">
                     <i class="material-icons">content_paste</i>
-                    <span class="menu-title">Approvisionnement</span>
+                    <span class="menu-title">Produits</span>
                 </a>
                 <ul class="menu-content">
                     <li>
@@ -69,9 +69,9 @@
                         </a>
                     </li>
                     <li>
-                        <a class="menu-item" href="{{ route('admin.approvisionnement.consignations.index') }}">
+                        <a class="menu-item" href="{{ route('admin.approvisionnement.emballages.index') }}">
                             <i class="material-icons"></i>
-                            <span>Consignation </span>
+                            <span>Emballage </span>
                         </a>
                     </li>
                     <li>
@@ -81,6 +81,12 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.achat-produits.index') }}">
+                    <span class="material-icons">liquor</span>
+                    <span class="menu-title">Achat De Produits</span>
+                </a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('admin.articles.index') }}">
@@ -102,12 +108,12 @@
                     <span class="menu-title">Clients</span>
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a href="{{ route('admin.achat-fournisseurs.index') }}">
                     <span class="material-icons">account_balance</span>
                     <span class="menu-title">Achat Fournisseurs</span>
                 </a>
-            </li>
+            </li> --}}
 
             <li class="nav-item">
                 <a href="{{ route('admin.factures.index') }}">

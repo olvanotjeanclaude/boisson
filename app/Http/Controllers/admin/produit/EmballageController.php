@@ -1,52 +1,54 @@
 <?php
 
-namespace App\Http\Controllers\admin\approvisionnement;
+namespace App\Http\Controllers\admin\produit;
 
-use App\Models\Product;
 use App\Models\Category;
-use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
+use App\Models\Emballage;
 
-class ProductController extends Controller
+class EmballageController extends Controller
 {
     public function index()
     {
-        $products = Product::orderBy("id", "desc")->get();
-        return view("admin.approvisionnement.product.index", compact("products"));
+        $consignations = Emballage::orderBy("id", "desc")->get();
+        return view("admin.approvisionnement.consignation.index", compact("consignations"));
     }
 
     public function create()
     {
         $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.approvisionnement.product.create", compact("catArticles"));
+        return view("admin.approvisionnement.consignation.create", compact("catArticles"));
     }
 
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $consignation = Emballage::findOrFail($id);
         $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.approvisionnement.product.edit", compact("catArticles", "product"));
+        return view("admin.approvisionnement.consignation.edit", compact("catArticles", "consignation"));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
+    private function rules(){
+        return [
             "designation" => "required|string",
-            "unit_price" => "required|numeric",
             "price" => "required|numeric",
             "category_id" => "required"
-        ]);
+        ];
+    }
+    
+    public function store(Request $request)
+    {
+        $request->validate($this->rules());
 
         $data = $request->except("_token");
-        $data["reference"] = (string) random_int(111111, 999999);
+        $data["reference"] = (string) random_int(11111, 99999);
         $data["user_id"] = auth()->user()->id;
 
-        $saved = Product::create($data);
+        $saved = Emballage::create($data);
 
         if ($saved) {
-            return back()->with("success", CustomMessage::Success("L'article"));
+            return back()->with("success", CustomMessage::Success("Deconsignation d'article"));
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
@@ -54,20 +56,15 @@ class ProductController extends Controller
 
     public function update($id, Request $request)
     {
-        $product = Product::findOrFail($id);
+        $cosnignation = Emballage::findOrFail($id);
 
-        $request->validate([
-            "designation" => "required|string",
-            "unit_price" => "required|numeric",
-            "price" => "required|numeric",
-            "category_id" => "required"
-        ]);
+        $request->validate($this->rules());
 
         $data = $request->except("_token");
 
         $data["update_user_id"] = auth()->user()->id;
 
-        $saved = $product->update($data);
+        $saved = $cosnignation->update($data);
 
         if ($saved) {
             return back()->with("success", CustomMessage::Success("L'article"));
@@ -79,7 +76,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $result = [];
-        $delete = Product::findOrFail($id);
+        $delete = Emballage::findOrFail($id);
 
         if ($delete->delete()) {
             $result["success"] = CustomMessage::Delete("L'article");
