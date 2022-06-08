@@ -41,9 +41,10 @@
                             <label class="text-bold-400 text-dark" for="article_type">Type D'Article</label>
                             <select name="article_type" id="article_type" class="form-control" required>
                                 <option value="">Choisir</option>
-                                <option value="1">Article</option>
-                                <option value="2">Emballage</option>
-                                <option value="3">Groupe D'Article</option>
+                                @forelse (\App\Models\Stock::ARTICLE_TYPES as $key => $type)
+                                    <option value="{{ $key }}">{{ $type }}</option>
+                                @empty
+                                @endforelse
                             </select>
                             <div class="invalid-feedback">
                                 le champ de type d'article ne peut pas être vide
@@ -89,39 +90,27 @@
                             <div class="card bg-light rounded mt-1">
                                 <div class="card-body pt-0">
                                     <div class="row" style="margin-top: .3rem">
-                                        <div class="col-sm-5 mt-1 mt-md-0 col-md">
+                                        <div class="col-sm mt-1 mt-md-0 col-md">
                                             <div class="">
                                                 <label style="margin-bottom: .3rem" class="text-bold-400 text-dark"
                                                     for="buying_price">Prix
                                                     D'Achat</label>
                                                 <input type="number" required step="0.001" id="buying_price"
-                                                    name="buying_price" class="form-control bg-white" placeholder="0 Ariary">
+                                                    name="buying_price" class="form-control bg-white"
+                                                    placeholder="0 Ariary">
                                                 <div class="invalid-feedback">
                                                     Entrer le prix d'achat
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-5 mt-1 mt-md-0 col-md">
+                                        <div class="col-sm mt-1 mt-md-0 col-md">
                                             <div class="">
                                                 <label style="margin-bottom: .3rem" class="text-bold-400 text-dark"
                                                     for="sub_amount">Prix
                                                     Sous total
                                                 </label>
-                                                <input type="number" step="0.001" disabled  class="form-control bg-white"
+                                                <input type="number" step="0.001" disabled class="form-control bg-white"
                                                     id="sub_amount" name="sub_amount" placeholder="0 Ariary">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-5 mt-1 mt-md-0 col-md">
-                                            <div class="">
-                                                <label style="margin-bottom: .3rem" class="text-bold-400 text-dark"
-                                                    for="total_paid">
-                                                    Payé/dépense
-                                                </label>
-                                                <input type="number" step="0.001"  class="form-control bg-white" required id="total_paid"
-                                                    name="total_paid" placeholder="0 Ariary">
-                                                    <div class="invalid-feedback">
-                                                        Entrer le montant
-                                                     </div>
                                             </div>
                                         </div>
                                     </div>
@@ -129,14 +118,14 @@
                             </div>
                         </div>
 
-                        <div class="col-12">
+                        {{-- <div class="col-12">
                             <div class="float-right">
                                 <label class="text-bold-400 text-dark" for="debt">Reste À Payer</label>
                                 <br>
                                 <input type="number" step="0.001" name="debt" id="debt" value="0" placeholder="0 Ariary"
                                     disabled>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="row mt-1">
@@ -149,11 +138,65 @@
                     </div>
                 </div>
             </div>
-            <div id="ajaxPreArticleTable"></div>
+            <div class="card d-none">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm mt-1">
+                            <div class="form-group">
+                                <label class="text-bold-400 text-dark" for="payment_type">Type De Payment</label>
+                                <select name="article_id" class="form-control" required id="payment_type">
+                                    <option value=''>Choisir</option>
+                                    @forelse (\App\Models\DocumentAchat::PAYMENT_TYPES as $key => $val)
+                                        <option value="{{$key}}">{{ $val }}</option>
+                                    @empty
+                                        
+                                    @endforelse
+                                </select>
+                                <div class="invalid-feedback">
+                                    Selectionnez le type de payment
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm mt-1">
+                            <div class="form-group">
+                                <label class="text-bold-400 text-dark" for="paid">
+                                    Payé/dépense
+                                </label>
+                                <input type="number" required step="0.001" id="paid" name="paid"
+                                    class="form-control" placeholder="0 Ariary">
+                                <div class="invalid-feedback">
+                                    Entrer le prix d'achat
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm mt-1">
+                            <div class="form-group">
+                                <label class="text-bold-400 text-dark" for="rest">
+                                    Reste À Payer
+                                </label>
+                                <input type="number" required step="0.001" id="rest" disabled name="rest"
+                                    class="form-control" placeholder="0 Ariary">
+                                <div class="invalid-feedback">
+                                    Entrer le prix d'achat
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-5">
             <div class="card">
+                <div class="card-body">
+                    <h5 class="text-capitalize font-weight-bold">Facture</h5>
+                    <div id="ajaxPreInvoice">
+                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette zone.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card d-none">
                 <div class="card-body">
                     <h5 class="text-capitalize">Information du fournisseur</h5>
                     <select name="supplier_id" id="supplier_id" class="form-control">
@@ -165,15 +208,6 @@
                         @empty
                         @endforelse
                     </select>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="text-capitalize font-weight-bold">Facture</h5>
-                    <div id="ajaxPreInvoice">
-                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette zone.
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>

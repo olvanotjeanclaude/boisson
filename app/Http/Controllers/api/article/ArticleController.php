@@ -6,20 +6,26 @@ use App\Http\Controllers\Controller;
 use App\Models\Emballage;
 use App\Models\Package;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public function index($type, Request $request)
+    public function index($type)
     {
+        $type = Stock::ARTICLE_TYPES[$type] ?? 0;
+
         switch ($type) {
-            case '1':
+            case 'article':
                 $articles = Product::orderBy("designation")->get();
                 break;
-            case '2':
+            case 'emballage':
                 $articles = Emballage::orderBy("designation")->get();
                 break;
-            case '3':
+            case 'deconsignation':
+                $articles = Emballage::orderBy("designation")->get();
+                break;
+            case "groupe d'article":
                 $articles = Package::orderBy("designation")->get();
                 break;
             default:
