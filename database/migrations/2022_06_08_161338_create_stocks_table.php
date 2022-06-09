@@ -15,12 +15,16 @@ class CreateStocksTable extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->string("invoice_number");
+            $table->string("invoice_number")->nullable();
             $table->unsignedBigInteger("article_type");
-            $table->unsignedBigInteger("article_id");
+            $table->unsignedBigInteger("article_reference");
+            $table->unsignedBigInteger("stockable_id")->nullable();
+            $table->string("stockable_type")->nullable();
             $table->unsignedBigInteger("category_id");
             $table->integer("quantity")->comment("quantité produit");
             $table->decimal("buying_price")->comment("prix d'achat");
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("update_user_id")->nullable();
             $table->timestamps();
         });
     }

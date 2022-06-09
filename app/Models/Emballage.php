@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Emballage extends Model
 {
     use HasFactory;
-
+    protected $guarded = [];
+    
     public function user(){
         return $this->belongsTo(User::class);
     }
@@ -17,5 +18,7 @@ class Emballage extends Model
         return  $this->belongsTo(Category::class);
     }
     
-    protected $guarded = [];
+    public function stock(){
+        return $this->morphOne(Stock::class,"stockable");
+    }
 }

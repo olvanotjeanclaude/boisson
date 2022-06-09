@@ -9,6 +9,7 @@ class Package extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
     
     public function user(){
         return $this->belongsTo(User::class);
@@ -17,6 +18,8 @@ class Package extends Model
     public function category(){
         return  $this->belongsTo(Category::class);
     }
-    
-    protected $guarded = [];
+
+    public function stock(){
+        return $this->morphOne(Stock::class,"stockable");
+    }
 }

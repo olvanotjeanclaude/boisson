@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\admin\article;
 
+use App\Models\Stock;
 use App\Models\Category;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Models\PurchaseProduct;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -16,7 +18,7 @@ class PurchaseProductController extends Controller
     {
         $users = [];
         // $articles = PurchaseProduct::orderBy("id", "desc")->get();
-        $articles= [];
+        $articles = [];
         $articleTypes = PurchaseProduct::ARTICLE_TYPES;
         $units = PurchaseProduct::UNITS;
         $articleCategories = Category::pluck("id", "name")->toArray();
@@ -28,22 +30,55 @@ class PurchaseProductController extends Controller
     {
         $suppliers = Supplier::orderBy("identification", "asc")->get();
         $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.achat-produit.create", compact("suppliers", "catArticles"));
+        $preInvoices = Stock::PreInvoices();
+
+        $amount = Stock::PreArticlesSum();
+
+        // dd($preInvoices);
+        return view("admin.achat-produit.create", compact("suppliers", "catArticles", "preInvoices", "amount"));
     }
 
     public function store(Request $request)
     {
-       
+        $request->validate($this->rules(), $this->messages());
+
+        $data = [
+            "article_type" => $request->article_type,
+            "category_id" => $request->category_id,
+            "article_reference" => $request->article_reference,
+            "quantity" => $request->quantity,
+            "buying_price" => $request->buying_price,
+            "user_id" => auth()->user()->id
+        ];
+
+        $article = Stock::getArticleByReference($request->article_reference);
+
+        $data["stockable_id"] = $article->id;
+        $data["stockable_type"] = get_class($article);
+
+        Stock::create($data);
+
+        return back()->with("success", "Article enregistre");
     }
 
-    public function preSaveInvoiceArticle(Request $request)
+    private function rules()
     {
-      
+        return [
+            "article_type" => "required",
+            "category_id" => "required",
+            "article_reference" => "required",
+            "quantity" => "required",
+        ];
     }
 
-    private function articleRequests(array $articleRequests)
+    private function messages()
     {
-       
+        return [
+            "article_type.required" => "Selectionnez le type d'article",
+            "category_id.required" => "Selectionner la famille d'article",
+            "article_reference.required" => "Enter l'article",
+            "quantity.required" => "Enter la valeur a acheter",
+        ];
     }
 
     private function calculateAmount(Collection $articleRequests)
@@ -111,22 +146,10 @@ class PurchaseProductController extends Controller
 
     public function destroy($id)
     {
-        $allIds = request()->all();
+        $article = Stock::findOrFail($id);
 
-        if (count($allIds)) {
-            $articles = PurchaseProduct::whereIn("id", $allIds);
-            if ($articles->count()) {
-                $articles->delete();
-                $result["success"] = CustomMessage::Delete("L'article");
-                $result["type"] = "success";
-            } else {
-                $result["type"] = "error";
-                $result["error"] = "données indisponibles";
-            }
-        } else {
-            $response["error"] = CustomMessage::ErrorDelete("l'article");
-        }
+        $article->delete();
 
-        return response()->json($result);
+        return back()->with("success", "Supprimer avec success");
     }
 }
