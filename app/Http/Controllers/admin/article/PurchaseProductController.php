@@ -8,29 +8,25 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Models\PurchaseProduct;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\DocumentAchat;
 use Illuminate\Database\Eloquent\Collection;
 
 class PurchaseProductController extends Controller
 {
     public function index()
     {
-        $users = [];
-        // $articles = PurchaseProduct::orderBy("id", "desc")->get();
-        $articles = [];
-        $articleTypes = PurchaseProduct::ARTICLE_TYPES;
-        $units = PurchaseProduct::UNITS;
-        $articleCategories = Category::pluck("id", "name")->toArray();
-
-        return view("admin.achat-produit.index", compact("articles", "articleTypes", "units", "articleCategories"));
+        $invoices = DocumentAchat::withCount("articles")
+        ->orderBy("id", "desc")
+        ->get();
+        return view("admin.achat-produit.index", compact("invoices"));
     }
 
     public function create()
     {
         $suppliers = Supplier::orderBy("identification", "asc")->get();
         $catArticles = Category::orderBy("name", "asc")->get();
-        $preInvoices = Stock::PreInvoices();
+        $preInvoices = Stock::PreInvoices()->get();
 
         $amount = Stock::PreArticlesSum();
 
@@ -41,6 +37,29 @@ class PurchaseProductController extends Controller
     public function store(Request $request)
     {
         $request->validate($this->rules(), $this->messages());
+
+        if (isset($request->saveData)) {
+            $amount = Stock::PreArticlesSum();
+            $invoiceData = [
+                "status" => DocumentAchat::STATUS["valid"],
+                "number" => generateInteger(),
+                "supplier_id" => $request->supplier_id,
+                "paid" => $request->paid,
+                "rest" => $amount - $request->paid,
+                "payment_type" => $request->payment_type,
+                "received_at" => $request->received_at ?? date("Y-m-d"),
+                "comment" => $request->comment,
+            ];
+
+            $invoice = DocumentAchat::create($invoiceData);
+
+            if ($invoice) {
+                $preInvoices = Stock::preInvoices();
+                $preInvoices->update(["invoice_number" => $invoice->number]);
+
+                return back()->with("success", CustomMessage::Success("L'achat"));
+            }
+        }
 
         $data = [
             "article_type" => $request->article_type,
@@ -58,17 +77,24 @@ class PurchaseProductController extends Controller
 
         Stock::create($data);
 
-        return back()->with("success", "Article enregistre");
+        return back();
     }
 
     private function rules()
     {
-        return [
+        $withSupplier = [
+            "supplier_id" => "required",
+            "payment_type" => "required",
+            "paid" => "required",
+        ];
+        $article = [
             "article_type" => "required",
             "category_id" => "required",
             "article_reference" => "required",
             "quantity" => "required",
         ];
+
+        return isset(request()->saveData) ? $withSupplier : $article;
     }
 
     private function messages()

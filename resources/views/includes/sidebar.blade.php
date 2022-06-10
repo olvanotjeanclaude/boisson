@@ -45,6 +45,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="{{ route('admin.clients.index') }}">
+                    <span class="material-icons">groups</span>
+                    <span class="menu-title">Clients</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('admin.fournisseurs.index') }}">
                     <span class="material-icons">real_estate_agent</span>
                     <span class="menu-title">Fournisseur</span>
@@ -89,36 +95,23 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="{{ route('admin.stocks.index') }}">
+                    <span class="material-icons">table_rows</span>
+                    <span class="menu-title">Stocks</span>
+                </a>
+            </li>
+            {{-- <li class="nav-item">
                 <a href="{{ route('admin.articles.index') }}">
                     <span class="material-icons">liquor</span>
                     <span class="menu-title">Document D' Articles</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a href="{{ route('admin.ventes.index') }}">
                     <span class="material-icons">
                         shopping_basket
                     </span>
                     <span class="menu-title">Document De Ventes</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.clients.index') }}">
-                    <span class="material-icons">groups</span>
-                    <span class="menu-title">Clients</span>
-                </a>
-            </li>
-            {{-- <li class="nav-item">
-                <a href="{{ route('admin.achat-fournisseurs.index') }}">
-                    <span class="material-icons">account_balance</span>
-                    <span class="menu-title">Achat Fournisseurs</span>
-                </a>
-            </li> --}}
-
-            <li class="nav-item">
-                <a href="{{ route('admin.factures.index') }}">
-                    <span class="material-icons">article</span>
-                    <span class="menu-title">Factures</span>
                 </a>
             </li>
         </ul>

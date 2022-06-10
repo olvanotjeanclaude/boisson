@@ -5,19 +5,19 @@
 @endsection
 
 @section('title')
-    Liste D'Achat Produits
+    Liste D'Articles
 @endsection
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Achat Produits',
+        'page' => 'Articles',
         'breadcrumbs' => [
-            ['text' => 'Achat Produits', 'link' => route('admin.achat-produits.index')],
+            ['text' => 'Article', 'link' => route('admin.articles.index')],
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Faire Achat',
-            'link' => route('admin.achat-produits.create'),
+            'text' => 'Nouveau Article',
+            'link' => route('admin.articles.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,
         ],
@@ -42,7 +42,7 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title"> Achat Produits</h4>
+                        <h4 class="card-title"> Liste D'articles</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <button type="button" id="deleteIcheckBtn" data-target="#deleteAllModal" data-toggle="modal"
@@ -53,22 +53,13 @@
                                 </span>
                                 Supprimer
                             </button>
-                           
-                            <div class="d-none">
-                                <span class="dropdown">
-                                    <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="true"
-                                        class="btn btn-warning btn-sm dropdown-toggle dropdown-menu-right"><i
-                                            class="ft-download-cloud white"></i></button>
-                                    <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
-                                        <a href="#" class="dropdown-item"><i class="la la-calendar"></i> Due Date</a>
-                                        <a href="#" class="dropdown-item"><i class="la la-random"></i> Priority </a>
-                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance Due</a>
-                                        <a href="#" class="dropdown-item"><i class="la la-user"></i> Assign to</a>
-                                    </span>
+                            <a href="{{ route('admin.achat-produits.index') }}"
+                                class="btn btn-secondary btn-sm text-capitalize">
+                                <span class="material-icons">
+                                    inventory
                                 </span>
-                                <button class="btn btn-success btn-sm"><i class="ft-settings white"></i></button>
-                            </div>
+                                Achat Produits
+                            </a>
                         </div>
                     </div>
                     <div class="card-content collapse show">
@@ -79,27 +70,29 @@
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th>Status</th>
-                                            <th>Numero</th>
-                                            <th>Fournisseur</th>
-                                            <th>Nbre Art.</th>
-                                            <th>Payer</th>
-                                            <th>Reste</th>
-                                            <th>Date</th>
+                                            <th>Ref</th>
+                                            <th>Designation</th>
+                                            <th>Type</th>
+                                            <th>Fam</th>
+                                            <th>Qtt</th>
+                                            <th>PU (Ariary)</th>
+                                            <th>Prix (Ariary)</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    
                                     <tbody>
-                                        @forelse ($invoices as $invoice)
+                                        @forelse ($stocks as $stock)
+                                            @php
+                                                $article = $stock->stockable;
+                                            @endphp
                                             <tr>
-                                                <td>{!! $invoice->status_html !!}</td>
-                                                <td>{{ $invoice->number }}</td>
-                                                <td>{{ $invoice->supplier->identification }}</td>
-                                                <td>{{ $invoice->articles_count }}</td>
-                                                <td>{{ $invoice->paid }}</td>
-                                                <td>{{ $invoice->rest }}</td>
-                                                <td>{{ format_date($invoice->received_at) }}</td>
+                                                <td>{{ $article->reference }}</td>
+                                                <td>{{ $article->designation }}</td>
+                                                <td>{{ $stock->article_type }}</td>
+                                                <td>{{ $article->category->name }}</td>
+                                                <td>{{ $stock->quantity }}</td>
+                                                <td>{{ formatPrice($stock->buying_price) }}</td>
+                                                <td>{{ formatPrice($article->price) }}</td>
                                                 <td>
                                                     <span class="dropdown">
                                                         <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
@@ -111,13 +104,13 @@
                                                             {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
                                                                 class="dropdown-item"><i
                                                                     class="la la-eye"></i>Voir</a> --}}
-                                                            <a href="{{ route('admin.achat-produits.edit', $invoice['id']) }}"
+                                                            <a href="{{ route('admin.stocks.edit', $stock['id']) }}"
                                                                 class="dropdown-item"><i class="la la-pencil"></i>
-                                                                Editer</a>
-                                                            <a href="#" class="dropdown-item"><i
-                                                                    class="la la-print"></i> Factures</a>
-                                                            <a data-id="{{ $invoice['id'] }}"
-                                                                data-url="{{ route('admin.achat-produits.destroy', $invoice['id']) }}"
+                                                                Editer
+                                                            </a>
+                                                           
+                                                            <a data-id="{{ $stock['id'] }}"
+                                                                data-url="{{ route('admin.stocks.destroy', $stock['id']) }}"
                                                                 class="dropdown-item delete-btn"><i
                                                                     class="la la-trash"></i> Supprimer</a>
                                                         </span>
@@ -127,17 +120,6 @@
                                         @empty
                                         @endforelse
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Numero</th>
-                                            <th>Fournisseur</th>
-                                            <th>Payer</th>
-                                            <th>Reste</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                             <!--/ Invoices table -->

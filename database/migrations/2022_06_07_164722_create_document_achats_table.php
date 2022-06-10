@@ -16,7 +16,7 @@ class CreateDocumentAchatsTable extends Migration
         Schema::create('document_achats', function (Blueprint $table) {
             $table->id();
             $table->integer("status");
-            $table->string("reference");
+            // $table->string("reference");
             $table->string("number");
             $table->unsignedBigInteger("supplier_id");
             $table->decimal("paid");

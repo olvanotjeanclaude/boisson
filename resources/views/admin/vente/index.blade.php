@@ -57,13 +57,13 @@
                                 </span>
                                 Supprimer
                             </button>
-                            <a href="{{ route('admin.factures.index') }}"
+                            {{-- <a href="{{ route('admin.factures.index') }}"
                                 class="btn btn-secondary btn-sm text-capitalize">
                                 <span class="material-icons">
                                     inventory
                                 </span>
                                 toutes les factures
-                            </a>
+                            </a> --}}
                             <div class="d-none">
                                 <span class="dropdown">
                                     <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true"

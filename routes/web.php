@@ -38,38 +38,39 @@ Route::get('clear_cache', function () {
     dd("Cache is cleared");
 });
 
-Route::redirect("/","/admin");
+Route::redirect("/", "/admin");
 
 Auth::routes();
 
-Route::group(["prefix" =>"admin","as" =>"admin.","middleware"=>"auth"],function(){
-    Route::get("/",[\App\Http\Controllers\admin\AdminController::class,"index"])->name("index");
-    Route::resource("utlisateurs",\App\Http\Controllers\admin\users\UserController::class);
-    Route::resource("fournisseurs",\App\Http\Controllers\admin\supplier\SupplierController::class);
+Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], function () {
+    Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
+    Route::resource("utlisateurs", \App\Http\Controllers\admin\users\UserController::class);
+    Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
     // Route::resource("produits",\App\Http\Controllers\admin\product\ProductController::class);
-    Route::resource("category-articles",\App\Http\Controllers\admin\article\CategoryArticleController::class);
-  
-    Route::post("pre-save-articles",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveArticle"])->name("article.preSaveArticle");
-    Route::post("pre-save-invoice-articles",[\App\Http\Controllers\admin\article\ArticleController::class,"preSaveInvoiceArticle"])->name("article.preSaveInvoiceArticle");
-    
-    Route::resource("articles",\App\Http\Controllers\admin\article\ArticleController::class);
+    Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class);
 
-    Route::resource("achat-produits",\App\Http\Controllers\admin\article\PurchaseProductController::class);
-    
-    Route::group(["prefix" =>"produits","as" =>"approvisionnement."],function(){
-        Route::resource("articles",\App\Http\Controllers\admin\produit\ProductController::class);
-        Route::resource("emballages",\App\Http\Controllers\admin\produit\EmballageController::class);
-        Route::resource("packages",\App\Http\Controllers\admin\produit\PackageController::class);
+    Route::post("pre-save-articles", [\App\Http\Controllers\admin\article\ArticleController::class, "preSaveArticle"])->name("article.preSaveArticle");
+    Route::post("pre-save-invoice-articles", [\App\Http\Controllers\admin\article\ArticleController::class, "preSaveInvoiceArticle"])->name("article.preSaveInvoiceArticle");
+
+    Route::resource("articles", \App\Http\Controllers\admin\article\ArticleController::class);
+
+    Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
+    Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class)->except(["create"]);
+
+    Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
+        Route::resource("articles", \App\Http\Controllers\admin\produit\ProductController::class);
+        Route::resource("emballages", \App\Http\Controllers\admin\produit\EmballageController::class);
+        Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
     });
-   
-    Route::resource("ventes",\App\Http\Controllers\admin\sale\SaleController::class);
-    Route::post("pre-save-ventes",[\App\Http\Controllers\admin\sale\SaleController::class,"preSaveVente"])->name("ventes.preSaveVente");
-    Route::post("pre-save-invoice-ventes",[\App\Http\Controllers\admin\sale\SaleController::class,"preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
-    
-    Route::resource("factures",\App\Http\Controllers\admin\invoice\InvoiceController::class);
-    
-    Route::resource("clients",\App\Http\Controllers\admin\customer\CustomerController::class);
-    Route::resource("achat-fournisseurs",\App\Http\Controllers\admin\achat\AchatFournisseurController::class);
+
+    Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
+    Route::post("pre-save-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveVente"])->name("ventes.preSaveVente");
+    Route::post("pre-save-invoice-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
+
+    Route::resource("factures", \App\Http\Controllers\admin\invoice\InvoiceController::class);
+
+    Route::resource("clients", \App\Http\Controllers\admin\customer\CustomerController::class);
+    Route::resource("achat-fournisseurs", \App\Http\Controllers\admin\achat\AchatFournisseurController::class);
 });
 
 

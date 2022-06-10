@@ -74,3 +74,15 @@ function  formatPrice($price, $devise = "Ariary")
 {
     return  number_format($price, 2, ',', ' ') . " $devise";
 }
+
+function generateInteger($n = 6)
+{
+    $start = 1;
+    $end = 9;
+    for ($i = 1; $i < $n; $i++) {
+        $start .= 1;
+        $end .= 9;
+    }
+
+    return (string)random_int($start, $end);
+}

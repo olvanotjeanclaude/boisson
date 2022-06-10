@@ -42,12 +42,12 @@ class Stock extends Model
 
     public function scopePreInvoices($q)
     {
-        return $q->whereNull("invoice_number")->get();
+        return $q->where("user_id",auth()->user()->id)->whereNull("invoice_number");
     }
 
     public function scopePreArticlesSum($q)
     {
-        $article = $q->whereNull("invoice_number")->get();
+        $article = $q->where("user_id",auth()->user()->id)->whereNull("invoice_number")->get();
 
         $articleAndConsignation = $article->filter(function ($article) {
             return $article->article_type != 4;
@@ -79,5 +79,9 @@ class Stock extends Model
     public function stockable()
     {
         return $this->morphTo();
+    }
+
+    public function getArticleTypeAttribute($value){
+        return self::ARTICLE_TYPES[$value];
     }
 }
