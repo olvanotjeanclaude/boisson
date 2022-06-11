@@ -11,7 +11,11 @@ use App\Http\Requests\ArticleValidation;
 use App\Http\Requests\VenteValidation;
 use App\Models\Articles;
 use App\Models\Customers;
+use App\Models\DocumentVente;
+use App\Models\Emballage;
 use App\Models\Invoice;
+use App\Models\Sale;
+use App\Models\Stock;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,52 +34,91 @@ class SaleController extends Controller
     public function create()
     {
         $customers = Customers::orderBy("identification", "asc")->get();
-        $articles = Articles::where("article_type", Articles::ARTICLE_TYPES["article"])->orderBy("designation")->get();
-        $consignations = Articles::where("article_type", Articles::ARTICLE_TYPES["consignation"])->orderBy("designation")->get();
-        $deconsignations = Articles::where("article_type", Articles::ARTICLE_TYPES["deconsignation"])->orderBy("designation")->get();
+        $consignations = Emballage::orderBy("designation")->get();
+        $catArticles = Category::orderBy("name", "asc")->get();
+        $articleTypes = array_filter(Stock::ARTICLE_TYPES, function ($type) {
+            return $type == "article" || $type == "groupe d'article";
+        });
 
-        return view("admin.vente.create", compact("articles", "consignations", "deconsignations", "customers"));
+        $preInvoices = Sale::PreInvoices()->get();
+
+        $amount = 10;
+
+        return view("admin.vente.create", compact(
+            "articleTypes",
+            "customers",
+            "catArticles",
+            "consignations",
+            "preInvoices",
+            "amount"
+        ));
     }
 
     public function store(Request $request)
     {
-        $response = [];
+        $request->validate($this->rules(), $this->messages());
 
-        if (!$request->submited) {
-            $validator = Validator::make($request->all(), VenteValidation::RULES, VenteValidation::MESSAGES);
-            $errors = $validator->errors();
-            $stock = Articles::find($request["article_id"]);
-            if ($stock) {
-                if ($request->quantity_bottle > $stock->quantity_bottle) {
-                    $validator->getMessageBag()->add("custom", "Nombre de $stock->designation est insuffisant pour effectuer cette operation. (total disponible: $stock->quantity_bottle) ");
-                }
-            } else {
-                $validator->getMessageBag()->add("custom", "Verifier l'article s'il a ete bien choisi");
-            }
+        $data = [
+            "withBottle" => isset($request->withBottle),
+            "user_id" => auth()->user()->id,
+        ];
 
-            $response = [
-                "isErrorExist" => $validator->fails(),
-                "errors" => $errors
-            ];
+        $article = Sale::getArticleByReference($request->article_reference);
 
-            return response()->json($response);
-        }
+        $data["saleable_id"] = $article->id;
+        $data["saleable_type"] = get_class($article);
+        $data["consigned_bottle"] = $this->calculateConsignedBottle($request);
 
-        return response()->json(["wait" => "..."]);
+        $data = array_merge($request->except("_token"), $data);
+
+        Sale::create($data);
+
+        return back();
     }
 
-    public function preSaveVente(Request $request)
+    private function calculateConsignedBottle($request): int
     {
-        // dd($request->all());
-        $allData = $this->venteRequest($request->items ?? []);
-        $preInvoices = collect($allData);
-      
-        return  view("admin.vente.ajax-response.pre-invoice-vente", [
-            "preInvoices" => $preInvoices->all(),
-            "totalPrice" => $preInvoices->sum("sub_amount")
-        ]);
+        $quantity_bottle = $request->quantity_bottle;
+        $received_bottle = $request->received_bottle;
+        $rest = $quantity_bottle;
 
-        return response()->json(["error" => "out of bound"]);
+        if ($request->withBottle == "on") {
+            $rest =  $quantity_bottle - $received_bottle;
+        }
+
+        return $rest;
+    }
+
+    private function rules()
+    {
+        $withSupplier = [
+            "supplier_id" => "required",
+            "payment_type" => "required",
+            "paid" => "required",
+        ];
+
+        $article = [
+            "article_type" => "required",
+            "article_reference" => "required",
+            "category_id" => "required",
+            "quantity_bottle" => "required",
+            "consignation_id" => "required",
+            "deconsignation_id" => "required_if:withBottle,on",
+        ];
+
+        return isset(request()->saveData) ? $withSupplier : $article;
+    }
+
+    private function messages()
+    {
+        return [
+            "article_type.required" => "Selectionner le type d'article",
+            "article_reference.required" => "Enter la reference d'article",
+            "category_id.required" => "Veuillez selectionner la categorie",
+            "quantity_bottle.required" => "Entrer le nombre de bouteille",
+            "consignation_id.required" => "Veuillez selectionner la consignation",
+            "deconsignation_id.required" => "Veuillez selectionner la deconsignation",
+        ];
     }
 
     private function saveCustomer($request)
@@ -89,79 +132,6 @@ class SaleController extends Controller
 
         return Customers::create($custonerData);
     }
-
-    private function saveVente($request)
-    {
-        $article = Articles::find($request->article_id);
-        $response = [];
-        if ($article) {
-            $quantityBottle = $request->quantity_bottle;
-
-            //if($article->quantity_type && $article->quantity_type_value)
-        }
-    }
-
-    private function venteRequest(array $allData): array
-    {
-        $allRequest = [];
-
-        $outVente = array_filter($allData, function ($data) {
-            $stock = Articles::find($data["article_id"]);
-            return $data["quantity_bottle"] > $stock->quantity_bottle;
-        });
-
-        if (!count($outVente) && count($allData)) {
-            foreach ($allData as $key => $vente) {
-                $vente = (object) $vente;
-                $sub_amount = 0;
-                $quantityBottle =  $vente->quantity_bottle;
-
-                $stock = Articles::find($vente->article_id);
-                $consignation = Articles::find($vente->consignation_id);
-                $deconsignation = isset($vente->withDeconsignation) ? Articles::find($vente->deconsignation_id) : null;
-
-                //tranform items
-
-        if ($quantityBottle < $stock->contenance) { //utiliser prix detail si nombre de bouteille av @ client < stock bouteille
-            $sub_amount = $quantityBottle * $stock->detail_price;
-        } else if ($quantityBottle >= $stock->contenance) { //sinon utiliser prix gros 
-            $rest = $quantityBottle - $stock->contenance;
-            $sub_amount1 = $stock->contenance * $stock->wholesale_price;//wholesale_price egale priz gros
-            $sub_amount2 = $rest * $stock->detail_price;
-
-            $sub_amount = $sub_amount1 + $sub_amount2;
-        }
-
-                $allRequest[] = [
-                    "row_id" => $vente->row_id, "designation" => $stock->designation, "total" => $quantityBottle, "sub_amount" => $sub_amount, "type" => 1, "data" => []
-                ];
-
-
-                $allRequest[] = ["row_id" => $vente->row_id, "designation" => $consignation->designation, "total" => 0, "sub_amount" => $consignation->unit_price, "type" => 2, "data" => []];
-
-                if ($deconsignation) {
-                    $allRequest[] =  ["row_id" => $vente->row_id, "designation" => $deconsignation->designation, "total" => 0, "sub_amount" => -$deconsignation->unit_price, "type" => 3, "data" => []];
-                }
-            }
-        }
-        return $allRequest;
-    }
-
-    public function preSaveArticle(Request $request)
-    {
-        $articleRequests = $this->articleRequests($request->all()) ?? [];
-        $articleTypes = Articles::ARTICLE_TYPES;
-        $units = Articles::UNITS;
-        $articleCategories = Category::pluck("id", "name")->toArray();
-
-        return view("admin.article.ajax-response.pre-article", compact(
-            "articleRequests",
-            "articleTypes",
-            "articleCategories",
-            "units"
-        ));
-    }
-
 
 
     public function update(Articles $article, Request $request)

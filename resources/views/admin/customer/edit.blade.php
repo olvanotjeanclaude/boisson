@@ -50,9 +50,10 @@
                                 <p> Formulaire pour modifier le client</p>
                             </div>
 
-                            <form novalidate action="{{ route('admin.clients.store') }}" method="POST"
+                            <form novalidate action="{{ route('admin.clients.update',$customer->id) }}" method="POST"
                                 class="needs-validation form form-horizontal striped-rows form-bordered">
                                 @csrf
+                                @method("put")
                                 <div class="form-body">
                                     <h4 class="form-section"><i class="ft-user"></i>Informations Générales</h4>
                                     <div class="form-group row mx-auto">

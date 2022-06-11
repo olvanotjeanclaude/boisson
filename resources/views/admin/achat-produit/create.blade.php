@@ -92,11 +92,6 @@
                                 </div>
                             </div>
 
-                            {{-- <div class="col-md-3 mt-1">
-                                <label class="text-bold-400 text-dark" for="price">Prix De Vente</label>
-                                <input type="number" placeholder="0" class="form-control" id="price" name="price" readonly>
-                            </div> --}}
-
                             <div class="col-12 mt-1">
                                 <label class="text-bold-400 text-dark" for="quantity">Quantité </label>
                                 <input type="number" class="form-control" placeholder="Qtt" required id="quantity"
@@ -137,15 +132,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- <div class="col-12">
-                                <div class="float-right">
-                                    <label class="text-bold-400 text-dark" for="debt">Reste À Payer</label>
-                                    <br>
-                                    <input type="number" step="0.001" name="debt" id="debt" value="0" placeholder="0 Ariary"
-                                        disabled>
-                                </div>
-                            </div> --}}
                         </div>
 
                         <div class="row mt-1">
@@ -183,9 +169,9 @@
                             <div class="col-sm-6 mt-1">
                                 <div class="form-group">
                                     <label class="text-bold-400 text-dark" for="received_at">
-                                       Date De Payment
+                                        Date De Payment
                                     </label>
-                                    <input type="date"  id="received_at" name="received_at" class="form-control">
+                                    <input type="date" id="received_at" name="received_at" class="form-control">
                                 </div>
                             </div>
                             <div class="col-sm-6 mt-1">
@@ -219,7 +205,7 @@
                             <div class="col-md-8 mt-1">
                                 <div class="form-group">
                                     <label class="text-bold-400 text-dark" for="comment">
-                                       Commentaire
+                                        Commentaire
                                     </label>
                                     <textarea name="comment" id="comment" class="form-control" rows="1"></textarea>
                                 </div>
@@ -318,76 +304,50 @@
 
 @endsection
 
+@section('page-js')
+    <script src="{{ asset('app-assets/js/custom/articleController.js') }}"></script>
+@endsection
+
 @section('script')
     <script>
         $(document).ready(function() {
-            $("#article_type").change(async function() {
-                const articleType = $(this).val();
-                if (articleType) {
-                    const response = await axios.get(`/api/get-articles/${articleType}`, {
-                            articleType
-                        })
-                        .then(response => {
-                            let options = "<option value=''>Choisir</option>";
-                            const data = response.data;
-                            if (data.length) {
-                                data.forEach(option => {
-                                    options +=
-                                        `<option value='${option.reference}'>
-                                            ${option.reference}-${option.designation}
-                                        </option>`;
-                                });
-                            }
+            $("#buying_price, #quantity, #total_paid").keyup(function() {
+                const buying_price = $("#buying_price").val();
+                const quantity = $("#quantity").val();
+                const total_paid = $("#total_paid").val();
 
-                            $("#article_reference").html(options);
-                        })
-                        .catch(error => {
-                            console.log(error);
-                            return error;
-                        });
-                } else {
-                    $("#article_reference").html("<option value=''>Choisir</option>");
-                    alert("Selectionnez le type d'article")
-                }
+                const sub_amount = buying_price * quantity;
+
+                $("#sub_amount").val(buying_price * quantity);
+                $("#debt").val(sub_amount - total_paid);
+            });
+
+            $("#validFacture").click(function() {
+                $("#addArticle").addClass("d-none");
+                $("#paymentAndFactureContainer").removeClass("d-none");
+                $(this).removeClass("btn-secondary").addClass("btn-primary");
+                $("#cancelBtn").removeClass("d-none");
+                $(this).addClass("d-none");
             })
-        })
 
-        $("#buying_price, #quantity, #total_paid").keyup(function() {
-            const buying_price = $("#buying_price").val();
-            const quantity = $("#quantity").val();
-            const total_paid = $("#total_paid").val();
+            $("#cancelBtn").click(function() {
+                $("#addArticle").removeClass("d-none");
+                $("#paymentAndFactureContainer").addClass("d-none");
+                $("#validFacture").addClass("btn-secondary").removeClass("btn-primary d-none");
+                $(this).addClass("d-none");
+            })
 
-            const sub_amount = buying_price * quantity;
+            $("#paid").keyup(function() {
+                const paid = $(this).val();
+                let rest = "0.00";
+                let amount = $("#amountToPay").data("amount");
 
-            $("#sub_amount").val(buying_price * quantity);
-            $("#debt").val(sub_amount - total_paid);
-        });
+                if (paid && amount) {
+                    rest = amount - paid;
+                }
 
-        $("#validFacture").click(function() {
-            $("#addArticle").addClass("d-none");
-            $("#paymentAndFactureContainer").removeClass("d-none");
-            $(this).removeClass("btn-secondary").addClass("btn-primary");
-            $("#cancelBtn").removeClass("d-none");
-            $(this).addClass("d-none");
-        })
-
-        $("#cancelBtn").click(function() {
-            $("#addArticle").removeClass("d-none");
-            $("#paymentAndFactureContainer").addClass("d-none");
-            $("#validFacture").addClass("btn-secondary").removeClass("btn-primary d-none");
-            $(this).addClass("d-none");
-        })
-
-        $("#paid").keyup(function() {
-            const paid = $(this).val();
-            let rest = "0.00";
-            let amount = $("#amountToPay").data("amount");
-
-            if (paid && amount) {
-                rest = amount - paid;
-            }
-
-            $("#rest").html(rest);
+                $("#rest").html(rest);
+            })
         })
     </script>
 @endsection

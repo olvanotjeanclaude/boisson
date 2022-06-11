@@ -66,7 +66,7 @@ class CustomerController extends Controller
         $saved = $user->update($data);
 
         if ($saved) {
-            return redirect("/admin/utlisateurs")->with("success", CustomMessage::Success("L'utlisateur"));
+            return redirect("/admin/clients")->with("success", CustomMessage::Success("Le client"));
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);

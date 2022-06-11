@@ -42,8 +42,7 @@ class AchatFournisseurController extends Controller
     public function store(Request $request)
     {
         $request->validate($this->rules(), $this->message());
-        //Pa$$w0rd!
-
+       
         // dd($request->all());
         $data = $request->except("_token");
 

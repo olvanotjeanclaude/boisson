@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Articles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Stock extends Model
 {
-    use HasFactory;
+    use HasFactory,Articles;
 
     protected $guarded = [];
 
@@ -17,33 +18,6 @@ class Stock extends Model
         "3" => "groupe d'article",
         "4" => "deconsignation"
     ];
-
-    public static function getArticleByReference($reference)
-    {
-        $articleDigit = strlen($reference);
-
-        switch ($articleDigit) {
-            case '6':
-                $article = Product::orderBy("designation")->where("reference", $reference)->first();
-                break;
-            case '5':
-                $article = Emballage::orderBy("designation")->where("reference", $reference)->first();
-                break;
-            case '4':
-                $article = Package::orderBy("designation")->where("reference", $reference)->first();
-                break;
-            default:
-                $article = null;
-                break;
-        }
-
-        return $article;
-    }
-
-    public function scopePreInvoices($q)
-    {
-        return $q->where("user_id",auth()->user()->id)->whereNull("invoice_number");
-    }
 
     public function scopePreArticlesSum($q)
     {
@@ -79,9 +53,5 @@ class Stock extends Model
     public function stockable()
     {
         return $this->morphTo();
-    }
-
-    public function getArticleTypeAttribute($value){
-        return self::ARTICLE_TYPES[$value];
     }
 }
