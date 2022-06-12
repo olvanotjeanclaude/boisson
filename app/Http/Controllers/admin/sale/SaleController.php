@@ -41,8 +41,7 @@ class SaleController extends Controller
         });
 
         $preInvoices = Sale::PreInvoices()->get();
-
-        $amount = 10;
+        $amount = Sale::PreArticlesSum();
 
         return view("admin.vente.create", compact(
             "articleTypes",
@@ -53,32 +52,53 @@ class SaleController extends Controller
             "amount"
         ));
     }
+    private function getArticleData($articleRef, $quantity, $request): array
+    {
+        $data = [];
+        $article = Sale::getArticleByReference($articleRef);
 
+        if ($article) {
+            $data = [
+                "article_type" => $request->article_type,
+                "article_reference" => $articleRef,
+                "saleable_id" => $article->id,
+                "saleable_type" => get_class($article),
+                "category_id" => $request->category_id,
+                "quantity" => $quantity ?? 0,
+                "user_id" => auth()->user()->id,
+            ];
+        }
+        return $data;
+    }
     public function store(Request $request)
     {
         $request->validate($this->rules(), $this->messages());
+        $datas = [];
+        $datas[] = $this->getArticleData($request->article_reference, $request->quantity, $request);
+        $datas[] = $this->getArticleData(
+            $request->consignation_id,
+            $this->calculateConsignedBottle($request),
+            $request
+        );
 
-        $data = [
-            "withBottle" => isset($request->withBottle),
-            "user_id" => auth()->user()->id,
-        ];
+        if (isset($request->withBottle)) {
+            $deconsignation = $this->getArticleData($request->deconsignation_id, $request->received_bottle, $request);
+            $deconsignation["isWithEmballage"] = true;
+            $datas[] = $deconsignation;
+        }
 
-        $article = Sale::getArticleByReference($request->article_reference);
-
-        $data["saleable_id"] = $article->id;
-        $data["saleable_type"] = get_class($article);
-        $data["consigned_bottle"] = $this->calculateConsignedBottle($request);
-
-        $data = array_merge($request->except("_token"), $data);
-
-        Sale::create($data);
+        if(count($datas)){
+            foreach ($datas as  $data) {
+                Sale::create($data);
+            }
+        }
 
         return back();
     }
 
     private function calculateConsignedBottle($request): int
     {
-        $quantity_bottle = $request->quantity_bottle;
+        $quantity_bottle = $request->quantity;
         $received_bottle = $request->received_bottle;
         $rest = $quantity_bottle;
 
@@ -101,7 +121,7 @@ class SaleController extends Controller
             "article_type" => "required",
             "article_reference" => "required",
             "category_id" => "required",
-            "quantity_bottle" => "required",
+            "quantity" => "required",
             "consignation_id" => "required",
             "deconsignation_id" => "required_if:withBottle,on",
         ];
@@ -163,22 +183,8 @@ class SaleController extends Controller
 
     public function destroy($id)
     {
-        $allIds = request()->all();
-
-        if (count($allIds)) {
-            $articles = Articles::whereIn("id", $allIds);
-            if ($articles->count()) {
-                $articles->delete();
-                $result["success"] = CustomMessage::Delete("L'article");
-                $result["type"] = "success";
-            } else {
-                $result["type"] = "error";
-                $result["error"] = "données indisponibles";
-            }
-        } else {
-            $response["error"] = CustomMessage::ErrorDelete("l'article");
-        }
-
-        return response()->json($result);
+        $article = Sale::findOrFail($id);
+        $article->delete();
+        return back()->with("success", "Supprimer avec success");
     }
 }

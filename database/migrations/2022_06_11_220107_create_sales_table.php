@@ -21,14 +21,14 @@ class CreateSalesTable extends Migration
             $table->unsignedBigInteger("saleable_id")->nullable();
             $table->string("saleable_type")->nullable();
             $table->unsignedBigInteger("category_id");
-            $table->integer("quantity_bottle")->comment("quantité produit a acheter");
+            $table->integer("quantity")->comment("quantité d'article");
+             $table->boolean("isWithEmballage")->default(false);
+            // $table->integer("consignation_id")->comment("produit a consigner");
+            // $table->integer("consigned_bottle")->comment("quantité produit a consiger");
            
-            $table->integer("consignation_id")->comment("produit a consigner");
-            $table->integer("consigned_bottle")->comment("quantité produit a consiger");
-           
-            $table->boolean("withBottle");
-            $table->integer("deconsignation_id")->nullable()->comment("produit a deconsigner");
-            $table->integer("received_bottle")->nullable()->comment("quantité emballge reçu");
+            // $table->boolean("withBottle");
+            // $table->integer("deconsignation_id")->nullable()->comment("produit a deconsigner");
+            //  $table->integer("received_bottle")->nullable()->comment("quantité emballge reçu");
             
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("update_user_id")->nullable();

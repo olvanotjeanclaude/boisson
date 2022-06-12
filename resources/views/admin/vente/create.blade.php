@@ -84,14 +84,14 @@
 
 
                             <div class="col-sm-5 mt-1">
-                                <label class="text-bold-400 text-dark" for="quantity_bottle">
+                                <label class="text-bold-400 text-dark" for="quantity">
                                     Quantité A acheter
                                 </label>
-                                <input type="number" required placeholder="0" class="form-control" id="quantity_bottle"
-                                    name="quantity_bottle">
-                                    <div class="invalid-feedback">
-                                       Entrer le nombre de bouteiller
-                                    </div>
+                                <input type="number" required placeholder="0" class="form-control" id="quantity"
+                                    name="quantity">
+                                <div class="invalid-feedback">
+                                    Entrer le nombre de bouteiller
+                                </div>
                             </div>
 
 
@@ -99,7 +99,8 @@
                                 <label class="text-bold-400 text-dark" for="consignation_id">
                                     Consignation
                                 </label>
-                                <select name="consignation_id" required class="form-control text-capitalize" id="consignation_id">
+                                <select name="consignation_id" required class="form-control text-capitalize"
+                                    id="consignation_id">
                                     <option value="">Choisir</option>
                                     @forelse ($consignations as $consignation)
                                         <option value="{{ $consignation->reference }}">
@@ -266,7 +267,7 @@
                                             </td>
                                             <td class="pl-1 py-0">{{ $preInvoice->quantity }}</td>
                                             <td class="pl-1 py-0">
-
+                                                {{ formatPrice($preInvoice->sub_amount) }}
                                             </td>
                                             <td class="pl-1 py-0">
                                                 <form method="POST"
@@ -286,9 +287,9 @@
                             </table>
                         </div>
                         <div class="d-flex mt-1 flex-column align-items-end">
-                            {{-- <span id="amountToPay" data-amount="{{ $amount }}"></span>
+                            <span id="amountToPay" data-amount="{{ $amount }}"></span>
                             <span> {{ number_format($amount, 2, ',', ' ') ?? '0' }} Ariary</span>
-                            <span> {{ number_format($amount * 5, 2, ',', ' ') ?? '0' }} Fmg</span> --}}
+                            <span> {{ number_format($amount * 5, 2, ',', ' ') ?? '0' }} Fmg</span>
                         </div>
 
                         <div class="row">
@@ -337,19 +338,19 @@
                     $("#deconsignationBox").removeClass("d-none");
                 } else {
                     $("#deconsignationBox").addClass("d-none");
-                    $("#consigned_bottle").val($("#quantity_bottle").val());
+                    $("#consigned_bottle").val($("#quantity").val());
                     $("#received_bottle").val(0);
                 }
             })
 
-            $("#quantity_bottle, #received_bottle").keyup(calculateConsignedBottle)
+            $("#quantity, #received_bottle").keyup(calculateConsignedBottle);
         })
 
         function calculateConsignedBottle() {
-            const quantity_bottle = $("#quantity_bottle").val();
+            const quantity = $("#quantity").val();
             const received_bottle = $("#received_bottle").val();
 
-            $("#consigned_bottle").val(quantity_bottle - received_bottle);
+            $("#consigned_bottle").val(quantity - received_bottle);
         }
     </script>
 @endsection
