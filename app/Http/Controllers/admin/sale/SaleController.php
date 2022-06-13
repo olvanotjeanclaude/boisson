@@ -2,33 +2,26 @@
 
 namespace App\Http\Controllers\admin\sale;
 
+use App\helper\Invoice;
 use App\Models\Category;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ArticleValidation;
 use App\Http\Requests\VenteValidation;
 use App\Models\Articles;
 use App\Models\Customers;
 use App\Models\DocumentVente;
 use App\Models\Emballage;
-use App\Models\Invoice;
 use App\Models\Sale;
 use App\Models\Stock;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
 
 class SaleController extends Controller
 {
     public function index()
     {
-        $users = [];
-        $articles = Articles::orderBy("id", "desc")->get();
-        $articleTypes = Articles::ARTICLE_TYPES;
-        $units = Articles::UNITS;
-        $articleCategories = Category::pluck("id", "name")->toArray();
-        return view("admin.vente.index", compact("articles", "articleTypes", "units", "articleCategories"));
+       $docSales = DocumentVente::orderBy("id","desc")->get();
+        return view("admin.vente.index",compact("docSales"));
     }
 
     public function create()
@@ -52,6 +45,54 @@ class SaleController extends Controller
             "amount"
         ));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate(VenteValidation::rules(), VenteValidation::messages());
+
+        if (isset($request->saveData)) {
+            $venteSaved = $this->saveVente($request);
+
+            if ($venteSaved) {
+                return back()->with("success", CustomMessage::Success("Le vente"));
+            }
+
+            return back()->with("error", CustomMessage::DEFAULT_ERROR);
+        }
+
+        $datas = $this->getAllArticleDatas($request);
+
+        if (isset($request->withBottle)) {
+            $deconsignation = $this->getArticleData($request->deconsignation_id, $request->received_bottle, $request);
+            $deconsignation["isWithEmballage"] = true;
+            $datas[] = $deconsignation;
+        }
+
+        // dd($datas);
+
+        if (count($datas)) {
+            foreach ($datas as  $data) {
+                Sale::create($data);
+            }
+        }
+
+        return back();
+    }
+
+    private function getAllArticleDatas($request): array
+    {
+        $datas = [];
+
+        $datas[] = $this->getArticleData($request->article_reference, $request->quantity, $request);
+        $datas[] = $this->getArticleData(
+            $request->consignation_id,
+            $this->calculateConsignedBottle($request),
+            $request
+        );
+
+        return $datas;
+    }
+
     private function getArticleData($articleRef, $quantity, $request): array
     {
         $data = [];
@@ -70,31 +111,6 @@ class SaleController extends Controller
         }
         return $data;
     }
-    public function store(Request $request)
-    {
-        $request->validate($this->rules(), $this->messages());
-        $datas = [];
-        $datas[] = $this->getArticleData($request->article_reference, $request->quantity, $request);
-        $datas[] = $this->getArticleData(
-            $request->consignation_id,
-            $this->calculateConsignedBottle($request),
-            $request
-        );
-
-        if (isset($request->withBottle)) {
-            $deconsignation = $this->getArticleData($request->deconsignation_id, $request->received_bottle, $request);
-            $deconsignation["isWithEmballage"] = true;
-            $datas[] = $deconsignation;
-        }
-
-        if(count($datas)){
-            foreach ($datas as  $data) {
-                Sale::create($data);
-            }
-        }
-
-        return back();
-    }
 
     private function calculateConsignedBottle($request): int
     {
@@ -109,50 +125,49 @@ class SaleController extends Controller
         return $rest;
     }
 
-    private function rules()
-    {
-        $withSupplier = [
-            "supplier_id" => "required",
-            "payment_type" => "required",
-            "paid" => "required",
-        ];
-
-        $article = [
-            "article_type" => "required",
-            "article_reference" => "required",
-            "category_id" => "required",
-            "quantity" => "required",
-            "consignation_id" => "required",
-            "deconsignation_id" => "required_if:withBottle,on",
-        ];
-
-        return isset(request()->saveData) ? $withSupplier : $article;
-    }
-
-    private function messages()
-    {
-        return [
-            "article_type.required" => "Selectionner le type d'article",
-            "article_reference.required" => "Enter la reference d'article",
-            "category_id.required" => "Veuillez selectionner la categorie",
-            "quantity_bottle.required" => "Entrer le nombre de bouteille",
-            "consignation_id.required" => "Veuillez selectionner la consignation",
-            "deconsignation_id.required" => "Veuillez selectionner la deconsignation",
-        ];
-    }
-
     private function saveCustomer($request)
     {
-        $custonerData = [
-            "identification" => $request->customer_identification,
-            "phone" => $request->customer_phone
-        ];
+        if ($request->newCustomer == "1") {
+            $customer = Customers::updateOrCreate([
+                "identification" => $request->customer_identification,
+                "phone" => $request->customer_phone,
+            ], [
+                "code" => generateInteger(),
+                "user_id" => auth()->user()->id
+            ]);
+        } else {
+            $customer = Customers::find($request->customer_id);
+        }
 
-        $customerDB = Customers::where("identification", $request->customer_identification)->first();
-
-        return Customers::create($custonerData);
+        return $customer;
     }
 
+    private function saveVente(Request $request)
+    {
+        $customer = $this->saveCustomer($request);
+
+        if ($customer && isset($request->saveData)) {
+            $dateTime = $request->received_at ?? date("Y-m-d");
+            $invoiceData = [
+                "status" => Invoice::STATUS["no_printed"],
+                "number" => generateInteger(7),
+                "received_at" => $dateTime . " " . now()->toTimeString(),
+                "comment" => $request->comment,
+                "customer_id" =>  $customer->id,
+            ];
+
+            $invoice = DocumentVente::create($invoiceData);
+
+            if ($invoice) {
+                $preInvoices = Sale::preInvoices();
+                $preInvoices->update(["invoice_number" => $invoice->number]);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public function update(Articles $article, Request $request)
     {

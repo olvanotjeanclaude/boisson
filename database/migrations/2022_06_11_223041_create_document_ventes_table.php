@@ -15,6 +15,14 @@ class CreateDocumentVentesTable extends Migration
     {
         Schema::create('document_ventes', function (Blueprint $table) {
             $table->id();
+            $table->integer("status");
+            $table->string("customer_id");
+            $table->string("number");
+            $table->decimal("paid")->nullable();
+            $table->decimal("rest")->nullable();
+            $table->integer("payment_type")->nullable();
+            $table->dateTime("received_at");
+            $table->longText("comment")->nullable();
             $table->timestamps();
         });
     }

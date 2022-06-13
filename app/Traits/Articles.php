@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\helper\Invoice;
 use App\Models\Package;
 use App\Models\Product;
 use App\Models\Emballage;
@@ -33,10 +34,31 @@ trait Articles
 
     public function scopePreInvoices($q)
     {
-        return $q->where("user_id",auth()->user()->id)->whereNull("invoice_number");
+        return $q->where("user_id", auth()->user()->id)->whereNull("invoice_number");
     }
 
-    public function getArticleTypeAttribute($value){
+    public function getArticleTypeAttribute($value)
+    {
         return Stock::ARTICLE_TYPES[$value];
+    }
+
+    public function getStatusHtmlAttribute()
+    {
+        switch ($this->status) {
+            case Invoice::STATUS["printed"]:
+                $html = '<span class="badge badge-success">Imprimé</span>';
+                break;
+            case Invoice::STATUS["no_printed"]:
+                $html = '<span class="badge badge-warning">Non Imprimée</span>';
+                break;
+            case Invoice::STATUS["deleted"]:
+                $html = '<span class="badge badge-danger">Supprimer</span>';
+                break;
+            default:
+                $html = '<span class="badge badge-dark">Inconnu</span>';
+                break;
+        }
+
+        return $html;
     }
 }

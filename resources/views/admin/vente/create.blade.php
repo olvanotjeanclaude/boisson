@@ -176,28 +176,34 @@
                     </div>
                 </div>
             </form>
-            <div class="card d-none">
+            <div class="card d-none" id="paymentAndFactureContainer">
                 <form action="{{ route('admin.ventes.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="saveData" value="saveData" id="">
                     <div class="card-body">
-                        <h5 class="text-capitalize font-weight-bold">Information du client</h5>
                         <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <h5 class="mr-2">Nouveau Client?</h5>
-                                            <div class="d-inline-block custom-control custom-radio mr-1">
-                                                <input type="radio" name="newCustomer" value="1"
-                                                    class="newCustomer custom-control-input" id="yes">
-                                                <label class="custom-control-label" for="yes">Oui</label>
-                                            </div>
-                                            <div class="d-inline-block custom-control custom-radio">
-                                                <input checked type="radio" value="0" name="newCustomer"
-                                                    class="newCustomer custom-control-input" id="no">
-                                                <label class="custom-control-label" for="no">Non</label>
-                                            </div>
-                                        </div>
+                            <div class="col-md-7">
+                                <div class="input-group">
+                                    <h5 class="mr-2">Nouveau Client?</h5>
+                                    <div class="d-inline-block custom-control custom-radio mr-1">
+                                        <input type="radio" name="newCustomer" value="1"
+                                            class="newCustomer custom-control-input" id="yes">
+                                        <label class="custom-control-label" for="yes">Oui</label>
                                     </div>
+                                    <div class="d-inline-block custom-control custom-radio">
+                                        <input checked type="radio" value="0" name="newCustomer"
+                                            class="newCustomer custom-control-input" id="no">
+                                        <label class="custom-control-label" for="no">Non</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label class="text-bold-400 text-dark" for="received_at">
+                                        Date
+                                    </label>
+                                    <input type="date" value="{{ date('Y-m-d') }}" class="form-control"
+                                        id="received_at" name="received_at">
                                 </div>
                             </div>
                             <div class="col-12">
@@ -232,6 +238,19 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-7 mt-1">
+                                <div class="form-group">
+                                    <label for="comment">Commentaire</label>
+                                    <textarea name="comment" id="comment" class="form-control" placeholder="Note"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-5 d-flex align-items-center">
+                                <button type="submit"
+                                    class="btn form-control my-1 border-top text-white btn-secondary">
+                                    <i class="la la-save"></i>
+                                    Enregistrer
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -305,7 +324,8 @@
                             </div>
                         </div>
                     @else
-                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette zone.
+                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette
+                            zone.
                         </p>
                     @endif
                 </div>
@@ -334,7 +354,6 @@
 
             $("#withBottle").change(function() {
                 if ($(this).prop("checked")) {
-                    // calculateConsignedBottle();
                     $("#deconsignationBox").removeClass("d-none");
                 } else {
                     $("#deconsignationBox").addClass("d-none");
@@ -343,14 +362,26 @@
                 }
             })
 
-            $("#quantity, #received_bottle").keyup(calculateConsignedBottle);
+            $("#quantity, #received_bottle").keyup(function() {
+                const quantity = $("#quantity").val();
+                const received_bottle = $("#received_bottle").val();
+                $("#consigned_bottle").val(quantity - received_bottle);
+            });
+
+            $("#validFacture").click(function() {
+                $("#addArticle").addClass("d-none");
+                $("#paymentAndFactureContainer").removeClass("d-none");
+                $(this).removeClass("btn-secondary").addClass("btn-primary");
+                $("#cancelBtn").removeClass("d-none");
+                $(this).addClass("d-none");
+            })
+
+            $("#cancelBtn").click(function() {
+                $("#addArticle").removeClass("d-none");
+                $("#paymentAndFactureContainer").addClass("d-none");
+                $("#validFacture").addClass("btn-secondary").removeClass("btn-primary d-none");
+                $(this).addClass("d-none");
+            })
         })
-
-        function calculateConsignedBottle() {
-            const quantity = $("#quantity").val();
-            const received_bottle = $("#received_bottle").val();
-
-            $("#consigned_bottle").val(quantity - received_bottle);
-        }
     </script>
 @endsection

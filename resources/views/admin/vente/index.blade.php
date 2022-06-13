@@ -89,29 +89,48 @@
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th><input type="checkbox" class="input-chk-all"></th>
-                                            <th>Ref Article</th>
+                                            <th>Status</th>
+                                            <th>Numero</th>
                                             <th>Client</th>
-                                            <th>Montant</th>
-                                            <th>Payment</th>
                                             <th>Date</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      
+                                      @forelse ($docSales as $sale)
+                                          <tr>
+                                            <td>{!! $sale->status_html !!}</td>
+                                            <td>{{ $sale->number }}</td>
+                                            <td>{{  $sale->customer->code  }}-{{ $sale->customer->identification }}</td>
+                                            <td>{{ format_date_time($sale->received_at) }}</td>
+                                            <td>
+                                                <span class="dropdown">
+                                                    <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="true"
+                                                        class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
+                                                            class="ft-settings"></i></button>
+                                                    <span aria-labelledby="btnSearchDrop2"
+                                                        class="dropdown-menu mt-1 dropdown-menu-right">
+                                                        {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
+                                                            class="dropdown-item"><i
+                                                                class="la la-eye"></i>Voir</a> --}}
+                                                        <a href="{{ route('admin.achat-produits.edit', $sale['id']) }}"
+                                                            class="dropdown-item"><i class="la la-pencil"></i>
+                                                            Editer</a>
+                                                        <a href="#" class="dropdown-item"><i
+                                                                class="la la-print"></i> Factures</a>
+                                                        <a data-id="{{ $sale['id'] }}"
+                                                            data-url="{{ route('admin.achat-produits.destroy', $sale['id']) }}"
+                                                            class="dropdown-item delete-btn"><i
+                                                                class="la la-trash"></i> Supprimer</a>
+                                                    </span>
+                                                </span>
+                                            </td>
+                                          </tr>
+                                      @empty
+                                          
+                                      @endforelse
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th><input type="checkbox" class="input-chk-all"></th>
-                                            <th>Ref Article</th>
-                                            <th>Client</th>
-                                            <th>Montant</th>
-                                            <th>Payment</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                             <!--/ Invoices table -->

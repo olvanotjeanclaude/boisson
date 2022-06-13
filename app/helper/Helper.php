@@ -30,7 +30,7 @@ function format_date($date, $separator = ".")
     return date("d" . $separator . "m" . $separator . "Y", strtotime($date));
 }
 
-function format_date_time($date, $separator = ".", $reverse = false)
+function format_date_time($date, $separator = "/", $reverse = false)
 {
     $datetime = date("d" . $separator . "m" . $separator . "Y" . " H:m:s", strtotime($date));
 

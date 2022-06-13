@@ -95,6 +95,14 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="{{ route('admin.ventes.index') }}">
+                    <span class="material-icons">
+                        shopping_basket
+                    </span>
+                    <span class="menu-title">Achat De Ventes</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('admin.stocks.index') }}">
                     <span class="material-icons">table_rows</span>
                     <span class="menu-title">Stocks</span>
@@ -106,14 +114,6 @@
                     <span class="menu-title">Document D' Articles</span>
                 </a>
             </li> --}}
-            <li class="nav-item">
-                <a href="{{ route('admin.ventes.index') }}">
-                    <span class="material-icons">
-                        shopping_basket
-                    </span>
-                    <span class="menu-title">Document De Ventes</span>
-                </a>
-            </li>
         </ul>
     </div>
 </div>
