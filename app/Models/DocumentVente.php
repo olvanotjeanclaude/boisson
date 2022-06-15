@@ -15,5 +15,9 @@ class DocumentVente extends Model
     public function customer(){
         return $this->belongsTo(Customers::class);
     }
+
+    public function sales(){
+        return $this->hasMany(Sale::class,"invoice_number","number");
+    }
 }
 

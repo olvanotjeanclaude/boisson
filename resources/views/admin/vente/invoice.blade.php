@@ -1,144 +1,380 @@
 @extends('layouts.app')
 
 @section('title')
-    Detail du factures
+    Facture Vente
 @endsection
 
 @section('page-css')
-    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/core/colors/palette-gradient.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/core/colors/palette-callout.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/pages/invoice.css') }}">
+    <style>
+        @media print {
+            .page-break {
+                display: block;
+                page-break-before: always;
+            }
+        }
+
+        #invoice-POS {
+            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+            padding: 2mm;
+            margin: 0 auto;
+            width: 80mm;
+            background: #FFF;
+        }
+
+        #invoice-POS ::selection {
+            background: #f31544;
+            color: #FFF;
+        }
+
+        #invoice-POS ::moz-selection {
+            background: #f31544;
+            color: #FFF;
+        }
+
+        #invoice-POS h1 {
+            font-size: 1.5em;
+            color: #222;
+        }
+
+        #invoice-POS h2 {
+            font-size: .9em;
+        }
+
+        #invoice-POS h3 {
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 2em;
+        }
+
+        #invoice-POS p {
+            font-size: .7em;
+            color: #666;
+            line-height: 1.2em;
+        }
+
+        #invoice-POS #top,
+        #invoice-POS #mid,
+        #invoice-POS #bot {
+            /* Targets all id with 'col-' */
+            border-bottom: 1px solid #EEE;
+        }
+
+        #invoice-POS #top {
+            min-height: 100px;
+        }
+
+        #invoice-POS #mid {
+            min-height: 80px;
+        }
+
+        #invoice-POS #bot {
+            min-height: 50px;
+        }
+
+        #invoice-POS #top .logo {
+            height: 60px;
+            width: 60px;
+            background: url(http://michaeltruong.ca/images/logo1.png) no-repeat;
+            background-size: 60px 60px;
+        }
+
+        #invoice-POS .clientlogo {
+            float: left;
+            height: 60px;
+            width: 60px;
+            background: url(http://michaeltruong.ca/images/client.jpg) no-repeat;
+            background-size: 60px 60px;
+            border-radius: 50px;
+        }
+
+        #invoice-POS .info {
+            display: block;
+            margin-left: 0;
+        }
+
+        #invoice-POS .title {
+            float: right;
+        }
+
+        #invoice-POS .title p {
+            text-align: right;
+        }
+
+        #invoice-POS table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #invoice-POS .tabletitle {
+            font-size: .85em;
+            background: #EEE;
+        }
+
+        #invoice-POS .service {
+            border-bottom: 1px solid #EEE;
+        }
+
+        #invoice-POS .item {
+            width: 24mm;
+        }
+
+        #invoice-POS .itemtext {
+            font-size: .75em;
+            margin-bottom: 0;
+            margin: .3rem;
+        }
+
+        #invoice-POS #legalcopy {
+            margin-top: 5mm;
+        }
+    </style>
 @endsection
+
 @section('content-header')
     @include('includes.content-header', [
         'page' => 'Factures',
         'breadcrumbs' => [
-            ['text' => 'Factures', 'link' => route('admin.factures.index')],
-            ['text' => 'Detail', 'link' => route('admin.index')],
+            ['text' => 'Facture', 'link' => route('admin.ventes.index')],
+            ['text' => 'Validation Et Impression', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'show' => true,
+            'text' => 'Nouveau Vente',
+            'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'text' => 'Nouveu Article',
-            'link' => route('admin.articles.create'),
+            'show' => true,
         ],
     ])
 @endsection
 
 @section('content')
-    <!-- BEGIN: Content-->
-    <section class="card">
-        <div class="card-body">
-            <!-- Invoice Company Details -->
-            <div id="invoice-company-details" class="row">
-                <div class="col-md-6 col-sm-12 text-center text-md-left">
-                    <div class="media">
-                        <img src="../../../app-assets/images/logo/logo-80x80.png" alt="company logo"
-                            class="" />
-                        <div class="media-body">
-                            <ul class="ml-2 px-0 list-unstyled">
-                                @php
-                                    
-                                @endphp
-                                <ul class="px-0 list-unstyled">
-                                    <li class="text-bold-800">{{ $supplier->name }}</li>
-                                    <li>{{ $supplier->identification }}</li>
-                                    <li>{{ $supplier->email }}</li>
-                                    <li>{{ $supplier->phone }}</li>
-                                    <li>{{ $supplier->address ?? 'Adresse' }}</li>
-                                </ul>
-                            </ul>
-                        </div>
+    <div class="row">
+        <div class="col-12">
+            @if (session('success'))
+                @include('component.alert', [
+                    'type' => 'success',
+                    'message' => session('success'),
+                ])
+            @endif
+        </div>
+    </div>
+
+    <div class="row">
+        @if (getUserPermission() != 'facturation')
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{{ route('admin.achat-produits.store') }}" class="needs-validation" novalidate
+                            method="POST">
+                            @csrf
+                            <div class="row">
+                                <div class="col-sm-6 mt-1">
+                                    <div class="form-group">
+                                        <label class="text-bold-400 text-dark" for="payment_type">Type De
+                                            Payment</label>
+                                        <select name="payment_type" class="form-control" required id="payment_type">
+                                            <option value=''>Choisir</option>
+                                            @forelse (\App\Models\DocumentAchat::PAYMENT_TYPES as $key => $val)
+                                                <option value="{{ $key }}">{{ $val }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Selectionnez le type de payment
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mt-1">
+                                    <div class="form-group">
+                                        <label class="text-bold-400 text-dark" for="paid">
+                                            Payé/dépense
+                                        </label>
+                                        <input type="number" step="0.001" id="paid" name="paid" class="form-control"
+                                            placeholder="0 Ariary">
+                                        <div class="invalid-feedback">
+                                            Entrer le prix d'achat
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8 mt-1">
+                                    <div class="form-group">
+                                        <label class="text-bold-400 text-dark" for="comment">
+                                            Commentaire
+                                        </label>
+                                        <textarea name="comment" id="comment" class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <div class="form-group">
+                                        <label class="text-bold-400 text-dark" for="rest">
+                                            Reste À Payer
+                                        </label>
+                                        <h4 class=""><span id="rest">{{ $amount }}</span> Ariary</h4>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" id="saveData"
+                                        class="btn form-control my-1 border-top text-white printData btn-secondary">
+                                        <i class="la la-save"></i>
+                                        Payer Et Imprimer
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-12 text-center text-md-right">
-                    <h2>Factures</h2>
-                    <p class="pb-3">N<sup>0</sup> {{ $invoice->number }}</p>
-                    <ul class="px-0 list-unstyled">
-                        <li>Montant</li>
-                        <li class="lead text-bold-800">{{ $pricing->formatPrice() }}</li>
-                    </ul>
-                </div>
             </div>
-            <!--/ Invoice Company Details -->
+        @endif
+        <div class="col-md-5 d-flex justify-content-end">
+            <div>
+                @if (getUserPermission() == 'facturation')
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
+                            <a href="{{ route('admin.print.sale.terminate',$invoice->number) }}"
+                                class="ml-2 btn btn-success btn-lg  mb-2">Terminer</a>
+                        </div>
+                    </div>
+                @endif
 
-            <!-- Invoice Customer Details -->
-            <div id="invoice-customer-details" class="row pt-2">
-                <div class="col-sm-12 text-center text-md-right">
-                    <p><span class="text-muted">Date De Facturation : </span>{{ format_date($invoice->created_at) }}
-                    </p>
-                    <p><span class="text-muted">Terme :</span> Payment</p>
-                </div>
-            </div>
-            <!--/ Invoice Customer Details -->
+                <div id="invoice-POS" class="printScreen">
 
-            <!-- Invoice Items Details -->
-            <div id="invoice-items-details" class="pt-2">
-                <div class="row">
-                    <div class="table-responsive col-sm-12">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="text-right">#</th>
-                                    <th class="text-right">Description</th>
-                                    <th class="text-right">qtt cag/cart</th>
-                                    <th class="text-right">Qtt bll</th>
-                                    <th class="text-right">contenance</th>
-                                    <th class="text-right">Unite</th>
-                                    <th class="text-right">PU</th>
-                                    <th class="text-right">Montant</th>
+                    <center id="top">
+                        <div class="logo"></div>
+                        <div class="info mt-1">
+                            <h2>Mon Magasin</h2>
+                        </div>
+                        <!--End Info-->
+                    </center>
+                    <!--End InvoiceTop-->
+
+                    <div id="mid">
+                        <div class="info">
+                            <h2 class="font-weight-bold">Informations de contact</h2>
+                            <p>
+                                Nom : {{ Str::ucfirst($invoice->customer->identification) }}</br>
+                                Adresse : {{ $invoice->customer->address }}</br>
+                                Numéro De Téléphone : {{ $invoice->customer->phone }}</br>
+                            </p>
+                        </div>
+                    </div>
+                    <!--End Invoice Mid-->
+
+                    <div id="bot">
+
+                        <div id="table">
+                            <table>
+                                <tr class="tabletitle">
+                                    <td class="item">
+                                        <h2>Designation</h2>
+                                    </td>
+                                    <td class="Hours">
+                                        <h2>Qté</h2>
+                                    </td>
+                                    <td class="Rate">
+                                        <h2>Sous Total</h2>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $deconsignation = \App\Models\Articles::ARTICLE_TYPES['deconsignation'];
-                                @endphp
-                                @forelse ($pricing->getItems() as $article)
-                                    <tr>
-                                        <th scope="row">{{ $article->reference }}</th>
-                                        <td>
-                                            <p>{{ $article->designation }}</p>
-                                            {{-- <p class="text-muted">{{ $article->note ?? '0' }}</p> --}}
+
+                                @forelse ($invoice->sales as $sale)
+                                    <tr class="service">
+                                        <td class="tableitem">
+                                            <p class="itemtext">{{ $sale->saleable->designation }}</p>
                                         </td>
-                                        <td>{{ $article->quantity_type_value }}</td>
-                                        <td class="text-right">{{ $article->quantity_bottle ?? '0' }}</td>
-                                        <td class="text-right">{{ $article->contenance ?? '0' }}</td>
-                                        <td>{{ array_search($article['unity'], \App\Models\Articles::UNITS) ?? '-' }}</td>
-                                        <td class="text-right">{{ $article->unit_price ?? '-' }}</td>
-                                        <td class="text-right">
-                                            {{ $article['article_type'] == $deconsignation ? '-' : '' }}
-                                            {{ formatPrice($article->sub_amount) }}
+                                        <td class="tableitem">
+                                            <p class="itemtext">{{ $sale->quantity }}</p>
+                                        </td>
+                                        <td class="tableitem">
+                                            <p class="itemtext">{{ formatPrice($sale->sub_amount) }}</p>
                                         </td>
                                     </tr>
                                 @empty
                                 @endforelse
 
-                            </tbody>
-                        </table>
+                                <tr class="tabletitle">
+                                    <td></td>
+                                    <td class="Rate">
+                                        <h2>Total</h2>
+                                    </td>
+                                    <td class="payment">
+                                        <input type="hidden" value="{{ $amount }}" id="amount">
+                                        <h2>{{ formatPrice($amount) }}</h2>
+                                    </td>
+                                </tr>
+
+                                <tr class="tabletitle">
+                                    <td></td>
+                                    <td class="Rate">
+                                        <h2></h2>
+                                    </td>
+                                    <td class="payment">
+                                        <h2>{{ formatPrice($amount * 5, 'Fmg') }}</h2>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+                        <!--End Table-->
+
+                        <div id="legalcopy">
+                            <p class="legal"><strong>Merci beaucoup!</strong>
+                                Lorem ipsum dolor sit amet consectetur.
+                            </p>
+                        </div>
+
                     </div>
+                    <!--End InvoiceBot-->
                 </div>
             </div>
 
-            <!-- Invoice Footer -->
-            <div id="invoice-footer">
-                <div class="row">
-                    <div class="col-md-7 col-sm-12">
-                        <h6>Terme & Condition</h6>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae, vel?
-                        </p>
-                    </div>
-                    <div class="col-md-5 col-sm-12 text-center">
-                        <button type="button" class="btn btn-info btn-lg my-1">
-                            <i class="la la-print"></i>
-                            Imprimer
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!--/ Invoice Footer -->
-
+            <!--End Invoice-->
         </div>
-    </section>
-    <!-- END: Content-->
+    </div>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $("#paid").keyup(function() {
+                const paid = $(this).val();
+                const amount = $("#amount").val();
+                if (paid) {
+                    $("#rest").text(amount - paid);
+                } else {
+                    $("#rest").text("0.00");
+                }
+            });
+
+            $(".printData").click(function() {
+                w = window.open();
+                w.document.write($('.printScreen').html());
+                w.print();
+                w.close();
+            })
+        })
+
+        var beforePrint = function() {
+            alert('Functionality to run before printing.');
+        };
+
+        var afterPrint = function() {
+            alert('Functionality to run after printing');
+        };
+
+        if (window.matchMedia) {
+            var mediaQueryList = window.matchMedia('print');
+
+            mediaQueryList.addListener(function(mql) {
+                //alert($(mediaQueryList).html());
+                if (mql.matches) {
+                    beforePrint();
+                } else {
+                    afterPrint();
+                }
+            });
+        }
+
+        window.onbeforeprint = beforePrint;
+        window.onafterprint = afterPrint;
+    </script>
 @endsection

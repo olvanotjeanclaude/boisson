@@ -20,8 +20,11 @@ class SaleController extends Controller
 {
     public function index()
     {
-       $docSales = DocumentVente::orderBy("id","desc")->get();
-        return view("admin.vente.index",compact("docSales"));
+        $docSales = DocumentVente::when(getUserPermission()=="facturation", function ($q) {
+            return $q->where("user_id", auth()->user()->id);
+        })->orderBy("id", "desc")->get();
+
+        return view("admin.vente.index", compact("docSales"));
     }
 
     public function create()
@@ -154,6 +157,7 @@ class SaleController extends Controller
                 "received_at" => $dateTime . " " . now()->toTimeString(),
                 "comment" => $request->comment,
                 "customer_id" =>  $customer->id,
+                "user_id" =>auth()->user()->id
             ];
 
             $invoice = DocumentVente::create($invoiceData);

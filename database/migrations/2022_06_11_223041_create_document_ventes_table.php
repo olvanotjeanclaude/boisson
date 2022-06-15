@@ -23,6 +23,9 @@ class CreateDocumentVentesTable extends Migration
             $table->integer("payment_type")->nullable();
             $table->dateTime("received_at");
             $table->longText("comment")->nullable();
+
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("update_user_id")->nullable();
             $table->timestamps();
         });
     }

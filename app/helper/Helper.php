@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,6 +24,11 @@ function getUserProfile()
     }
 
     return $default;
+}
+
+function getUserPermission()
+{
+    return auth()->user()->permission_access;
 }
 
 function format_date($date, $separator = ".")
