@@ -20,7 +20,7 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $docSales = DocumentVente::when(getUserPermission()=="facturation", function ($q) {
+        $docSales = DocumentVente::when(getUserPermission() == "facturation", function ($q) {
             return $q->where("user_id", auth()->user()->id);
         })->orderBy("id", "desc")->get();
 
@@ -54,9 +54,10 @@ class SaleController extends Controller
         $request->validate(VenteValidation::rules(), VenteValidation::messages());
 
         if (isset($request->saveData)) {
-            $venteSaved = $this->saveVente($request);
+            $newInvoice = $this->saveVente($request);
 
-            if ($venteSaved) {
+            if ($newInvoice) {
+                return redirect()->route("admin.print.sale", $newInvoice->number);
                 return back()->with("success", CustomMessage::Success("Le vente"));
             }
 
@@ -157,7 +158,7 @@ class SaleController extends Controller
                 "received_at" => $dateTime . " " . now()->toTimeString(),
                 "comment" => $request->comment,
                 "customer_id" =>  $customer->id,
-                "user_id" =>auth()->user()->id
+                "user_id" => auth()->user()->id
             ];
 
             $invoice = DocumentVente::create($invoiceData);
@@ -166,7 +167,7 @@ class SaleController extends Controller
                 $preInvoices = Sale::preInvoices();
                 $preInvoices->update(["invoice_number" => $invoice->number]);
 
-                return true;
+                return $invoice;
             }
         }
 
