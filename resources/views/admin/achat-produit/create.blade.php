@@ -251,12 +251,12 @@
                                     @foreach ($preInvoices as $preInvoice)
                                         <tr>
                                             <td class="pl-1 py-0 text-capitalize">
-                                                {{ $preInvoice->stockable->designation }}</td>
+                                            {{ $preInvoice->stockable->designation }}</td>
                                             <td class="pl-1 py-0">{{ $preInvoice->buying_price }}
                                                 Ar</td>
                                             <td class="pl-1 py-0">{{ $preInvoice->quantity }}</td>
                                             <td class="pl-1 py-0">
-                                                {{ number_format($preInvoice->pre_sub_amount, 2, ',', ' ') ?? '0' }} Ar
+                                                {{ $preInvoice->sign }}  {{ number_format($preInvoice->pre_sub_amount, 2, ',', ' ') ?? '0' }} Ar
                                             </td>
                                             <td class="pl-1 py-0">
                                                 <form method="POST"
@@ -265,7 +265,7 @@
                                                     @method('delete')
                                                     <button type="submit" class="btn btn-outline-accent-1 remove-article">
                                                         <span class="material-icons text-danger">
-                                                            remove_circle
+                                                          remove_circle
                                                         </span>
                                                     </button>
                                                 </form>

@@ -42,6 +42,16 @@ trait Articles
         return Stock::ARTICLE_TYPES[$value];
     }
 
+    public function getTypeAttribute()
+    {
+        return array_search($this->article_type, Stock::ARTICLE_TYPES);
+    }
+
+    public function getSignAttribute()
+    {
+        return $this->article_type == "deconsignation" ? "-" : "+";
+    }
+
     public function getStatusHtmlAttribute()
     {
         switch ($this->status) {

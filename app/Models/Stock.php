@@ -24,13 +24,13 @@ class Stock extends Model
         $article = $q->where("user_id",auth()->user()->id)->whereNull("invoice_number")->get();
 
         $articleAndConsignation = $article->filter(function ($article) {
-            return $article->article_type != 4;
+            return $article->article_type != "deconsignation";
         })->sum(function ($article) {
             return $article->buying_price * $article->quantity;
         });
 
         $deconsignation = $article->filter(function ($article) {
-            return $article->article_type == 4;
+            return $article->article_type == "deconsignation";
         })->sum(function ($article) {
             return $article->buying_price * $article->quantity;
         });
