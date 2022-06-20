@@ -63,20 +63,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="category_id">Famille D'article</label>
-                                <div class="col-md-9">
-                                    <select name="category_id" class="form-control" required id="category_id">
-                                        <option value="">Choisir</option>
-                                        @foreach ($catArticles as $catArticle)
-                                            <option value="{{ $catArticle->id }}">{{ $catArticle->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Selectionneez la famille d'article
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="designation">Designation</label>
@@ -101,7 +87,22 @@
                             </div>
 
                             <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="price">Prix De vente</label>
+                                <label class="col-md-3 label-control" for="category_id">Famille D'article</label>
+                                <div class="col-md-9">
+                                    <select name="category_id" class="form-control" required id="category_id">
+                                        <option value="">Choisir</option>
+                                        @foreach ($catArticles as $catArticle)
+                                            <option  value="{{ $catArticle->id }}">{{ $catArticle->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Selectionneez la famille d'article
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row mx-auto">
+                                <label class="col-md-3 label-control" for="price">Prix De Gros</label>
                                 <div class="col-md-9">
                                     <input type="number" id="price" step="0.001" required class="form-control"
                                         placeholder="Prix de vente" name="price">

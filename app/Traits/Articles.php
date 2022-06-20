@@ -39,7 +39,7 @@ trait Articles
 
     public function getArticleTypeAttribute($value)
     {
-        return Stock::ARTICLE_TYPES[$value];
+        return Stock::ARTICLE_TYPES[$value]??0;
     }
 
     public function getTypeAttribute()

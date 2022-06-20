@@ -20,7 +20,7 @@ class CreateSalesTable extends Migration
             $table->unsignedBigInteger("article_reference");
             $table->unsignedBigInteger("saleable_id")->nullable();
             $table->string("saleable_type")->nullable();
-            $table->unsignedBigInteger("category_id");
+    
             $table->integer("quantity")->comment("quantité d'article");
              $table->boolean("isWithEmballage")->default(false);
             // $table->integer("consignation_id")->comment("produit a consigner");

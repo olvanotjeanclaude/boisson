@@ -92,6 +92,7 @@
                                             <th>Status</th>
                                             <th>Numero</th>
                                             <th>Client</th>
+                                            <th>Code du Client</th>
                                             <th>Date</th>
                                             <th>Action</th>
                                         </tr>
@@ -101,7 +102,8 @@
                                           <tr>
                                             <td>{!! $sale->status_html !!}</td>
                                             <td>{{ $sale->number }}</td>
-                                            <td>{{  $sale->customer->code  }}-{{ $sale->customer->identification }}</td>
+                                            <td>{{  $sale->customer->identification }}</td>
+                                            <td>{{  $sale->customer->cl_code }}</td>
                                             <td>{{ format_date_time($sale->received_at) }}</td>
                                             <td>
                                                 <span class="dropdown">
@@ -114,9 +116,9 @@
                                                         {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
                                                             class="dropdown-item"><i
                                                                 class="la la-eye"></i>Voir</a> --}}
-                                                        <a href="{{ route('admin.achat-produits.edit', $sale['id']) }}"
+                                                        {{-- <a href="{{ route('admin.achat-produits.edit', $sale['id']) }}"
                                                             class="dropdown-item"><i class="la la-pencil"></i>
-                                                            Editer</a>
+                                                            Editer</a> --}}
                                                         <a href="{{route('admin.print.sale',$sale->number)}}" class="dropdown-item"><i
                                                                 class="la la-print"></i> Factures</a>
                                                         <a data-id="{{ $sale['id'] }}"

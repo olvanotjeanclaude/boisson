@@ -55,7 +55,7 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title">date de création</h4>
+                        <h4 class="card-title">Liste de catégories</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <ul class="list-inline mb-0">
@@ -71,7 +71,7 @@
                             <table class="table datatable table- text-nowrap  material-table">
                                 <thead>
                                     <tr>
-                                        <th>Nom Du Catégorie</th>
+                                        <th>Catégorie</th>
                                         <th>Date De Création</th>
                                         <th>ajouté par</th>
                                         <th>Action</th>

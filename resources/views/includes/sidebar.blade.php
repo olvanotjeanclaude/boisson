@@ -56,34 +56,33 @@
                     <span class="menu-title">Fournisseur</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.category-articles.index') }}">
-                    <span class="material-icons">category</span>
-                    <span class="menu-title">Catégorie D'Articles</span>
-                </a>
-            </li>
             <li class=" nav-item">
                 <a href="#">
                     <i class="material-icons">content_paste</i>
-                    <span class="menu-title">Produits</span>
+                    <span class="menu-title">Catalogue</span>
                 </a>
                 <ul class="menu-content">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.category-articles.index') }}">
+                            <span class="menu-title">Famille D'Articles</span>
+                        </a>
+                    </li>
                     <li>
                         <a class="menu-item" href="{{ route('admin.approvisionnement.articles.index') }}">
                             <i class="material-icons"></i>
-                            <span>Articles</span>
+                            <span>Article En Detail</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="menu-item" href="{{ route('admin.approvisionnement.packages.index') }}">
+                            <i class="material-icons"></i>
+                            <span>Article En Gros</span>
                         </a>
                     </li>
                     <li>
                         <a class="menu-item" href="{{ route('admin.approvisionnement.emballages.index') }}">
                             <i class="material-icons"></i>
                             <span>Emballage </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="menu-item" href="{{ route('admin.approvisionnement.packages.index') }}">
-                            <i class="material-icons"></i>
-                            <span>Groupe d'article</span>
                         </a>
                     </li>
                 </ul>
@@ -99,7 +98,7 @@
                     <span class="material-icons">
                         shopping_basket
                     </span>
-                    <span class="menu-title">Achat De Ventes</span>
+                    <span class="menu-title">Ventes</span>
                 </a>
             </li>
             <li class="nav-item">

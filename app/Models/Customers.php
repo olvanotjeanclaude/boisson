@@ -11,6 +11,11 @@ class Customers extends Model
 
     protected $guarded = [];
 
+    public function getClCodeAttribute()
+    {
+        return "CL{$this->code}";
+    }
+
     public function getBadgeAttribute()
     {
         switch ($this->status) {

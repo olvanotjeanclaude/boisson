@@ -13,6 +13,8 @@ use App\Models\Articles;
 use App\Models\Customers;
 use App\Models\DocumentVente;
 use App\Models\Emballage;
+use App\Models\Package;
+use App\Models\Product;
 use App\Models\Sale;
 use App\Models\Stock;
 
@@ -32,12 +34,16 @@ class SaleController extends Controller
         $customers = Customers::orderBy("identification", "asc")->get();
         $consignations = Emballage::orderBy("designation")->get();
         $catArticles = Category::orderBy("name", "asc")->get();
-        $articleTypes = array_filter(Stock::ARTICLE_TYPES, function ($type) {
-            return $type == "article" || $type == "groupe d'article";
+
+        $articleTypes = array_filter(Stock::TYPES, function ($type) {
+            return $type != "consignation";
         });
 
         $preInvoices = Sale::PreInvoices()->get();
         $amount = Sale::PreArticlesSum();
+
+        $articles = Product::orderBy("designation")->get();
+        $packages = Package::orderBy("designation")->get();
 
         return view("admin.vente.create", compact(
             "articleTypes",
@@ -45,13 +51,16 @@ class SaleController extends Controller
             "catArticles",
             "consignations",
             "preInvoices",
-            "amount"
+            "amount",
+
+            "articles",
+            "packages",
         ));
     }
 
     public function store(Request $request)
     {
-        $request->validate(VenteValidation::rules(), VenteValidation::messages());
+        // $request->validate(VenteValidation::rules(), VenteValidation::messages());
 
         if (isset($request->saveData)) {
             $newInvoice = $this->saveVente($request);
@@ -66,17 +75,20 @@ class SaleController extends Controller
 
         $datas = $this->getAllArticleDatas($request);
 
-        if (isset($request->withBottle)) {
+    
+        if (isset($request->withBottle) || $request->article_type==3) {
             $deconsignation = $this->getArticleData($request->deconsignation_id, $request->received_bottle, $request);
             $deconsignation["isWithEmballage"] = true;
             $datas[] = $deconsignation;
         }
 
-        // dd($datas);
+        // dd($datas,$request->all());
 
         if (count($datas)) {
             foreach ($datas as  $data) {
-                Sale::create($data);
+                if(count($data)){
+                    Sale::create($data);
+                }
             }
         }
 
@@ -90,7 +102,7 @@ class SaleController extends Controller
         $datas[] = $this->getArticleData($request->article_reference, $request->quantity, $request);
         $datas[] = $this->getArticleData(
             $request->consignation_id,
-            $this->calculateConsignedBottle($request),
+            $request->quantity,
             $request
         );
 
@@ -101,32 +113,18 @@ class SaleController extends Controller
     {
         $data = [];
         $article = Sale::getArticleByReference($articleRef);
-
+     
         if ($article) {
             $data = [
-                "article_type" => $request->article_type,
+                // "article_type" => $request->article_type,
                 "article_reference" => $articleRef,
                 "saleable_id" => $article->id,
                 "saleable_type" => get_class($article),
-                "category_id" => $request->category_id,
                 "quantity" => $quantity ?? 0,
                 "user_id" => auth()->user()->id,
             ];
         }
         return $data;
-    }
-
-    private function calculateConsignedBottle($request): int
-    {
-        $quantity_bottle = $request->quantity;
-        $received_bottle = $request->received_bottle;
-        $rest = $quantity_bottle;
-
-        if ($request->withBottle == "on") {
-            $rest =  $quantity_bottle - $received_bottle;
-        }
-
-        return $rest;
     }
 
     private function saveCustomer($request)

@@ -76,7 +76,7 @@
                                                     {!! $customer->badge !!}
                                                 </td>
                                                 <td>{{ $customer->identification }}</td>
-                                                <td>{{ $customer->code }}</td>
+                                                <td>{{ $customer->cl_code }}</td>
                                                 <td>{{ $customer->phone }}</td>
                                                 <td>{{ Str::limit($customer->address, 20) }}</td>
                                                 <td>{{ format_date($customer->created_at) }}</td>

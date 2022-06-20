@@ -13,6 +13,7 @@ class ImpressionController extends Controller
     {
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
         $amount = Invoice::calculateAmount($invoice->sales);
+        
         return view("admin.vente.invoice", compact("invoice", "amount"));
     }
 

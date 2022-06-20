@@ -23,7 +23,6 @@ class CustomerController extends Controller
     private function rules()
     {
         return [
-            "code" => "required",
             "identification" => "required",
             "phone" => "required",
             "address" => "required",
@@ -44,6 +43,7 @@ class CustomerController extends Controller
         // dd($request->all());
         $data = $request->except("_token");
         $data["user_id"] = auth()->user()->id;
+        $data["code"] = generateInteger();
         $saved = Customers::create($data);
 
         if ($saved) {

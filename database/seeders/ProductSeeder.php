@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        $total = 15;
+        $total = 100;
 
         for ($i = 1; $i <= $total; $i++) {
             $data = [

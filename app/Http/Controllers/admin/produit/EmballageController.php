@@ -19,7 +19,8 @@ class EmballageController extends Controller
     public function create()
     {
         $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.approvisionnement.consignation.create", compact("catArticles"));
+        $emballages = Emballage::orderBy("designation")->get();
+        return view("admin.approvisionnement.consignation.create", compact("catArticles","emballages"));
     }
 
     public function edit($id)
@@ -33,7 +34,7 @@ class EmballageController extends Controller
         return [
             "designation" => "required|string",
             "price" => "required|numeric",
-            "category_id" => "required"
+            // "category_id" => "required"
         ];
     }
     
@@ -44,7 +45,7 @@ class EmballageController extends Controller
         $data = $request->except("_token");
         $data["reference"] = (string) random_int(11111, 99999);
         $data["user_id"] = auth()->user()->id;
-
+    
         $saved = Emballage::create($data);
 
         if ($saved) {

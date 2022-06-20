@@ -250,11 +250,12 @@
 
                     <div id="mid">
                         <div class="info">
-                            <h2 class="font-weight-bold">Informations de contact</h2>
-                            <p>
-                                Nom : {{ Str::ucfirst($invoice->customer->identification) }}</br>
+                            <h2 class="font-weight-bold"></h2>
+                            <p>N<sup><span>&#176;</span></sup>  {{ $invoice->number }} <br>
+                                Date : {{ format_date_time($invoice->received_at) }} <br><br>
+                                Client : {{ Str::ucfirst($invoice->customer->identification) }}</br>
                                 Adresse : {{ $invoice->customer->address }}</br>
-                                Numéro De Téléphone : {{ $invoice->customer->phone }}</br>
+                                Téléphone : {{ $invoice->customer->phone }}</br>
                             </p>
                         </div>
                     </div>
@@ -317,9 +318,7 @@
                         <!--End Table-->
 
                         <div id="legalcopy">
-                            <p class="legal"><strong>Merci beaucoup!</strong>
-                                Lorem ipsum dolor sit amet consectetur.
-                            </p>
+                            <p class="legal"><strong>Merci beaucoup!</strong></p>
                         </div>
 
                     </div>

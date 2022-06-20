@@ -76,7 +76,7 @@ function get_user_name()
     return null;
 }
 
-function  formatPrice($price, $devise = "Ariary")
+function  formatPrice($price, $devise = "Ar")
 {
     return  number_format($price, 2, ',', ' ') . " $devise";
 }

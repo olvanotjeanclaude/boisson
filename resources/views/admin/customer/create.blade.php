@@ -65,16 +65,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group row mx-auto">
-                                        <label class="col-md-3 label-control" for="code">Code</label>
-                                        <div class="col-md-9">
-                                            <input type="number" id="code" class="form-control" placeholder="Code"
-                                                name="code" maxlength="10" required>
-                                            <div class="invalid-feedback">
-                                                Le champ code est obligatoire.
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
 
                                     <div class="form-group row mx-auto">
                                         <label class="col-md-3 label-control" for="phone">Numéro De Téléphone</label>

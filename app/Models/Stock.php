@@ -8,20 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Stock extends Model
 {
-    use HasFactory,Articles;
+    use HasFactory, Articles;
 
     protected $guarded = [];
 
     const ARTICLE_TYPES = [
-        "1" => "article",
+        "1" => "en détail",
         "2" => "emballage",
-        "3" => "groupe d'article",
+        "3" => "en gros",
         "4" => "deconsignation"
+    ];
+
+    const TYPES = [
+        "1" => "article",
+        "2" => "consignation",
+        "3" => "deconsignation"
     ];
 
     public function scopePreArticlesSum($q)
     {
-        $article = $q->where("user_id",auth()->user()->id)->whereNull("invoice_number")->get();
+        $article = $q->where("user_id", auth()->user()->id)->whereNull("invoice_number")->get();
 
         $articleAndConsignation = $article->filter(function ($article) {
             return $article->article_type != "deconsignation";
