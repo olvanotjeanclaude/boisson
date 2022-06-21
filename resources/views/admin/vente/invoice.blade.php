@@ -149,12 +149,8 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            @if (session('success'))
-                @include('component.alert', [
-                    'type' => 'success',
-                    'message' => session('success'),
-                ])
-            @endif
+            @include('includes.error')
+            @include('includes.success')
         </div>
     </div>
 
@@ -213,10 +209,10 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button type="submit" id="saveData"
-                                        class="btn form-control my-1 border-top text-white printData btn-secondary">
+                                    <button type="submit" 
+                                        class="btn form-control my-1 border-top text-white btn-secondary">
                                         <i class="la la-save"></i>
-                                        Payer Et Imprimer
+                                        Payer
                                     </button>
                                 </div>
                             </div>

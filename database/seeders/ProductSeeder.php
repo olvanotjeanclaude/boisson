@@ -16,19 +16,43 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        $total = 100;
-
-        for ($i = 1; $i <= $total; $i++) {
-            $data = [
-                "reference" =>generateInteger(),
-                "designation" => "article $i",
+        $products = [
+            [
+                "reference" => generateInteger(),
+                "designation" => "coca",
                 "price" => rand(3000, 4000),
                 "category_id" => Category::inRandomOrder()->first()->id,
-                "note" => "note $i",
+                "note" => "note simple produit",
                 "user_id" => User::inRandomOrder()->first()->id
-            ];
+            ],
+            [
+                "reference" => generateInteger(),
+                "designation" => "limonade",
+                "price" => rand(3000, 4000),
+                "category_id" => Category::inRandomOrder()->first()->id,
+                "note" => "note simple produit",
+                "user_id" => User::inRandomOrder()->first()->id
+            ],
+            [
+                "reference" => generateInteger(),
+                "designation" => "fraise",
+                "price" => rand(3000, 4000),
+                "category_id" => Category::inRandomOrder()->first()->id,
+                "note" => "note simple produit",
+                "user_id" => User::inRandomOrder()->first()->id
+            ],
+            [
+                "reference" => generateInteger(),
+                "designation" => "Sprite",
+                "price" => rand(3000, 4000),
+                "category_id" => Category::inRandomOrder()->first()->id,
+                "note" => "note simple produit",
+                "user_id" => User::inRandomOrder()->first()->id
+            ],
+        ];
+
+        foreach ($products as $key => $data) {
             Product::create($data);
         }
-
     }
 }
