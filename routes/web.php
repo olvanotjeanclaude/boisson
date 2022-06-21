@@ -69,6 +69,9 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     });
 
     Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
+    Route::get("ventes/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"paymentForm"])->name("sale.paymentForm");
+    Route::post("ventes/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"paymentStore"])->name("sale.paymentStore");
+
     Route::post("pre-save-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveVente"])->name("ventes.preSaveVente");
     Route::post("pre-save-invoice-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
 

@@ -22,6 +22,7 @@ class CreateDocumentAchatsTable extends Migration
             $table->decimal("paid");
             $table->decimal("rest");
             $table->integer("payment_type");
+            $table->decimal("checkout")->comment("sortie de caisse");
             $table->date("received_at");
             $table->longText("comment")->nullable();
             $table->timestamps();

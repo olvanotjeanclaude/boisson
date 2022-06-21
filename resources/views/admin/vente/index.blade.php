@@ -73,7 +73,8 @@
                                     <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
                                         <a href="#" class="dropdown-item"><i class="la la-calendar"></i> Due Date</a>
                                         <a href="#" class="dropdown-item"><i class="la la-random"></i> Priority </a>
-                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance Due</a>
+                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance
+                                            Due</a>
                                         <a href="#" class="dropdown-item"><i class="la la-user"></i> Assign to</a>
                                     </span>
                                 </span>
@@ -98,40 +99,45 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      @forelse ($docSales as $sale)
-                                          <tr>
-                                            <td>{!! $sale->status_html !!}</td>
-                                            <td>{{ $sale->number }}</td>
-                                            <td>{{  $sale->customer->identification }}</td>
-                                            <td>{{  $sale->customer->cl_code }}</td>
-                                            <td>{{ format_date_time($sale->received_at) }}</td>
-                                            <td>
-                                                <span class="dropdown">
-                                                    <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
-                                                        aria-haspopup="true" aria-expanded="true"
-                                                        class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
-                                                            class="ft-settings"></i></button>
-                                                    <span aria-labelledby="btnSearchDrop2"
-                                                        class="dropdown-menu mt-1 dropdown-menu-right">
-                                                        {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
+                                        @forelse ($docSales as $sale)
+                                            <tr>
+                                                <td>{!! $sale->status_html !!}</td>
+                                                <td>{{ $sale->number }}</td>
+                                                <td>{{ $sale->customer->identification }}</td>
+                                                <td>{{ $sale->customer->cl_code }}</td>
+                                                <td>{{ format_date_time($sale->received_at) }}</td>
+                                                <td>
+                                                    <span class="dropdown">
+                                                        <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="true"
+                                                            class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
+                                                                class="ft-settings"></i></button>
+                                                        <span aria-labelledby="btnSearchDrop2"
+                                                            class="dropdown-menu mt-1 dropdown-menu-right">
+                                                            {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
                                                             class="dropdown-item"><i
                                                                 class="la la-eye"></i>Voir</a> --}}
-                                                        {{-- <a href="{{ route('admin.achat-produits.edit', $sale['id']) }}"
+                                                            {{-- <a href="{{ route('admin.achat-produits.edit', $sale['id']) }}"
                                                             class="dropdown-item"><i class="la la-pencil"></i>
                                                             Editer</a> --}}
-                                                        <a href="{{route('admin.print.sale',$sale->number)}}" class="dropdown-item"><i
-                                                                class="la la-print"></i> Factures</a>
-                                                        <a data-id="{{ $sale['id'] }}"
-                                                            data-url="{{ route('admin.achat-produits.destroy', $sale['id']) }}"
-                                                            class="dropdown-item delete-btn"><i
-                                                                class="la la-trash"></i> Supprimer</a>
+                                                            <a href="{{ route('admin.print.sale', $sale->number) }}"
+                                                                class="dropdown-item">
+                                                                <i class="la la-print"></i>
+                                                                Factures</a>
+                                                            <a href="{{ route('admin.sale.paymentForm', $sale->number) }}"
+                                                                class="dropdown-item">
+                                                                <i class="la la-credit-card"></i>
+                                                                Payment</a>
+                                                            <a data-id="{{ $sale['id'] }}"
+                                                                data-url="{{ route('admin.achat-produits.destroy', $sale['id']) }}"
+                                                                class="dropdown-item delete-btn"><i class="la la-trash"></i>
+                                                                Supprimer</a>
+                                                        </span>
                                                     </span>
-                                                </span>
-                                            </td>
-                                          </tr>
-                                      @empty
-                                          
-                                      @endforelse
+                                                </td>
+                                            </tr>
+                                        @empty
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>

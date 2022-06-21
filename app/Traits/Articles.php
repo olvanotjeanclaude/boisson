@@ -55,11 +55,17 @@ trait Articles
     public function getStatusHtmlAttribute()
     {
         switch ($this->status) {
-            case Invoice::STATUS["printed"]:
-                $html = '<span class="badge badge-success">Imprimé</span>';
+            case Invoice::STATUS["paid"]:
+                $html = '<span class="badge badge-success">Payé</span>';
                 break;
             case Invoice::STATUS["no_printed"]:
-                $html = '<span class="badge badge-warning">Non Imprimée</span>';
+                $html = '<span class="badge badge-warning">En cours</span>';
+                break;
+            case Invoice::STATUS["incomplete"]:
+                $html = '<span class="badge badge-info">Incomplet</span>';
+                break;
+            case Invoice::STATUS["pending"]:
+                $html = '<span class="badge badge-primary">En attente</span>';
                 break;
             case Invoice::STATUS["deleted"]:
                 $html = '<span class="badge badge-danger">Supprimer</span>';

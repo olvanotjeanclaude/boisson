@@ -5,7 +5,8 @@ namespace App\helper;
 use App\Models\Articles;
 use Illuminate\Support\Collection;
 
-class Invoice{
+class Invoice
+{
     const PAYMENT_TYPES = [
         "1" => "Chèque",
         "2" => "espèce",
@@ -15,11 +16,13 @@ class Invoice{
     ];
 
     const STATUS = [
-        "printed" => 1,
-        "no_printed" => 2,
-        "deleted" => 3,
-        "modified" => 4,
-        "valid" => 5,
+        "paid" => 1,//si reste ==0
+        "no_printed" => 2,//no imprimé
+        "incomplete" => 3, //si reste >0
+        "pending" => 4, //Miandry validation avy @ caisse
+        "valid" => 5, //payé et imprimé
+        "deleted" => 6, //supprimé
+        "modified" => 7, //modifié
     ];
 
     public static function calculateAmount(Collection $articles)

@@ -13,10 +13,10 @@ class DocumentAchat extends Model
 
     const PAYMENT_TYPES = [
         "1" => "Chèque",
-        "2" => "espèce",
+        "2" => "Espèce",
         "3" => "Mvola",
-        "4" => "orange money",
-        "5" => "airtel",
+        "4" => "Orange Money",
+        "5" => "Airtel Money",
     ];
 
     const STATUS = [

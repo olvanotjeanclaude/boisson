@@ -20,7 +20,7 @@ class ImpressionController extends Controller
     public function saleTerminate($invoiceNumber)
     {
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
-        $invoice->update(["status" => Invoice::STATUS["printed"]]);
+        $invoice->update(["status" => Invoice::STATUS["pending"]]);
         return redirect()->route("admin.ventes.index");
     }
 }
