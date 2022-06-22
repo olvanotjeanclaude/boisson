@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Nouveau Article
+    Nouveau Achat Produit
 @endsection
 
 @section('page-css')
@@ -14,16 +14,16 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Achat Produits',
+        'page' => 'Vente',
         'breadcrumbs' => [
-            ['text' => 'Achat Produits', 'link' => route('admin.achat-produits.index')],
+            ['text' => 'Ventes', 'link' => route('admin.ventes.index')],
             ['text' => 'Nouveau', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Factures',
-            'link' => route('admin.achat-produits.index'),
-            'icon' => '<span class="material-icons">print</span>',
-            'show' => true,
+            'link' => route('admin.ventes.create'),
+            'icon' => '<span class="material-icons">add</span>',
+            'show' => false,
         ],
     ])
 @endsection
@@ -39,29 +39,30 @@
         </div>
     @endif
     <div class="row">
-        <div class="col-12">
-            @if (session('success'))
-                @include('component.alert', [
-                    'type' => 'success',
-                    'message' => session('success'),
-                ])
-            @endif
-        </div>
-    </div>
-
-    <div class="row mb-5">
-        <div class="col-sm-6 col-lg-7">
-            <form id="addArticleForm" action="{{ route('admin.achat-produits.store') }}" class="needs-validation"
-                novalidate method="POST">
+        <div class="col-md-7">
+            <form novalidate class="needs-validation" action="{{ route('admin.achat-produits.store') }}" method="POST">
                 @csrf
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-6 mt-1">
+                            <div class="col-12 mt-1">
+                                <label class="text-bold-400 text-dark" for="supplier_id">Fournisseur</label>
+                                <select required name="supplier_id" id="supplier_id" required class="form-control">
+                                   <option value="">Choisir</option>
+                                    @forelse ($suppliers as  $supplier)
+                                        <option value="{{ $supplier->id }}">{{ $supplier->identification }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                <div class="invalid-feedback">
+                                    le champ de type d'article ne peut pas être vide
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-1">
                                 <label class="text-bold-400 text-dark" for="article_type">Type D'Article</label>
-                                <select name="article_type" id="article_type" class="form-control" required>
-                                    <option value="">Choisir</option>
-                                    @forelse (\App\Models\Stock::ARTICLE_TYPES as $key => $type)
+                                <select required name="article_type" id="article_type" class="form-control">
+                                    @forelse ($articleTypes as $key => $type)
                                         <option value="{{ $key }}">{{ $type }}</option>
                                     @empty
                                     @endforelse
@@ -70,73 +71,154 @@
                                     le champ de type d'article ne peut pas être vide
                                 </div>
                             </div>
-                            <div class="col-sm-6 mt-1">
-                                <label class="text-bold-400 text-dark" for="category_id">Famille</label>
-                                <select name="category_id" class="form-control" required id="category_id">
-                                    <option value="">Choisir</option>
-                                    @foreach ($catArticles as $catArticle)
-                                        <option value="{{ $catArticle->id }}">{{ $catArticle->name }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback">
-                                    Selectionnez la famille d'article
-                                </div>
-                            </div>
-                            <div class="col-12 mt-1">
-                                <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
-                                <select name="article_reference" class="form-control" required id="article_reference">
-                                    <option value=''>Choisir</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Selectionnez l'article
-                                </div>
-                            </div>
+                        </div>
 
-                            <div class="col-12 mt-1">
-                                <label class="text-bold-400 text-dark" for="quantity">Quantité </label>
-                                <input type="number" class="form-control" placeholder="Qtt" required id="quantity"
-                                    name="quantity" required>
-                                <div class="invalid-feedback">
-                                    Entrer la quantité
-                                </div>
-                            </div>
+                        <div id="withDeconsignationContainer">
+                            <div class="row" id="articleContainer">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-sm-8 mt-1 col-article">
+                                            <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
+                                            <select name="article_reference"  class="form-control"
+                                                id="article_reference">
+                                                <option value=''>Choisir</option>
+                                                @foreach ($articles as $article)
+                                                    <option value="{{ $article->reference }}">
+                                                        {{ $article->reference }}-{{ $article->designation }}</option>
+                                                @endforeach
+                                                @foreach ($packages as $package)
+                                                    <option value="{{ $package->reference }}">
+                                                        {{ $package->reference }}-{{ $package->designation }}
+                                                    </option>
+                                                @endforeach
 
-                            <div class="col-12">
-                                <div class="card bg-light rounded mt-1">
-                                    <div class="card-body pt-0">
-                                        <div class="row" style="margin-top: .3rem">
-                                            <div class="col-sm mt-1 mt-md-0 col-md">
-                                                <div class="">
-                                                    <label style="margin-bottom: .3rem" class="text-bold-400 text-dark"
-                                                        for="buying_price">Prix
-                                                        D'Achat</label>
-                                                    <input type="number" required step="0.001" id="buying_price"
-                                                        name="buying_price" class="form-control bg-white"
-                                                        placeholder="0 Ariary">
-                                                    <div class="invalid-feedback">
-                                                        Entrer le prix d'achat
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm mt-1 mt-md-0 col-md">
-                                                <div class="">
-                                                    <label style="margin-bottom: .3rem" class="text-bold-400 text-dark"
-                                                        for="sub_amount">Prix
-                                                        Sous total
-                                                    </label>
-                                                    <input type="number" step="0.001" disabled class="form-control bg-white"
-                                                        id="sub_amount" placeholder="0 Ariary">
-                                                </div>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Selectionnez l'article
                                             </div>
                                         </div>
+
+                                        <div class="col-sm-4 mt-1">
+                                            <label class="text-bold-400 text-dark" for="quantity">
+                                                Quantité
+                                            </label>
+                                            <input type="number"  placeholder="0" class="form-control"
+                                                id="quantity" name="quantity">
+                                            <div class="invalid-feedback">
+                                                Entrer le nombre de bouteiller
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-8 mt-1">
+                                            <label class="text-bold-400 text-dark" for="consignation_id">
+                                                Consignation
+                                            </label>
+                                            <select name="consignation_id"  class="form-control text-capitalize"
+                                                id="consignation_id">
+                                                <option value="">Choisir</option>
+                                                @forelse ($consignations as $consignation)
+                                                    <option value="{{ $consignation->reference }}">
+                                                        {{ $consignation->reference }}-{{ $consignation->designation }}
+                                                    </option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Selectionnez la consignation d'article
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 mt-1">
+                                            <label class="text-bold-400 text-dark" for="consigned_bottle">
+                                                Quantité
+                                            </label>
+                                            <input type="number" placeholder="0" disabled class="form-control"
+                                                id="consigned_bottle" name="consigned_bottle">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group mt-1">
+                                        <div class="custom-control custom-switch">
+                                            <input class="custom-control-input" checked id="withBottle" name="withBottle"
+                                                type="checkbox">
+                                            <span class="custom-control-track"></span>
+                                            <label class="custom-control-label" for="withBottle">Le client a-t-il apporté un
+                                                emballage ?
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="deconsignationBox">
+                                <div class="col-sm-8">
+                                    <label class="text-bold-400 text-dark" for="deconsignation_id">
+                                        Deconsignation
+                                    </label>
+                                    <select name="deconsignation_id"  class="form-control text-capitalize"
+                                        id="deconsignation_id">
+                                        <option value="">Choisir</option>
+                                        @forelse ($consignations as $consignation)
+                                            <option value="{{ $consignation->reference }}">
+                                                {{ $consignation->reference }}-{{ $consignation->designation }}
+                                            </option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="text-bold-400 text-dark" for="received_bottle">
+                                            Quantité
+                                        </label>
+                                        <input type="number"  placeholder="0" class="form-control"
+                                            id="received_bottle" name="received_bottle">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row mt-1">
+                        <div id="noConsignation" class="d-none">
+                            <div class="row">
+                                <div class="col-sm-8 mt-1 col-article">
+                                    <label class="text-bold-400 text-dark" for="no_consign_ref_id">Articles</label>
+                                    <select name="no_consign_ref_id"  class="form-control" id="no_consign_ref_id">
+                                        <option value=''>Choisir</option>
+                                        @foreach ($articles as $article)
+                                            <option value="{{ $article->reference }}">
+                                                {{ $article->reference }}-{{ $article->designation }}</option>
+                                        @endforeach
+                                        @foreach ($packages as $package)
+                                            <option value="{{ $package->reference }}">
+                                                {{ $package->reference }}-{{ $package->designation }}
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Selectionnez l'article
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4 mt-1">
+                                    <label class="text-bold-400 text-dark" for="no_consign_quantity">
+                                        Quantité
+                                    </label>
+                                    <input type="number"  placeholder="0" class="form-control"
+                                        id="no_consign_quantity" name="no_consign_quantity">
+                                    <div class="invalid-feedback">
+                                        Entrer le nombre de bouteille
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-12">
-                                <button type="submit" id="addArticle" class="btn float-right btn-primary">
+                                <button type="submit" id="addArticle" class="btn float-right my-1 btn-primary">
                                     <span class="material-icons">add</span>
                                     Ajouter
                                 </button>
@@ -145,103 +227,87 @@
                     </div>
                 </div>
             </form>
-            <form action="{{ route('admin.achat-produits.store') }}" class="needs-validation" novalidate method="POST">
-                @csrf
-                <div class="card d-none" id="paymentAndFactureContainer">
+
+            <div class="card d-none" id="paymentAndFactureContainer">
+                <form action="{{ route('admin.achat-produits.store') }}" method="POST">
+                    @csrf
                     <input type="hidden" name="saveData" value="saveData" id="">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-6 mt-1">
-                                <label class="text-bold-400 text-dark" for="supplier_id">Fournisseur</label>
-                                <select name="supplier_id" required id="supplier_id" class="form-control">
-                                    <option value="">Fournisseur</option>
-                                    @forelse ($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}">
-                                            {{ $supplier->code }}-{{ Str::upper($supplier->identification) }}
-                                        </option>
-                                    @empty
-                                    @endforelse
-                                </select>
-                                <div class="invalid-feedback">
-                                    Selectionner le fournisseur
+                            <div class="col-md-7">
+                                <div class="input-group">
+                                    <h5 class="mr-2">Nouveau Client?</h5>
+                                    <div class="d-inline-block custom-control custom-radio mr-1">
+                                        <input type="radio" name="newCustomer" value="1"
+                                            class="newCustomer custom-control-input" id="yes">
+                                        <label class="custom-control-label" for="yes">Oui</label>
+                                    </div>
+                                    <div class="d-inline-block custom-control custom-radio">
+                                        <input checked type="radio" value="0" name="newCustomer"
+                                            class="newCustomer custom-control-input" id="no">
+                                        <label class="custom-control-label" for="no">Non</label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6 mt-1">
+                            <div class="col-md">
                                 <div class="form-group">
                                     <label class="text-bold-400 text-dark" for="received_at">
-                                        Date De Payment
+                                        Date
                                     </label>
-                                    <input type="date" id="received_at" name="received_at" class="form-control">
+                                    <input type="date" value="{{ date('Y-m-d') }}" class="form-control"
+                                        id="received_at" name="received_at">
                                 </div>
                             </div>
-                            <div class="col-sm-6 mt-1">
-                                <div class="form-group">
-                                    <label class="text-bold-400 text-dark" for="payment_type">Type De Payment</label>
-                                    <select name="payment_type" class="form-control" required id="payment_type">
-                                        <option value=''>Choisir</option>
-                                        @forelse (\App\Models\DocumentAchat::PAYMENT_TYPES as $key => $val)
-                                            <option value="{{ $key }}">{{ $val }}</option>
-                                        @empty
-                                        @endforelse
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Selectionnez le type de payment
+                           
+                            <div class="col-12 mt-1 d-none" id="newCustomerBlock">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="form-group">
+                                            <label for="customer_identification">Identification</label>
+                                            <input type="text" id="customer_identification"
+                                                class="form-control border-primary" placeholder="identification"
+                                                name="customer_identification">
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mt-1">
-                                <div class="form-group">
-                                    <label class="text-bold-400 text-dark" for="paid">
-                                        Payé/dépense
-                                    </label>
-                                    <input type="number" step="0.001" id="paid" name="paid" class="form-control"
-                                        placeholder="0 Ariary">
-                                    <div class="invalid-feedback">
-                                        Entrer le prix d'achat
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="col-md-8 mt-1">
-                                <div class="form-group">
-                                    <label class="text-bold-400 text-dark" for="comment">
-                                        Commentaire
-                                    </label>
-                                    <textarea name="comment" id="comment" class="form-control" rows="1"></textarea>
+                                    <div class="col-sm">
+                                        <div class="form-group">
+                                            <label for="customer_phone">Téléphone</label>
+                                            <input type="tel" id="customer_phone" class="form-control border-primary"
+                                                placeholder="Numéro De Téléphone" name="customer_phone">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 mt-1">
+                            <div class="col-md-7 mt-1">
                                 <div class="form-group">
-                                    <label class="text-bold-400 text-dark" for="rest">
-                                        Reste À Payer
-                                    </label>
-                                    <h4 class=""><span id="rest">0.00</span> Ariary</h4>
+                                    <label for="comment">Commentaire</label>
+                                    <textarea name="comment" id="comment" class="form-control" placeholder="Note"></textarea>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" id="saveData"
-                                    class="btn form-control my-1 border-top text-white btn-secondary">
+                            <div class="col-md-5 d-flex align-items-center">
+                                <button type="submit" class="btn form-control my-1 border-top text-white btn-secondary">
                                     <i class="la la-save"></i>
                                     Enregistrer
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
 
-        <div class="col-sm-6 col-lg-5">
+        <div class="col-md-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="text-capitalize text-right font-weight-bold">Facture D'Achat Fournisseur</h4>
+                    <h4 class="text-capitalize text-right font-weight-bold">Ticket D'Achat</h4>
                     @if (count($preInvoices))
-                        <div class="table-responsive d-non">
+                        <div class="table-responsive">
                             <table class="table p-0 table-sm text-nowrap table-bordered table-striped table-hover">
                                 <thead>
                                     <tr class="p-0">
                                         <th>Designation</th>
-                                        <th>PA</th>
+                                        <th>Prix</th>
                                         <th>Qtt</th>
                                         <th>Sous Total</th>
                                         <th></th>
@@ -251,21 +317,25 @@
                                     @foreach ($preInvoices as $preInvoice)
                                         <tr>
                                             <td class="pl-1 py-0 text-capitalize">
-                                            {{ $preInvoice->stockable->designation }}</td>
-                                            <td class="pl-1 py-0">{{ $preInvoice->buying_price }}
-                                                Ar</td>
+                                                {{ $preInvoice->saleable->designation }}
+                                            </td>
+                                            <td class="pl-1 py-0">
+                                                {{ $preInvoice->saleable->price }}
+                                                Ar
+                                            </td>
                                             <td class="pl-1 py-0">{{ $preInvoice->quantity }}</td>
                                             <td class="pl-1 py-0">
-                                                {{ $preInvoice->sign }}  {{ number_format($preInvoice->pre_sub_amount, 2, ',', ' ') ?? '0' }} Ar
+                                                {{ formatPrice($preInvoice->sub_amount) }}
                                             </td>
                                             <td class="pl-1 py-0">
                                                 <form method="POST"
-                                                    action="{{ route('admin.achat-produits.destroy', $preInvoice->id) }}">
+                                                    action="{{ route('admin.ventes.destroy', $preInvoice->id) }}">
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="submit" class="btn btn-outline-accent-1 remove-article">
+                                                    <button type="submit"
+                                                        class="btn btn-outline-accent-1 remove-article">
                                                         <span class="material-icons text-danger">
-                                                          remove_circle
+                                                            remove_circle
                                                         </span>
                                                     </button>
                                                 </form>
@@ -277,7 +347,7 @@
                         </div>
                         <div class="d-flex mt-1 flex-column align-items-end">
                             <span id="amountToPay" data-amount="{{ $amount }}"></span>
-                            <span> {{ number_format($amount, 2, ',', ' ') ?? '0' }} Ariary</span>
+                            <span> {{ number_format($amount, 2, ',', ' ') ?? '0' }} Ar</span>
                             <span> {{ number_format($amount * 5, 2, ',', ' ') ?? '0' }} Fmg</span>
                         </div>
 
@@ -294,32 +364,72 @@
                             </div>
                         </div>
                     @else
-                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette zone.
+                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette
+                            zone.
                         </p>
                     @endif
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('page-js')
-    <script src="{{ asset('app-assets/js/custom/articleController.js') }}"></script>
+    {{-- <script src="{{ asset('app-assets/js/custom/articleController.js') }}"></script> --}}
 @endsection
+
 
 @section('script')
     <script>
         $(document).ready(function() {
-            $("#buying_price, #quantity, #total_paid").keyup(function() {
-                const buying_price = $("#buying_price").val();
+            $("#article_type").change(function() {
+                // $(".form-control").prop("required", false);
+                $(".invalid-feedback").text("");
+
+                if ($(this).val() == "1") {
+                    // validArticle();
+                    $("#articleContainer").removeClass("d-none");
+                } else if ($(this).val() == "3") {
+                    // validDeconsignation();
+                    $("#withDeconsignationContainer").removeClass("d-none");
+
+                    $("#withBottle").prop("checked", true);
+                    $("#withBottle").prop("disabled", true);
+                    $("#noConsignation, #articleContainer").addClass("d-none");
+                } else {
+                    // validConsignation();
+                    $("#noConsignation").removeClass("d-none");
+
+                    $("#withDeconsignationContainer, #articleContainer").addClass("d-none");
+                }
+            })
+
+
+            $(".newCustomer").click(function() {
+                if ($(this).val() == "1") {
+                    $("#newCustomerBlock").removeClass("d-none");
+                    $("#customerBlock").addClass("d-none");
+                } else {
+                    $("#customerBlock").removeClass("d-none");
+                    $("#newCustomerBlock").addClass("d-none");
+                }
+            })
+
+            $("#withBottle").change(function() {
+                if ($(this).prop("checked")) {
+                    $("#deconsignationBox").removeClass("d-none");
+                    // $("#deconsignationBox .form-control").prop("required", true);
+                } else {
+                    // $("#deconsignationBox .form-control").prop("required", false);
+                    $("#deconsignationBox").addClass("d-none");
+                    $("#consigned_bottle").val($("#quantity").val());
+                    $("#received_bottle").val(0);
+                }
+            })
+
+            $("#quantity, #received_bottle").keyup(function() {
                 const quantity = $("#quantity").val();
-                const total_paid = $("#total_paid").val();
-
-                const sub_amount = buying_price * quantity;
-
-                $("#sub_amount").val(buying_price * quantity);
-                $("#debt").val(sub_amount - total_paid);
+                $("#consigned_bottle").val(quantity);
             });
 
             $("#validFacture").click(function() {
@@ -336,18 +446,28 @@
                 $("#validFacture").addClass("btn-secondary").removeClass("btn-primary d-none");
                 $(this).addClass("d-none");
             })
-
-            $("#paid").keyup(function() {
-                const paid = $(this).val();
-                let rest = "0.00";
-                let amount = $("#amountToPay").data("amount");
-
-                if (paid && amount) {
-                    rest = amount - paid;
-                }
-
-                $("#rest").html(rest);
-            })
         })
+
+        function validArticle() {
+            $("#articleContainer .form-control").prop("required", true);
+            $("#articleContainer").removeClass("d-none");
+            $("#noConsignation .form-control").prop("required", false);
+        }
+
+        function validConsignation() {
+            $("#noConsignation .form-control").prop("required", true);
+            $("#noConsignation").removeClass("d-none");
+
+            $("#withDeconsignationContainer, #articleContainer").addClass("d-none");
+        }
+
+        function validDeconsignation() {
+            $("#deconsignationBox .form-control").prop("required", true);
+            $("#withDeconsignationContainer").removeClass("d-none");
+
+            $("#withBottle").prop("checked", true);
+            $("#withBottle").prop("disabled", true);
+            $("#noConsignation, #articleContainer").addClass("d-none");
+        }
     </script>
 @endsection

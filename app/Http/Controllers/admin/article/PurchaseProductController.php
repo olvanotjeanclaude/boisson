@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
+use App\Models\Package;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
+use App\Models\Emballage;
 use Illuminate\Http\Request;
+use App\Models\DocumentAchat;
 use App\Message\CustomMessage;
 use App\Models\PurchaseProduct;
 use App\Http\Controllers\Controller;
-use App\Models\DocumentAchat;
 use Illuminate\Database\Eloquent\Collection;
 
 class PurchaseProductController extends Controller
@@ -25,14 +28,30 @@ class PurchaseProductController extends Controller
     public function create()
     {
         $suppliers = Supplier::orderBy("identification", "asc")->get();
-        $catArticles = Category::orderBy("name", "asc")->get();
-        $preInvoices = Stock::PreInvoices()->get();
+        $consignations = Emballage::orderBy("designation")->get();
+       
+        $articleTypes = array_filter(Stock::TYPES, function ($type) {
+            return $type != "consignation";
+        });
 
-        $amount = Stock::PreArticlesSum();
+        $preInvoices = [];
+        $amount = 0;
 
-        // dd($preInvoices);
-        return view("admin.achat-produit.create", compact("suppliers", "catArticles", "preInvoices", "amount"));
+        $articles = [];
+        $packages =[];
+
+        return view("admin.achat-produit.create", compact(
+            "suppliers",
+            "articleTypes",
+            "consignations",
+            "preInvoices",
+            "amount",
+
+            "articles",
+            "packages",
+        ));
     }
+   
 
     public function store(Request $request)
     {

@@ -7,6 +7,7 @@ use App\Models\Emballage;
 use App\Models\Package;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -56,5 +57,24 @@ class ArticleController extends Controller
         }
 
         return response()->json($article);
+    }
+
+    public function getArticleBySupplier($supplier_id,$type){
+        dd($type);
+        $supplier = Supplier::findOrFail($supplier_id);
+        $articles = [];
+
+        if(count($supplier->pricings)){
+            foreach ($supplier->pricings as $pricing) {
+                if($pricing){
+                    $data = (object)[
+                      "reference" =>$pricing->product->reference,
+                      "designation" =>$pricing->product->designation
+                    ];
+                    $articles[] = $data;
+                }
+            }
+        }
+        return response()->json($articles);
     }
 }

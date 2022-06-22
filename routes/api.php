@@ -21,3 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get("/category-articles",[App\Http\Controllers\admin\article\CategoryArticleController::class,"allCategories"]);
 Route::get("/get-articles/{type}",[App\Http\Controllers\api\article\ArticleController::class,"index"]);
 Route::get("/get-article/{article_id}",[App\Http\Controllers\api\article\ArticleController::class,"show"]);
+Route::get("supplier/{supplier_id}/articles/{type}",[App\Http\Controllers\api\article\ArticleController::class,"getArticleBySupplier"])->name("api.getArticleBySupplier");
+
