@@ -22,7 +22,7 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $docSales = DocumentVente::when(getUserPermission() == "facturation", function ($q) {
+        $docSales = DocumentVente::has("customer")->when(getUserPermission() == "facturation", function ($q) {
             return $q->where("user_id", auth()->user()->id);
         })->orderBy("id", "desc")->get();
 
@@ -60,14 +60,14 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate(VenteValidation::rules(), VenteValidation::messages());
+        // dd($request->all());
+        $request->validate(VenteValidation::rules(), VenteValidation::messages());
 
         if (isset($request->saveData)) {
             $newInvoice = $this->saveVente($request);
 
             if ($newInvoice) {
                 return redirect()->route("admin.print.sale", $newInvoice->number);
-                return back()->with("success", CustomMessage::Success("Le vente"));
             }
 
             return back()->with("error", CustomMessage::DEFAULT_ERROR);
@@ -75,18 +75,11 @@ class SaleController extends Controller
 
         $datas = $this->getAllArticleDatas($request);
 
-    
-        if (isset($request->withBottle) || $request->article_type==3) {
-            $deconsignation = $this->getArticleData($request->deconsignation_id, $request->received_bottle, $request);
-            $deconsignation["isWithEmballage"] = true;
-            $datas[] = $deconsignation;
-        }
-
-        // dd($datas,$request->all());
+        // dd($datas, $request->all());
 
         if (count($datas)) {
             foreach ($datas as  $data) {
-                if(count($data)){
+                if (count($data)) {
                     Sale::create($data);
                 }
             }
@@ -98,26 +91,55 @@ class SaleController extends Controller
     private function getAllArticleDatas($request): array
     {
         $datas = [];
+        $articleType = Stock::TYPES[$request->article_type] ?? null;
 
-        $datas[] = $this->getArticleData($request->article_reference, $request->quantity, $request);
-        $datas[] = $this->getArticleData(
-            $request->consignation_id,
-            $request->quantity,
-            $request
-        );
+        switch ($articleType) {
+            case 'article':
+                $datas[] = $this->getArticleData($request->article_reference, $request->quantity, $request);
+                $datas[] = $this->getArticleData(
+                    $request->consignation_id,
+                    $request->quantity,
+                    $request
+                );
+
+                if (isset($request->withBottle)) {
+                    $datas[] =  $this->getDeconsignationData($request);
+                }
+                break;
+            case 'deconsignation':
+                $datas[] =  $this->getDeconsignationData($request);
+                break;
+            case 'sans consignation':
+                $datas[] = $this->getArticleData(
+                    $request->no_consign_ref_id,
+                    $request->no_consign_quantity,
+                    $request
+                );
+                break;
+            default:
+                # code...
+                break;
+        }
 
         return $datas;
+    }
+
+    private function getDeconsignationData($request)
+    {
+        $deconsignation = $this->getArticleData($request->deconsignation_id, $request->received_bottle, $request);
+        $deconsignation["isWithEmballage"] = true;
+        return $deconsignation;
     }
 
     private function getArticleData($articleRef, $quantity, $request): array
     {
         $data = [];
         $article = Sale::getArticleByReference($articleRef);
-     
+
         if ($article) {
             $data = [
                 // "article_type" => $request->article_type,
-                "article_reference" => $articleRef,
+                "article_reference" => $article->reference,
                 "saleable_id" => $article->id,
                 "saleable_type" => get_class($article),
                 "quantity" => $quantity ?? 0,

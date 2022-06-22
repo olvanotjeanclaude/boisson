@@ -18,7 +18,7 @@ class CreateEmballagesTable extends Migration
             $table->string("reference");
             $table->string("designation");
             $table->decimal("price")->comment("Prix unitaire de vente");
-            $table->unsignedBigInteger("content_id");
+            $table->unsignedBigInteger("content_id")->nullable();
             $table->unsignedBigInteger("quantity");
             $table->boolean("simpleOrGroup");
             $table->longText("note")->nullable();

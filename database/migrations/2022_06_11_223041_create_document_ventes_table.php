@@ -20,6 +20,7 @@ class CreateDocumentVentesTable extends Migration
             $table->string("number");
             $table->decimal("paid")->nullable();
             $table->decimal("rest")->nullable();
+            $table->decimal("checkout")->nullable();
             $table->integer("payment_type")->nullable();
             $table->dateTime("received_at");
             $table->longText("comment")->nullable();

@@ -16,7 +16,7 @@ class CreateSalesTable extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->string("invoice_number")->nullable();
-            $table->unsignedBigInteger("article_type");
+            // $table->unsignedBigInteger("article_type");
             $table->unsignedBigInteger("article_reference");
             $table->unsignedBigInteger("saleable_id")->nullable();
             $table->string("saleable_type")->nullable();

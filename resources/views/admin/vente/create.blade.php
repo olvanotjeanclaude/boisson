@@ -57,109 +57,147 @@
                                     le champ de type d'article ne peut pas être vide
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-12" id="articleContainer">
-                                <div class="row">
-                                    <div class="col-sm-8 mt-1 col-article">
-                                        <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
-                                        <select name="article_reference" required class="form-control"
-                                            id="article_reference">
-                                            <option value=''>Choisir</option>
-                                            @foreach ($articles as $article)
-                                                <option value="{{ $article->reference }}">
-                                                    {{ $article->reference }}-{{ $article->designation }}</option>
-                                            @endforeach
-                                            @foreach ($packages as $package)
-                                                <option value="{{ $package->reference }}">
-                                                    {{ $package->reference }}-{{ $package->designation }}
-                                                </option>
-                                            @endforeach
-                                           
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Selectionnez l'article
+                        <div id="withDeconsignationContainer">
+                            <div class="row" id="articleContainer">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-sm-8 mt-1 col-article">
+                                            <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
+                                            <select name="article_reference" required class="form-control"
+                                                id="article_reference">
+                                                <option value=''>Choisir</option>
+                                                @foreach ($articles as $article)
+                                                    <option value="{{ $article->reference }}">
+                                                        {{ $article->reference }}-{{ $article->designation }}</option>
+                                                @endforeach
+                                                @foreach ($packages as $package)
+                                                    <option value="{{ $package->reference }}">
+                                                        {{ $package->reference }}-{{ $package->designation }}
+                                                    </option>
+                                                @endforeach
+
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Selectionnez l'article
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4 mt-1">
+                                            <label class="text-bold-400 text-dark" for="quantity">
+                                                Quantité
+                                            </label>
+                                            <input type="number" required placeholder="0" class="form-control"
+                                                id="quantity" name="quantity">
+                                            <div class="invalid-feedback">
+                                                Entrer le nombre de bouteiller
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-8 mt-1">
+                                            <label class="text-bold-400 text-dark" for="consignation_id">
+                                                Consignation
+                                            </label>
+                                            <select name="consignation_id" required class="form-control text-capitalize"
+                                                id="consignation_id">
+                                                <option value="">Choisir</option>
+                                                @forelse ($consignations as $consignation)
+                                                    <option value="{{ $consignation->reference }}">
+                                                        {{ $consignation->reference }}-{{ $consignation->designation }}
+                                                    </option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Selectionnez la consignation d'article
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 mt-1">
+                                            <label class="text-bold-400 text-dark" for="consigned_bottle">
+                                                Quantité
+                                            </label>
+                                            <input type="number" placeholder="0" disabled class="form-control"
+                                                id="consigned_bottle" name="consigned_bottle">
                                         </div>
                                     </div>
+                                </div>
+                            </div>
 
-                                    <div class="col-sm-4 mt-1">
-                                        <label class="text-bold-400 text-dark" for="quantity">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group mt-1">
+                                        <div class="custom-control custom-switch">
+                                            <input class="custom-control-input" checked id="withBottle" name="withBottle"
+                                                type="checkbox">
+                                            <span class="custom-control-track"></span>
+                                            <label class="custom-control-label" for="withBottle">Le client a-t-il apporté un
+                                                emballage ?
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="deconsignationBox">
+                                <div class="col-sm-8">
+                                    <label class="text-bold-400 text-dark" for="deconsignation_id">
+                                        Deconsignation
+                                    </label>
+                                    <select name="deconsignation_id" required class="form-control text-capitalize"
+                                        id="deconsignation_id">
+                                        <option value="">Choisir</option>
+                                        @forelse ($consignations as $consignation)
+                                            <option value="{{ $consignation->reference }}">
+                                                {{ $consignation->reference }}-{{ $consignation->designation }}
+                                            </option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="text-bold-400 text-dark" for="received_bottle">
                                             Quantité
                                         </label>
-                                        <input type="number" required placeholder="0" class="form-control" id="quantity"
-                                            name="quantity">
-                                        <div class="invalid-feedback">
-                                            Entrer le nombre de bouteiller
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-8 mt-1">
-                                        <label class="text-bold-400 text-dark" for="consignation_id">
-                                            Consignation
-                                        </label>
-                                        <select name="consignation_id" required class="form-control text-capitalize"
-                                            id="consignation_id">
-                                            <option value="">Choisir</option>
-                                            @forelse ($consignations as $consignation)
-                                                <option value="{{ $consignation->reference }}">
-                                                    {{ $consignation->reference }}-{{ $consignation->designation }}
-                                                </option>
-                                            @empty
-                                            @endforelse
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Selectionnez la consignation d'article
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4 mt-1">
-                                        <label class="text-bold-400 text-dark" for="consigned_bottle">
-                                            Quantité
-                                        </label>
-                                        <input type="number" placeholder="0" disabled class="form-control"
-                                            id="consigned_bottle" name="consigned_bottle">
+                                        <input type="number" required placeholder="0" class="form-control"
+                                            id="received_bottle" name="received_bottle">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <div id="noConsignation" class="d-none">
+                            <div class="row">
+                                <div class="col-sm-8 mt-1 col-article">
+                                    <label class="text-bold-400 text-dark" for="no_consign_ref_id">Articles</label>
+                                    <select name="no_consign_ref_id" required class="form-control" id="no_consign_ref_id">
+                                        <option value=''>Choisir</option>
+                                        @foreach ($articles as $article)
+                                            <option value="{{ $article->reference }}">
+                                                {{ $article->reference }}-{{ $article->designation }}</option>
+                                        @endforeach
+                                        @foreach ($packages as $package)
+                                            <option value="{{ $package->reference }}">
+                                                {{ $package->reference }}-{{ $package->designation }}
+                                            </option>
+                                        @endforeach
 
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group mt-1">
-                                    <div class="custom-control custom-switch">
-                                        <input class="custom-control-input" checked id="withBottle" name="withBottle"
-                                            type="checkbox">
-                                        <span class="custom-control-track"></span>
-                                        <label class="custom-control-label" for="withBottle">Le client a-t-il apporté un
-                                            emballage ?
-                                        </label>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Selectionnez l'article
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="row" id="deconsignationBox">
-                            <div class="col-sm-8">
-                                <label class="text-bold-400 text-dark" for="deconsignation_id">
-                                    Deconsignation
-                                </label>
-                                <select name="deconsignation_id" required class="form-control text-capitalize"
-                                    id="deconsignation_id">
-                                    <option value="">Choisir</option>
-                                    @forelse ($consignations as $consignation)
-                                        <option value="{{ $consignation->reference }}">
-                                            {{ $consignation->reference }}-{{ $consignation->designation }}
-                                        </option>
-                                    @empty
-                                    @endforelse
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="text-bold-400 text-dark" for="received_bottle">
+                                <div class="col-sm-4 mt-1">
+                                    <label class="text-bold-400 text-dark" for="no_consign_quantity">
                                         Quantité
                                     </label>
-                                    <input type="number" required placeholder="0" class="form-control" id="received_bottle"
-                                        name="received_bottle">
+                                    <input type="number" required placeholder="0" class="form-control"
+                                        id="no_consign_quantity" name="no_consign_quantity">
+                                    <div class="invalid-feedback">
+                                        Entrer le nombre de bouteille
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -175,6 +213,7 @@
                     </div>
                 </div>
             </form>
+
             <div class="card d-none" id="paymentAndFactureContainer">
                 <form action="{{ route('admin.ventes.store') }}" method="POST">
                     @csrf
@@ -266,7 +305,7 @@
                                 <thead>
                                     <tr class="p-0">
                                         <th>Designation</th>
-                                        <th>PA</th>
+                                        <th>Prix</th>
                                         <th>Qtt</th>
                                         <th>Sous Total</th>
                                         <th></th>
@@ -341,24 +380,29 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            $(".form-control").prop("required", false);
             $("#article_type").change(function() {
-                if($(this).val()=="1"){
+                // $(".form-control").prop("required", false);
+                $(".invalid-feedback").text("");
+
+                if ($(this).val() == "1") {
+                    // validArticle();
                     $("#articleContainer").removeClass("d-none");
-                    $("#withBottle").prop("disabled",false);
-                    $("#articleContainer .form-control").prop("required",true);
-                    $("#articleContainer .form-control").prop("required",true);
-                    // $("#deconsignationBox .form-control").prop("required",true);
-                    // $("#deconsignation_id").prop("required",false);
-                    // $("#received_bottle").prop("required",false);
-                }
-                else{
-                    $("#articleContainer").addClass("d-none");
-                    $("#withBottle").prop("checked",true);
-                    $("#withBottle").prop("disabled",true);
-                    $("#articleContainer .form-control").prop("required",false);
-                    $("#deconsignationBox .form-control").prop("required",true);
+                } else if ($(this).val() == "3") {
+                    // validDeconsignation();
+                    $("#withDeconsignationContainer").removeClass("d-none");
+
+                    $("#withBottle").prop("checked", true);
+                    $("#withBottle").prop("disabled", true);
+                    $("#noConsignation, #articleContainer").addClass("d-none");
+                } else {
+                    // validConsignation();
+                    $("#noConsignation").removeClass("d-none");
+
+                    $("#withDeconsignationContainer, #articleContainer").addClass("d-none");
                 }
             })
+
 
             $(".newCustomer").click(function() {
                 if ($(this).val() == "1") {
@@ -373,9 +417,9 @@
             $("#withBottle").change(function() {
                 if ($(this).prop("checked")) {
                     $("#deconsignationBox").removeClass("d-none");
-                    $("#deconsignationBox .form-control").prop("required",true);
+                    // $("#deconsignationBox .form-control").prop("required", true);
                 } else {
-                    $("#deconsignationBox .form-control").prop("required",false);
+                    // $("#deconsignationBox .form-control").prop("required", false);
                     $("#deconsignationBox").addClass("d-none");
                     $("#consigned_bottle").val($("#quantity").val());
                     $("#received_bottle").val(0);
@@ -402,5 +446,27 @@
                 $(this).addClass("d-none");
             })
         })
+
+        function validArticle() {
+            $("#articleContainer .form-control").prop("required", true);
+            $("#articleContainer").removeClass("d-none");
+            $("#noConsignation .form-control").prop("required", false);
+        }
+
+        function validConsignation() {
+            $("#noConsignation .form-control").prop("required", true);
+            $("#noConsignation").removeClass("d-none");
+
+            $("#withDeconsignationContainer, #articleContainer").addClass("d-none");
+        }
+
+        function validDeconsignation() {
+            $("#deconsignationBox .form-control").prop("required", true);
+            $("#withDeconsignationContainer").removeClass("d-none");
+
+            $("#withBottle").prop("checked", true);
+            $("#withBottle").prop("disabled", true);
+            $("#noConsignation, #articleContainer").addClass("d-none");
+        }
     </script>
 @endsection

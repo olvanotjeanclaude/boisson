@@ -16,13 +16,14 @@ class Stock extends Model
         "1" => "en détail",
         "2" => "emballage",
         "3" => "en gros",
-        "4" => "deconsignation"
+        "4" => "deconsignation",
     ];
 
     const TYPES = [
         "1" => "article",
         "2" => "consignation",
-        "3" => "deconsignation"
+        "3" => "deconsignation",
+        "4" => "sans consignation"
     ];
 
     public function scopePreArticlesSum($q)
