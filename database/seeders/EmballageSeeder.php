@@ -33,7 +33,7 @@ class EmballageSeeder extends Seeder
         foreach (Package::all() as $key => $value) {
             $data =  [
                 "reference" => generateInteger(5),
-                "designation" => "cageot " . $value->designation . "vide",
+                "designation" => "cageot " . $value->designation . " vide",
                 "content_id" => $value->id,
                 "simpleOrGroup" => 2,
                 "quantity" => rand(15,30),

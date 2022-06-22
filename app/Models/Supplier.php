@@ -30,4 +30,8 @@ class Supplier extends Model
     {
         return (string) random_int(111111, 999999);
     }
+
+    public function getCodeIdentificationAttribute(){
+        return "{$this->code}-{$this->identification}";
+    }
 }

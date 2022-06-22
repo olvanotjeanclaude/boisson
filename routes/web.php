@@ -53,6 +53,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::post("pre-save-invoice-articles", [\App\Http\Controllers\admin\article\ArticleController::class, "preSaveInvoiceArticle"])->name("article.preSaveInvoiceArticle");
 
     Route::resource("articles", \App\Http\Controllers\admin\article\ArticleController::class);
+    Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
 
     Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
     Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class)->except(["create"]);

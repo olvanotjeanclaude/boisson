@@ -80,6 +80,12 @@
                         </a>
                     </li>
                     <li>
+                        <a class="menu-item" href="{{ route('admin.tarif-fournisseurs.index') }}">
+                            <i class="material-icons"></i>
+                            <span>Tarif Fournisseurs</span>
+                        </a>
+                    </li>
+                    <li>
                         <a class="menu-item" href="{{ route('admin.approvisionnement.emballages.index') }}">
                             <i class="material-icons"></i>
                             <span>Emballage </span>
