@@ -28,42 +28,7 @@ class DocumentAchat extends Model
         "pending" => 5
     ];
 
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function articles(){
-        return $this->hasMany(Stock::class,"invoice_number","number");
-    }
-
-    public function getStatusHtmlAttribute()
-    {
-        switch ($this->status) {
-            case self::STATUS["invalid"]:
-                $html = '<span class="badge badge-danger">Invalide</span>';
-                break;
-            case self::STATUS["valid"]:
-                $html = '<span class="badge badge-success">Valide</span>';
-                break;
-            case self::STATUS["deleted"]:
-                $html = '<span class="badge badge-danger">Supprimer</span>';
-                break;
-            case self::STATUS["invalid"]:
-                $html = '<span class="badge badge-danger">Invalid</span>';
-                break;
-            case self::STATUS["invalid"]:
-                $html = '<span class="badge badge-danger">Invalid</span>';
-                break;
-            case self::STATUS["invalid"]:
-                $html = '<span class="badge badge-danger">Invalid</span>';
-                break;
-
-            default:
-                $html = '<span class="badge badge-dark">Inconnu</span>';
-                break;
-        }
-
-        return $html;
+    public function supplier_orders(){
+        return $this->hasMany(SupplierOrders::class,"invoice_number","number");
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
+use App\Models\Emballage;
 use App\Models\PricingSuplier;
 
 class PricingSupplierController extends Controller
@@ -24,8 +25,14 @@ class PricingSupplierController extends Controller
         $suppliers = Supplier::orderBy("identification")->get();
         $products = Product::orderBy("designation")->get();
         $packages = Package::orderBy("designation")->get();
+        $emballages = Emballage::orderBy("designation")->get();
 
-        return view("admin.tarif_supplier.create", compact("products", "suppliers", "packages"));
+        return view("admin.tarif_supplier.create", compact(
+            "products", 
+            "suppliers", 
+            "packages",
+            "emballages"
+        ));
     }
 
     public function edit($id)

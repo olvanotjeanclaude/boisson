@@ -35,6 +35,10 @@ class Supplier extends Model
         return "{$this->code}-{$this->identification}";
     }
 
+    public function getFrCodeAttribute(){
+        return "FR{$this->code}";
+    }
+
     public function pricings(){
         return $this->hasMany(PricingSuplier::class);
     }

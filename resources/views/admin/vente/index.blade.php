@@ -100,7 +100,7 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($docSales as $sale)
-                                            <tr>
+                                            <tr id="row_{{$sale->number}}">
                                                 <td>{!! $sale->status_html !!}</td>
                                                 <td>{{ $sale->number }}</td>
                                                 <td>{{ $sale->customer->identification }}</td>
@@ -128,8 +128,8 @@
                                                                 class="dropdown-item">
                                                                 <i class="la la-credit-card"></i>
                                                                 Payment</a>
-                                                            <a data-id="{{ $sale['id'] }}"
-                                                                data-url="{{ route('admin.achat-produits.destroy', $sale['id']) }}"
+                                                            <a data-id="{{ $sale['number'] }}"
+                                                                data-url="{{ route('admin.ventes.destroy',['vente' => $sale['number'], 'invoice' => true]) }}"
                                                                 class="dropdown-item delete-btn"><i class="la la-trash"></i>
                                                                 Supprimer</a>
                                                         </span>

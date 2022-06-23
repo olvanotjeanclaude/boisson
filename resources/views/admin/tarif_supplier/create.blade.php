@@ -73,6 +73,9 @@
                                         @foreach ($packages as $package)
                                             <option value="{{ $package->reference }}">{{ $package->designation }}</option>
                                         @endforeach
+                                        @foreach ($emballages as $emballage)
+                                            <option value="{{ $emballage->reference }}">{{ $emballage->designation }}</option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback">
                                         Selectionneez l'article

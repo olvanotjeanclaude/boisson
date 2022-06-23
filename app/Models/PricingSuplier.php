@@ -26,4 +26,26 @@ class PricingSuplier extends Model
     {
         return $this->morphTo(__FUNCTION__, "article_type", "article_id");
     }
+
+    public function scopeEmballages($query, $supplier_id = null)
+    {
+        $emballages = [];
+
+        $pricings = self::whereHas("supplier")
+            ->when($supplier_id != null, function ($query) use ($supplier_id) {
+                return $query->where("supplier_id", $supplier_id);
+            })
+            ->whereHasMorph(
+                'product',
+                [Emballage::class]
+            )->get();
+
+        if (count($pricings)) {
+            foreach ($pricings as $pricing) {
+                $emballages[] = $pricing->product;
+            }
+        }
+
+        return $emballages;
+    }
 }

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\api\article;
 use App\Http\Controllers\Controller;
 use App\Models\Emballage;
 use App\Models\Package;
+use App\Models\PricingSuplier;
 use App\Models\Product;
 use App\Models\Stock;
-use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -59,22 +59,40 @@ class ArticleController extends Controller
         return response()->json($article);
     }
 
-    public function getArticleBySupplier($supplier_id,$type){
-        dd($type);
-        $supplier = Supplier::findOrFail($supplier_id);
-        $articles = [];
+    public function getArticleBySupplier($supplier_id)
+    {
+        $articles = [
+            "articles" => [],
+            "emballages" => [],
+        ];
 
-        if(count($supplier->pricings)){
-            foreach ($supplier->pricings as $pricing) {
-                if($pricing){
-                    $data = (object)[
-                      "reference" =>$pricing->product->reference,
-                      "designation" =>$pricing->product->designation
-                    ];
-                    $articles[] = $data;
+        $datas = PricingSuplier::has("supplier")
+            ->whereHasMorph(
+                'product',
+                [Product::class, Package::class]
+            )
+            ->where("supplier_id", $supplier_id)
+            ->get();
+
+        $emballages = PricingSuplier::Emballages($supplier_id);
+
+        if (count($datas)) {
+            foreach ($datas as $pricing) {
+                if ($pricing && $pricing->product) {
+                    $articles["articles"][] = $pricing->product;
                 }
             }
         }
+
+        if (count($emballages)) {
+            foreach ($emballages as $pricing) {
+                // dd($pricing);
+                if ($pricing) {
+                    $articles["emballages"][] = $pricing;
+                }
+            }
+        }
+
         return response()->json($articles);
     }
 }

@@ -14,16 +14,16 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Vente',
+        'page' => 'Achat Produits',
         'breadcrumbs' => [
-            ['text' => 'Ventes', 'link' => route('admin.ventes.index')],
-            ['text' => 'Nouveau', 'link' => route('admin.index')],
+            ['text' => 'Achat Produits', 'link' => route('admin.achat-produits.index')],
+            ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Factures',
-            'link' => route('admin.ventes.create'),
+            'text' => 'Faire Achat',
+            'link' => route('admin.achat-produits.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => false,
+            'show' => true,
         ],
     ])
 @endsection
@@ -48,7 +48,7 @@
                             <div class="col-12 mt-1">
                                 <label class="text-bold-400 text-dark" for="supplier_id">Fournisseur</label>
                                 <select required name="supplier_id" id="supplier_id" required class="form-control">
-                                   <option value="">Choisir</option>
+                                    <option value="">Choisir</option>
                                     @forelse ($suppliers as  $supplier)
                                         <option value="{{ $supplier->id }}">{{ $supplier->identification }}</option>
                                     @empty
@@ -79,19 +79,9 @@
                                     <div class="row">
                                         <div class="col-sm-8 mt-1 col-article">
                                             <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
-                                            <select name="article_reference"  class="form-control"
+                                            <select name="article_reference" class="form-control articleBySupplier"
                                                 id="article_reference">
                                                 <option value=''>Choisir</option>
-                                                @foreach ($articles as $article)
-                                                    <option value="{{ $article->reference }}">
-                                                        {{ $article->reference }}-{{ $article->designation }}</option>
-                                                @endforeach
-                                                @foreach ($packages as $package)
-                                                    <option value="{{ $package->reference }}">
-                                                        {{ $package->reference }}-{{ $package->designation }}
-                                                    </option>
-                                                @endforeach
-
                                             </select>
                                             <div class="invalid-feedback">
                                                 Selectionnez l'article
@@ -102,8 +92,8 @@
                                             <label class="text-bold-400 text-dark" for="quantity">
                                                 Quantité
                                             </label>
-                                            <input type="number"  placeholder="0" class="form-control"
-                                                id="quantity" name="quantity">
+                                            <input type="number" placeholder="0" class="form-control" id="quantity"
+                                                name="quantity">
                                             <div class="invalid-feedback">
                                                 Entrer le nombre de bouteiller
                                             </div>
@@ -113,15 +103,9 @@
                                             <label class="text-bold-400 text-dark" for="consignation_id">
                                                 Consignation
                                             </label>
-                                            <select name="consignation_id"  class="form-control text-capitalize"
+                                            <select name="consignation_id" class="form-control emballages text-capitalize"
                                                 id="consignation_id">
                                                 <option value="">Choisir</option>
-                                                @forelse ($consignations as $consignation)
-                                                    <option value="{{ $consignation->reference }}">
-                                                        {{ $consignation->reference }}-{{ $consignation->designation }}
-                                                    </option>
-                                                @empty
-                                                @endforelse
                                             </select>
                                             <div class="invalid-feedback">
                                                 Selectionnez la consignation d'article
@@ -158,15 +142,9 @@
                                     <label class="text-bold-400 text-dark" for="deconsignation_id">
                                         Deconsignation
                                     </label>
-                                    <select name="deconsignation_id"  class="form-control text-capitalize"
+                                    <select name="deconsignation_id" class="form-control emballages text-capitalize"
                                         id="deconsignation_id">
                                         <option value="">Choisir</option>
-                                        @forelse ($consignations as $consignation)
-                                            <option value="{{ $consignation->reference }}">
-                                                {{ $consignation->reference }}-{{ $consignation->designation }}
-                                            </option>
-                                        @empty
-                                        @endforelse
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
@@ -174,8 +152,8 @@
                                         <label class="text-bold-400 text-dark" for="received_bottle">
                                             Quantité
                                         </label>
-                                        <input type="number"  placeholder="0" class="form-control"
-                                            id="received_bottle" name="received_bottle">
+                                        <input type="number" placeholder="0" class="form-control" id="received_bottle"
+                                            name="received_bottle">
                                     </div>
                                 </div>
                             </div>
@@ -185,18 +163,9 @@
                             <div class="row">
                                 <div class="col-sm-8 mt-1 col-article">
                                     <label class="text-bold-400 text-dark" for="no_consign_ref_id">Articles</label>
-                                    <select name="no_consign_ref_id"  class="form-control" id="no_consign_ref_id">
+                                    <select name="no_consign_ref_id" class="form-control articleBySupplier"
+                                        id="no_consign_ref_id">
                                         <option value=''>Choisir</option>
-                                        @foreach ($articles as $article)
-                                            <option value="{{ $article->reference }}">
-                                                {{ $article->reference }}-{{ $article->designation }}</option>
-                                        @endforeach
-                                        @foreach ($packages as $package)
-                                            <option value="{{ $package->reference }}">
-                                                {{ $package->reference }}-{{ $package->designation }}
-                                            </option>
-                                        @endforeach
-
                                     </select>
                                     <div class="invalid-feedback">
                                         Selectionnez l'article
@@ -207,8 +176,8 @@
                                     <label class="text-bold-400 text-dark" for="no_consign_quantity">
                                         Quantité
                                     </label>
-                                    <input type="number"  placeholder="0" class="form-control"
-                                        id="no_consign_quantity" name="no_consign_quantity">
+                                    <input type="number" placeholder="0" class="form-control" id="no_consign_quantity"
+                                        name="no_consign_quantity">
                                     <div class="invalid-feedback">
                                         Entrer le nombre de bouteille
                                     </div>
@@ -234,21 +203,6 @@
                     <input type="hidden" name="saveData" value="saveData" id="">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-7">
-                                <div class="input-group">
-                                    <h5 class="mr-2">Nouveau Client?</h5>
-                                    <div class="d-inline-block custom-control custom-radio mr-1">
-                                        <input type="radio" name="newCustomer" value="1"
-                                            class="newCustomer custom-control-input" id="yes">
-                                        <label class="custom-control-label" for="yes">Oui</label>
-                                    </div>
-                                    <div class="d-inline-block custom-control custom-radio">
-                                        <input checked type="radio" value="0" name="newCustomer"
-                                            class="newCustomer custom-control-input" id="no">
-                                        <label class="custom-control-label" for="no">Non</label>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="col-md">
                                 <div class="form-group">
                                     <label class="text-bold-400 text-dark" for="received_at">
@@ -258,34 +212,14 @@
                                         id="received_at" name="received_at">
                                 </div>
                             </div>
-                           
-                            <div class="col-12 mt-1 d-none" id="newCustomerBlock">
-                                <div class="row">
-                                    <div class="col-sm">
-                                        <div class="form-group">
-                                            <label for="customer_identification">Identification</label>
-                                            <input type="text" id="customer_identification"
-                                                class="form-control border-primary" placeholder="identification"
-                                                name="customer_identification">
-                                        </div>
-                                    </div>
 
-                                    <div class="col-sm">
-                                        <div class="form-group">
-                                            <label for="customer_phone">Téléphone</label>
-                                            <input type="tel" id="customer_phone" class="form-control border-primary"
-                                                placeholder="Numéro De Téléphone" name="customer_phone">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="col-md-7 mt-1">
                                 <div class="form-group">
                                     <label for="comment">Commentaire</label>
                                     <textarea name="comment" id="comment" class="form-control" placeholder="Note"></textarea>
                                 </div>
                             </div>
-                            <div class="col-md-5 d-flex align-items-center">
+                            <div class="col-12">
                                 <button type="submit" class="btn form-control my-1 border-top text-white btn-secondary">
                                     <i class="la la-save"></i>
                                     Enregistrer
@@ -315,32 +249,37 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($preInvoices as $preInvoice)
-                                        <tr>
-                                            <td class="pl-1 py-0 text-capitalize">
-                                                {{ $preInvoice->saleable->designation }}
-                                            </td>
-                                            <td class="pl-1 py-0">
-                                                {{ $preInvoice->saleable->price }}
-                                                Ar
-                                            </td>
-                                            <td class="pl-1 py-0">{{ $preInvoice->quantity }}</td>
-                                            <td class="pl-1 py-0">
-                                                {{ formatPrice($preInvoice->sub_amount) }}
-                                            </td>
-                                            <td class="pl-1 py-0">
-                                                <form method="POST"
-                                                    action="{{ route('admin.ventes.destroy', $preInvoice->id) }}">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <button type="submit"
-                                                        class="btn btn-outline-accent-1 remove-article">
-                                                        <span class="material-icons text-danger">
-                                                            remove_circle
-                                                        </span>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                        @php
+                                            $pricing = $preInvoice->supplier_price;
+                                        @endphp
+                                        @if ($pricing)
+                                            <tr>
+                                                <td class="pl-1 py-0 text-capitalize">
+                                                    {{ $preInvoice->product->designation }}
+                                                </td>
+                                                <td class="pl-1 py-0">
+                                                    {{ $pricing->buying_price }}
+                                                    Ar
+                                                </td>
+                                                <td class="pl-1 py-0">{{ $preInvoice->quantity }}</td>
+                                                <td class="pl-1 py-0">
+                                                    {{ formatPrice($preInvoice->sub_amount) }}
+                                                </td>
+                                                <td class="pl-1 py-0">
+                                                    <form method="POST"
+                                                        action="{{ route('admin.achat-produits.destroy', $preInvoice->id) }}">
+                                                        @csrf
+                                                        @method('delete')
+                                                        <button type="submit"
+                                                            class="btn btn-outline-accent-1 remove-article">
+                                                            <span class="material-icons text-danger">
+                                                                remove_circle
+                                                            </span>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -404,23 +343,10 @@
                 }
             })
 
-
-            $(".newCustomer").click(function() {
-                if ($(this).val() == "1") {
-                    $("#newCustomerBlock").removeClass("d-none");
-                    $("#customerBlock").addClass("d-none");
-                } else {
-                    $("#customerBlock").removeClass("d-none");
-                    $("#newCustomerBlock").addClass("d-none");
-                }
-            })
-
             $("#withBottle").change(function() {
                 if ($(this).prop("checked")) {
                     $("#deconsignationBox").removeClass("d-none");
-                    // $("#deconsignationBox .form-control").prop("required", true);
                 } else {
-                    // $("#deconsignationBox .form-control").prop("required", false);
                     $("#deconsignationBox").addClass("d-none");
                     $("#consigned_bottle").val($("#quantity").val());
                     $("#received_bottle").val(0);
@@ -446,7 +372,43 @@
                 $("#validFacture").addClass("btn-secondary").removeClass("btn-primary d-none");
                 $(this).addClass("d-none");
             })
+
+            $("#supplier_id").change(getArticleBySupplier);
         })
+
+        function getArticleBySupplier() {
+            const suplier_id = $(this).val();
+            let articleOptions = "<option value=''>Choisir</option>";
+            let emballageOptions = "<option value=''>Choisir</option>";
+
+            $(".articleBySupplier, .emballages").html(articleOptions);
+
+            if (suplier_id) {
+                const url = `/api/supplier/${suplier_id}/articles`;
+                axios.get(url)
+                    .then((response) => {
+                        const articles = response.data.articles;
+                        const emballages = response.data.emballages;
+
+                        if (articles.length) {
+                            articles.forEach(article => {
+                                articleOptions +=
+                                    `<option value="${article.reference}">${article.designation}</option>`;
+                            });
+                            $(".articleBySupplier").html(articleOptions);
+                        }
+
+                        if (emballages.length) {
+                            emballages.forEach(emballage => {
+                                emballageOptions +=
+                                    `<option value="${emballage.reference}">${emballage.designation}</option>`;
+                            });
+                            console.log(emballageOptions);
+                            $(".emballages").html(emballageOptions);
+                        }
+                    })
+            }
+        }
 
         function validArticle() {
             $("#articleContainer .form-control").prop("required", true);

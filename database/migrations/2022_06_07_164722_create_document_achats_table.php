@@ -16,15 +16,16 @@ class CreateDocumentAchatsTable extends Migration
         Schema::create('document_achats', function (Blueprint $table) {
             $table->id();
             $table->integer("status");
-            // $table->string("reference");
             $table->string("number");
-            $table->unsignedBigInteger("supplier_id");
-            $table->decimal("paid");
-            $table->decimal("rest");
-            $table->integer("payment_type");
-            $table->decimal("checkout")->comment("sortie de caisse");
-            $table->date("received_at");
+            $table->decimal("paid")->nullable();
+            $table->decimal("rest")->nullable();
+            // $table->decimal("checkout")->nullable();
+            $table->integer("payment_type")->nullable();
+            $table->dateTime("received_at");
             $table->longText("comment")->nullable();
+
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("update_user_id")->nullable();
             $table->timestamps();
         });
     }

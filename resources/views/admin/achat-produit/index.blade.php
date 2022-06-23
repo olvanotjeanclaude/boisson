@@ -42,18 +42,24 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title"> Achat Produits</h4>
+                        <h4 class="card-title"> Liste D'Achat Produits</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <button type="button" id="deleteIcheckBtn" data-target="#deleteAllModal" data-toggle="modal"
-                                data-url="{{ route('admin.articles.destroy', ['article' => 'item']) }}"
+                                data-url="{{ route('admin.ventes.destroy', ['vente' => 'item']) }}"
                                 class="btn delete-btn d-none btn-danger btn-sm text-capitalize">
                                 <span class="material-icons">
                                     delete
                                 </span>
                                 Supprimer
                             </button>
-                           
+                            {{-- <a href="{{ route('admin.factures.index') }}"
+                                class="btn btn-secondary btn-sm text-capitalize">
+                                <span class="material-icons">
+                                    inventory
+                                </span>
+                                toutes les factures
+                            </a> --}}
                             <div class="d-none">
                                 <span class="dropdown">
                                     <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true"
@@ -63,7 +69,8 @@
                                     <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
                                         <a href="#" class="dropdown-item"><i class="la la-calendar"></i> Due Date</a>
                                         <a href="#" class="dropdown-item"><i class="la la-random"></i> Priority </a>
-                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance Due</a>
+                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance
+                                            Due</a>
                                         <a href="#" class="dropdown-item"><i class="la la-user"></i> Assign to</a>
                                     </span>
                                 </span>
@@ -82,62 +89,66 @@
                                             <th>Status</th>
                                             <th>Numero</th>
                                             <th>Fournisseur</th>
-                                            <th>Nbre Art.</th>
-                                            <th>Payer</th>
-                                            <th>Reste</th>
+                                            <th>Code du Fournisseur</th>
+                                            <th>Total Article</th>
                                             <th>Date</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    
                                     <tbody>
                                         @forelse ($invoices as $invoice)
-                                            <tr>
-                                                <td>{!! $invoice->status_html !!}</td>
-                                                <td>{{ $invoice->number }}</td>
-                                                <td>{{ $invoice->supplier->identification }}</td>
-                                                <td>{{ $invoice->articles_count }}</td>
-                                                <td>{{ $invoice->paid }}</td>
-                                                <td>{{ $invoice->rest }}</td>
-                                                <td>{{ format_date($invoice->received_at) }}</td>
-                                                <td>
-                                                    <span class="dropdown">
-                                                        <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="true"
-                                                            class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
-                                                                class="ft-settings"></i></button>
-                                                        <span aria-labelledby="btnSearchDrop2"
-                                                            class="dropdown-menu mt-1 dropdown-menu-right">
-                                                            {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
-                                                                class="dropdown-item"><i
-                                                                    class="la la-eye"></i>Voir</a> --}}
-                                                            <a href="{{ route('admin.achat-produits.edit', $invoice['id']) }}"
-                                                                class="dropdown-item"><i class="la la-pencil"></i>
-                                                                Editer</a>
-                                                            <a href="#" class="dropdown-item"><i
-                                                                    class="la la-print"></i> Factures</a>
-                                                            <a data-id="{{ $invoice['id'] }}"
-                                                                data-url="{{ route('admin.achat-produits.destroy', $invoice['id']) }}"
-                                                                class="dropdown-item delete-btn"><i
-                                                                    class="la la-trash"></i> Supprimer</a>
+                                            @php
+                                                $order = $invoice->supplier_orders()->first();
+                                                $supplier = $order->supplier ?? null;
+                                            @endphp
+
+                                            @if ($supplier)
+                                                <tr id="row_{{ $invoice->number }}">
+                                                    <td>{!! $invoice->status_html !!}</td>
+                                                    <td>{{ $invoice->number }}</td>
+                                                    <td>{{ $supplier->identification }}</td>
+                                                    <td>{{ $supplier->fr_code }}</td>
+                                                    <td>{{ $invoice->supplier_orders_count }}</td>
+                                                    <td>{{ format_date_time($invoice->received_at) }}</td>
+                                                    <td>
+                                                        <span class="dropdown">
+                                                            <button id="btnSearchDrop2" type="button"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="true"
+                                                                class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
+                                                                    class="ft-settings"></i></button>
+                                                            <span aria-labelledby="btnSearchDrop2"
+                                                                class="dropdown-menu mt-1 dropdown-menu-right">
+                                                                {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
+                                                            class="dropdown-item"><i
+                                                                class="la la-eye"></i>Voir</a> --}}
+                                                                {{-- <a href="{{ route('admin.achat-produits.edit', $sale['id']) }}"
+                                                            class="dropdown-item"><i class="la la-pencil"></i>
+                                                            Editer</a> --}}
+                                                                <a href="{{ route('admin.print.achat', $invoice->number) }}"
+                                                                    class="dropdown-item">
+                                                                    <i class="la la-print"></i>
+                                                                    Factures
+                                                                </a>
+                                                                <a href="{{ route('admin.achat.paymentForm', $invoice->number) }}"
+                                                                    class="dropdown-item">
+                                                                    <i class="la la-credit-card"></i>
+                                                                    Payment
+                                                                </a>
+                                                                <a data-id="{{ $invoice['number'] }}"
+                                                                    data-url="{{ route('admin.achat-produits.destroy', ['achat_produit' => $invoice['number'], 'invoice' => true]) }}"
+                                                                    class="dropdown-item delete-btn"><i
+                                                                        class="la la-trash"></i>
+                                                                    Supprimer
+                                                                </a>
+                                                            </span>
                                                         </span>
-                                                    </span>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                         @empty
                                         @endforelse
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Numero</th>
-                                            <th>Fournisseur</th>
-                                            <th>Payer</th>
-                                            <th>Reste</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                             <!--/ Invoices table -->

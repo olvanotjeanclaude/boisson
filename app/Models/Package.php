@@ -22,4 +22,8 @@ class Package extends Model
     public function stock(){
         return $this->morphOne(Stock::class,"stockable");
     }
+
+    public function supplier_prices(){
+        return $this->morphMany(PricingSuplier::class,"product","article_type","article_id");
+    }
 }

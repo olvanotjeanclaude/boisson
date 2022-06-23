@@ -126,7 +126,12 @@ class SaleController extends Controller
 
     private function getDeconsignationData($request)
     {
-        $deconsignation = $this->getArticleData($request->deconsignation_id, $request->received_bottle, $request);
+        $deconsignation = $this->getArticleData(
+            $request->deconsignation_id,
+            $request->received_bottle,
+            $request
+        );
+
         $deconsignation["isWithEmballage"] = true;
         return $deconsignation;
     }
@@ -221,10 +226,32 @@ class SaleController extends Controller
         return view("admin.article.edit", compact("article", "catArticles", "suppliers"));
     }
 
-    public function destroy($id)
+
+    public function destroy($idOrNumber)
     {
-        $article = Sale::findOrFail($id);
-        $article->delete();
-        return back()->with("success", "Supprimer avec success");
+        $delete = Sale::where("id", $idOrNumber)
+        ->orWhere("invoice_number", $idOrNumber)
+        ->delete();
+
+        if (request()->get("invoice")) {
+            $result = [];
+            $delete = DocumentVente::where("number", $idOrNumber)->delete();
+
+            if ($delete) {
+                $result["success"] = CustomMessage::Delete("Le vente");
+                $result["type"] = "success";
+            } else {
+                $result["type"] = "error";
+                $result["error"] = CustomMessage::DEFAULT_ERROR;
+            }
+
+            return response()->json($result);
+        }
+
+        if ($delete) {
+            return back()->with("success", "Supprimer avec success");
+        }
+
+        return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 }

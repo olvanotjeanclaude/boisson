@@ -67,11 +67,15 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::group(["prefix" => "impression", "as" => "print."], function () {
       Route::get("vente/{invoice_number}",[\App\Http\Controllers\admin\impression\ImpressionController::class,"printSale"])->name("sale");
       Route::get("vente/{invoice_number}/terminer",[\App\Http\Controllers\admin\impression\ImpressionController::class,"saleTerminate"])->name("sale.terminate");
+      Route::get("achat/{invoice_number}",[\App\Http\Controllers\admin\impression\ImpressionController::class,"printAchat"])->name("achat");
+      Route::get("achat/{invoice_number}/terminer",[\App\Http\Controllers\admin\impression\ImpressionController::class,"achatTerminate"])->name("achat.terminate");
     });
 
     Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
     Route::get("ventes/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"paymentForm"])->name("sale.paymentForm");
     Route::post("ventes/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"paymentStore"])->name("sale.paymentStore");
+    Route::get("achat-produits/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"achatPaymentForm"])->name("achat.paymentForm");
+    Route::post("achat-produits/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"achatPaymentStore"])->name("achat.paymentStore");
 
     Route::post("pre-save-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveVente"])->name("ventes.preSaveVente");
     Route::post("pre-save-invoice-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");

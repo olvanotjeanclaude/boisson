@@ -3,197 +3,201 @@
 namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
-use App\Models\Package;
-use App\Models\Product;
-use App\Models\Category;
+use App\helper\Invoice;
 use App\Models\Supplier;
-use App\Models\Emballage;
 use Illuminate\Http\Request;
 use App\Models\DocumentAchat;
 use App\Message\CustomMessage;
-use App\Models\PurchaseProduct;
+use App\Models\SupplierOrders;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Collection;
+use App\Http\Requests\AchatSupplierValidation;
 
 class PurchaseProductController extends Controller
 {
     public function index()
     {
-        $invoices = DocumentAchat::withCount("articles")
-        ->orderBy("id", "desc")
-        ->get();
+        $invoices = DocumentAchat::withCount("supplier_orders")
+            ->orderBy("id", "desc")
+            ->get();
+        // dd($invoices->first()->supplier_orders()->first()->supplier);
         return view("admin.achat-produit.index", compact("invoices"));
     }
 
     public function create()
     {
         $suppliers = Supplier::orderBy("identification", "asc")->get();
-        $consignations = Emballage::orderBy("designation")->get();
-       
         $articleTypes = array_filter(Stock::TYPES, function ($type) {
             return $type != "consignation";
         });
 
-        $preInvoices = [];
-        $amount = 0;
-
-        $articles = [];
-        $packages =[];
+        $preInvoices = SupplierOrders::PreInvoices()->get();
+        $amount = SupplierOrders::PreArticlesSum();
 
         return view("admin.achat-produit.create", compact(
             "suppliers",
             "articleTypes",
-            "consignations",
             "preInvoices",
             "amount",
-
-            "articles",
-            "packages",
         ));
     }
-   
+
 
     public function store(Request $request)
     {
-        $request->validate($this->rules(), $this->messages());
+        // dd($request->all());
+        $request->validate(AchatSupplierValidation::rules(), AchatSupplierValidation::messages());
 
         if (isset($request->saveData)) {
-            $amount = Stock::PreArticlesSum();
+            $newInvoice = $this->saveAchat($request);
+
+            if ($newInvoice) {
+                return redirect()->route("admin.print.achat", $newInvoice->number);
+            }
+
+            return back()->with("error", CustomMessage::DEFAULT_ERROR);
+        }
+
+        $datas = $this->getAllArticleDatas($request);
+
+        // dd($datas, $request->all());
+
+        if (count($datas)) {
+            foreach ($datas as  $data) {
+                if (count($data)) {
+                    SupplierOrders::create($data);
+                }
+            }
+        }
+
+        return back();
+    }
+
+    private function saveAchat(Request $request)
+    {
+        if (isset($request->saveData)) {
+            $dateTime = $request->received_at ?? date("Y-m-d");
             $invoiceData = [
-                "status" => DocumentAchat::STATUS["valid"],
-                "number" => generateInteger(),
-                "supplier_id" => $request->supplier_id,
-                "paid" => $request->paid,
-                "rest" => $amount - $request->paid,
-                "payment_type" => $request->payment_type,
-                "received_at" => $request->received_at ?? date("Y-m-d"),
+                "status" => Invoice::STATUS["no_printed"],
+                "number" => generateInteger(7),
+                "received_at" => $dateTime . " " . now()->toTimeString(),
                 "comment" => $request->comment,
+                "user_id" => auth()->user()->id
             ];
 
             $invoice = DocumentAchat::create($invoiceData);
 
             if ($invoice) {
-                $preInvoices = Stock::preInvoices();
+                $preInvoices = SupplierOrders::preInvoices();
                 $preInvoices->update(["invoice_number" => $invoice->number]);
 
-                return back()->with("success", CustomMessage::Success("L'achat"));
+                return $invoice;
             }
         }
 
-        $data = [
-            "article_type" => $request->article_type,
-            "category_id" => $request->category_id,
-            "article_reference" => $request->article_reference,
-            "quantity" => $request->quantity,
-            "buying_price" => $request->buying_price,
-            "user_id" => auth()->user()->id
-        ];
-
-        $article = Stock::getArticleByReference($request->article_reference);
-
-        $data["stockable_id"] = $article->id;
-        $data["stockable_type"] = get_class($article);
-
-        Stock::create($data);
-
-        return back();
+        return false;
     }
 
-    private function rules()
+    private function getAllArticleDatas($request): array
     {
-        $withSupplier = [
-            "supplier_id" => "required",
-            "payment_type" => "required",
-            "paid" => "required",
-        ];
-        $article = [
-            "article_type" => "required",
-            "category_id" => "required",
-            "article_reference" => "required",
-            "quantity" => "required",
-        ];
+        $datas = [];
+        $articleType = Stock::TYPES[$request->article_type] ?? null;
 
-        return isset(request()->saveData) ? $withSupplier : $article;
-    }
+        switch ($articleType) {
+            case 'article':
+                $datas[] = $this->getArticleData(
+                    $request->article_reference,
+                    $request->quantity,
+                    $request
+                );
+                $datas[] = $this->getArticleData(
+                    $request->consignation_id,
+                    $request->quantity,
+                    $request
+                );
 
-    private function messages()
-    {
-        return [
-            "article_type.required" => "Selectionnez le type d'article",
-            "category_id.required" => "Selectionner la famille d'article",
-            "article_reference.required" => "Enter l'article",
-            "quantity.required" => "Enter la valeur a acheter",
-        ];
-    }
-
-    private function calculateAmount(Collection $articleRequests)
-    {
-        $amount = 0;
-
-        if ($articleRequests->count()) {
-            $sumArticle = $articleRequests->filter(function ($item) {
-                return $item["article_type"] != PurchaseProduct::ARTICLE_TYPES["deconsignation"];
-            })->sum("sub_amount");
-
-            $sumDeconsignation = $articleRequests->filter(function ($item) {
-                return $item["article_type"] == PurchaseProduct::ARTICLE_TYPES["deconsignation"];
-            })->sum("sub_amount");
-
-            $amount = $sumArticle - $sumDeconsignation;
+                if (isset($request->withBottle)) {
+                    $datas[] =  $this->getDeconsignationData($request);
+                }
+                break;
+            case 'deconsignation':
+                $datas[] =  $this->getDeconsignationData($request);
+                break;
+            case 'sans consignation':
+                $datas[] = $this->getArticleData(
+                    $request->no_consign_ref_id,
+                    $request->no_consign_quantity,
+                    $request
+                );
+                break;
+            default:
+                # code...
+                break;
         }
 
-        return $amount;
+        return $datas;
     }
 
-    public function preSaveArticle(Request $request)
+    private function getDeconsignationData($request)
     {
-        $articleRequests = $this->articleRequests($request->all()) ?? [];
-        $articleTypes = PurchaseProduct::ARTICLE_TYPES;
-        $units = PurchaseProduct::UNITS;
-        $articleCategories = Category::pluck("id", "name")->toArray();
+        $deconsignation = $this->getArticleData(
+            $request->deconsignation_id,
+            $request->received_bottle,
+            $request
+        );
 
-        return view("admin.achat-produit.ajax-response.pre-article", compact(
-            "articleRequests",
-            "articleTypes",
-            "articleCategories",
-            "units"
-        ));
+        $deconsignation["isWithEmballage"] = true;
+        return $deconsignation;
     }
 
-
-
-    public function update(PurchaseProduct $article, Request $request)
+    private function getArticleData($articleRef, $quantity, $request): array
     {
-        $data = $request->all();
-        $data["user_update_id"] = auth()->user()->id;
-        // dd($article,$data);
-        $saved = $article->update($data);
+        $data = [];
+        $article = DocumentAchat::getArticleByReference($articleRef);
 
-        if ($saved) {
-            return redirect("/admin/articles")->with("success", CustomMessage::Success("L'article"));
+        $pricing = $article->supplier_prices()
+            ->where("supplier_id", $request->supplier_id)
+            ->first();
+
+        // $pricing = PricingSuplier::whereHasMorph("product", ["*"])
+        // ->where("supplier_id", $request->supplier_id)
+        // ->where("article_id", $article_id)
+        // ->where("article_type", $article_type)
+        // ->first();
+
+        if ($article) {
+            $data = [
+                "supplier_id" => $request->supplier_id,
+                "article_reference" => $article->reference,
+                "article_id" => $article->id,
+                "article_type" => get_class($article),
+                "quantity" => $quantity ?? 0,
+                "user_id" => auth()->user()->id,
+                "pricing_id" => $pricing->id ?? 0
+            ];
         }
-
-        return back()->with("error", CustomMessage::DEFAULT_ERROR);
+        return $data;
     }
 
-    public function show(PurchaseProduct $article)
+    public function destroy($idOrNumber)
     {
-        return view("admin.achat-produit.show", compact("article"));
-    }
+        $delete = SupplierOrders::where("id", $idOrNumber)
+            ->orWhere("invoice_number", $idOrNumber)
+            ->delete();
 
-    public function edit(PurchaseProduct $article)
-    {
-        $suppliers = Supplier::orderBy("identification", "asc")->get();
+        if (request()->get("invoice")) {
+            $result = [];
+            $delete = DocumentAchat::where("number", $idOrNumber)->delete();
+           
+            if ($delete) {
+                $result["success"] = CustomMessage::Delete("Supprimer avec success");
+                $result["type"] = "success";
+            } else {
+                $result["type"] = "error";
+                $result["error"] = CustomMessage::DEFAULT_ERROR;
+            }
 
-        $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.achat-produit.edit", compact("article", "catArticles", "suppliers"));
-    }
-
-    public function destroy($id)
-    {
-        $article = Stock::findOrFail($id);
-
-        $article->delete();
+            return response()->json($result);
+        }
 
         return back()->with("success", "Supprimer avec success");
     }
