@@ -140,7 +140,7 @@
                             <div class="row" id="deconsignationBox">
                                 <div class="col-sm-8">
                                     <label class="text-bold-400 text-dark" for="deconsignation_id">
-                                        Deconsignation
+                                        Deconsignatio
                                     </label>
                                     <select name="deconsignation_id" class="form-control emballages text-capitalize"
                                         id="deconsignation_id">
