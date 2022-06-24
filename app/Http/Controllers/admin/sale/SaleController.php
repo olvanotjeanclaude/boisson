@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\admin\sale;
 
-use App\helper\Invoice;
-use App\Models\Category;
-use App\Models\Supplier;
-use Illuminate\Http\Request;
-use App\Message\CustomMessage;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\VenteValidation;
-use App\Models\Articles;
-use App\Models\Customers;
-use App\Models\DocumentVente;
-use App\Models\Emballage;
-use App\Models\Package;
-use App\Models\Product;
 use App\Models\Sale;
 use App\Models\Stock;
+use App\helper\Invoice;
+use App\Models\Package;
+use App\Models\Product;
+use App\Models\Articles;
+use App\Models\Category;
+use App\Models\Supplier;
+use App\Models\Customers;
+use App\Models\Emballage;
+use Illuminate\Http\Request;
+use App\Models\DocumentVente;
+use App\Message\CustomMessage;
+use App\Models\PricingSuplier;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\VenteValidation;
 
 class SaleController extends Controller
 {
@@ -32,8 +33,11 @@ class SaleController extends Controller
     public function create()
     {
         $customers = Customers::orderBy("identification", "asc")->get();
-        $consignations = Emballage::orderBy("designation")->get();
-        $catArticles = Category::orderBy("name", "asc")->get();
+
+        $products = PricingSuplier::Articles("productAndPackages");
+        $consignations = PricingSuplier::Articles("emballages");
+
+        // $emballages = PricingSuplier::Emballages($supplier_id);
 
         $articleTypes = array_filter(Stock::TYPES, function ($type) {
             return $type != "consignation";
@@ -48,7 +52,6 @@ class SaleController extends Controller
         return view("admin.vente.create", compact(
             "articleTypes",
             "customers",
-            "catArticles",
             "consignations",
             "preInvoices",
             "amount",
@@ -230,8 +233,8 @@ class SaleController extends Controller
     public function destroy($idOrNumber)
     {
         $delete = Sale::where("id", $idOrNumber)
-        ->orWhere("invoice_number", $idOrNumber)
-        ->delete();
+            ->orWhere("invoice_number", $idOrNumber)
+            ->delete();
 
         if (request()->get("invoice")) {
             $result = [];

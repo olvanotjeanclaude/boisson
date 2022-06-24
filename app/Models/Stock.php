@@ -61,4 +61,9 @@ class Stock extends Model
     {
         return $this->morphTo();
     }
+
+    public function getFinalAttribute()
+    {
+        return $this->initial + $this->entry - $this->out;
+    }
 }

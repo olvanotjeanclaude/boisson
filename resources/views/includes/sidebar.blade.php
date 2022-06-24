@@ -107,12 +107,12 @@
                     <span class="menu-title">Ventes</span>
                 </a>
             </li>
-            {{-- <li class="nav-item">
+            <li class="nav-item">
                 <a href="{{ route('admin.stocks.index') }}">
                     <span class="material-icons">table_rows</span>
                     <span class="menu-title">Stocks</span>
                 </a>
-            </li> --}}
+            </li>
             {{-- <li class="nav-item">
                 <a href="{{ route('admin.articles.index') }}">
                     <span class="material-icons">liquor</span>

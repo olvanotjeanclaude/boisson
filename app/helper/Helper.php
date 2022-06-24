@@ -31,7 +31,7 @@ function getUserPermission()
     return auth()->user()->permission_access;
 }
 
-function format_date($date, $separator = ".")
+function format_date($date, $separator = "/")
 {
     return date("d" . $separator . "m" . $separator . "Y", strtotime($date));
 }

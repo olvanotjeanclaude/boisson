@@ -30,7 +30,7 @@ class PricingSuplier extends Model
     public function scopeEmballages($query, $supplier_id = null)
     {
         $emballages = [];
-
+       
         $pricings = self::whereHas("supplier")
             ->when($supplier_id != null, function ($query) use ($supplier_id) {
                 return $query->where("supplier_id", $supplier_id);
@@ -47,5 +47,50 @@ class PricingSuplier extends Model
         }
 
         return $emballages;
+    }
+
+    public function scopeArticles($query, $type, $supplier_id = null)
+    {
+        $datas = $pricings = [];
+
+        switch ($type) {
+            case 'products':
+                $typeArray = [Product::class];
+                break;
+            case 'emballages':
+                $typeArray = [Emballage::class];
+                break;
+            case 'packages':
+                $typeArray = [Package::class];
+                break;
+            case 'productAndPackages':
+                $typeArray = [Product::class, Package::class];
+                break;
+            case 'all':
+                $typeArray = ["*"];
+                break;
+            default:
+                $typeArray = [];
+                break;
+        }
+
+        if (count($typeArray)) {
+            $pricings = self::whereHas("supplier")
+                ->when($supplier_id != null, function ($query) use ($supplier_id) {
+                    return $query->where("supplier_id", $supplier_id);
+                })
+                ->whereHasMorph(
+                    'product',
+                   $typeArray
+                )->get();
+        }
+
+        if (count($pricings)) {
+            foreach ($pricings as $pricing) {
+                $datas[] = $pricing->product;
+            }
+        }
+
+        return $datas;
     }
 }

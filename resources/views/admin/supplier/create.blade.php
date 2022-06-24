@@ -56,16 +56,6 @@
                                 <div class="form-body">
                                     <h4 class="form-section"><i class="ft-user"></i>Informations Générales</h4>
                                     <div class="form-group row mx-auto">
-                                        <label class="col-md-3 label-control" for="name">Nom</label>
-                                        <div class="col-md-9">
-                                            <input type="text" id="name" class="form-control" required placeholder="Nom"
-                                                name="name">
-                                            <div class="invalid-feedback">
-                                                Le champ nom est obligatoire.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row mx-auto">
                                         <label class="col-md-3 label-control" for="identification">Identification</label>
                                         <div class="col-md-9">
                                             <input type="text" id="identification" class="form-control" required placeholder="Nom"

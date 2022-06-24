@@ -27,14 +27,6 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Nom</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->name }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
                             <h6 class="card-title text-bold-600">Identification</h6>
                         </div>
                         <div class="col-sm">

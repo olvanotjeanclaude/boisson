@@ -10,16 +10,16 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Articles',
+        'page' => 'Stocks',
         'breadcrumbs' => [
-            ['text' => 'Article', 'link' => route('admin.articles.index')],
+            ['text' => 'Stocks', 'link' => route('admin.stocks.index')],
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Nouveau Article',
             'link' => route('admin.articles.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => false,
         ],
     ])
 @endsection
@@ -70,55 +70,27 @@
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
+                                            <th>Date</th>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>Type</th>
-                                            <th>Fam</th>
-                                            <th>Qtt</th>
-                                            <th>PU (Ariary)</th>
-                                            <th>Prix (Ariary)</th>
-                                            <th>Action</th>
+                                            <th>Stock initial</th>
+                                            <th>Entrées</th>
+                                            <th>Sorties</th>
+                                            <th>Stock final</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($stocks as $stock)
-                                            @php
-                                                $article = $stock->stockable;
-                                            @endphp
+                                        @foreach ($stocks as $stock)
                                             <tr>
-                                                <td>{{ $article->reference }}</td>
-                                                <td>{{ $article->designation }}</td>
-                                                <td>{{ $stock->article_type }}</td>
-                                                <td>{{ $article->category->name }}</td>
-                                                <td>{{ $stock->quantity }}</td>
-                                                <td>{{ formatPrice($stock->buying_price) }}</td>
-                                                <td>{{ formatPrice($article->price) }}</td>
-                                                <td>
-                                                    <span class="dropdown">
-                                                        <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="true"
-                                                            class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
-                                                                class="ft-settings"></i></button>
-                                                        <span aria-labelledby="btnSearchDrop2"
-                                                            class="dropdown-menu mt-1 dropdown-menu-right">
-                                                            {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
-                                                                class="dropdown-item"><i
-                                                                    class="la la-eye"></i>Voir</a> --}}
-                                                            <a href="{{ route('admin.stocks.edit', $stock['id']) }}"
-                                                                class="dropdown-item"><i class="la la-pencil"></i>
-                                                                Editer
-                                                            </a>
-                                                           
-                                                            <a data-id="{{ $stock['id'] }}"
-                                                                data-url="{{ route('admin.stocks.destroy', $stock['id']) }}"
-                                                                class="dropdown-item delete-btn"><i
-                                                                    class="la la-trash"></i> Supprimer</a>
-                                                        </span>
-                                                    </span>
-                                                </td>
+                                                <td>{{ format_date($stock->date) }}</td>
+                                                <td>{{ $stock->stockable->reference }}</td>
+                                                <td>{{ $stock->stockable->designation }}</td>
+                                                <td>{{ $stock->initial }}</td>
+                                                <td>{{ $stock->entry }}</td>
+                                                <td>{{ $stock->out }}</td>
+                                                <td>{{ $stock->final }}</td>
                                             </tr>
-                                        @empty
-                                        @endforelse
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

@@ -58,7 +58,6 @@
                             <table class="table datatable table-responsive-sm  material-table">
                                 <thead>
                                     <tr>
-                                        <th>Nom</th>
                                         <th>Identification</th>
                                         <th>Code</th>
                                         <th>Telephone</th>
@@ -69,9 +68,8 @@
                                 <tbody>
                                     @forelse ($suppliers as $supplier)
                                         <tr id="row_{{ $supplier->id }}">
-                                            <td>{{ $supplier->name }}</td>
                                             <td>{{ $supplier->identification }}</td>
-                                            <td>{{ $supplier->code }}</td>
+                                            <td>{{ $supplier->fr_code }}</td>
                                             <td>{{ $supplier->phone }}</td>
                                             <td>{{ format_date($supplier->created_at) }}</td>
                                             <td>

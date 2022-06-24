@@ -75,11 +75,11 @@ class PurchaseProductController extends Controller
     private function saveAchat(Request $request)
     {
         if (isset($request->saveData)) {
-            $dateTime = $request->received_at ?? date("Y-m-d");
+            $date = $request->received_at ?? date("Y-m-d");
             $invoiceData = [
                 "status" => Invoice::STATUS["no_printed"],
                 "number" => generateInteger(7),
-                "received_at" => $dateTime . " " . now()->toTimeString(),
+                "received_at" => $date . " " . now()->toTimeString(),
                 "comment" => $request->comment,
                 "user_id" => auth()->user()->id
             ];
@@ -88,7 +88,10 @@ class PurchaseProductController extends Controller
 
             if ($invoice) {
                 $preInvoices = SupplierOrders::preInvoices();
-                $preInvoices->update(["invoice_number" => $invoice->number]);
+                $preInvoices->update([
+                    "invoice_number" => $invoice->number,
+                    "received_at" => $date
+                ]);
 
                 return $invoice;
             }
