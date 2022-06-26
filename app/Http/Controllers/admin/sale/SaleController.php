@@ -18,6 +18,7 @@ use App\Message\CustomMessage;
 use App\Models\PricingSuplier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VenteValidation;
+use App\Models\SupplierOrders;
 
 class SaleController extends Controller
 {
@@ -34,10 +35,12 @@ class SaleController extends Controller
     {
         $customers = Customers::orderBy("identification", "asc")->get();
 
-        $products = PricingSuplier::Articles("productAndPackages");
+        $articles = SupplierOrders::Articles("products");
+        $packages = SupplierOrders::Articles("packages");
+        $emballages = PricingSuplier::Emballages();
         $consignations = PricingSuplier::Articles("emballages");
 
-        // $emballages = PricingSuplier::Emballages($supplier_id);
+        // dd($consignations);
 
         $articleTypes = array_filter(Stock::TYPES, function ($type) {
             return $type != "consignation";
@@ -45,9 +48,6 @@ class SaleController extends Controller
 
         $preInvoices = Sale::PreInvoices()->get();
         $amount = Sale::PreArticlesSum();
-
-        $articles = Product::orderBy("designation")->get();
-        $packages = Package::orderBy("designation")->get();
 
         return view("admin.vente.create", compact(
             "articleTypes",
@@ -179,11 +179,11 @@ class SaleController extends Controller
         $customer = $this->saveCustomer($request);
 
         if ($customer && isset($request->saveData)) {
-            $dateTime = $request->received_at ?? date("Y-m-d");
+            $date = $request->received_at ?? date("Y-m-d");
             $invoiceData = [
                 "status" => Invoice::STATUS["no_printed"],
                 "number" => generateInteger(7),
-                "received_at" => $dateTime . " " . now()->toTimeString(),
+                "received_at" => $date . " " . now()->toTimeString(),
                 "comment" => $request->comment,
                 "customer_id" =>  $customer->id,
                 "user_id" => auth()->user()->id
@@ -193,7 +193,10 @@ class SaleController extends Controller
 
             if ($invoice) {
                 $preInvoices = Sale::preInvoices();
-                $preInvoices->update(["invoice_number" => $invoice->number]);
+                $preInvoices->update([
+                    "invoice_number" => $invoice->number,
+                    "received_at" => $date
+                ]);
 
                 return $invoice;
             }

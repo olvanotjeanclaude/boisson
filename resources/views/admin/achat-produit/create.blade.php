@@ -55,132 +55,31 @@
                                     @endforelse
                                 </select>
                                 <div class="invalid-feedback">
-                                    le champ de type d'article ne peut pas être vide
+                                    le fournisseur ne peut pas être vide
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-12 mt-1">
-                                <label class="text-bold-400 text-dark" for="article_type">Type D'Article</label>
-                                <select required name="article_type" id="article_type" class="form-control">
-                                    @forelse ($articleTypes as $key => $type)
-                                        <option value="{{ $key }}">{{ $type }}</option>
-                                    @empty
-                                    @endforelse
+                        <div class="row">
+                            <div class="col-sm-8 mt-1 col-article">
+                                <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
+                                <select name="article_reference" required class="form-control articleBySupplier"
+                                    id="article_reference">
+                                    <option value=''>Choisir</option>
                                 </select>
                                 <div class="invalid-feedback">
-                                    le champ de type d'article ne peut pas être vide
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="withDeconsignationContainer">
-                            <div class="row" id="articleContainer">
-                                <div class="col-12">
-                                    <div class="row">
-                                        <div class="col-sm-8 mt-1 col-article">
-                                            <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
-                                            <select name="article_reference" class="form-control articleBySupplier"
-                                                id="article_reference">
-                                                <option value=''>Choisir</option>
-                                            </select>
-                                            <div class="invalid-feedback">
-                                                Selectionnez l'article
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-4 mt-1">
-                                            <label class="text-bold-400 text-dark" for="quantity">
-                                                Quantité
-                                            </label>
-                                            <input type="number" placeholder="0" class="form-control" id="quantity"
-                                                name="quantity">
-                                            <div class="invalid-feedback">
-                                                Entrer le nombre de bouteiller
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-8 mt-1">
-                                            <label class="text-bold-400 text-dark" for="consignation_id">
-                                                Consignation
-                                            </label>
-                                            <select name="consignation_id" class="form-control emballages text-capitalize"
-                                                id="consignation_id">
-                                                <option value="">Choisir</option>
-                                            </select>
-                                            <div class="invalid-feedback">
-                                                Selectionnez la consignation d'article
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4 mt-1">
-                                            <label class="text-bold-400 text-dark" for="consigned_bottle">
-                                                Quantité
-                                            </label>
-                                            <input type="number" placeholder="0" disabled class="form-control"
-                                                id="consigned_bottle" name="consigned_bottle">
-                                        </div>
-                                    </div>
+                                    Selectionnez l'article
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group mt-1">
-                                        <div class="custom-control custom-switch">
-                                            <input class="custom-control-input" checked id="withBottle" name="withBottle"
-                                                type="checkbox">
-                                            <span class="custom-control-track"></span>
-                                            <label class="custom-control-label" for="withBottle">Le client a-t-il apporté un
-                                                emballage ?
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" id="deconsignationBox">
-                                <div class="col-sm-8">
-                                    <label class="text-bold-400 text-dark" for="deconsignation_id">
-                                        Deconsignatio
-                                    </label>
-                                    <select name="deconsignation_id" class="form-control emballages text-capitalize"
-                                        id="deconsignation_id">
-                                        <option value="">Choisir</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label class="text-bold-400 text-dark" for="received_bottle">
-                                            Quantité
-                                        </label>
-                                        <input type="number" placeholder="0" class="form-control" id="received_bottle"
-                                            name="received_bottle">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="noConsignation" class="d-none">
-                            <div class="row">
-                                <div class="col-sm-8 mt-1 col-article">
-                                    <label class="text-bold-400 text-dark" for="no_consign_ref_id">Articles</label>
-                                    <select name="no_consign_ref_id" class="form-control articleBySupplier"
-                                        id="no_consign_ref_id">
-                                        <option value=''>Choisir</option>
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Selectionnez l'article
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4 mt-1">
-                                    <label class="text-bold-400 text-dark" for="no_consign_quantity">
-                                        Quantité
-                                    </label>
-                                    <input type="number" placeholder="0" class="form-control" id="no_consign_quantity"
-                                        name="no_consign_quantity">
-                                    <div class="invalid-feedback">
-                                        Entrer le nombre de bouteille
-                                    </div>
+                            <div class="col-sm-4 mt-1">
+                                <label class="text-bold-400 text-dark" for="quantity">
+                                    Quantité
+                                </label>
+                                <input type="number" placeholder="0" class="form-control" required id="quantity"
+                                    name="quantity">
+                                <div class="invalid-feedback">
+                                    Entrer le nombre de bouteille
                                 </div>
                             </div>
                         </div>

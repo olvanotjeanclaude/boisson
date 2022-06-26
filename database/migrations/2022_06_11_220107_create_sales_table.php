@@ -23,6 +23,7 @@ class CreateSalesTable extends Migration
     
             $table->integer("quantity")->comment("quantité d'article");
              $table->boolean("isWithEmballage")->default(false);
+             $table->date("received_at")->nullable();
             // $table->integer("consignation_id")->comment("produit a consigner");
             // $table->integer("consigned_bottle")->comment("quantité produit a consiger");
            

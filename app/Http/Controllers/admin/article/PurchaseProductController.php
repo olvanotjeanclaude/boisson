@@ -57,16 +57,16 @@ class PurchaseProductController extends Controller
             return back()->with("error", CustomMessage::DEFAULT_ERROR);
         }
 
-        $datas = $this->getAllArticleDatas($request);
+        $data = $this->getArticleData(
+            $request->article_reference,
+            $request->quantity,
+            $request
+        );
 
-        // dd($datas, $request->all());
+        // dd($data, $request->all());
 
-        if (count($datas)) {
-            foreach ($datas as  $data) {
-                if (count($data)) {
-                    SupplierOrders::create($data);
-                }
-            }
+        if (count($data)) {
+            SupplierOrders::create($data);
         }
 
         return back();
@@ -190,7 +190,7 @@ class PurchaseProductController extends Controller
         if (request()->get("invoice")) {
             $result = [];
             $delete = DocumentAchat::where("number", $idOrNumber)->delete();
-           
+
             if ($delete) {
                 $result["success"] = CustomMessage::Delete("Supprimer avec success");
                 $result["type"] = "success";

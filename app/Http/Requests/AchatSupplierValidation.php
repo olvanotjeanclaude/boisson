@@ -15,20 +15,17 @@ class AchatSupplierValidation
         ];
 
         $article = [
-            "article_type" => "required",
+            // "article_type" => "required",
 
             "article_reference" => "required_if:article_type,1",
-            "consignation_id" => "required_if:article_type,1",
+            // "consignation_id" => "required_if:article_type,1",
             "quantity" => "required_if:article_type,1",
-
-            // "deconsignation_id" => "required_if:withBottle,on|required_if:article_type,3",
-            // "received_bottle" => "required_if:withBottle,on|required_if:article_type,3",
             
-            "deconsignation_id" => Rule::requiredIf(self::validDeconsignation()),
-            "received_bottle" => Rule::requiredIf(self::validDeconsignation()),
+            // "deconsignation_id" => Rule::requiredIf(self::validDeconsignation()),
+            // "received_bottle" => Rule::requiredIf(self::validDeconsignation()),
 
-            "no_consign_ref_id" => "required_if:article_type,4",
-            "no_consign_quantity" => "required_if:article_type,4"
+            // "no_consign_ref_id" => "required_if:article_type,4",
+            // "no_consign_quantity" => "required_if:article_type,4"
         ];
 
         return isset(request()->saveData) ? $withCustomer : $article;

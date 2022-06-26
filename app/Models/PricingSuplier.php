@@ -30,7 +30,7 @@ class PricingSuplier extends Model
     public function scopeEmballages($query, $supplier_id = null)
     {
         $emballages = [];
-       
+
         $pricings = self::whereHas("supplier")
             ->when($supplier_id != null, function ($query) use ($supplier_id) {
                 return $query->where("supplier_id", $supplier_id);
@@ -39,6 +39,7 @@ class PricingSuplier extends Model
                 'product',
                 [Emballage::class]
             )->get();
+
 
         if (count($pricings)) {
             foreach ($pricings as $pricing) {
@@ -81,8 +82,10 @@ class PricingSuplier extends Model
                 })
                 ->whereHasMorph(
                     'product',
-                   $typeArray
-                )->get();
+                    $typeArray
+                )
+                ->groupBy("article_type","article_id")
+                ->get();
         }
 
         if (count($pricings)) {

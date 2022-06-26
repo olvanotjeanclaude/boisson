@@ -69,10 +69,10 @@ class ArticleController extends Controller
         $datas = PricingSuplier::has("supplier")
             ->whereHasMorph(
                 'product',
-                [Product::class, Package::class]
+                [Product::class, Package::class,Emballage::class]
             )
             ->where("supplier_id", $supplier_id)
-            ->get();
+            ->groupBy("article_type","article_id")-> get();
 
         $emballages = PricingSuplier::Emballages($supplier_id);
 
@@ -93,6 +93,7 @@ class ArticleController extends Controller
             }
         }
 
+       
         return response()->json($articles);
     }
 }

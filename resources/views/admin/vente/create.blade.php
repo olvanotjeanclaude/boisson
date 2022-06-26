@@ -91,7 +91,7 @@
                                             <input type="number"  placeholder="0" class="form-control"
                                                 id="quantity" name="quantity">
                                             <div class="invalid-feedback">
-                                                Entrer le nombre de bouteiller
+                                                Entrer le nombre de bouteille
                                             </div>
                                         </div>
 
