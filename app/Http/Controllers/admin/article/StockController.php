@@ -21,8 +21,8 @@ class StockController extends Controller
         $this->updateEntries($entries);
 
         //Sales
-        $nomEmballages = Sale::ByDate();
-        $this->updateOut($nomEmballages);
+        $noEmballages = Sale::ByDate();
+        $this->updateOut($noEmballages);
 
         $stocks = Stock::orderBy("date", "desc")->get();
         // dd($magasins);
@@ -50,6 +50,22 @@ class StockController extends Controller
                     );
                 }
             }
+
+            // foreach (Stock::all() as $stock) {
+            //     $sale = Sale::where("article_reference", $stock->article_reference)
+            //         ->where("date", $stock->received_at)
+            //         ->first();
+            // }
+
+            // foreach (Sale::byDate() as $sale) {
+            //    $stock = Stock::where("article_reference", $sale->article_reference)
+            //    ->where("date", $sale->received_at)
+            //    ->first();
+
+            //    if($stock){
+
+            //    }
+            // }
         }
     }
 
@@ -88,16 +104,20 @@ class StockController extends Controller
                 if ($article) {
                     foreach ($lastOneMonth as  $last) {
                         if ($last->article_reference == $stock->article_reference) {
-                            $stock->where("article_reference", $stock->article_reference)
-                                ->update([
-                                    "initial" => $last->sum_initial
-                                ]);
+                            $stock->update([
+                                "initial" => $last->sum_initial
+                            ]);
                         }
                     }
                 }
             }
         }
 
+        $this->updateEntryByDeconsignation($deconsignations);
+    }
+
+    private function updateEntryByDeconsignation($deconsignations = [])
+    {
         foreach (Stock::all() as $stock) {
             $sumEntry = $stock->entry;
             foreach ($deconsignations as $deconsignation) {

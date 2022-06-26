@@ -89,10 +89,53 @@ class SupplierOrders extends Model
                 ->when($supplier_id != null, function ($query) use ($supplier_id) {
                     return $query->where("supplier_id", $supplier_id);
                 })
-                ->whereHasMorph(
-                    'product',
-                    $typeArray
-                )->groupBy("article_reference")->get();
+                ->whereHasMorph('product', $typeArray)
+                ->groupBy("article_reference", "received_at")
+                ->get();
+        }
+
+        if (count($pricings)) {
+            foreach ($pricings as $pricing) {
+                $datas[] = $pricing->product;
+            }
+        }
+
+        return $datas;
+    }
+
+    public function scopeUniqueArticles($query, $type, $supplier_id = null)
+    {
+        $datas = $pricings = [];
+
+        switch ($type) {
+            case 'products':
+                $typeArray = [Product::class];
+                break;
+            case 'emballages':
+                $typeArray = [Emballage::class];
+                break;
+            case 'packages':
+                $typeArray = [Package::class];
+                break;
+            case 'productAndPackages':
+                $typeArray = [Product::class, Package::class];
+                break;
+            case 'all':
+                $typeArray = ["*"];
+                break;
+            default:
+                $typeArray = [];
+                break;
+        }
+
+        if (count($typeArray)) {
+            $pricings = self::whereHas("supplier")
+                ->when($supplier_id != null, function ($query) use ($supplier_id) {
+                    return $query->where("supplier_id", $supplier_id);
+                })
+                ->whereHasMorph('product', $typeArray)
+                ->groupBy("article_reference")
+                ->get();
         }
 
         if (count($pricings)) {
@@ -114,7 +157,7 @@ class SupplierOrders extends Model
             ->whereNotNull("invoice_number")
             ->whereBetween("received_at", $between)
             ->selectRaw('SUM(quantity) as sum_initial,article_reference,article_id,article_type, received_at')
-            ->groupBy('article_reference')
+            ->groupBy('article_reference', "received_at")
 
             ->get();
     }

@@ -18,6 +18,30 @@ class Sale extends Model
         return $this->morphTo();
     }
 
+    public function getArticleTypeAttribute()
+    {
+        switch ($this->saleable_type) {
+            case 'App\Models\Product':
+                $type = "En Detail";
+                break;
+            case 'App\Models\Package':
+                $type = "En Gros";
+                break;
+            case 'App\Models\Emballage':
+                if ($this->isWithEmballage) {
+                    $type = "Deconsignation";
+                } else {
+                    $type = "Consignation";
+                }
+                break;
+            default:
+                $type = "Inconnu";
+                break;
+        }
+
+        return $type;
+    }
+
     public function getSubAmountAttribute()
     {
         $sub_amount = $this->saleable->price * $this->quantity;
@@ -54,22 +78,31 @@ class Sale extends Model
             ->whereNotNull("received_at")
             ->whereBetween("received_at", $between)
             ->selectRaw('SUM(quantity) as sum_initial,article_reference,saleable_id,saleable_type, received_at')
-            ->groupBy('article_reference')
+            ->groupBy("article_reference", "received_at")
 
             ->get();
     }
 
-    public  function scopeByDate($query,$isWithEmballage=false, $date = null)
+    public  function scopeByDate($query, $isWithEmballage = false, $date = null)
     {
         return DB::table("sales")
             ->whereNotNull("invoice_number")
             ->whereNotNull("received_at")
-            ->where("isWithEmballage",$isWithEmballage)
+            ->where("isWithEmballage", $isWithEmballage)
             ->when(!is_null($date), function ($query) use ($date) {
                 return $query->whereDate("received_at", $date);
             })
             ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at')
-            ->groupBy('article_reference')
+            ->groupBy("article_reference", "received_at")
+            ->get();
+    }
+
+    public  function scopeCommercialState($query)
+    {
+        return self::whereNotNull("invoice_number")
+            ->whereNotNull("received_at")
+            ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
+            ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
             ->get();
     }
 }

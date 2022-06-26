@@ -386,7 +386,8 @@
 
                 if ($(this).val() == "1") {
                     // validArticle();
-                    $("#articleContainer").removeClass("d-none");
+                    console.log("article");
+                    $("#articleContainer, #withDeconsignationContainer").removeClass("d-none");
                 } else if ($(this).val() == "3") {
                     // validDeconsignation();
                     $("#withDeconsignationContainer").removeClass("d-none");

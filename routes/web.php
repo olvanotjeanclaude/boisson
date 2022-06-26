@@ -77,6 +77,8 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::get("achat-produits/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"achatPaymentForm"])->name("achat.paymentForm");
     Route::post("achat-produits/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"achatPaymentStore"])->name("achat.paymentStore");
 
+    Route::get("etat-commericial",[\App\Http\Controllers\admin\commercial_state\CommercialStateController::class,"index"])->name("commercialState.index");
+    
     Route::post("pre-save-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveVente"])->name("ventes.preSaveVente");
     Route::post("pre-save-invoice-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
 

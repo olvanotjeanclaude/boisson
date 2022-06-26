@@ -35,8 +35,8 @@ class SaleController extends Controller
     {
         $customers = Customers::orderBy("identification", "asc")->get();
 
-        $articles = SupplierOrders::Articles("products");
-        $packages = SupplierOrders::Articles("packages");
+        $articles = SupplierOrders::UniqueArticles("products");
+        $packages = SupplierOrders::UniqueArticles("packages");
         $emballages = PricingSuplier::Emballages();
         $consignations = PricingSuplier::Articles("emballages");
 

@@ -96,7 +96,7 @@
             <li class="nav-item">
                 <a href="{{ route('admin.achat-produits.index') }}">
                     <span class="material-icons">liquor</span>
-                    <span class="menu-title">Achat De Produits</span>
+                    <span class="menu-title">Bon De Commande</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -111,6 +111,12 @@
                 <a href="{{ route('admin.stocks.index') }}">
                     <span class="material-icons">table_rows</span>
                     <span class="menu-title">Stocks</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.commercialState.index') }}">
+                    <span class="material-icons">account_balance_wallet</span>
+                    <span class="menu-title">Etat Commerciale</span>
                 </a>
             </li>
             {{-- <li class="nav-item">
