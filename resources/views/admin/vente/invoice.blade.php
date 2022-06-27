@@ -16,7 +16,7 @@
             ['text' => 'Validation Et Impression', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Nouveau Vente',
+            'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,

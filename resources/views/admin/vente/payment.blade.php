@@ -16,7 +16,7 @@
             ['text' => 'Payment', 'link' => '#'],
         ],
         'actionBtn' => [
-            'text' => 'Nouveau Vente',
+            'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,
@@ -95,7 +95,7 @@
                                         <label class="text-bold-400 text-dark" for="rest">
                                             Reste À Payer
                                         </label>
-                                        <h4 class=""><span id="rest">{{ $amount - $invoice->paid }}</span> Ariary
+                                        <h4 class=""><span id="rest">{{ $invoice->rest }}</span> Ariary
                                         </h4>
                                     </div>
                                 </div>

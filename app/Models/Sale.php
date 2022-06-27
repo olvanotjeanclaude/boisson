@@ -102,6 +102,20 @@ class Sale extends Model
         return self::whereNotNull("invoice_number")
             ->whereNotNull("received_at")
             ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
+            ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage");
+    }
+
+    public  function scopeCommercialStateByDate($query, $date = null)
+    {
+        $sales = self::whereNotNull("invoice_number")
+            ->whereNotNull("received_at");
+
+        if (is_null($date)) {
+            $date = date("Y-m-d");
+        }
+
+        return $sales->where("received_at", $date)
+            ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
             ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
             ->get();
     }

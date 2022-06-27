@@ -16,7 +16,7 @@
             ['text' => 'Impression', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Faire Achat',
+            'text' => 'Faire Un Achat',
             'link' => route('admin.achat-produits.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,

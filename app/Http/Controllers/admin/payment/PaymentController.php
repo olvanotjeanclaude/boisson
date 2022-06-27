@@ -43,14 +43,27 @@ class PaymentController extends Controller
         $amount = $invoice->sales->sum("sub_amount");
         $rest = $amount - $request->paid;
         // dd($request->all());
+
         $docSale = [
-            "paid" => $request->paid,
-            "rest" => $rest,
+            // "paid" => $request->paid,
+            // "rest" => $rest,
             "checkout" => $request->checkout ?? 0,
             "payment_type" => $request->payment_type,
             "status" => $rest <= 0 ? Invoice::STATUS["paid"] : Invoice::STATUS["incomplete"],
             "comment" => $request->comment
         ];
+
+
+        if ($request->checkout>0) {
+            $docSale["checkout"] = $request->checkout;
+            $docSale["paid"] = $docSale["rest"] = 0;
+            // $docSale["checkout"] = $request->checkout;
+        } else if ($request->paid) {
+            $docSale["paid"] = $request->paid;
+            $docSale["rest"] = $rest;
+        }
+
+        // dd($rest);
 
         $saved = $invoice->update($docSale);
 
@@ -67,7 +80,7 @@ class PaymentController extends Controller
         $amount = $invoice->supplier_orders->sum("sub_amount");
         $rest = $amount - $request->paid;
         // dd($request->all());
-        
+
         $docSale = [
             "paid" => $request->paid,
             "rest" => $rest,

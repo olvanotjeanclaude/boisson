@@ -5,7 +5,7 @@
 @endsection
 
 @section('title')
-    Liste D'Articles
+   Etat Du Stock
 @endsection
 
 @section('content-header')
@@ -16,10 +16,10 @@
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Nouveau Article',
-            'link' => route('admin.articles.create'),
+            'text' => 'Nouvelle Vente',
+            'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => false,
+            'show' => true,
         ],
     ])
 @endsection
@@ -55,10 +55,11 @@
                             </button>
                             <a href="{{ route('admin.achat-produits.index') }}"
                                 class="btn btn-secondary btn-sm text-capitalize">
-                                <span class="material-icons">
-                                    inventory
-                                </span>
                                 Achat Produits
+                            </a>
+                            <a href="{{ route('admin.ventes.index') }}"
+                                class="btn btn-secondary btn-sm text-capitalize">
+                               Ventes
                             </a>
                         </div>
                     </div>
