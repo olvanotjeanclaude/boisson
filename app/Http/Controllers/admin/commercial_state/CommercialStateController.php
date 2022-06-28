@@ -20,40 +20,6 @@ class CommercialStateController extends Controller
             return $this->callbackSales($state, $type);
         });
 
-        // dd($states);
-        // switch ($type) {
-        //     case 'jour':
-        //         // dd($states);
-        //         $states = $states->map(function ($state) {
-        //             $saleToday = Sale::where("received_at", $state->date)
-        //                 ->get();
-        //             // dd($saleToday);
-        //             $state->sum_quantity =  $saleToday->sum("quantity");
-        //             $state->amount_received = $state->paid - $state->sum_checkout;
-
-        //             return $state;
-        //         });
-        //         break;
-
-        //     default:
-        //         # code...
-        //         break;
-        // }
-
-        // dd($states);
-        // $states = DocumentVente::CommercialState()->get();
-        // // dd($states);
-        // $states = $states->map(function ($state) {
-        //     $saleToday = Sale::where("received_at", $state->date)
-        //         ->get();
-        //     // dd($saleToday);
-        //     $state->sum_quantity =  $saleToday->sum("quantity");
-        //     $state->amount_received = $state->paid - $state->sum_checkout;
-
-        //     return $state;
-        // });
-
-
         $type = DocumentVente::FILTER_TYPE[$type] ?? "Date";
         // dd($states);
         return view("admin.commercial_state.index", compact("states", "type"));
@@ -94,7 +60,7 @@ class CommercialStateController extends Controller
                 $sale = Sale::select(
                     [
                         DB::raw("SUM(quantity) as quantity"),
-                        DB::raw("EXTRACT( WEEK FROM received_at) as week_of_year")
+                        DB::raw("EXTRACT(WEEK FROM received_at) as week_of_year")
                     ]
                 )
                     ->groupBy("week_of_year")

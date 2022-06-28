@@ -64,13 +64,13 @@
                                             class="ft-download-cloud white"></i></button>
                                     <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
                                         <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'jour']) }}"
-                                            class="dropdown-item">Jour</a>
+                                            class="dropdown-item ml-1">Jour</a>
                                         <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'hebdomadaire']) }}"
-                                            class="dropdown-item">Hebdomadaire </a>
+                                            class="dropdown-item ml-1">Hebdomadaire </a>
                                         <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'mois']) }}"
-                                            class="dropdown-item">Mensuel</a>
+                                            class="dropdown-item ml-1">Mensuel</a>
                                         <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'annuel']) }}"
-                                            class="dropdown-item">Annuel</a>
+                                            class="dropdown-item ml-1">Annuel</a>
                                     </span>
                                 </span>
                                 <button class="btn btn-success btn-sm"><i class="ft-settings white"></i></button>
