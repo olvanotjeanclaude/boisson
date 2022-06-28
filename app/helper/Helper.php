@@ -92,3 +92,14 @@ function generateInteger($n = 6)
 
     return (string)random_int($start, $end);
 }
+
+function getStartAndEndDate($week, $year)
+{
+    $dto = new DateTime();
+    $dto->setISODate($year, $week);
+    $response['week_start'] = $dto->format('Y-m-d');
+    $dto->modify('+6 days');
+    $response['week_end'] = $dto->format('Y-m-d');
+    
+    return $response;
+}

@@ -61,9 +61,11 @@ class DocumentVente extends Model
             case 'hebdomadaire':
                 $docSales = $docSales->addSelect([
                     DB::raw("EXTRACT( WEEK FROM received_at) as week_of_year"),
+                    DB::raw("EXTRACT(YEAR FROM received_at) as year"),
                 ])
                     ->orderByDesc("week_of_year")
-                    ->groupBy("week_of_year");
+                    ->groupBy("week_of_year")
+                    ->groupBy("year");
                 break;
 
             case 'mois':

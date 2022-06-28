@@ -16,7 +16,7 @@
     @include('includes.content-header', [
         'page' => 'Etat Commericiale',
         'breadcrumbs' => [
-            ['text' => 'Etat Commerciale', 'link' => route('admin.ventes.index')],
+            ['text' => 'Etat Commerciale', 'link' => route('admin.commercialState.index')],
             ['text' => 'List', 'link' => route('admin.commercialState.index')],
         ],
         'actionBtn' => [
@@ -46,7 +46,7 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title"> Liste De ventes</h4>
+                        <h4 class="card-title"> Etat Commerciale</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             {{-- <a href="{{ route('admin.factures.index') }}"
@@ -56,7 +56,7 @@
                                 </span>
                                 toutes les factures
                             </a> --}}
-                            <div class="d-non">
+                            <div class="">
                                 <span class="dropdown">
                                     <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true"
                                         aria-expanded="true"
@@ -98,7 +98,7 @@
                                         <tbody>
                                             @foreach ($states as $state)
                                                 <tr>
-                                                    <td>{{ $state->formated_date ?? ($state->week_of_year ?? ($state->formated_month_of_year ?? ($state->year ?? ''))) }}
+                                                    <td>{{ $state->formated_date ?? ($state->week_days ?? ($state->formated_month_of_year ?? ($state->year ?? ''))) }}
                                                     </td>
                                                     <td>{{ $state->sum_quantity }}</td>
                                                     <td>{{ formatPrice($state->paid) }}</td>
@@ -106,11 +106,10 @@
                                                     <td>{{ formatPrice($state->rest) }}</td>
                                                     <td>{{ formatPrice($state->amount_received) }}</td>
                                                     <td>
-                                                        {{-- <a class="btn btn-info"
-                                                            href="{{ route('admin.commercialState.show', format_date($state->date, '-')) }}">
+                                                        <a class="btn btn-info" href="{{ $state->url }}">
                                                             <i class="la la-eye"></i>
                                                             Voir
-                                                        </a> --}}
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             @endforeach

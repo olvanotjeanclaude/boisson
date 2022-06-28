@@ -78,8 +78,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::post("achat-produits/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"achatPaymentStore"])->name("achat.paymentStore");
 
     Route::get("etat-commerciale",[\App\Http\Controllers\admin\commercial_state\CommercialStateController::class,"index"])->name("commercialState.index");
-    Route::get("etat-commerciale/{date}",[\App\Http\Controllers\admin\commercial_state\CommercialStateController::class,"show"])->name("commercialState.show");
-    Route::get("etat-commerciales",[\App\Http\Controllers\admin\commercial_state\CommercialStateController::class,"filterData"])->name("commercialState.filterData");
+    Route::get("etat-commerciale/detail",[\App\Http\Controllers\admin\commercial_state\CommercialStateController::class,"show"])->name("commercialState.show");
     
     Route::post("pre-save-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveVente"])->name("ventes.preSaveVente");
     Route::post("pre-save-invoice-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");

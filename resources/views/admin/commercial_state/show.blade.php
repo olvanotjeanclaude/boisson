@@ -9,7 +9,7 @@
 @endsection
 
 @section('title')
-    Etat Commerciale | {{ format_date($date) }}
+    Etat Commerciale | {{ $filtered }}
 @endsection
 
 @section('content-header')
@@ -46,7 +46,36 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title"> Etat Commericiale le {{ format_date($date) }}</h4>
+                        <h4 class="card-title"> Etat Commericiale  <b><u>{{ $filtered }}</u></b></h4>
+                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+                        <div class="heading-elements">
+                            {{-- <a href="{{ route('admin.factures.index') }}"
+                                class="btn btn-secondary btn-sm text-capitalize">
+                                <span class="material-icons">
+                                    inventory
+                                </span>
+                                toutes les factures
+                            </a> --}}
+                            <div class="">
+                                <span class="dropdown">
+                                    <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="true"
+                                        class="btn btn-warning btn-sm dropdown-toggle dropdown-menu-right"><i
+                                            class="ft-download-cloud white"></i></button>
+                                    <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
+                                        <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'jour']) }}"
+                                            class="dropdown-item ml-1">Jour</a>
+                                        <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'hebdomadaire']) }}"
+                                            class="dropdown-item ml-1">Hebdomadaire </a>
+                                        <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'mois']) }}"
+                                            class="dropdown-item ml-1">Mensuel</a>
+                                        <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'annuel']) }}"
+                                            class="dropdown-item ml-1">Annuel</a>
+                                    </span>
+                                </span>
+                                <button class="btn btn-success btn-sm"><i class="ft-settings white"></i></button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
@@ -88,7 +117,8 @@
                                             </tr>
                                             <tr>
                                                 <td><b>Total En Fmg</b></td>
-                                                <td><span class="font-weight-bold">{{ formatPrice($total * 5,"Fmg") }}</span>
+                                                <td><span
+                                                        class="font-weight-bold">{{ formatPrice($total * 5, 'Fmg') }}</span>
                                                 </td>
                                             </tr>
                                         </tbody>

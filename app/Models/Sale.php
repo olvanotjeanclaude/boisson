@@ -73,6 +73,8 @@ class Sale extends Model
             $between = [now()->subMonth()->toDateString(), now()->subDay()->toDateString()];
         }
 
+        // dd($between);
+
         return DB::table("sales")
             ->whereNotNull("invoice_number")
             ->whereNotNull("received_at")
@@ -118,5 +120,55 @@ class Sale extends Model
             ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
             ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
             ->get();
+    }
+
+    public  function scopeCommercialStateBetween($query, $between)
+    {
+        $sales = self::whereNotNull("invoice_number")
+            ->whereNotNull("received_at");
+
+        return $sales->whereBetween("received_at", $between)
+            ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
+            ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
+            ->get();
+    }
+
+    public  function scopeFilterBy($query, $type, $criteria = [])
+    {
+        $sales = self::whereNotNull("invoice_number")
+            ->whereNotNull("received_at");
+
+        switch ($type) {
+            case 'jour':
+                $date = $criteria["date"];
+                $sales = $sales->where("received_at", $date);
+                break;
+            case 'hebdomadaire':
+                $between = $criteria["between"];
+                $sales = $sales->whereBetween("received_at", $between);
+                break;
+            case 'mois':
+                $monthYear = $criteria["monthYear"];
+                $sales = $sales->whereMonth("received_at", $monthYear[0])
+                    ->whereYear("received_at", $monthYear[1]);
+                break;
+            case 'annuel':
+                $year = $criteria["year"];
+                $sales =  $sales->whereYear("received_at", $year);
+                break;
+            default:
+                $sales = $sales->where("received_at", date("Y-m-d"));
+                break;
+        }
+
+        return $sales->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
+            ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
+            ->get()
+            ->map(function ($state) {
+                $state->amount = $state->sum_sale * $state->saleable->price;
+                $state->amount = $state->isWithEmballage ? -$state->amount : $state->amount;
+                $state->amount = $state->isWithEmballage ? -$state->amount : $state->amount;
+                return $state;
+            });
     }
 }
