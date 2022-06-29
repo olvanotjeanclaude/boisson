@@ -76,8 +76,8 @@
                                             <th>Designation</th>
                                             <th>Stock initial</th>
                                             <th>Entrées</th>
-                                            <th>Sorties</th>
-                                            <th>Stock final</th>
+                                            <th>Vendu</th>
+                                            <th>En Stock</th>
                                         </tr>
                                     </thead>
                                     <tbody>

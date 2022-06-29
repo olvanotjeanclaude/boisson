@@ -44,7 +44,7 @@ Auth::routes();
 
 Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], function () {
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
-    Route::resource("utlisateurs", \App\Http\Controllers\admin\users\UserController::class);
+    Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
     Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
     // Route::resource("produits",\App\Http\Controllers\admin\product\ProductController::class);
     Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class);

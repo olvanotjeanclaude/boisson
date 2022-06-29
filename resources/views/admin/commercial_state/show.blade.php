@@ -88,9 +88,9 @@
                                             <th>Type</th>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>Quantity</th>
+                                            <th>Quantité</th>
                                             <th>Prix</th>
-                                            <th>Total (Ariary)</th>
+                                            <th>Montant (Ariary)</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -6,10 +6,16 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
+use App\Models\Consignation;
 use App\Models\Emballage;
 
 class EmballageController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Product::class, "emballage");
+    }
+
     public function index()
     {
         $consignations = Emballage::orderBy("id", "desc")->get();
@@ -23,9 +29,8 @@ class EmballageController extends Controller
         return view("admin.approvisionnement.consignation.create", compact("catArticles","emballages"));
     }
 
-    public function edit($id)
+    public function edit(Consignation $consignation)
     {
-        $consignation = Emballage::findOrFail($id);
         $catArticles = Category::orderBy("name", "asc")->get();
         return view("admin.approvisionnement.consignation.edit", compact("catArticles", "consignation"));
     }
@@ -55,10 +60,8 @@ class EmballageController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function update($id, Request $request)
+    public function update(Emballage $cosnignation, Request $request)
     {
-        $cosnignation = Emballage::findOrFail($id);
-
         $request->validate($this->rules());
 
         $data = $request->except("_token");
@@ -74,12 +77,11 @@ class EmballageController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function destroy($id)
+    public function destroy(Emballage $emballage)
     {
         $result = [];
-        $delete = Emballage::findOrFail($id);
 
-        if ($delete->delete()) {
+        if ($emballage->delete()) {
             $result["success"] = CustomMessage::Delete("L'article");
             $result["type"] = "success";
         } else {

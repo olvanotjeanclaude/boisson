@@ -41,9 +41,30 @@ class User extends Authenticatable
     const PERMISSION = [
         "super admin" => 1,
         "admin" => 2,
-        "caisse" => 3,
-        "facturation" => 4,
+        "directeur" => 3,
+        "caisse" => 4,
+        "facturation" => 5,
     ];
+
+    public function isSuperAdmin(){
+        return getUserPermission()=="super admin";
+    }
+
+    public function isAdmin(){
+        return getUserPermission()=="admin";
+    }
+
+    public function isCaisse(){
+        return getUserPermission()=="caisse";
+    }
+
+    public function isDirector(){
+        return getUserPermission()=="directeur";
+    }
+
+    public function isFacturation(){
+        return getUserPermission()=="facturation";
+    }
 
     public function scopePermissionKeys()
     {

@@ -12,7 +12,7 @@
     @include('includes.content-header', [
         'page' => 'Emballages',
         'breadcrumbs' => [
-            ['text' => 'Produits', 'link' => "#"],
+            ['text' => 'Produits', 'link' => '#'],
             ['text' => 'Emballage', 'link' => route('admin.approvisionnement.emballages.index')],
             ['text' => 'List', 'link' => route('admin.index')],
         ],
@@ -20,7 +20,7 @@
             'text' => 'Nouveau',
             'link' => route('admin.approvisionnement.emballages.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => auth()->user()->can('create', \App\Models\Emballage::class),
         ],
     ])
 @endsection
@@ -76,12 +76,14 @@
                                             <th>Designation</th>
                                             <th>Prix</th>
                                             <th>Fam</th>
-                                            <th>Action</th>
+                                            @can('update', $consignations->first())
+                                                <th>Action</th>
+                                            @endcan
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($consignations as $consignation)
-                                            <tr id="row_{{$consignation->id}}">
+                                            <tr id="row_{{ $consignation->id }}">
                                                 <td>
                                                     <input type="checkbox" data-id="{{ $consignation['id'] }}"
                                                         class="input-chk">
@@ -89,30 +91,22 @@
                                                 <td>{{ $consignation->reference }}</td>
                                                 <td>{{ $consignation->designation }}</td>
                                                 <td>{{ $consignation->price }}</td>
-                                                <td>{{ $consignation->category->name??"-" }}</td>
-                                                <td>
-                                                    <a href="{{ route('admin.approvisionnement.emballages.edit', $consignation->id) }}"
-                                                        class="btn btn-info">
-                                                        Editer
-                                                    </a>
-                                                    <button class="btn btn-danger delete-btn"
-                                                        data-url="{{ route('admin.approvisionnement.emballages.destroy', $consignation->id) }}"
-                                                        data-id="{{ $consignation->id }}">Supprimer</button>
-                                                </td>
+                                                <td>{{ $consignation->category->name ?? '-' }}</td>
+                                                @can('update', $consignation)
+                                                    <td>
+                                                        <a href="{{ route('admin.approvisionnement.emballages.edit', $consignation->id) }}"
+                                                            class="btn btn-info">
+                                                            Editer
+                                                        </a>
+                                                        <button class="btn btn-danger delete-btn"
+                                                            data-url="{{ route('admin.approvisionnement.emballages.destroy', $consignation->id) }}"
+                                                            data-id="{{ $consignation->id }}">Supprimer</button>
+                                                    </td>
+                                                @endcan
                                             </tr>
                                         @empty
                                         @endforelse
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th><input type="checkbox" class="input-chk-all"></th>
-                                            <th>Ref</th>
-                                            <th>Designation</th>
-                                            <th>Prix</th>
-                                            <th>Fam</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                             <!--/ Invoices table -->

@@ -11,11 +11,17 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(User::class, "utilisateur");
+    }
+
     public function index()
     {
-        $users = User::where("id","!=",auth()->user()->id)
-        ->where("permission_access","!=",1)
-        ->orderBy("id", "desc")->paginate(8);
+
+        $users = User::where("id", "!=", auth()->user()->id)
+            ->where("permission_access", "!=", 1)
+            ->orderBy("id", "desc")->paginate(8);
         return view("admin.utilisateur.index", compact("users"));
     }
 
@@ -55,7 +61,7 @@ class UserController extends Controller
         if ($request->file("image")) {
             $data["image"] =  UploadFile::upload($request->file("image"), "users");
         }
-        
+
         $data["password"] = Hash::make($request->password);
         //dd($data);
         $saved = User::create($data);
@@ -67,10 +73,8 @@ class UserController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function update($userId, Request $request)
+    public function update(User $user, Request $request)
     {
-        $user = User::findOrFail($userId);
-
         $request->validate($this->rules(true), $this->message());
 
         //dd($request->all());
@@ -83,21 +87,21 @@ class UserController extends Controller
         $saved = $user->update($data);
 
         if ($saved) {
-            return redirect("/admin/utlisateurs")->with("success", CustomMessage::Success("L'utlisateur"));
+            return redirect("/admin/utilisateurs")->with("success", CustomMessage::Success("L'utlisateur"));
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::findOrFail($id);
+        // $user = User::findOrFail($id);
+
         return view("admin.utilisateur.edit", compact("user"));
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
         deleteFile($user->image);
         $delete = $user->delete();
         //$delete =true;

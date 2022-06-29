@@ -121,7 +121,7 @@
                             <div class="col-12">
                                 <button type="submit" class="btn form-control my-1 border-top text-white btn-secondary">
                                     <i class="la la-save"></i>
-                                    Enregistrer
+                                    Valider
                                 </button>
                             </div>
                         </div>

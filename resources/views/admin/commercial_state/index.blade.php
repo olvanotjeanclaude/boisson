@@ -87,10 +87,10 @@
                                         <thead class="bg-light">
                                             <tr>
                                                 <th>{{ $type }}</th>
-                                                <th>Quantity</th>
-                                                <th>Entrée (Ariary)</th>
-                                                <th>Sorti (Ariary)</th>
-                                                <th>Reste (Ariary)</th>
+                                                <th>Quantité</th>
+                                                <th>Entrée (Vola Niditra)</th>
+                                                <th>Sortie (Vola Nivoaka)</th>
+                                                <th>Dette (Trosa)</th>
                                                 <th>Caisse</th>
                                                 <th>Voir</th>
                                             </tr>

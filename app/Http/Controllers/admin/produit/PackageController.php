@@ -11,6 +11,11 @@ use App\Models\Product;
 
 class PackageController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Package::class, "package");
+    }
+
     public function index()
     {
         $packages = Package::orderBy("id", "desc")->get();
@@ -21,12 +26,11 @@ class PackageController extends Controller
     {
         $catArticles = Category::orderBy("name", "asc")->get();
         $products = Product::orderBy("designation")->get();
-        return view("admin.approvisionnement.package.create", compact("catArticles","products"));
+        return view("admin.approvisionnement.package.create", compact("catArticles", "products"));
     }
 
-    public function edit($id)
+    public function edit(Package $package)
     {
-        $package = Package::findOrFail($id);
         $products = Product::orderBy("designation")->get();
         $catArticles = Category::orderBy("name", "asc")->get();
         // dd($package);
@@ -34,7 +38,8 @@ class PackageController extends Controller
         return view("admin.approvisionnement.package.edit", compact("products", "catArticles", "package"));
     }
 
-    private function rules(){
+    private function rules()
+    {
         return [
             "designation" => "required|string",
             "product_id" => "required|numeric",
@@ -60,10 +65,8 @@ class PackageController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function update($id, Request $request)
+    public function update(Package $product, Request $request)
     {
-        $product = Package::findOrFail($id);
-
         $request->validate($this->rules());
 
         $data = $request->except("_token");
@@ -79,12 +82,11 @@ class PackageController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function destroy($id)
+    public function destroy(Package $package)
     {
         $result = [];
-        $delete = Package::findOrFail($id);
-
-        if ($delete->delete()) {
+      
+        if ($package->delete()) {
             $result["success"] = CustomMessage::Delete("L'article");
             $result["type"] = "success";
         } else {

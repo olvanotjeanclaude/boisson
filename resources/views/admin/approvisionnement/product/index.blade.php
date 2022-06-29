@@ -10,9 +10,9 @@
 
 @section('content-header')
     @include('includes.content-header', [
-       'page' => 'Produits',
+        'page' => 'Produits',
         'breadcrumbs' => [
-            ['text' => 'Produits', 'link' => "#"],
+            ['text' => 'Produits', 'link' => '#'],
             ['text' => 'Articles', 'link' => route('admin.approvisionnement.articles.index')],
             ['text' => 'Liste', 'link' => route('admin.index')],
         ],
@@ -20,7 +20,7 @@
             'text' => 'Nouveau Article',
             'link' => route('admin.approvisionnement.articles.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => auth()->user()->can('create', \App\Models\Product::class),
         ],
     ])
 @endsection
@@ -70,7 +70,8 @@
                                     <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
                                         <a href="#" class="dropdown-item"><i class="la la-calendar"></i> Due Date</a>
                                         <a href="#" class="dropdown-item"><i class="la la-random"></i> Priority </a>
-                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance Due</a>
+                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance
+                                            Due</a>
                                         <a href="#" class="dropdown-item"><i class="la la-user"></i> Assign to</a>
                                     </span>
                                 </span>
@@ -91,12 +92,14 @@
                                             <th>Designation</th>
                                             <th>Prix</th>
                                             <th>Fam</th>
-                                            <th>Action</th>
+                                            @can('update',$products->first())
+                                                <th>Action</th>
+                                            @endcan
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($products as $product)
-                                            <tr id="row_{{$product->id}}">
+                                            <tr id="row_{{ $product->id }}">
                                                 <td>
                                                     <input type="checkbox" data-id="{{ $product['id'] }}"
                                                         class="input-chk">
@@ -105,29 +108,21 @@
                                                 <td>{{ $product->designation }}</td>
                                                 <td>{{ $product->price }}</td>
                                                 <td>{{ $product->category->name }}</td>
-                                                <td>
-                                                    <a href="{{ route('admin.approvisionnement.articles.edit', $product->id) }}"
-                                                        class="btn btn-info">
-                                                        Editer
-                                                    </a>
-                                                    <button class="btn btn-danger delete-btn"
-                                                        data-url="{{ route('admin.approvisionnement.articles.destroy', $product->id) }}"
-                                                        data-id="{{ $product->id }}">Supprimer</button>
-                                                </td>
+                                                @can('update', $product)
+                                                    <td>
+                                                        <a href="{{ route('admin.approvisionnement.articles.edit', $product->id) }}"
+                                                            class="btn btn-info">
+                                                            Editer
+                                                        </a>
+                                                        <button class="btn btn-danger delete-btn"
+                                                            data-url="{{ route('admin.approvisionnement.articles.destroy', $product->id) }}"
+                                                            data-id="{{ $product->id }}">Supprimer</button>
+                                                    </td>
+                                                @endcan
                                             </tr>
                                         @empty
                                         @endforelse
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th><input type="checkbox" class="input-chk-all"></th>
-                                            <th>Ref</th>
-                                            <th>Designation</th>
-                                            <th>Prix</th>
-                                            <th>Fam</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                             <!--/ Invoices table -->

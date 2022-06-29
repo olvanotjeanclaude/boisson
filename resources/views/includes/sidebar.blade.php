@@ -1,7 +1,7 @@
 <div class="main-menu material-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
     <div class="user-profile">
         <div class="user-info text-center pb-2"><img class="user-img img-fluid rounded-circle w-25 mt-2"
-                src="../../../app-assets/images/portrait/medium/avatar-m-1.png" alt="" />
+                src="{{ getUserProfile() }}" alt="" />
             <div class="name-wrapper d-block dropdown mt-1"><a class="white dropdown-toggle ml-2" id="user-account"
                     href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
                         class="user-name text-capitalize">{{ auth()->user()->full_name }}</span></a>
@@ -38,12 +38,16 @@
                     data-original-title="Ecommerce">more_horiz</i>
             </li>
 
-            <li class="nav-item">
-                <a href="{{ route('admin.utlisateurs.index') }}">
-                    <span class="material-icons">people</span>
-                    <span class="menu-title">Ulitisateurs</span>
-                </a>
-            </li>
+            @if (getUserPermission() == 'super admin' || getUserPermission() == 'admin' || getUserPermission() == 'directeur')
+            @endif
+            @can('viewAny', \App\Models\User::class)
+                <li class="nav-item">
+                    <a href="{{ route('admin.utilisateurs.index') }}">
+                        <span class="material-icons">people</span>
+                        <span class="menu-title">Ulitisateurs</span>
+                    </a>
+                </li>
+            @endcan
             <li class="nav-item">
                 <a href="{{ route('admin.clients.index') }}">
                     <span class="material-icons">groups</span>

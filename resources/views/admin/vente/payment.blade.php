@@ -63,18 +63,18 @@
                                 <div class="col-sm mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="checkout">
-                                            Caisse
+                                            Retour (Vola Mivoaka)
                                         </label>
-                                        <input type="number" step="0.001" id="checkout" value="{{ $invoice->checkout??0 }}"
+                                        <input type="number" step="0.001" required id="checkout" value="{{ $invoice->checkout??0 }}"
                                             name="checkout" class="form-control" placeholder="0 Ariary">
                                     </div>
                                 </div>
                                 <div class="col-sm mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="paid">
-                                            Payé/dépense
+                                            Payé (Vola Miditra)
                                         </label>
-                                        <input type="number" step="0.001" required id="paid" value="{{ $invoice->paid }}"
+                                        <input type="number" step="0.001" required id="paid" value="{{ $invoice->paid??0 }}"
                                             name="paid" class="form-control" placeholder="0 Ariary">
                                         <div class="invalid-feedback">
                                             Entrer le montant
@@ -95,7 +95,7 @@
                                         <label class="text-bold-400 text-dark" for="rest">
                                             Reste À Payer
                                         </label>
-                                        <h4 class=""><span id="rest">{{ $invoice->rest }}</span> Ariary
+                                        <h4 class=""><span id="rest">{{ $invoice->rest }}</span> Ar (Dette)
                                         </h4>
                                     </div>
                                 </div>

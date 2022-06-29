@@ -39,7 +39,7 @@
                     <div class="col-12 d-flex justify-content-between">
                         <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
                         <a href="{{ route('admin.print.sale.terminate',$invoice->number) }}"
-                            class="ml-2 btn btn-success btn-lg  mb-2">Terminer</a>
+                            class="ml-2 btn btn-success btn-lg  mb-2">Enregistrer</a>
                     </div>
                 </div>
 

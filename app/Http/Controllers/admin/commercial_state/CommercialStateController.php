@@ -134,7 +134,7 @@ class CommercialStateController extends Controller
             case 'annuel':
                 $sale = Sale::whereYear("received_at", $state->year);
                 $state->url =  route("admin.commercialState.show", [
-                    "filtrerPar" => "hebdomadaire",
+                    "filtrerPar" => "annuel",
                     "year" => $state->year
                 ]);
                 break;

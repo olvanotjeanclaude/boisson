@@ -8,7 +8,7 @@
     @include('includes.content-header', [
         'page' => 'Utilisateurs',
         'breadcrumbs' => [
-            ['text' => 'Utilisateurs', 'link' => route('admin.utlisateurs.index')],
+            ['text' => 'Utilisateurs', 'link' => route('admin.utilisateurs.index')],
             ['text' => 'Editer', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
@@ -55,7 +55,7 @@
                 </div>
 
                 <form enctype="multipart/form-data" class="form needs-validation" novalidate
-                    action="{{ route('admin.utlisateurs.update', $user->id) }}" method="POST">
+                    action="{{ route('admin.utilisateurs.update', $user->id) }}" method="POST">
                     @csrf
                     @method('put')
                     <div class="form-body">

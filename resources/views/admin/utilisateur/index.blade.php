@@ -12,14 +12,14 @@
     @include('includes.content-header', [
         'page' => 'Utilisateurs',
         'breadcrumbs' => [
-            ['text' => 'Utilisateurs', 'link' => route('admin.utlisateurs.index')],
+            ['text' => 'Utilisateurs', 'link' => route('admin.utilisateurs.index')],
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'nouvel utilisateur',
-            'link' => route('admin.utlisateurs.create'),
+            'link' => route('admin.utilisateurs.create'),
             'icon' => '<span class="material-icons">person_add</span>',
-            'show' => true,
+            'show' =>auth()->user()->can("viewAny",\App\Models\Users::class),
         ],
     ])
 @endsection
@@ -52,15 +52,22 @@
                         </div>
                     </div>
                     <div class="card-actions d-flex mt-2 justify-content-center">
-                        {{-- <a class="btn btn-primary" href="{{ route('admin.utlisateurs.show', $user->id) }}">Voir</a> --}}
-                        <a class="btn btn-info" href="{{ route('admin.utlisateurs.edit', $user->id) }}">Editer</a>
-                        <button parent-id="#user-container" class="btn btn-danger delete-btn"
-                            data-url="{{ route('admin.utlisateurs.destroy', $user->id) }}">Supprimer</button>
+                        {{-- <a class="btn btn-primary" href="{{ route('admin.utilisateurs.show', $user->id) }}">Voir</a> --}}
+
+                        @can('update', \App\Models\User::class)
+                            <a class="btn btn-info" href="{{ route('admin.utilisateurs.edit',['utilisateur'=> $user->id]) }}">Editer</a>
+                        @endcan
+                        @can('delete', \App\Models\User::class)
+                            <button data-id="{{ $user->id }}" parent-id="#user-container" class="btn btn-danger delete-btn"
+                                data-url="{{ route('admin.utilisateurs.destroy', $user->id) }}">
+                                Supprimer
+                            </button>
+                        @endcan
                     </div>
                 </div>
             </div>
         @empty
-        @include('includes.empty-data-message')
+            @include('includes.empty-data-message')
         @endforelse
     </div>
     <div class="row mt-1">

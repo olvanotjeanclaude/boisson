@@ -11,6 +11,11 @@ use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Product::class, "article");
+    }
+
     public function index()
     {
         $products = Product::orderBy("id", "desc")->get();
@@ -23,9 +28,8 @@ class ProductController extends Controller
         return view("admin.approvisionnement.product.create", compact("catArticles"));
     }
 
-    public function edit($id)
+    public function edit(Product $product)
     {
-        $product = Product::findOrFail($id);
         $catArticles = Category::orderBy("name", "asc")->get();
         return view("admin.approvisionnement.product.edit", compact("catArticles", "product"));
     }
@@ -55,10 +59,8 @@ class ProductController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function update($id, Request $request)
+    public function update(Product $product, Request $request)
     {
-        $product = Product::findOrFail($id);
-
         $request->validate($this->rules());
 
         $data = $request->except("_token");
@@ -74,12 +76,11 @@ class ProductController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function destroy($id)
+    public function destroy(Product $product)
     {
         $result = [];
-        $delete = Product::findOrFail($id);
 
-        if ($delete->delete()) {
+        if ($product->delete()) {
             $result["success"] = CustomMessage::Delete("L'article");
             $result["type"] = "success";
         } else {
