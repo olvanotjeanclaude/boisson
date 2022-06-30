@@ -22,6 +22,11 @@ use App\Models\SupplierOrders;
 
 class SaleController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Sale::class, "vente");
+    }
+
     public function index()
     {
         $docSales = DocumentVente::has("customer")->when(getUserPermission() == "facturation", function ($q) {

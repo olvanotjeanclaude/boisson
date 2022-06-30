@@ -10,6 +10,11 @@ use App\Http\Controllers\Controller;
 
 class CategoryArticleController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Category::class, "category_article");
+    }
+
     public function index()
     {
         $catArticles = Category::orderBy("id","desc")->get();
@@ -62,10 +67,8 @@ class CategoryArticleController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function update($id, Request $request)
+    public function update($catArticle, Request $request)
     {
-        $catArticle = Category::findOrFail($id);
-
         $request->validate($this->rules(true), $this->message());
 
         //dd($request->all());
@@ -81,16 +84,14 @@ class CategoryArticleController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function edit($id)
+    public function edit($catArticle)
     {
-        $catArticle = Category::findOrFail($id);
         return view("admin.article.category.modal.edit-category-article", compact("catArticle"));
     }
 
-    public function destroy($id)
+    public function destroy($catArticle)
     {
-        $user = Category::findOrFail($id);
-        $delete = $user->delete();
+        $delete = $catArticle->delete();
         //$delete =true;
         $result = [];
 

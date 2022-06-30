@@ -14,6 +14,11 @@ use App\Http\Requests\AchatSupplierValidation;
 
 class PurchaseProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(SupplierOrders::class, "achat_produit");
+    }
+
     public function index()
     {
         $invoices = DocumentAchat::withCount("supplier_orders")

@@ -23,6 +23,7 @@ class Invoice
         "valid" => 5, //payé et imprimé
         "deleted" => 6, //supprimé
         "modified" => 7, //modifié
+        "canceled" => 8, //modifié
     ];
 
     public static function calculateAmount(Collection $articles)

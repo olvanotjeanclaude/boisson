@@ -13,6 +13,8 @@ class CommercialStateController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize("commercialState", \App\Models\DocumentVente::class);
+
         $type = $request->get("filtrerPar");
         $states = DocumentVente::CommercialStateBetween($type);
 
@@ -28,7 +30,7 @@ class CommercialStateController extends Controller
     public function show(Request $request)
     {
         $type = $request->get("filtrerPar");
-    
+
         switch ($type) {
             case 'jour':
                 $date = $request->get("date") ?? date("d-m-Y");
@@ -75,12 +77,21 @@ class CommercialStateController extends Controller
                 ];
                 break;
         }
-       
+
         $states = Sale::FilterBy($type, $criteria);
-       
-        $total = $states->sum("amount");
+
+        $states = $states->map(function ($state) {
+            // dd($state);
+            $state->invoice = DocumentVente::find($state->invoice_number);
+            $state->amount = $state->sum_sale * $state->saleable->price;
+            $state->amount = $state->isWithEmballage == 1 ? -$state->amount : $state->amount;
+            return $state;
+        });
 
         // dd($states);
+        
+        $total = $states->sum("amount");
+
         return view("admin.commercial_state.show", compact("states", "filtered", "total"));
     }
 
@@ -150,6 +161,12 @@ class CommercialStateController extends Controller
         $state->sum_quantity =  $sale->sum("quantity");
         $state->amount_received = $state->paid - $state->sum_checkout;
 
+        return $state;
+    }
+
+    private function calculAmount($state){
+        $state->amount = $state->sum_sale * $state->saleable->price;
+        $state->amount = $state->isWithEmballage == 1 ? -$state->amount : $state->amount;
         return $state;
     }
 }

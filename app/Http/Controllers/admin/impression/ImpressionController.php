@@ -18,6 +18,14 @@ class ImpressionController extends Controller
         return view("admin.vente.invoice", compact("invoice", "amount"));
     }
 
+    public function cancelSale($invoiceNumber)
+    {
+        $docVente = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
+        // $docVente->sales()->delete();
+        // $docVente->delete();
+        return redirect("/admin/ventes");
+    }
+
     public function printAchat($invoiceNumber)
     {
         $invoice = DocumentAchat::where("number", $invoiceNumber)->firstOrFail();

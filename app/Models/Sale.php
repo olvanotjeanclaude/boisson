@@ -161,7 +161,7 @@ class Sale extends Model
                 break;
         }
 
-        return $sales->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
+        return $sales->selectRaw('SUM(quantity) as sum_sale,invoice_number,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
             ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
             ->get()
             ->map(function ($state) {

@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('vendor')
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css"> --}}
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') }}">
+    @include('includes.datatable.css')
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/icheck/icheck.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/icheck/custom.css') }}">
 @endsection
@@ -102,7 +100,7 @@
                                                     </td>
                                                     <td>{{ $state->sum_quantity }}</td>
                                                     <td>{{ formatPrice($state->paid) }}</td>
-                                                    <td>{{ formatPrice($state->sum_checkout) }}</td>
+                                                    <td>-{{ formatPrice($state->sum_checkout) }}</td>
                                                     <td>{{ formatPrice($state->rest) }}</td>
                                                     <td>{{ formatPrice($state->amount_received) }}</td>
                                                     <td>
@@ -133,15 +131,11 @@
 @endsection
 
 @section('page-js')
-    <script src="{{ asset('app-assets/vendors/js/tables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/tables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/forms/icheck/icheck.min.js') }}"></script>
-    {{-- <script src="{{ asset('app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js') }}"></script> --}}
+    @include('includes.datatable.js')
 @endsection
 
 @section('script')
     <script>
-        loadDatatable();
+        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
     </script>
 @endsection

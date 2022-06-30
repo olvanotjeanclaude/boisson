@@ -39,7 +39,7 @@ trait Articles
 
     public function getArticleTypeAttribute($value)
     {
-        return Stock::ARTICLE_TYPES[$value]??0;
+        return Stock::ARTICLE_TYPES[$value] ?? 0;
     }
 
     public function getTypeAttribute()
@@ -70,11 +70,19 @@ trait Articles
             case Invoice::STATUS["deleted"]:
                 $html = '<span class="badge badge-danger">Supprimer</span>';
                 break;
+            case Invoice::STATUS["canceled"]:
+                $html = '<span class="badge badge-danger">Annulé</span>';
+                break;
             default:
                 $html = '<span class="badge badge-dark">Inconnu</span>';
                 break;
         }
 
         return $html;
+    }
+
+    public function getInvoiceStatusAttribute()
+    {
+        return array_search($this->status, Invoice::STATUS);
     }
 }

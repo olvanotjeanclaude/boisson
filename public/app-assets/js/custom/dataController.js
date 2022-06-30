@@ -1,8 +1,15 @@
-function loadDatatable(element = ".datatable") {
+function loadDatatable(element = ".datatable", buttons = []) {
     if ($(element).length) {
-        $(element).DataTable({
-            "ordering": false
-        });
+        const configs = {
+            ordering: false,
+        };
+
+        if (buttons.length > 0) {
+            configs.dom= 'Bfrtip';
+            configs.buttons = buttons;
+        }
+      
+        $(element).DataTable(configs);
     }
 }
 
@@ -32,7 +39,7 @@ function confirmeDeleteItem() {
                     $(`#row_${rowId}`).remove();
 
                     if (data.reload) {
-                        setTimeout(function() {
+                        setTimeout(function () {
                             window.location.reload();
                         }, 3000);
                     }
@@ -44,7 +51,7 @@ function confirmeDeleteItem() {
 }
 
 async function deleteAllItem() {
-    const checkedIds = $('table.icheck input:checkbox:checked').map(function() {
+    const checkedIds = $('table.icheck input:checkbox:checked').map(function () {
         return $(this).data("id");
     }).get();
     const url = $("#deleteIcheckBtn").data("url");
@@ -84,7 +91,7 @@ function icheckConfig() {
     var checkboxes = $('input.input-chk');
 
 
-    checkAll.on('ifChecked ifUnchecked', function(event) {
+    checkAll.on('ifChecked ifUnchecked', function (event) {
         if (event.type == 'ifChecked') {
             $("#deleteIcheckBtn").removeClass("d-none");
             checkboxes.iCheck('check');
@@ -94,7 +101,7 @@ function icheckConfig() {
         }
     });
 
-    checkboxes.on('ifChanged', function(event) {
+    checkboxes.on('ifChanged', function (event) {
         if (checkboxes.filter(':checked').length == checkboxes.length) {
             checkAll.prop('checked', 'checked');
         } else {
@@ -103,7 +110,7 @@ function icheckConfig() {
         checkAll.iCheck('update');
     });
 
-    checkboxes.on("ifChanged", function(event) {
+    checkboxes.on("ifChanged", function (event) {
         const checkedLength = $('table.icheck input.input-chk:checkbox:checked').length;
         toggleCheckbox(checkedLength);
     })

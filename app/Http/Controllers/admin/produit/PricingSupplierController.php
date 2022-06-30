@@ -13,6 +13,11 @@ use App\Models\PricingSuplier;
 
 class PricingSupplierController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(PricingSuplier::class, "tarif_fournisseur");
+    }
+
     public function index()
     {
         $tarifs = PricingSuplier::has("product")->orderBy("id", "desc")->get();
@@ -35,10 +40,8 @@ class PricingSupplierController extends Controller
         ));
     }
 
-    public function edit($id)
+    public function edit(PricingSuplier $pricingSuplier)
     {
-        $pricingSuplier = PricingSuplier::findOrFail($id);
-
         $suppliers = Supplier::orderBy("identification")->get();
         $products = Product::orderBy("designation")->get();
         $packages = Package::orderBy("designation")->get();
@@ -89,11 +92,9 @@ class PricingSupplierController extends Controller
         return $data;
     }
 
-    public function update($id, Request $request)
+    public function update(PricingSuplier $product, Request $request)
     {
         $request->validate($this->rules());
-
-        $product = PricingSuplier::findOrFail($id);
        
         $data = $this->getArticleData($request->product_id, $request);
        
@@ -108,12 +109,11 @@ class PricingSupplierController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function destroy($id)
+    public function destroy(PricingSuplier $pricingSuplier)
     {
         $result = [];
-        $delete = PricingSuplier::findOrFail($id);
 
-        if ($delete->delete()) {
+        if ($pricingSuplier->delete()) {
             $result["success"] = CustomMessage::Delete("Tarif fournisseur");
             $result["type"] = "success";
         } else {

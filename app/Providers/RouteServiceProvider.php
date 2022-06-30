@@ -2,8 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Product;
-use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -37,8 +36,12 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Route::model('utilisateur', User::class);
-        Route::model('article', Product::class);
+        Route::model('utilisateur', \App\Models\User::class);
+        Route::model('article',  \App\Models\Product::class);
+        Route::model("tarif_fournisseur", \App\Models\PricingSuplier::class);
+        Route::model("fournisseur", \App\Models\Supplier::class);
+        Route::model("achat_produit", \App\Models\SupplierOrders::class);
+        Route::model("category_article", \App\Models\Category::class);
 
         $this->configureRateLimiting();
 

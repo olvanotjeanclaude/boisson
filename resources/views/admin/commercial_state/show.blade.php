@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
 @section('vendor')
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css"> --}}
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/icheck/icheck.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/icheck/custom.css') }}">
+    @include('includes.datatable.css')
 @endsection
 
 @section('title')
@@ -46,7 +42,7 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title"> Etat Commericiale  <b><u>{{ $filtered }}</u></b></h4>
+                        <h4 class="card-title"> Etat Commericiale <b><u>{{ $filtered }}</u></b></h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             {{-- <a href="{{ route('admin.factures.index') }}"
@@ -121,6 +117,14 @@
                                                         class="font-weight-bold">{{ formatPrice($total * 5, 'Fmg') }}</span>
                                                 </td>
                                             </tr>
+                                            {{-- <tr>
+                                                <td><b>Paye</b></td>
+                                                <td>
+                                                    <span class="font-weight-bold">
+                                                       ...
+                                                    </span>
+                                                </td>
+                                            </tr> --}}
                                         </tbody>
                                     </table>
                                 </div>
@@ -136,15 +140,11 @@
 @endsection
 
 @section('page-js')
-    <script src="{{ asset('app-assets/vendors/js/tables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/tables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/forms/icheck/icheck.min.js') }}"></script>
-    {{-- <script src="{{ asset('app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js') }}"></script> --}}
+    @include('includes.datatable.js')
 @endsection
 
 @section('script')
     <script>
-        loadDatatable();
+        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
     </script>
 @endsection

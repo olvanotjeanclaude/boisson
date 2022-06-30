@@ -5,7 +5,7 @@
 @endsection
 
 @section('page-css')
-    <link rel="stylesheet" href="{{asset('/assets/css/invoice.css')}}">
+    <link rel="stylesheet" href="{{ asset('/assets/css/invoice.css') }}">
 @endsection
 
 @section('content-header')
@@ -37,9 +37,26 @@
             <div>
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between">
-                        <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
-                        <a href="{{ route('admin.print.sale.terminate',$invoice->number) }}"
-                            class="ml-2 btn btn-success btn-lg  mb-2">Enregistrer</a>
+                        @can('print', \App\Models\DocumentVente::class)
+                            <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
+                        @endcan
+
+                        {{-- {{ $invoice }} --}}
+                        @can('cancel', $invoice)
+                            <a href="{{ route('admin.print.sale.cancel', $invoice->number) }}"
+                                class="ml-2 btn btn-danger btn-lg  mb-2">
+                                Annuler
+                            </a>
+                        @endcan
+
+                        @can('terminate', \App\Models\DocumentVente::class)
+                            @if ($invoice->invoice_status == 'pending')
+                                <a href="{{ route('admin.print.sale.terminate', $invoice->number) }}"
+                                    class="ml-2 btn btn-success btn-lg  mb-2">
+                                    Enregistrer
+                                </a>
+                            @endif
+                        @endcan
                     </div>
                 </div>
 
@@ -57,7 +74,7 @@
                     <div id="mid">
                         <div class="info">
                             <h2 class="font-weight-bold"></h2>
-                            <p>N<sup><span>&#176;</span></sup>  {{ $invoice->number }} <br>
+                            <p>N<sup><span>&#176;</span></sup> {{ $invoice->number }} <br>
                                 Date : {{ format_date_time($invoice->received_at) }} <br><br>
                                 Client : {{ Str::ucfirst($invoice->customer->identification) }}</br>
                                 Adresse : {{ $invoice->customer->address }}</br>

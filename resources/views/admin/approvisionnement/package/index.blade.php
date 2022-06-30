@@ -71,7 +71,7 @@
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th><input type="checkbox" class="input-chk-all"></th>
+                                            {{-- <th><input type="checkbox" class="input-chk-all"></th> --}}
                                             <th>Ref</th>
                                             <th>Designation</th>
                                             <th>Contenance</th>
@@ -85,14 +85,14 @@
                                     <tbody>
                                         @forelse ($packages as $package)
                                             <tr id="row_{{ $package->id }}">
-                                                <td>
+                                                {{-- <td>
                                                     <input type="checkbox" data-id="{{ $package['id'] }}"
                                                         class="input-chk">
-                                                </td>
+                                                </td> --}}
                                                 <td>{{ $package->reference }}</td>
                                                 <td>{{ $package->designation }}</td>
                                                 <td>{{ $package->contenance }}</td>
-                                                <td>{{ $package->price }}</td>
+                                                <td>{{ formatPrice($package->price) }}</td>
                                                 <td>{{ $package->category->name ?? '-' }}</td>
                                                 @can('update', $package)
                                                     <td>

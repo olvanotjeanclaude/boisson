@@ -2,10 +2,11 @@
 
 namespace App\Policies;
 
+use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserPolicy
+class SupplierPolicy
 {
     use HandlesAuthorization;
 
@@ -17,17 +18,17 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isDirector();
+        //
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, User $model)
+    public function view(User $user, Supplier $supplier)
     {
         //
     }
@@ -40,42 +41,41 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isDirector();
+        //
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user)
+    public function update(User $user, Supplier $supplier)
     {
-        // dd("ççç");
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isDirector();
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user)
+    public function delete(User $user, Supplier $supplier)
     {
-        return $user->isSuperAdmin();
+        //
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user, Supplier $supplier)
     {
         //
     }
@@ -84,11 +84,16 @@ class UserPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user, Supplier $supplier)
     {
         //
+    }
+
+    public function before(User $user, $ability)
+    {
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isDirector();
     }
 }

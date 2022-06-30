@@ -2,10 +2,11 @@
 
 namespace App\Policies;
 
+use App\Models\Sale;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserPolicy
+class SalePolicy
 {
     use HandlesAuthorization;
 
@@ -17,17 +18,17 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isDirector();
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Sale  $sale
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, User $model)
+    public function view(User $user, Sale $sale)
     {
         //
     }
@@ -40,42 +41,51 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isDirector();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isFacturation();
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Sale  $sale
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user)
+    public function update(User $user, Sale $sale)
     {
-        // dd("ççç");
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isDirector();
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Sale  $sale
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user)
+    public function delete(User $user, Sale $sale)
     {
-        return $user->isSuperAdmin();
+        //
+    }
+
+    public function pay(User $user)
+    {
+        return !$user->isFacturation();
+    }
+
+    public function print(User $user)
+    {
+        return $user->isFacturation();
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Sale  $sale
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user, Sale $sale)
     {
         //
     }
@@ -84,10 +94,10 @@ class UserPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Sale  $sale
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user, Sale $sale)
     {
         //
     }

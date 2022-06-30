@@ -87,12 +87,12 @@
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th><input type="checkbox" class="input-chk-all"></th>
+                                            {{-- <th><input type="checkbox" class="input-chk-all"></th> --}}
                                             <th>Ref</th>
                                             <th>Designation</th>
                                             <th>Prix</th>
                                             <th>Fam</th>
-                                            @can('update',$products->first())
+                                            @can('update', $products->first())
                                                 <th>Action</th>
                                             @endcan
                                         </tr>
@@ -100,13 +100,13 @@
                                     <tbody>
                                         @forelse ($products as $product)
                                             <tr id="row_{{ $product->id }}">
-                                                <td>
+                                                {{-- <td>
                                                     <input type="checkbox" data-id="{{ $product['id'] }}"
                                                         class="input-chk">
-                                                </td>
+                                                </td> --}}
                                                 <td>{{ $product->reference }}</td>
                                                 <td>{{ $product->designation }}</td>
-                                                <td>{{ $product->price }}</td>
+                                                <td>{{ formatPrice($product->price) }}</td>
                                                 <td>{{ $product->category->name }}</td>
                                                 @can('update', $product)
                                                     <td>

@@ -66,7 +66,9 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
     Route::group(["prefix" => "impression", "as" => "print."], function () {
       Route::get("vente/{invoice_number}",[\App\Http\Controllers\admin\impression\ImpressionController::class,"printSale"])->name("sale");
+      Route::get("vente/{invoice_number}/annuler",[\App\Http\Controllers\admin\impression\ImpressionController::class,"cancelSale"])->name("sale.cancel");
       Route::get("vente/{invoice_number}/terminer",[\App\Http\Controllers\admin\impression\ImpressionController::class,"saleTerminate"])->name("sale.terminate");
+    
       Route::get("achat/{invoice_number}",[\App\Http\Controllers\admin\impression\ImpressionController::class,"printAchat"])->name("achat");
       Route::get("achat/{invoice_number}/terminer",[\App\Http\Controllers\admin\impression\ImpressionController::class,"achatTerminate"])->name("achat.terminate");
     });

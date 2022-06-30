@@ -5,7 +5,7 @@
 @endsection
 
 @section('title')
-   Etat Du Stock
+    Etat Du Stock
 @endsection
 
 @section('content-header')
@@ -53,13 +53,14 @@
                                 </span>
                                 Supprimer
                             </button>
-                            <a href="{{ route('admin.achat-produits.index') }}"
-                                class="btn btn-secondary btn-sm text-capitalize">
-                                Achat Produits
-                            </a>
-                            <a href="{{ route('admin.ventes.index') }}"
-                                class="btn btn-secondary btn-sm text-capitalize">
-                               Ventes
+                            @can('viewAny', \App\Models\SupplierOrders::class)
+                                <a href="{{ route('admin.achat-produits.index') }}"
+                                    class="btn btn-secondary btn-sm text-capitalize">
+                                    Achat Produits
+                                </a>
+                            @endcan
+                            <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
+                                Ventes
                             </a>
                         </div>
                     </div>
@@ -111,6 +112,6 @@
 
 @section('script')
     <script>
-        loadDatatable();
+        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
     </script>
 @endsection

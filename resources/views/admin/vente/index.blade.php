@@ -1,12 +1,11 @@
 @extends('layouts.app')
 
 @section('vendor')
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css"> --}}
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') }}">
+    @include('includes.datatable.css')
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/icheck/icheck.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/icheck/custom.css') }}">
 @endsection
+
 
 @section('title')
     Liste De ventes
@@ -23,7 +22,7 @@
             'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => auth()->user()->can('create', \App\Models\Sale::class),
         ],
     ])
 @endsection
@@ -100,12 +99,13 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($docSales as $sale)
-                                            <tr id="row_{{$sale->number}}">
+                                            <tr id="row_{{ $sale->number }}">
                                                 <td>{!! $sale->status_html !!}</td>
                                                 <td>{{ $sale->number }}</td>
                                                 <td>{{ $sale->customer->identification }}</td>
                                                 <td>{{ $sale->customer->cl_code }}</td>
                                                 <td>{{ format_date_time($sale->received_at) }}</td>
+
                                                 <td>
                                                     <span class="dropdown">
                                                         <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
@@ -123,18 +123,28 @@
                                                             <a href="{{ route('admin.print.sale', $sale->number) }}"
                                                                 class="dropdown-item">
                                                                 <i class="la la-print"></i>
-                                                                Factures</a>
-                                                            <a href="{{ route('admin.sale.paymentForm', $sale->number) }}"
-                                                                class="dropdown-item">
-                                                                <i class="la la-credit-card"></i>
-                                                                Payment</a>
-                                                            <a data-id="{{ $sale['number'] }}"
-                                                                data-url="{{ route('admin.ventes.destroy',['vente' => $sale['number'], 'invoice' => true]) }}"
-                                                                class="dropdown-item delete-btn"><i class="la la-trash"></i>
-                                                                Supprimer</a>
+                                                                Factures
+                                                            </a>
+                                                            @can('makePayment', \App\Models\DocumentVente::class)
+                                                                <a href="{{ route('admin.sale.paymentForm', $sale->number) }}"
+                                                                    class="dropdown-item">
+                                                                    <i class="la la-credit-card"></i>
+                                                                    Payment
+                                                                </a>
+                                                            @endcan
+
+                                                            @can('delete', $sale)
+                                                                <a data-id="{{ $sale['number'] }}"
+                                                                    data-url="{{ route('admin.ventes.destroy', ['vente' => $sale['number'], 'invoice' => true]) }}"
+                                                                    class="dropdown-item delete-btn"><i class="la la-trash"></i>
+                                                                    Supprimer
+                                                                </a>
+                                                            @endcan
+
                                                         </span>
                                                     </span>
                                                 </td>
+
                                             </tr>
                                         @empty
                                         @endforelse
@@ -152,15 +162,11 @@
 @endsection
 
 @section('page-js')
-    <script src="{{ asset('app-assets/vendors/js/tables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/tables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/forms/icheck/icheck.min.js') }}"></script>
-    {{-- <script src="{{ asset('app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js') }}"></script> --}}
+    @include('includes.datatable.js')
 @endsection
 
 @section('script')
     <script>
-        loadDatatable();
+        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
     </script>
 @endsection

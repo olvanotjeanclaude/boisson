@@ -9,6 +9,10 @@ use App\Models\Supplier;
 
 class SupplierController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Supplier::class, "fournisseur");
+    }
     public function index()
     {
         $suppliers = Supplier::orderBy("id", "desc")->get();
@@ -20,15 +24,13 @@ class SupplierController extends Controller
         return view("admin.supplier.create");
     }
 
-    public function edit($supplierId)
+    public function edit($supplier)
     {
-        $supplier = Supplier::findOrFail($supplierId);
         return view("admin.supplier.edit", compact("supplier"));
     }
 
-    public function show($supplierId)
+    public function show($supplier)
     {
-        $supplier = Supplier::findOrFail($supplierId);
         return view("admin.supplier.show", compact("supplier"));
     }
 
@@ -47,10 +49,8 @@ class SupplierController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function update($supplierId, Request $request)
+    public function update($supplier, Request $request)
     {
-        $supplier = Supplier::findOrFail($supplierId);
-
         $data = $request->except("_token");
 
         $saved = $supplier->update($data);

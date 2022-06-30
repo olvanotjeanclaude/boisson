@@ -71,7 +71,7 @@
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th><input type="checkbox" class="input-chk-all"></th>
+                                            {{-- <th><input type="checkbox" class="input-chk-all"></th> --}}
                                             <th>Ref</th>
                                             <th>Designation</th>
                                             <th>Prix</th>
@@ -84,13 +84,13 @@
                                     <tbody>
                                         @forelse ($consignations as $consignation)
                                             <tr id="row_{{ $consignation->id }}">
-                                                <td>
+                                                {{-- <td>
                                                     <input type="checkbox" data-id="{{ $consignation['id'] }}"
                                                         class="input-chk">
-                                                </td>
+                                                </td> --}}
                                                 <td>{{ $consignation->reference }}</td>
                                                 <td>{{ $consignation->designation }}</td>
-                                                <td>{{ $consignation->price }}</td>
+                                                <td>{{ formatPrice($consignation->price) }}</td>
                                                 <td>{{ $consignation->category->name ?? '-' }}</td>
                                                 @can('update', $consignation)
                                                     <td>

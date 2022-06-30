@@ -19,7 +19,7 @@
             'text' => 'Nouveau',
             'link' => route('admin.tarif-fournisseurs.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => auth()->user()->can('create', \App\Models\PricingSupplier::class),
         ],
     ])
 @endsection
@@ -66,7 +66,9 @@
                                             <th>Founrisseur</th>
                                             <th>Article</th>
                                             <th>Prix D'Achat</th>
-                                            <th>Action</th>
+                                            @can('update', $tarifs->first())
+                                                <th>Action</th>
+                                            @endcan
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -75,26 +77,28 @@
                                                 <td>{{ $tarif->supplier->identification }}</td>
                                                 <td>{{ $tarif->product->designation }}</td>
                                                 <td>{{ formatPrice($tarif->buying_price) }}</td>
-                                                <td>
-                                                    <span class="dropdown">
-                                                        <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="true"
-                                                            class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
-                                                                class="ft-settings"></i></button>
-                                                        <span aria-labelledby="btnSearchDrop2"
-                                                            class="dropdown-menu mt-1 dropdown-menu-right">
-                                                            <a href="{{ route('admin.tarif-fournisseurs.edit', $tarif['id']) }}"
-                                                                class="dropdown-item"><i class="la la-pencil"></i>
-                                                                Editer
-                                                            </a>
+                                                @can('update', $tarif)
+                                                    <td>
+                                                        <span class="dropdown">
+                                                            <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
+                                                                aria-haspopup="true" aria-expanded="true"
+                                                                class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
+                                                                    class="ft-settings"></i></button>
+                                                            <span aria-labelledby="btnSearchDrop2"
+                                                                class="dropdown-menu mt-1 dropdown-menu-right">
+                                                                <a href="{{ route('admin.tarif-fournisseurs.edit', $tarif['id']) }}"
+                                                                    class="dropdown-item"><i class="la la-pencil"></i>
+                                                                    Editer
+                                                                </a>
 
-                                                            <a data-id="{{ $tarif['id'] }}"
-                                                                data-url="{{ route('admin.tarif-fournisseurs.destroy', $tarif['id']) }}"
-                                                                class="dropdown-item delete-btn"><i class="la la-trash"></i>
-                                                                Supprimer</a>
+                                                                <a data-id="{{ $tarif['id'] }}"
+                                                                    data-url="{{ route('admin.tarif-fournisseurs.destroy', $tarif['id']) }}"
+                                                                    class="dropdown-item delete-btn"><i class="la la-trash"></i>
+                                                                    Supprimer</a>
+                                                            </span>
                                                         </span>
-                                                    </span>
-                                                </td>
+                                                    </td>
+                                                @endcan
                                             </tr>
                                         @empty
                                         @endforelse

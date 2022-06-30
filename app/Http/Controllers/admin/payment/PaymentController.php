@@ -11,8 +11,10 @@ use App\Models\DocumentAchat;
 
 class PaymentController extends Controller
 {
-    public function paymentForm($invoiceNumber)
+    public function paymentForm($invoiceNumber, Request $request)
     {
+        $this->authorize("makePayment", \App\Models\DocumentVente::class);
+
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
         $amount = $invoice->sales->sum("sub_amount");
 
@@ -39,6 +41,8 @@ class PaymentController extends Controller
 
     public function paymentStore($invoiceNumber, Request $request)
     {
+        $this->authorize("pay", \App\Models\Sale::class);
+
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
         $amount = $invoice->sales->sum("sub_amount");
         $rest = $amount - $request->paid;
@@ -54,7 +58,7 @@ class PaymentController extends Controller
         ];
 
 
-        if ($request->checkout>0) {
+        if ($request->checkout > 0) {
             $docSale["checkout"] = $request->checkout;
             $docSale["paid"] = $docSale["rest"] = 0;
             // $docSale["checkout"] = $request->checkout;

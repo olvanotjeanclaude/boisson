@@ -23,7 +23,7 @@
             'text' => 'Nouveau catégorie',
             'link' => route('admin.clients.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => auth()->user()->can('create', \App\Models\Category::class),
             'type' => 'modalBtn',
             'modalTarget' => 'addCategory',
         ],
@@ -74,7 +74,9 @@
                                         <th>Catégorie</th>
                                         <th>Date De Création</th>
                                         <th>ajouté par</th>
-                                        <th>Action</th>
+                                        @can('update', $catArticles->first())
+                                            <th>Action</th>
+                                        @endcan
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,16 +86,18 @@
                                             <td>{{ format_date_time($category->created_at) }}</td>
                                             <td>{{ $category->user->id != auth()->user()->id ? $category->user->full_name : 'Moi' }}
                                             </td>
-                                            <td>
-                                                <button
-                                                    data-url="{{ route('admin.category-articles.edit', $category->id) }}"
-                                                    class="btn btn-info edit-category" data-id="{{ $category->id }}">
-                                                    Editer
-                                                </button>
-                                                <button class="btn btn-danger delete-btn"
-                                                    data-url="{{ route('admin.category-articles.destroy', $category->id) }}"
-                                                    data-id="{{ $category->id }}">Supprimer</button>
-                                            </td>
+                                            @can('update', $category)
+                                                <td>
+                                                    <button
+                                                        data-url="{{ route('admin.category-articles.edit', $category->id) }}"
+                                                        class="btn btn-info edit-category" data-id="{{ $category->id }}">
+                                                        Editer
+                                                    </button>
+                                                    <button class="btn btn-danger delete-btn"
+                                                        data-url="{{ route('admin.category-articles.destroy', $category->id) }}"
+                                                        data-id="{{ $category->id }}">Supprimer</button>
+                                                </td>
+                                            @endcan
                                         </tr>
                                     @empty
                                     @endforelse
