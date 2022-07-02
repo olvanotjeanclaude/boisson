@@ -127,6 +127,6 @@
 
 @section('script')
     <script>
-        loadDatatable();
+        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
     </script>
 @endsection

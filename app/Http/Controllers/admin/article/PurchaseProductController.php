@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
 use App\helper\Invoice;
+use App\Http\Controllers\admin\supplier\SupplierController;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Models\DocumentAchat;
@@ -186,25 +187,31 @@ class PurchaseProductController extends Controller
         return $data;
     }
 
-    public function destroy($idOrNumber)
+    public function destroy($data)
     {
-        $delete = SupplierOrders::where("id", $idOrNumber)
-            ->orWhere("invoice_number", $idOrNumber)
-            ->delete();
+        $invoiceNumber = $data->invoice_number;
+        $id = $data->id;
 
-        if (request()->get("invoice")) {
-            $result = [];
-            $delete = DocumentAchat::where("number", $idOrNumber)->delete();
+        if ($id) {
+            $orders = SupplierOrders::find($id);
+            $orders->delete();
+        }
 
-            if ($delete) {
-                $result["success"] = CustomMessage::Delete("Supprimer avec success");
-                $result["type"] = "success";
-            } else {
-                $result["type"] = "error";
-                $result["error"] = CustomMessage::DEFAULT_ERROR;
+        if ($invoiceNumber) {
+            if (request()->get("invoice")) {
+                $result = [];
+                $delete = DocumentAchat::where("number", $invoiceNumber)->delete();
+
+                if ($delete) {
+                    $result["success"] = CustomMessage::Delete("Supprimer avec success");
+                    $result["type"] = "success";
+                } else {
+                    $result["type"] = "error";
+                    $result["error"] = CustomMessage::DEFAULT_ERROR;
+                }
+
+                return response()->json($result);
             }
-
-            return response()->json($result);
         }
 
         return back()->with("success", "Supprimer avec success");

@@ -16,7 +16,7 @@
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Faire Un Achat',
+            'text' => 'Nouveau Achat',
             'link' => route('admin.achat-produits.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,

@@ -63,7 +63,7 @@
                                 <div class="col-sm mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="checkout">
-                                            Retour (Vola Mivoaka)
+                                           Sortie De Caisse
                                         </label>
                                         <input type="number" step="0.001" required id="checkout" value="{{ $invoice->checkout??0 }}"
                                             name="checkout" class="form-control" placeholder="0 Ariary">
@@ -72,7 +72,7 @@
                                 <div class="col-sm mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="paid">
-                                            Payé (Vola Miditra)
+                                            Entrée De Caisse 
                                         </label>
                                         <input type="number" step="0.001" required id="paid" value="{{ $invoice->paid??0 }}"
                                             name="paid" class="form-control" placeholder="0 Ariary">
@@ -95,7 +95,7 @@
                                         <label class="text-bold-400 text-dark" for="rest">
                                             Reste À Payer
                                         </label>
-                                        <h4 class=""><span id="rest">{{ $invoice->rest }}</span> Ar (Dette)
+                                        <h4 class=""><span id="rest">{{ $invoice->rest }}</span> Ar
                                         </h4>
                                     </div>
                                 </div>

@@ -18,7 +18,7 @@ class CreateStocksTable extends Migration
             $table->unsignedBigInteger("article_reference");
             $table->unsignedBigInteger("stockable_id");
             $table->string("stockable_type");
-            $table->unsignedBigInteger("initial");
+            // $table->unsignedBigInteger("initial");
             $table->unsignedBigInteger("entry")->default(0)->nullable();
             $table->unsignedBigInteger("out")->default(0)->nullable();
             $table->date("date")->default(date("Y-m-d"));

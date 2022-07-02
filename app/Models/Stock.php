@@ -66,4 +66,17 @@ class Stock extends Model
     {
         return $this->initial + $this->entry - $this->out;
     }
+
+    public function getAmountAttribute()
+    {
+        return $this->final * $this->stockable->price;
+    }
+
+    public function scopePrev($query, $article_ref)
+    {
+        return $query->where("article_reference", $article_ref)
+            ->where("date", "<=", date("Y-m-d"))
+            ->orderBy("id", "desc")
+            ->get();
+    }
 }

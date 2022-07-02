@@ -65,7 +65,7 @@ class SalePolicy
      */
     public function delete(User $user, Sale $sale)
     {
-        //
+        return true;
     }
 
     public function pay(User $user)

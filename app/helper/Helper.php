@@ -103,3 +103,7 @@ function getStartAndEndDate($week, $year)
     
     return $response;
 }
+
+function getAppName(){
+    return "Magasin SOA";
+}

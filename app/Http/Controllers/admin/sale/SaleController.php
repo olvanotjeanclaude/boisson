@@ -19,12 +19,13 @@ use App\Models\PricingSuplier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VenteValidation;
 use App\Models\SupplierOrders;
+use Illuminate\Support\Carbon;
 
 class SaleController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Sale::class, "vente");
+        // $this->authorizeResource(Sale::class, "vente");
     }
 
     public function index()
@@ -72,6 +73,15 @@ class SaleController extends Controller
         $request->validate(VenteValidation::rules(), VenteValidation::messages());
 
         if (isset($request->saveData)) {
+            $preInvoices = Sale::preInvoices()->get();
+            foreach ($preInvoices as $data) {
+
+                $date = new Carbon($data->created_at);
+                $stock = Stock::where("article_reference", $data->article_reference)
+                    ->orderBy("date", "desc")
+                    ->first();
+            }
+
             $newInvoice = $this->saveVente($request);
 
             if ($newInvoice) {
@@ -184,6 +194,7 @@ class SaleController extends Controller
         $customer = $this->saveCustomer($request);
 
         if ($customer && isset($request->saveData)) {
+
             $date = $request->received_at ?? date("Y-m-d");
             $invoiceData = [
                 "status" => Invoice::STATUS["no_printed"],
@@ -240,9 +251,10 @@ class SaleController extends Controller
 
     public function destroy($idOrNumber)
     {
-        $delete = Sale::where("id", $idOrNumber)
-            ->orWhere("invoice_number", $idOrNumber)
-            ->delete();
+        $orders = Sale::find($idOrNumber);
+        if($orders){
+            $delete = $orders->delete();
+        }
 
         if (request()->get("invoice")) {
             $result = [];

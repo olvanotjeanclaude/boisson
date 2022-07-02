@@ -150,15 +150,15 @@ class SupplierOrders extends Model
     public  function scopeBetween($query, $between = [])
     {
         if (empty($between)) {
-            $between = [now()->subMonth()->toDateString(), now()->subDay()->toDateString()];
+            $between = [now()->subWeek()->toDateString(), now()->toDateString()];
         }
 
         return DB::table("supplier_orders")
             ->whereNotNull("invoice_number")
             ->whereBetween("received_at", $between)
-            ->selectRaw('SUM(quantity) as sum_initial,article_reference,article_id,article_type, received_at')
+            ->selectRaw('SUM(quantity) as sum_quantity,article_reference,article_id,article_type, received_at')
             ->groupBy('article_reference', "received_at")
-
+            ->orderByDesc("received_at")
             ->get();
     }
     public  function scopeByDate($query, $date = null)

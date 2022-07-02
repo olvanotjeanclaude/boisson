@@ -12,12 +12,8 @@ class StockController extends Controller
 {
     public function index()
     {
-        //stock initial
-        $lastOneMonth = SupplierOrders::Between();
-        $this->updateStockInitial($lastOneMonth);
-
         //stock entry
-        $entries = SupplierOrders::ByDate();
+        $entries = SupplierOrders::between();
         $this->updateEntries($entries);
 
         //Sales
@@ -29,110 +25,86 @@ class StockController extends Controller
         return view("admin.stock.index", compact("stocks"));
     }
 
-    private function updateStockInitial($magasins = [])
-    {
-        if (count($magasins)) {
-            foreach ($magasins as $magasin) {
-                $modelArticle = $magasin->article_type;
-                $article = $modelArticle::find($magasin->article_id);
-                // dd($article);
-                if ($article) {
-                    Stock::updateOrcreate(
-                        [
-                            "date" => $magasin->received_at,
-                            "article_reference" => $article->reference,
-                            "stockable_id" => $article->id,
-                            "stockable_type" => get_class($article),
-                        ],
-                        [
-                            "initial" => $magasin->sum_initial
-                        ]
-                    );
-                }
-            }
-
-            // foreach (Stock::all() as $stock) {
-            //     $sale = Sale::where("article_reference", $stock->article_reference)
-            //         ->where("date", $stock->received_at)
-            //         ->first();
-            // }
-
-            // foreach (Sale::byDate() as $sale) {
-            //    $stock = Stock::where("article_reference", $sale->article_reference)
-            //    ->where("date", $sale->received_at)
-            //    ->first();
-
-            //    if($stock){
-
-            //    }
-            // }
-        }
-    }
-
     private function updateEntries($entries = [])
     {
         // dd($entries);
-        $lastOneMonth = SupplierOrders::Between();
         $deconsignations = Sale::byDate(true);
-        // dd($deconsignations);
+
         if (count($entries)) {
             foreach ($entries as $magasin) {
+                // // dd($magasin);
                 $modelArticle = $magasin->article_type;
                 $article = $modelArticle::find($magasin->article_id);
-
+                // // dd($article);
                 if ($article) {
-                    Stock::updateOrcreate(
-                        [
-                            "date" => $magasin->received_at,
-                            "article_reference" => $article->reference,
-                            "stockable_id" => $article->id,
-                            "stockable_type" => get_class($article),
-                        ],
-                        [
-                            "entry" => $magasin->sum_entry
-                        ]
-                    );
+                        Stock::updateOrcreate(
+                            [
+                                "date" => $magasin->received_at,
+                                "article_reference" => $article->reference,
+                                "stockable_id" => $article->id,
+                                "stockable_type" => get_class($article),
+                            ],
+                            [
+                                "entry" => $magasin->sum_quantity
+                            ]
+                        );
                 }
             }
 
-            $allStockToday =  Stock::where("date", date("Y-m-d"))->get();
+            foreach (Stock::all() as $stock) {
+                $modelArticle = $stock->stockable_type;
+                $article = $modelArticle::find($stock->stockable_id);
 
-            foreach ($allStockToday as $stock) {
-                $article = $stock->stockable;
-                // dd($article);
-                // dd($lastOneMonth, $stock);
                 if ($article) {
-                    foreach ($lastOneMonth as  $last) {
-                        if ($last->article_reference == $stock->article_reference) {
-                            $stock->update([
-                                "initial" => $last->sum_initial
-                            ]);
-                        }
+                    $prevStock = Stock::where("article_reference", $stock->article_reference)
+                        ->where("date", "<", $stock->date)->first();
+                    $nextStock = Stock::where("article_reference", $stock->article_reference)
+                        ->where("date", ">", $stock->date)->first();
+                    // dd($stock,$prevStock);
+                    if ($prevStock) {
+                        // dd($stock, $prevStock->final);
+                        $sumEntry = $stock->entry + $prevStock->final;
+                        $stock->update(["entry" => $sumEntry]);
                     }
                 }
             }
         }
-
+        // dd($deconsignations);
         $this->updateEntryByDeconsignation($deconsignations);
     }
 
     private function updateEntryByDeconsignation($deconsignations = [])
     {
-        foreach (Stock::all() as $stock) {
-            $sumEntry = $stock->entry;
-            foreach ($deconsignations as $deconsignation) {
-                if (
-                    $stock->date == $deconsignation->received_at &&
-                    $stock->article_reference == $deconsignation->article_reference
-                ) {
-                    $sumEntry += $deconsignation->sum_sale;
-
-                    $stock->update([
-                        "entry" => $sumEntry
-                    ]);
-                }
-            }
+        foreach ($deconsignations as $key => $deconsignation) {
+            // dd($deconsignation);
+            Stock::updateOrcreate(
+                [
+                    "date" => $deconsignation->received_at,
+                    "article_reference" => $deconsignation->article_reference,
+                    "stockable_id" => $deconsignation->saleable_id,
+                    "stockable_type" =>$deconsignation->saleable_type,
+                ],
+                [
+                    "entry" => $deconsignation->sum_sale
+                ]
+            );
         }
+
+        // foreach (Stock::all() as $stock) {
+        //     $sumEntry = $stock->entry;
+        //     foreach ($deconsignations as $deconsignation) {
+        //         if (
+        //             $stock->date == $deconsignation->received_at &&
+        //             $stock->article_reference == $deconsignation->article_reference
+        //         ) {
+        //             $sumEntry += $deconsignation->sum_sale;
+
+        //             $stock->update([
+        //                 "entry" => $sumEntry
+        //             ]);
+        //         }
+        //     }
+        // }
     }
 
     private function updateOut($sales = [])
@@ -140,18 +112,38 @@ class StockController extends Controller
         $allStocks = Stock::all();
         // dd($sales);
         if (count($sales)) {
-            foreach ($allStocks as $stock) {
-                $article = $stock->stockable;
-                // dd($article);
-                if ($article) {
-                    foreach ($sales as  $sale) {
-                        Stock::where("article_reference", $sale->article_reference)
-                            ->where("date", $sale->received_at)
-                            ->update([
-                                "out" => $sale->sum_sale
-                            ]);
-                    }
-                }
+            // foreach ($allStocks as $stock) {
+            //     $article = $stock->stockable;
+            //     // dd($article);
+            //     if ($article) {
+            //         foreach ($sales as  $sale) {
+            //             Stock::where("article_reference", $sale->article_reference)
+            //                 ->where("date", $sale->received_at)
+            //                 ->update([
+            //                     "out" => $sale->sum_sale
+            //                 ]);
+            //         }
+            //     }
+            // }
+
+            foreach ($sales as $sale) {
+                $stock = Stock::where("date", $sale->received_at)
+                    ->where("article_reference", $sale->article_reference)
+                    ->first();
+
+                $prevStock = Stock::where("date", "<", $sale->received_at)
+                    ->where("article_reference", $sale->article_reference)
+                    ->first();
+
+                Stock::updateOrCreate([
+                    "date" => $sale->received_at,
+                    "article_reference" => $sale->article_reference,
+                    "stockable_id" => $sale->saleable_id,
+                    "stockable_type" => $sale->saleable_type,
+                ], [
+                    "entry" => $prevStock->final??$stock->final??0,
+                    "out" => $sale->sum_sale
+                ]);
             }
         }
     }

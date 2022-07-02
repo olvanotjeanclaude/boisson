@@ -83,12 +83,12 @@
                                     <table
                                         class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                         <thead class="bg-light">
-                                            <tr>
+                                            <tr class="text-capitalize">
                                                 <th>{{ $type }}</th>
                                                 <th>Quantité</th>
-                                                <th>Entrée (Vola Niditra)</th>
-                                                <th>Sortie (Vola Nivoaka)</th>
-                                                <th>Dette (Trosa)</th>
+                                                <th>Entrée De Caisse</th>
+                                                <th>Sortie De Caisse</th>
+                                                <th>Reste à payer</th>
                                                 <th>Caisse</th>
                                                 <th>Voir</th>
                                             </tr>

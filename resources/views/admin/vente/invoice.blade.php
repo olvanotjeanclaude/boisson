@@ -62,10 +62,10 @@
 
                 <div id="invoice-POS" class="printScreen">
 
-                    <center id="top">
-                        <div class="logo"></div>
-                        <div class="info mt-1">
-                            <h2>Mon Magasin</h2>
+                    <center id="to" class="mt-2 text-center">
+                        {{-- <div class="logo"></div> --}}
+                        <div class="info">
+                            <h2 class=""><b>{{ getAppName() }}</b></h2>
                         </div>
                         <!--End Info-->
                     </center>

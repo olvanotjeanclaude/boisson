@@ -75,9 +75,9 @@
                                             <th>Date</th>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>Stock initial</th>
                                             <th>Entrées</th>
                                             <th>Vendu</th>
+                                            <th>Montant</th>
                                             <th>En Stock</th>
                                         </tr>
                                     </thead>
@@ -87,9 +87,9 @@
                                                 <td>{{ format_date($stock->date) }}</td>
                                                 <td>{{ $stock->stockable->reference }}</td>
                                                 <td>{{ $stock->stockable->designation }}</td>
-                                                <td>{{ $stock->initial }}</td>
                                                 <td>{{ $stock->entry }}</td>
                                                 <td>{{ $stock->out }}</td>
+                                                <td>{{ formatPrice($stock->amount) }}</td>
                                                 <td>{{ $stock->final }}</td>
                                             </tr>
                                         @endforeach

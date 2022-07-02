@@ -67,7 +67,7 @@ class UserController extends Controller
         $saved = User::create($data);
 
         if ($saved) {
-            return redirect("/admin/utlisateurs")->with("success", CustomMessage::Success("L'utlisateur"));
+            return redirect("/admin/utilisateurs")->with("success", CustomMessage::Success("L'utlisateur"));
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);

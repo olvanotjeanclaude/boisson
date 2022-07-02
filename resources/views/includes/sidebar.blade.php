@@ -7,18 +7,30 @@
                         class="user-name text-capitalize">{{ auth()->user()->full_name }}</span></a>
                 <div class="text-light text-uppercase">{{ auth()->user()->permission_access }}</div>
                 <div class="dropdown-menu arrow">
-                    <a class="dropdown-item">
+                    {{-- <a class="dropdown-item">
                         <i class="material-icons align-middle mr-1">person</i>
                         <span class="align-middle">Profile</span>
-                    </a>
-                    <a class="dropdown-item">
+                    </a> --}}
+
+                    <a class="dropdown-item" href="{{ route('admin.password.index') }}">
                         <i class="material-icons align-middle mr-1">settings</i>
-                        <span class="align-middle">Réglages</span>
+                        <span class="align-middle">Mot de Passe</span>
                     </a>
-                    <a class="dropdown-item">
+
+                
+                    <form class="dropdown-item" action="{{ route('logout') }}" method="post">
+                        @csrf
+                        <button type="submit">
+                            <i class="material-icons">power_settings_new</i>
+                            Se déconnecter
+                        </button>
+                    </form>
+
+                    {{-- <a class="dropdown-item">
+                        
                         <i class="material-icons align-middle mr-1">power_settings_new</i>
                         <span class="align-middle">Se déconnecter</span>
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </div>
