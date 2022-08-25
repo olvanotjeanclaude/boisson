@@ -9,19 +9,19 @@
 @endsection
 
 @section('content-header')
-@include('includes.content-header', [
-    'page' => 'Factures',
-    'breadcrumbs' => [
-        ['text' => 'Achat Produits', 'link' => route('admin.achat-produits.index')],
-        ['text' => 'Payement', 'link' => route('admin.index')],
-    ],
-    'actionBtn' => [
-        'text' => 'Nouveau Achat',
-        'link' => route('admin.achat-produits.create'),
-        'icon' => '<span class="material-icons">add</span>',
-        'show' => true,
-    ],
-])
+    @include('includes.content-header', [
+        'page' => 'Factures',
+        'breadcrumbs' => [
+            ['text' => 'Achat Produits', 'link' => route('admin.achat-produits.index')],
+            ['text' => 'Payement', 'link' => route('admin.index')],
+        ],
+        'actionBtn' => [
+            'text' => 'Nouveau Achat',
+            'link' => route('admin.achat-produits.create'),
+            'icon' => '<span class="material-icons">add</span>',
+            'show' => true,
+        ],
+    ])
 @endsection
 
 @section('content')
@@ -60,13 +60,13 @@
                                         </div>
                                     </div>
                                 </div>
-                               
+
                                 <div class="col-sm mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="paid">
                                             Payé/dépense
                                         </label>
-                                        <input type="number" step="0.001" required id="paid" value="{{ $invoice->paid }}"
+                                        <input type="number" step="0.001" required id="paid" value=""
                                             name="paid" class="form-control" placeholder="0 Ariary">
                                         <div class="invalid-feedback">
                                             Entrer le montant
@@ -82,7 +82,7 @@
                                         <textarea name="comment" id="comment" class="form-control" rows="3">{{ $invoice->comment }}</textarea>
                                     </div>
                                 </div>
-                                <div class="col-md-4 mt-1">
+                                {{-- <div class="col-md-4 mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="rest">
                                             Reste À Payer
@@ -90,14 +90,17 @@
                                         <h4 class=""><span id="rest">{{ $amount - $invoice->paid }}</span> Ariary
                                         </h4>
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit"
-                                        class="btn form-control my-1 border-top text-white btn-secondary">
-                                        <i class="la la-save"></i>
-                                        Payer
-                                    </button>
-                                </div>
+                                </div> --}}
+                               
+                                @if ($invoice->supplier_orders->sum("sub_amount"))
+                                    <div class="col-12">
+                                        <button type="submit"
+                                            class="btn form-control my-1 border-top text-white btn-secondary">
+                                            <i class="la la-save"></i>
+                                            Payer
+                                        </button>
+                                    </div>
+                                @endif
                             </div>
                         </form>
                     </div>
@@ -106,7 +109,7 @@
         @endif
         <div class="col-md-5 d-flex justify-content-end">
             <div>
-                @if (getUserPermission() == 'facturation')
+                {{-- @if (getUserPermission() == 'facturation')
                     <div class="row">
                         <div class="col-12 d-flex justify-content-between">
                             <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
@@ -114,7 +117,7 @@
                                 class="ml-2 btn btn-success btn-lg  mb-2">Terminer</a>
                         </div>
                     </div>
-                @endif
+                @endif --}}
 
                 <div id="invoice-POS" class="printScreen">
 
@@ -191,8 +194,21 @@
                                         <h2>{{ formatPrice($amount * 5, 'Fmg') }}</h2>
                                     </td>
                                 </tr>
-                                
-                               
+
+                                <tr class="tabletitle">
+                                    <td></td>
+                                    <td class="Rate">
+                                        <h2>Reste A paye</h2>
+                                    </td>
+                                    <td class="payment">
+                                        @php
+                                            $reste = $amount - $invoice->paid;
+                                        @endphp
+                                        <h2>{{ formatPrice($reste, 'Ariary') }}</h2>
+                                    </td>
+                                </tr>
+
+
                             </table>
                         </div>
                         <!--End Table-->

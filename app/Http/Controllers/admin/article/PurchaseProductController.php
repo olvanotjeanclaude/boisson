@@ -83,14 +83,17 @@ class PurchaseProductController extends Controller
         if (isset($request->saveData)) {
             $date = $request->received_at ?? date("Y-m-d");
             $invoiceData = [
-                "status" => Invoice::STATUS["no_printed"],
+                "status" => Invoice::STATUS["pending"],
                 "number" => generateInteger(7),
                 "received_at" => $date . " " . now()->toTimeString(),
                 "comment" => $request->comment,
                 "user_id" => auth()->user()->id
             ];
 
+
+
             $invoice = DocumentAchat::create($invoiceData);
+            // $invoice = DocumentAchat::where("number", "9991180")->first();
 
             if ($invoice) {
                 $preInvoices = SupplierOrders::preInvoices();
@@ -98,12 +101,39 @@ class PurchaseProductController extends Controller
                     "invoice_number" => $invoice->number,
                     "received_at" => $date
                 ]);
-
+                // $this->updateStockEntries();
                 return $invoice;
             }
         }
 
         return false;
+    }
+
+    private function updateStockEntries()
+    {
+        $entries = SupplierOrders::between();
+        // dd($entries);
+        if (count($entries)) {
+            foreach ($entries as $magasin) {
+                // // dd($magasin);
+                $modelArticle = $magasin->article_type;
+                $article = $modelArticle::find($magasin->article_id);
+                // // dd($article);
+                if ($article) {
+                    Stock::updateOrcreate(
+                        [
+                            "date" => $magasin->received_at,
+                            "article_reference" => $article->reference,
+                            "stockable_id" => $article->id,
+                            "stockable_type" => get_class($article),
+                        ],
+                        [
+                            "entry" => $magasin->sum_quantity
+                        ]
+                    );
+                }
+            }
+        }
     }
 
     private function getAllArticleDatas($request): array

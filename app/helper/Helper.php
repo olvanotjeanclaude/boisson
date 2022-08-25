@@ -38,10 +38,10 @@ function format_date($date, $separator = "/")
 
 function format_date_time($date, $separator = "/", $reverse = false)
 {
-    $datetime = date("d" . $separator . "m" . $separator . "Y" . " H:m:s", strtotime($date));
+    $datetime = date("d" . $separator . "m" . $separator . "Y" . " H:i:s", strtotime($date));
 
     if ($reverse) {
-        $datetime = str_replace(" ", "T", date("Y-m-d H:m:s", strtotime($date)));
+        $datetime = str_replace(" ", "T", date("Y-m-d H:i:s", strtotime($date)));
     }
 
     return $datetime;

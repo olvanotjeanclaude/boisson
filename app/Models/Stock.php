@@ -79,4 +79,9 @@ class Stock extends Model
             ->orderBy("id", "desc")
             ->get();
     }
+
+    public static function getDefaultBetween()
+    {
+        return [now()->subWeekdays(365)->toDateString(), now()->toDateString()];
+    }
 }

@@ -63,19 +63,21 @@
                                 <div class="col-sm mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="checkout">
-                                           Sortie De Caisse
+                                            Sortie De Caisse
                                         </label>
-                                        <input type="number" step="0.001" required id="checkout" value="{{ $invoice->checkout??0 }}"
-                                            name="checkout" class="form-control" placeholder="0 Ariary">
+                                        <input type="number" step="0.001" required id="checkout"
+                                            value="{{ $invoice->checkout ?? 0 }}" name="checkout" class="form-control"
+                                            placeholder="0 Ariary">
                                     </div>
                                 </div>
                                 <div class="col-sm mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="paid">
-                                            Entrée De Caisse 
+                                            Entrée De Caisse
                                         </label>
-                                        <input type="number" step="0.001" required id="paid" value="{{ $invoice->paid??0 }}"
-                                            name="paid" class="form-control" placeholder="0 Ariary">
+                                        <input type="number" step="0.001" required id="paid"
+                                            value="{{ $invoice->paid ?? 0 }}" name="paid" class="form-control"
+                                            placeholder="0 Ariary">
                                         <div class="invalid-feedback">
                                             Entrer le montant
                                         </div>
@@ -90,7 +92,7 @@
                                         <textarea name="comment" id="comment" class="form-control" rows="3">{{ $invoice->comment }}</textarea>
                                     </div>
                                 </div>
-                                <div class="col-md-4 mt-1">
+                                {{-- <div class="col-md-4 mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="rest">
                                             Reste À Payer
@@ -98,14 +100,17 @@
                                         <h4 class=""><span id="rest">{{ $invoice->rest }}</span> Ar
                                         </h4>
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit"
-                                        class="btn form-control my-1 border-top text-white btn-secondary">
-                                        <i class="la la-save"></i>
-                                        Payer
-                                    </button>
-                                </div>
+                                </div> --}}
+                                
+                                @if ($invoice->paid!=$invoice->sales->sum("sub_amount"))
+                                    <div class="col-12">
+                                        <button type="submit"
+                                            class="btn form-control my-1 border-top text-white btn-secondary">
+                                            <i class="la la-save"></i>
+                                            Payer
+                                        </button>
+                                    </div>
+                                @endif
                             </div>
                         </form>
                     </div>
@@ -199,8 +204,20 @@
                                         <h2>{{ formatPrice($amount * 5, 'Fmg') }}</h2>
                                     </td>
                                 </tr>
-                                
-                               
+
+                                <tr class="tabletitle">
+                                    <td></td>
+                                    <td class="Rate">
+                                        <h2>Reste A paye</h2>
+                                    </td>
+                                    <td class="payment">
+                                        @php
+                                            $reste = $amount - $invoice->paid;
+                                        @endphp
+                                        <h2>{{ formatPrice($reste, 'Ariary') }}</h2>
+                                    </td>
+                                </tr>
+
                             </table>
                         </div>
                         <!--End Table-->
@@ -241,11 +258,11 @@
         })
 
         var beforePrint = function() {
-            alert('Functionality to run before printing.');
+            // alert('Functionality to run before printing.');
         };
 
         var afterPrint = function() {
-            alert('Functionality to run after printing');
+            // alert('Functionality to run after printing');
         };
 
         if (window.matchMedia) {

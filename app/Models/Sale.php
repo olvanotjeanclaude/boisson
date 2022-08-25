@@ -70,16 +70,14 @@ class Sale extends Model
     public  function scopeBetween($query, $between = [])
     {
         if (empty($between)) {
-            $between = [now()->subMonth()->toDateString(), now()->subDay()->toDateString()];
+            $between = Stock::getDefaultBetween();
         }
-
-        // dd($between);
 
         return DB::table("sales")
             ->whereNotNull("invoice_number")
-            ->whereNotNull("received_at")
-            ->whereBetween("received_at", $between)
-            ->selectRaw('SUM(quantity) as sum_initial,article_reference,saleable_id,saleable_type, received_at')
+            // ->whereNotNull("received_at")
+            // ->whereBetween("received_at", $between)
+            ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at')
             ->groupBy("article_reference", "received_at")
 
             ->get();

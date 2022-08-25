@@ -19,7 +19,6 @@ use App\Models\PricingSuplier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VenteValidation;
 use App\Models\SupplierOrders;
-use Illuminate\Support\Carbon;
 
 class SaleController extends Controller
 {
@@ -74,36 +73,89 @@ class SaleController extends Controller
 
         if (isset($request->saveData)) {
             $preInvoices = Sale::preInvoices()->get();
-            foreach ($preInvoices as $data) {
-
-                $date = new Carbon($data->created_at);
-                $stock = Stock::where("article_reference", $data->article_reference)
-                    ->orderBy("date", "desc")
-                    ->first();
-            }
-
-            $newInvoice = $this->saveVente($request);
-
-            if ($newInvoice) {
-                return redirect()->route("admin.print.sale", $newInvoice->number);
-            }
-
-            return back()->with("error", CustomMessage::DEFAULT_ERROR);
+            return $this->saveSaleCustomer($request, $preInvoices);
         }
 
         $datas = $this->getAllArticleDatas($request);
 
-        // dd($datas, $request->all());
-
         if (count($datas)) {
-            foreach ($datas as  $data) {
-                if (count($data)) {
-                    Sale::create($data);
-                }
-            }
+            return $this->saveSale($datas);
         }
 
         return back();
+    }
+
+    private function saveSale($datas)
+    {
+        $errors = [];
+
+        foreach ($datas as  $data) {
+            if (count($data)) {
+                Sale::create($data);
+                // $stock = Stock::where("article_reference", $data["article_reference"])
+                //     ->where("stockable_id", $data["saleable_id"])
+                //     ->where("stockable_type", $data["saleable_type"])
+                //     ->whereBetween("date", Stock::getDefaultBetween())
+                //     ->get();
+
+                // // dd($stock, $stock->sum("final"));
+
+                // $articleModel = $data["saleable_type"];
+                // $article = $articleModel::find($data["saleable_id"]);
+
+                // if ($article) {
+                //     if ($stock->count()) {
+                //         if ($data["quantity"] > $stock->sum("final")) {
+                //             $errors[$article->reference] = "Le nombre d'article ($article->designation) dans le stock est insuffisant!";
+                //         } else if ($data["quantity"] < 0) {
+                //             $errors[$article->reference] = "$article->designation doit etre superieur a 0";
+                //         } else {
+                //             // Sale::create($data);
+                //         }
+                //     } else {
+                //         $errors[] = "L'article $article->designation n'existe pas dans le stock";
+                //     }
+                // } else {
+                //     $errors[] = "L'article n'existe pas";
+                // }
+            }
+        }
+
+        if (count($errors)) {
+            return back()->withErrors($errors);
+        }
+
+        return back();
+    }
+
+    private function saveSaleCustomer($request, $preInvoices)
+    {
+        $errors = [];
+
+        // foreach ($preInvoices as $data) {
+        //     $stock = Stock::where("article_reference", $data->article_reference)
+        //         ->where("date", $request->received_at)
+        //         ->first();
+        //     // dd($stock,$data);
+        //     if ($stock) {
+        //         $restInStock =  $stock->final - $data->quantity;
+               
+        //         if ($restInStock < 0) {
+        //             $articleModel = $data["saleable_type"];
+        //             $article = $articleModel::find($data["saleable_id"]);
+        //             $errors[$article->reference] = "Le nombre d'article ($article->designation) dans le stock est insuffisant!";
+        //         }
+        //     }
+        // }
+
+        if (empty($errors)) {
+            $newInvoice = $this->saveVente($request);
+            if ($newInvoice) {
+                return redirect()->route("admin.print.sale", $newInvoice->number);
+            }
+        }
+
+        return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
     private function getAllArticleDatas($request): array
@@ -206,14 +258,13 @@ class SaleController extends Controller
             ];
 
             $invoice = DocumentVente::create($invoiceData);
-
+    
             if ($invoice) {
                 $preInvoices = Sale::preInvoices();
                 $preInvoices->update([
                     "invoice_number" => $invoice->number,
                     "received_at" => $date
                 ]);
-
                 return $invoice;
             }
         }
@@ -252,7 +303,7 @@ class SaleController extends Controller
     public function destroy($idOrNumber)
     {
         $orders = Sale::find($idOrNumber);
-        if($orders){
+        if ($orders) {
             $delete = $orders->delete();
         }
 

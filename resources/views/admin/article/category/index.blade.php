@@ -73,7 +73,7 @@
                                     <tr>
                                         <th>Catégorie</th>
                                         <th>Date De Création</th>
-                                        <th>ajouté par</th>
+
                                         @can('update', $catArticles->first())
                                             <th>Action</th>
                                         @endcan
@@ -84,8 +84,7 @@
                                         <tr id="row_{{ $category->id }}">
                                             <td>{{ $category->name }}</td>
                                             <td>{{ format_date_time($category->created_at) }}</td>
-                                            <td>{{ $category->user->id != auth()->user()->id ? $category->user->full_name : 'Moi' }}
-                                            </td>
+
                                             @can('update', $category)
                                                 <td>
                                                     <button

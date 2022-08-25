@@ -38,24 +38,25 @@
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between">
                         @can('print', \App\Models\DocumentVente::class)
-                            <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
                         @endcan
 
-                        {{-- {{ $invoice }} --}}
-                        @can('cancel', $invoice)
+                        @if ($invoice->status == App\helper\Invoice::STATUS['no_printed'])
+                            <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
+                            <a href="{{ route('admin.print.sale.terminate', $invoice->number) }}"
+                                class="ml-2 btn btn-success btn-lg  mb-2">
+                                Enregistrer
+                            </a>
                             <a href="{{ route('admin.print.sale.cancel', $invoice->number) }}"
                                 class="ml-2 btn btn-danger btn-lg  mb-2">
                                 Annuler
                             </a>
+                        @endif
+                        {{-- {{ $invoice }} --}}
+                        @can('cancel', $invoice)
                         @endcan
 
+
                         @can('terminate', \App\Models\DocumentVente::class)
-                            @if ($invoice->invoice_status == 'pending')
-                                <a href="{{ route('admin.print.sale.terminate', $invoice->number) }}"
-                                    class="ml-2 btn btn-success btn-lg  mb-2">
-                                    Enregistrer
-                                </a>
-                            @endif
                         @endcan
                     </div>
                 </div>

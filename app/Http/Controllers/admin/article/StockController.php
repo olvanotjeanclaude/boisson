@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Sale;
 use App\Models\SupplierOrders;
+use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
 {
@@ -14,11 +15,15 @@ class StockController extends Controller
     {
         //stock entry
         $entries = SupplierOrders::between();
-        $this->updateEntries($entries);
+        $out = Sale::Between();
+        // $this->updateEntries($entries);
 
         //Sales
-        $noEmballages = Sale::ByDate();
-        $this->updateOut($noEmballages);
+        // $noEmballages = Sale::ByDate();
+        // $this->updateOut($noEmballages);
+        // dd($entries);
+        dd($entries, $out);
+
 
         $stocks = Stock::orderBy("date", "desc")->get();
         // dd($magasins);
@@ -28,7 +33,7 @@ class StockController extends Controller
     private function updateEntries($entries = [])
     {
         // dd($entries);
-        $deconsignations = Sale::byDate(true);
+        // $deconsignations = Sale::byDate(true);
 
         if (count($entries)) {
             foreach ($entries as $magasin) {
@@ -70,7 +75,7 @@ class StockController extends Controller
             }
         }
         // dd($deconsignations);
-        $this->updateEntryByDeconsignation($deconsignations);
+        // $this->updateEntryByDeconsignation($deconsignations);
     }
 
     private function updateEntryByDeconsignation($deconsignations = [])

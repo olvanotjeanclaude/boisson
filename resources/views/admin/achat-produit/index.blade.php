@@ -135,12 +135,12 @@
                                                                     <i class="la la-credit-card"></i>
                                                                     Payment
                                                                 </a>
-                                                                <a data-id="{{ $invoice['number'] }}"
+                                                                {{-- <a data-id="{{ $invoice['number'] }}"
                                                                     data-url="{{ route('admin.achat-produits.destroy', ['achat_produit' => $invoice['number'], 'invoice' => true]) }}"
                                                                     class="dropdown-item delete-btn"><i
                                                                         class="la la-trash"></i>
                                                                     Supprimer
-                                                                </a>
+                                                                </a> --}}
                                                             </span>
                                                         </span>
                                                     </td>

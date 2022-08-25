@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\admin\payment;
 
+use App\Models\Stock;
 use App\helper\Invoice;
 use Illuminate\Http\Request;
+use App\Models\DocumentAchat;
 use App\Models\DocumentVente;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
-use App\Models\DocumentAchat;
+use App\Models\Sale;
 
 class PaymentController extends Controller
 {
@@ -41,12 +43,16 @@ class PaymentController extends Controller
 
     public function paymentStore($invoiceNumber, Request $request)
     {
-        $this->authorize("pay", \App\Models\Sale::class);
-
+        // $this->authorize("pay", \App\Models\Sale::class);
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
+       
         $amount = $invoice->sales->sum("sub_amount");
-        $rest = $amount - $request->paid;
-        // dd($request->all());
+        $paid =  $invoice->paid + $request->paid;
+        $rest = $amount - $paid;
+
+        if($rest<0){
+            return back()->withErrors(["error"=>"Nihoatra ny vola napidirinao!"]);
+        }
 
         $docSale = [
             // "paid" => $request->paid,
@@ -63,7 +69,7 @@ class PaymentController extends Controller
             $docSale["paid"] = $docSale["rest"] = 0;
             // $docSale["checkout"] = $request->checkout;
         } else if ($request->paid) {
-            $docSale["paid"] = $request->paid;
+            $docSale["paid"] = $paid;
             $docSale["rest"] = $rest;
         }
 
@@ -82,11 +88,15 @@ class PaymentController extends Controller
     {
         $invoice = DocumentAchat::where("number", $invoiceNumber)->firstOrFail();
         $amount = $invoice->supplier_orders->sum("sub_amount");
-        $rest = $amount - $request->paid;
-        // dd($request->all());
+        $paid =  $invoice->paid + $request->paid;
+        $rest = $amount - $paid;
+
+        if($rest<0){
+            return back()->withErrors(["error"=>"Nihoatra ny vola napidirinao!"]);
+        }
 
         $docSale = [
-            "paid" => $request->paid,
+            "paid" => $paid,
             "rest" => $rest,
             "payment_type" => $request->payment_type,
             "status" => $rest <= 0 ? Invoice::STATUS["paid"] : Invoice::STATUS["incomplete"],

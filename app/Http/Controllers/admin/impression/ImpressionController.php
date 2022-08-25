@@ -21,8 +21,8 @@ class ImpressionController extends Controller
     public function cancelSale($invoiceNumber)
     {
         $docVente = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
-        // $docVente->sales()->delete();
-        // $docVente->delete();
+        $docVente->sales()->delete();
+        $docVente->delete();
         return redirect("/admin/ventes");
     }
 

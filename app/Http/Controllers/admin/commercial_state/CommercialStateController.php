@@ -99,6 +99,7 @@ class CommercialStateController extends Controller
     {
         switch ($type) {
             case 'jour':
+                // dd("ok");
                 $sale = Sale::where("received_at", $state->date)->get();
                 $state->url =  route("admin.commercialState.show", [
                     "filtrerPar" => "jour",

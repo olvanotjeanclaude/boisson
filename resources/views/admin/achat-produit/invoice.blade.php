@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-  Achat Produits
+    Achat Produits
 @endsection
 
 @section('page-css')
@@ -38,8 +38,12 @@
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between">
                         <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
-                        <a href="{{ route('admin.print.achat.terminate', $invoice->number) }}"
-                            class="ml-2 btn btn-success btn-lg  mb-2">Enregistrer Et Fermer</a>
+                     
+                        @if ($invoice->status == App\helper\Invoice::STATUS['no_printed'])
+                            <a href="{{ route('admin.print.achat.terminate', $invoice->number) }}"
+                                class="ml-2 btn btn-success btn-lg  mb-2">Enregistrer Et Fermer
+                            </a>
+                        @endif
                     </div>
                 </div>
 
