@@ -70,11 +70,11 @@
                                                 <option value=''>Choisir</option>
                                                 @foreach ($articles as $article)
                                                     <option value="{{ $article->reference }}">
-                                                        {{ $article->reference }}-{{ $article->designation }}</option>
+                                                        {{ $article->designation }}</option>
                                                 @endforeach
                                                 @foreach ($packages as $package)
                                                     <option value="{{ $package->reference }}">
-                                                        {{ $package->reference }}-{{ $package->designation }}
+                                                       {{ $package->designation }}
                                                     </option>
                                                 @endforeach
 
@@ -104,7 +104,7 @@
                                                 <option value="">Choisir</option>
                                                 @forelse ($consignations as $consignation)
                                                     <option value="{{ $consignation->reference }}">
-                                                        {{ $consignation->reference }}-{{ $consignation->designation }}
+                                                       {{ $consignation->designation }}
                                                     </option>
                                                 @empty
                                                 @endforelse
@@ -149,7 +149,7 @@
                                         <option value="">Choisir</option>
                                         @forelse ($consignations as $consignation)
                                             <option value="{{ $consignation->reference }}">
-                                                {{ $consignation->reference }}-{{ $consignation->designation }}
+                                               {{ $consignation->designation }}
                                             </option>
                                         @empty
                                         @endforelse
@@ -175,11 +175,11 @@
                                         <option value=''>Choisir</option>
                                         @foreach ($articles as $article)
                                             <option value="{{ $article->reference }}">
-                                                {{ $article->reference }}-{{ $article->designation }}</option>
+                                                {{ $article->designation }}</option>
                                         @endforeach
                                         @foreach ($packages as $package)
                                             <option value="{{ $package->reference }}">
-                                                {{ $package->reference }}-{{ $package->designation }}
+                                               {{ $package->designation }}
                                             </option>
                                         @endforeach
 

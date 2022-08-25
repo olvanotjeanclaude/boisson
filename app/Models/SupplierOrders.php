@@ -156,8 +156,8 @@ class SupplierOrders extends Model
         return DB::table("supplier_orders")
             ->whereNotNull("invoice_number")
             // ->whereBetween("received_at", $between)
-            ->selectRaw('SUM(quantity) as sum_quantity,article_reference,article_id,article_type, received_at')
-            ->groupBy('article_reference', "received_at")
+            ->selectRaw('SUM(quantity) as sum_quantity,article_reference,article_id,article_type')
+            ->groupBy('article_reference')
             ->orderByDesc("received_at")
             ->get();
     }

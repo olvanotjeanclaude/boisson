@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Traits\Articles;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Stock extends Model
 {
@@ -82,6 +83,54 @@ class Stock extends Model
 
     public static function getDefaultBetween()
     {
-        return [now()->subWeekdays(365)->toDateString(), now()->toDateString()];
+        return [now()->subDays(7)->toDateString(), now()->toDateString()];
+    }
+
+    public function scopeBetween($query, $between = [])
+    {
+        if (empty($between)) {
+            $between = self::getDefaultBetween();
+        }
+
+        $stockOut = DB::table("sales")
+            ->select([
+                "article_reference",
+                DB::raw("SUM(quantity) AS sum_out"),
+                "saleable_id",
+                "saleable_type"
+            ])
+            ->whereNotNull("invoice_number")
+            ->whereNotNull("received_at")
+
+            ->whereBetween("received_at", $between)
+            ->groupBy("article_reference");
+
+        // dd($stockOut->get()->where("article_reference","81433"));
+
+        return DB::table("supplier_orders")
+            ->select([
+                DB::raw("supplier_orders.article_reference AS article_reference"),
+                DB::raw("supplier_orders.article_id AS article_id"),
+                DB::raw("supplier_orders.article_type AS article_type"),
+                DB::raw("SUM(supplier_orders.quantity) AS sum_entry"),
+                "stock_out.sum_out"
+            ])
+            ->leftJoinSub($stockOut, "stock_out", function ($join) {
+                $join->on("supplier_orders.article_reference", "=", "stock_out.article_reference");
+            })
+            ->whereNotNull("supplier_orders.invoice_number")
+            ->whereNotNull("supplier_orders.received_at")
+            ->whereBetween("received_at", $between)
+            ->groupBy("supplier_orders.article_reference")
+            ->get()->map(function ($data) {
+                $modelArticle = $data->article_type;
+                $article = $modelArticle::find($data->article_id);
+                if ($article) {
+                    $data->designation = $article->designation;
+                    $data->final = $data->sum_entry - $data->sum_out;
+                }
+
+                return $data;
+            });
     }
 }

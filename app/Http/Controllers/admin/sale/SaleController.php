@@ -90,34 +90,35 @@ class SaleController extends Controller
         $errors = [];
 
         foreach ($datas as  $data) {
-            if (count($data)) {
-                Sale::create($data);
-                // $stock = Stock::where("article_reference", $data["article_reference"])
-                //     ->where("stockable_id", $data["saleable_id"])
-                //     ->where("stockable_type", $data["saleable_type"])
-                //     ->whereBetween("date", Stock::getDefaultBetween())
-                //     ->get();
+            $articleModel = $data["saleable_type"];
+            $article = $articleModel::find($data["saleable_id"]);
+            
+            $stock = Stock::between();
+            $filter = $stock->where("article_reference", $data["article_reference"])
+                ->where("article_id", $data["saleable_id"])
+                ->where("article_type", $data["saleable_type"])
+                ->first();
 
-                // // dd($stock, $stock->sum("final"));
+            // dd($filter, $data, $datas);
 
-                // $articleModel = $data["saleable_type"];
-                // $article = $articleModel::find($data["saleable_id"]);
-
-                // if ($article) {
-                //     if ($stock->count()) {
-                //         if ($data["quantity"] > $stock->sum("final")) {
-                //             $errors[$article->reference] = "Le nombre d'article ($article->designation) dans le stock est insuffisant!";
-                //         } else if ($data["quantity"] < 0) {
-                //             $errors[$article->reference] = "$article->designation doit etre superieur a 0";
-                //         } else {
-                //             // Sale::create($data);
-                //         }
-                //     } else {
-                //         $errors[] = "L'article $article->designation n'existe pas dans le stock";
-                //     }
-                // } else {
-                //     $errors[] = "L'article n'existe pas";
-                // }
+            if ($article) {
+                if ($data["saleable_type"] == "App\Models\Emballage") {
+                    Sale::create($data);
+                } else { //Package or Product
+                    if ($filter) {
+                        if ($data["quantity"] > $filter->final) {
+                            $errors[$article->reference] = "Le nombre d'article ($article->designation) dans le stock est insuffisant!";
+                        } else if ($data["quantity"] < 0) {
+                            $errors[$article->reference] = "$article->designation doit etre superieur a 0";
+                        } else {
+                            Sale::create($data);
+                        }
+                    } else {
+                        $errors[] = ucfirst($article->designation) . " n'existe pas dans le stock";
+                    }
+                }
+            } else {
+                $errors[] = "L'article n'existe pas";
             }
         }
 
@@ -139,7 +140,7 @@ class SaleController extends Controller
         //     // dd($stock,$data);
         //     if ($stock) {
         //         $restInStock =  $stock->final - $data->quantity;
-               
+
         //         if ($restInStock < 0) {
         //             $articleModel = $data["saleable_type"];
         //             $article = $articleModel::find($data["saleable_id"]);
@@ -258,7 +259,7 @@ class SaleController extends Controller
             ];
 
             $invoice = DocumentVente::create($invoiceData);
-    
+
             if ($invoice) {
                 $preInvoices = Sale::preInvoices();
                 $preInvoices->update([

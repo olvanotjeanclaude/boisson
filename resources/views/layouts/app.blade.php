@@ -73,6 +73,9 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+        table tbody td, table tbody th{
+            height: 0!important;
+        }
     </style>
 
 </head>
