@@ -65,7 +65,7 @@
                                     <div class="row">
                                         <div class="col-sm-8 mt-1 col-article">
                                             <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
-                                            <select name="article_reference"  class="form-control"
+                                            <select name="article_reference"  class="form-control select2"
                                                 id="article_reference">
                                                 <option value=''>Choisir</option>
                                                 @foreach ($articles as $article)
@@ -99,7 +99,7 @@
                                             <label class="text-bold-400 text-dark" for="consignation_id">
                                                 Consignation
                                             </label>
-                                            <select name="consignation_id"  class="form-control text-capitalize"
+                                            <select name="consignation_id"  class="form-control select2 text-capitalize"
                                                 id="consignation_id">
                                                 <option value="">Choisir</option>
                                                 @forelse ($consignations as $consignation)
@@ -144,7 +144,7 @@
                                     <label class="text-bold-400 text-dark" for="deconsignation_id">
                                         Deconsignation
                                     </label>
-                                    <select name="deconsignation_id"  class="form-control text-capitalize"
+                                    <select name="deconsignation_id"  class="form-control select2 text-capitalize"
                                         id="deconsignation_id">
                                         <option value="">Choisir</option>
                                         @forelse ($consignations as $consignation)
@@ -171,7 +171,7 @@
                             <div class="row">
                                 <div class="col-sm-8 mt-1 col-article">
                                     <label class="text-bold-400 text-dark" for="no_consign_ref_id">Articles</label>
-                                    <select name="no_consign_ref_id"  class="form-control" id="no_consign_ref_id">
+                                    <select name="no_consign_ref_id"  class="form-control select2" id="no_consign_ref_id">
                                         <option value=''>Choisir</option>
                                         @foreach ($articles as $article)
                                             <option value="{{ $article->reference }}">
@@ -246,7 +246,7 @@
                             </div>
                             <div class="col-12">
                                 <div id="customerBlock" class="">
-                                    <select name="customer_id" id="customer_id" class="form-control">
+                                    <select name="customer_id" id="customer_id" class="select2 form-control">
                                         <option value="" selected>Client</option>
                                         @forelse ($customers as $customer)
                                             <option value="{{ $customer->id }}">

@@ -58,7 +58,11 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
 
     Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
-    Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class)->except(["create"]);
+    Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class)->only("index");
+    Route::group(["prefix" =>"inventaires","as" =>"inventaires."],function(){
+        Route::get("/",[\App\Http\Controllers\admin\article\InventoryController::class,"index"])->name("index");
+        Route::post("/check-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"checkStock"])->name("checkStock");
+    });
 
     Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
         Route::resource("articles", \App\Http\Controllers\admin\produit\ProductController::class);

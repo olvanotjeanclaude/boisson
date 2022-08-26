@@ -8,4 +8,6 @@ $(document).ready(function() {
     if ($("table.icheck input").length) {
         icheckConfig();
     }
+    
+    $(".select2").select2();
 });

@@ -5,8 +5,7 @@ namespace App\Http\Controllers\admin\article;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Sale;
-use App\Models\SupplierOrders;
+
 use Illuminate\Support\Facades\DB;
 
 class StockController extends Controller
@@ -25,6 +24,8 @@ class StockController extends Controller
         $stocks = Stock::between($between)->filter(function ($stock) {
             return $stock->article_type != "App\Models\Emballage";
         });
+        // dd($between);
+        // dd($stocks);
 
         $saleBottles = DB::table("sales")
             ->select([
@@ -68,7 +69,7 @@ class StockController extends Controller
             $article = $articleModel::find($bottle->article_id);
             if ($article) {
                 $bottle->exists = true;
-                $bottle->designation = $article->designation;
+                $bottle->designation = strtoupper($article->designation);
             }
             return $bottle;
         })->sort();

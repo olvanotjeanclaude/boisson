@@ -30,10 +30,11 @@
       obj: null,
 
       init: function() {
-        this.obj = new PerfectScrollbar(".main-menu-content", {
-          suppressScrollX: true,
-          wheelPropagation: false,
-        });
+        // this.obj = new PerfectScrollbar(".main-menu-contet", {
+        //   suppressScrollX: true,
+        //   wheelPropagation: false,
+        // });
+        this.obj=null
       },
 
       update: function() {

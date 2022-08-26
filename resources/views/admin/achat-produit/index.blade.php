@@ -86,7 +86,7 @@
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th>Status</th>
+                                            {{-- <th>Status</th> --}}
                                             <th>Numero</th>
                                             <th>Fournisseur</th>
                                             <th>Code du Fournisseur</th>
@@ -104,7 +104,7 @@
 
                                             @if ($supplier)
                                                 <tr id="row_{{ $invoice->number }}">
-                                                    <td>{!! $invoice->status_html !!}</td>
+                                                    {{-- <td>{!! $invoice->status_html !!}</td> --}}
                                                     <td>{{ $invoice->number }}</td>
                                                     <td>{{ $supplier->identification }}</td>
                                                     <td>{{ $supplier->fr_code }}</td>
@@ -130,11 +130,11 @@
                                                                     <i class="la la-print"></i>
                                                                     Factures
                                                                 </a>
-                                                                <a href="{{ route('admin.achat.paymentForm', $invoice->number) }}"
+                                                                {{-- <a href="{{ route('admin.achat.paymentForm', $invoice->number) }}"
                                                                     class="dropdown-item">
                                                                     <i class="la la-credit-card"></i>
                                                                     Payment
-                                                                </a>
+                                                                </a> --}}
                                                                 {{-- <a data-id="{{ $invoice['number'] }}"
                                                                     data-url="{{ route('admin.achat-produits.destroy', ['achat_produit' => $invoice['number'], 'invoice' => true]) }}"
                                                                     class="dropdown-item delete-btn"><i

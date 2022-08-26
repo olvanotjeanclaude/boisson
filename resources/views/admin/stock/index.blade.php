@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="card-content collapse show">
-                        <form action="{{route('admin.stocks.index')}}" method="get">
+                        <form action="{{ route('admin.stocks.index') }}" method="get">
                             <div class="col-11 col-sm-7 col-md-10">
                                 <div class="d-flex justify-content-start align-items-center">
                                     <div class="input-group">
@@ -126,7 +126,7 @@
                                                     <tr>
                                                         {{-- <td>{{ format_date($stock->date) }}</td> --}}
                                                         <td>{{ $stock->article_reference }}</td>
-                                                        <td>{{ $stock->designation }}</td>
+                                                        <td>{{ Str::upper($stock->designation) }}</td>
                                                         <td>{{ $stock->sum_entry }}</td>
                                                         <td>{{ $stock->sum_out }}</td>
                                                         {{-- <td>{{ formatPrice($stock->amount) }}</td> --}}

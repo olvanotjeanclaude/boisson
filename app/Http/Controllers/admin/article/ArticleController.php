@@ -18,7 +18,8 @@ class ArticleController extends Controller
     public function index()
     {
         $users = [];
-        $articles = Articles::orderBy("id", "desc")->get();
+        $articles = Articles::has("category")->orderBy("id", "desc")->get();
+        dd($articles);
         $articleTypes = Articles::ARTICLE_TYPES;
         $units = Articles::UNITS;
         $articleCategories = Category::pluck("id", "name")->toArray();

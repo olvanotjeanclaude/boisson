@@ -100,7 +100,7 @@
                                                     </td>
                                                     <td>{{ $state->sum_quantity }}</td>
                                                     <td>{{ formatPrice($state->paid) }}</td>
-                                                    <td>-{{ formatPrice($state->sum_checkout) }}</td>
+                                                    <td>{{ formatPrice($state->sum_checkout) }}</td>
                                                     <td>{{ formatPrice($state->rest) }}</td>
                                                     <td>{{ formatPrice($state->amount_received) }}</td>
                                                     <td>

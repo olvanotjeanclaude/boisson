@@ -16,8 +16,8 @@ class CommercialStateController extends Controller
         $this->authorize("commercialState", \App\Models\DocumentVente::class);
 
         $type = $request->get("filtrerPar");
-        $states = DocumentVente::CommercialStateBetween($type);
-
+        $states = DocumentVente::with("sales")->State($type)->get();
+        // dd($states);
         $states = $states->map(function ($state) use ($type) {
             return $this->callbackSales($state, $type);
         });
@@ -89,7 +89,7 @@ class CommercialStateController extends Controller
         });
 
         // dd($states);
-        
+
         $total = $states->sum("amount");
 
         return view("admin.commercial_state.show", compact("states", "filtered", "total"));
@@ -161,11 +161,13 @@ class CommercialStateController extends Controller
 
         $state->sum_quantity =  $sale->sum("quantity");
         $state->amount_received = $state->paid - $state->sum_checkout;
+        $state->sum_checkout = -$state->sum_checkout;
 
         return $state;
     }
 
-    private function calculAmount($state){
+    private function calculAmount($state)
+    {
         $state->amount = $state->sum_sale * $state->saleable->price;
         $state->amount = $state->isWithEmballage == 1 ? -$state->amount : $state->amount;
         return $state;

@@ -35,7 +35,7 @@
             </div>
         </div>
     </div>
-    <div class="main-menu-content text-capitalize">
+    <div class="main-menu-content text-capitalize" style="overflow-y: auto">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class=" nav-item">
                 <a href="/admin">
@@ -133,6 +133,12 @@
                 <a href="{{ route('admin.stocks.index') }}">
                     <span class="material-icons">table_rows</span>
                     <span class="menu-title">Stocks</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.inventaires.index') }}">
+                    <span class="material-icons">table_rows</span>
+                    <span class="menu-title">Inventaire</span>
                 </a>
             </li>
             @can('commercialState', \App\Models\DocumentVente::class)

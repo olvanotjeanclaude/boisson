@@ -17,11 +17,12 @@
         rel="stylesheet"> --}}
     {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}
 
-    
+
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/material-icon/material_icon.css') }}">
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/material-vendors.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/selects/select2.min.css') }}">
     @yield('vendor')
     <!-- END: Vendor CSS-->
 
@@ -40,43 +41,10 @@
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
-    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('(assets/css/style.css') }}"> --}}
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('app-assets/vendors/css/forms/selects/select2.custom.css') }}">
     <!-- END: Custom CSS-->
-    <style>
-        * {
-            font-family: "Open Sans", sans-serif;
-        }
-
-        .card-title {
-            font-weight: 500 !important;
-            text-transform: capitalize;
-        }
-
-        th {
-            text-transform: capitalize;
-        }
-
-        .card-image {
-            object-fit: cover;
-            width: auto;
-            height: 200px
-        }
-
-        /* Chrome, Safari, Edge, Opera */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Firefox */
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-        table tbody td, table tbody th{
-            height: 0!important;
-        }
-    </style>
 
 </head>
 <!-- END: Head-->
@@ -139,6 +107,8 @@
     <!-- BEGIN: Theme JS-->
     <script src="{{ asset('app-assets/js/core/app-menu.js') }}"></script>
     <script src="{{ asset('app-assets/js/core/app.js') }}"></script>
+    <script src="{{ asset('app-assets/vendors/js/forms/select/select2.min.js') }}"></script>
+
     <!-- END: Theme JS-->
 
     <!-- BEGIN: Page JS-->
@@ -148,7 +118,7 @@
     <!-- END: Page JS-->
 
     {{-- Axios link --}}
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="{{ asset('app-assets/js/axios/axios.min.js') }}"></script>
 
     {{-- Custom js --}}
     <script src="{{ asset('app-assets/js/custom/validation.js') }}"></script>

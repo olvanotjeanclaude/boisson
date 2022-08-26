@@ -91,7 +91,8 @@ class Stock extends Model
         if (empty($between)) {
             $between = self::getDefaultBetween();
         }
-
+        // $between = ["2022-08-01","2022-08-01"];
+        // dd($between);
         $stockOut = DB::table("sales")
             ->select([
                 "article_reference",
@@ -101,13 +102,16 @@ class Stock extends Model
             ])
             ->whereNotNull("invoice_number")
             ->whereNotNull("received_at")
-
-            ->whereBetween("received_at", $between)
+            ->when($between[0] == $between[1], function ($query) use($between) {
+                return $query->whereDate("received_at", $between[0]);
+            })
+            ->when($between[0] != $between[1], function ($query) use($between) {
+                return $query->whereBetween("received_at", $between);
+            })
             ->groupBy("article_reference");
 
-        // dd($stockOut->get()->where("article_reference","81433"));
 
-        return DB::table("supplier_orders")
+        $stocks = DB::table("supplier_orders")
             ->select([
                 DB::raw("supplier_orders.article_reference AS article_reference"),
                 DB::raw("supplier_orders.article_id AS article_id"),
@@ -115,12 +119,18 @@ class Stock extends Model
                 DB::raw("SUM(supplier_orders.quantity) AS sum_entry"),
                 "stock_out.sum_out"
             ])
-            ->leftJoinSub($stockOut, "stock_out", function ($join) {
+            // dd($stocks,$stockOut->get());
+            ->leftJoinSub($stockOut, "stock_out", function ($join) use($stockOut) {
                 $join->on("supplier_orders.article_reference", "=", "stock_out.article_reference");
             })
             ->whereNotNull("supplier_orders.invoice_number")
             ->whereNotNull("supplier_orders.received_at")
-            ->whereBetween("received_at", $between)
+            ->when($between[0] == $between[1], function ($query) use($between) {
+                return $query->whereDate("received_at", $between[0]);
+            })
+            ->when($between[0] != $between[1], function ($query) use($between) {
+                return $query->whereBetween("received_at", $between);
+            })
             ->groupBy("supplier_orders.article_reference")
             ->get()->map(function ($data) {
                 $modelArticle = $data->article_type;
@@ -132,5 +142,7 @@ class Stock extends Model
 
                 return $data;
             });
+
+        return $stocks;
     }
 }

@@ -47,7 +47,7 @@
                         <div class="row">
                             <div class="col-12 mt-1">
                                 <label class="text-bold-400 text-dark" for="supplier_id">Fournisseur</label>
-                                <select required name="supplier_id" id="supplier_id" required class="form-control">
+                                <select required name="supplier_id" id="supplier_id" required class="select2 form-control">
                                     <option value="">Choisir</option>
                                     @forelse ($suppliers as  $supplier)
                                         <option value="{{ $supplier->id }}">{{ $supplier->identification }}</option>
@@ -63,7 +63,7 @@
                         <div class="row">
                             <div class="col-sm-8 mt-1 col-article">
                                 <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
-                                <select name="article_reference" required class="form-control articleBySupplier"
+                                <select name="article_reference" required class="select2 form-control articleBySupplier"
                                     id="article_reference">
                                     <option value=''>Choisir</option>
                                 </select>

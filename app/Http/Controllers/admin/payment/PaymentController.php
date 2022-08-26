@@ -45,21 +45,14 @@ class PaymentController extends Controller
     {
         // $this->authorize("pay", \App\Models\Sale::class);
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
-       
-        $amount = $invoice->sales->sum("sub_amount");
-        $paid =  $invoice->paid + $request->paid;
-        $rest = $amount - $paid;
 
-        if($rest<0){
-            return back()->withErrors(["error"=>"Nihoatra ny vola napidirinao!"]);
-        }
+        $paid =  $invoice->paid + $request->paid;
+        $rest = $invoice->sales->sum("sub_amount") - $paid;
 
         $docSale = [
-            // "paid" => $request->paid,
-            // "rest" => $rest,
             "checkout" => $request->checkout ?? 0,
             "payment_type" => $request->payment_type,
-            "status" => $rest <= 0 ? Invoice::STATUS["paid"] : Invoice::STATUS["incomplete"],
+            "status" => $rest == 0 ? Invoice::STATUS["paid"] : Invoice::STATUS["incomplete"],
             "comment" => $request->comment
         ];
 
@@ -67,13 +60,17 @@ class PaymentController extends Controller
         if ($request->checkout > 0) {
             $docSale["checkout"] = $request->checkout;
             $docSale["paid"] = $docSale["rest"] = 0;
-            // $docSale["checkout"] = $request->checkout;
+            $docSale["status"] =  Invoice::STATUS["paid"];
         } else if ($request->paid) {
+            if ($rest < 0) {
+                return back()->withErrors(["error" => "Nihoatra ny vola napidirinao!"]);
+            }
+
             $docSale["paid"] = $paid;
             $docSale["rest"] = $rest;
         }
 
-        // dd($rest);
+        // dd($docSale);
 
         $saved = $invoice->update($docSale);
 
@@ -91,8 +88,8 @@ class PaymentController extends Controller
         $paid =  $invoice->paid + $request->paid;
         $rest = $amount - $paid;
 
-        if($rest<0){
-            return back()->withErrors(["error"=>"Nihoatra ny vola napidirinao!"]);
+        if ($rest < 0) {
+            return back()->withErrors(["error" => "Nihoatra ny vola napidirinao!"]);
         }
 
         $docSale = [

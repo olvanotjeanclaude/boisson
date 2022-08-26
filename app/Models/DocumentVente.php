@@ -38,9 +38,9 @@ class DocumentVente extends Model
             ->groupBy("date");
     }
 
-    public static function CommercialStateBetween($filterType)
+    public function scopeState($query, $filterType)
     {
-        $docSales =  DB::table('document_ventes')->select([
+        $docSales = $query->select([
             "paid",
             "rest",
             DB::raw("SUM(paid) as paid"),
@@ -54,8 +54,8 @@ class DocumentVente extends Model
                     DB::raw("DATE_FORMAT(received_at, '%Y-%m-%d') as date"),
                     DB::raw("DATE_FORMAT(received_at, '%d-%m-%Y') as formated_date"),
                 ])
-                    ->orderByDesc("date")
-                    ->groupBy("date");
+                    ->groupBy("date")
+                    ->orderByDesc("date");
                 break;
 
             case 'hebdomadaire':
@@ -63,9 +63,9 @@ class DocumentVente extends Model
                     DB::raw("EXTRACT( WEEK FROM received_at) as week_of_year"),
                     DB::raw("EXTRACT(YEAR FROM received_at) as year"),
                 ])
-                    ->orderByDesc("week_of_year")
                     ->groupBy("week_of_year")
-                    ->groupBy("year");
+                    ->groupBy("year")
+                    ->orderByDesc("week_of_year");
                 break;
 
             case 'mois':
@@ -75,8 +75,8 @@ class DocumentVente extends Model
                         DB::raw("DATE_FORMAT(received_at, '%m/%Y') formated_month_of_year")
                     ]
                 )
-                    ->orderByDesc("month_of_year")
-                    ->groupBy("month_of_year");
+                    ->groupBy("month_of_year")
+                    ->orderByDesc("month_of_year");
                 break;
 
             case 'annuel':
@@ -85,20 +85,19 @@ class DocumentVente extends Model
                         DB::raw("DATE_FORMAT(received_at, '%Y') as year")
                     ]
                 )
-                    ->orderByDesc("year")
-                    ->groupBy("year");
+                    ->groupBy("year")
+                    ->orderByDesc("year");
                 break;
             default:
                 $docSales = $docSales->addSelect([
                     DB::raw("DATE_FORMAT(received_at, '%Y-%m-%d') as date"),
                     DB::raw("DATE_FORMAT(received_at, '%d-%m-%Y') as formated_date"),
                 ])
-                    ->orderByDesc("date")
-                    ->groupBy("date");
-                break;
+                    ->groupBy("date")
+                    ->orderByDesc("date");
                 break;
         }
 
-        return $docSales->get();
+        return $docSales;
     }
 }

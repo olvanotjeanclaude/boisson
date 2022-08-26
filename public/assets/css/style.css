@@ -1,11 +1,39 @@
-/*================================================================================
-	Item Name: Modern Admin - Clean Bootstrap 4 Dashboard HTML Template
-	Version: 1.0
-	Author: PIXINVENT
-	Author URL: http://www.themeforest.net/user/pixinvent
-================================================================================
+* {
+	font-family: "Open Sans", sans-serif;
+}
 
-NOTE:
-------
-PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
-WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+.card-title {
+	font-weight: 500 !important;
+	text-transform: capitalize;
+}
+
+th {
+	text-transform: capitalize;
+}
+
+.card-image {
+	object-fit: cover;
+	width: auto;
+	height: 200px
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+table tbody td,
+table tbody th {
+	height: 0 !important;
+}
+
+body {
+	overflow-x: hidden
+}
