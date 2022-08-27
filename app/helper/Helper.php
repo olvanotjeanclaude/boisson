@@ -81,7 +81,7 @@ function  formatPrice($price, $devise = "Ar")
     return  number_format($price, 2, ',', ' ') . " $devise";
 }
 
-function generateInteger($n = 6)
+function generateInteger($n = 6):string
 {
     $start = 1;
     $end = 9;

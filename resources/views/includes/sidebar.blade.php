@@ -35,7 +35,7 @@
             </div>
         </div>
     </div>
-    <div class="main-menu-content text-capitalize" style="overflow-y: auto">
+    <div class="main-menu-content text-capitalize d-none" style="overflow-y: auto">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class=" nav-item">
                 <a href="/admin">

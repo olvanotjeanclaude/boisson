@@ -62,6 +62,9 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::group(["prefix" =>"inventaires","as" =>"inventaires."],function(){
         Route::get("/",[\App\Http\Controllers\admin\article\InventoryController::class,"index"])->name("index");
         Route::post("/check-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"checkStock"])->name("checkStock");
+        Route::get("/ajustement-de-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"getAdjustStockForm"])->name("getAdjustStockForm");
+        Route::post("/demmande-ajustement-de-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"adjustStockRequest"])->name("adjustStockRequest");
+        Route::post("/ajustement-de-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"adjustStock"])->name("adjustStock");
     });
 
     Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
