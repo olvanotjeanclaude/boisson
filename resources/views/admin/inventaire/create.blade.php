@@ -20,85 +20,125 @@
 @section('content')
     <section>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-12">
+                @if (session('success'))
+                    @include('component.alert', [
+                        'type' => 'success',
+                        'message' => session('success'),
+                    ])
+                @endif
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-7">
                 <div class="card">
-                    <div class="card-header">
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+                    <div class="card-header bg-secondary">
+                        <h4 class="card-title text-white">Information De Stock Et Inventaire</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mt-1 font-weight-bold">
+                                Designation d'Article
                             </div>
-                        @endif
-                        <h4 class="card-title" id="from-actions-bottom-right">Formulaire D'Ajustement De Stock</h4>
-                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            <ul class="list-inline mb-0">
-                                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-                            </ul>
+                            <div class="col-md">
+                                <input type="text" class="form-control text-capitalize text-dark" readonly
+                                    value="{{ $article->designation }}" id="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-1 font-weight-bold">
+                                Reference
+                            </div>
+                            <div class="col-md">
+                                <input type="text" class="form-control text-dark" readonly
+                                    value="{{ $article->reference }}" id="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-1 font-weight-bold">
+                                Status
+                            </div>
+                            <div class="col-md">
+                                <input type="text" class="form-control text-dark" readonly
+                                    value="{{ $inventory->status_text }}" id="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-1 font-weight-bold">
+                                Date
+                            </div>
+                            <div class="col-md">
+                                <input type="date" class="form-control text-dark" readonly value="{{ $inventory->date }}"
+                                    id="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-1 font-weight-bold">
+                                Quantité Réelle
+                            </div>
+                            <div class="col-md">
+                                <input type="text" class="form-control text-dark" readonly
+                                    value="{{ $inventory->real_quantity }}" id="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-1 font-weight-bold">
+                                Ecart
+                            </div>
+                            <div class="col-md">
+                                <input type="text" class="form-control text-dark" readonly
+                                    value="{{ $inventory->difference }}" id="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-1 font-weight-bold">
+                                Motif
+                            </div>
+                            <div class="col-md">
+                                <textarea name="" id="" class="form-control" readonly>{{ trim($inventory->motif) }}</textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-1 font-weight-bold">
+                                Demmandé Par
+                            </div>
+                            <div class="col-md">
+                                <input class="form-control"
+                                    value="{{ $inventory->user ? Str::upper($inventory->user->full_name) : '' }}"
+                                    readonly />
+                            </div>
                         </div>
                     </div>
-                    <div class="card-content collpase show">
-                        <div class="card-body">
-                            <form novalidate action="{{ route('admin.inventaires.adjustStock') }}" method="POST"
-                                class="needs-validation form form-horizontal striped-rows form-bordered">
-                                @csrf
-                                <div class="form-body">
-                                    <div class="form-group row mx-auto">
-                                        <label class="col-md-3 label-control" for="article_ref">
-                                            Articles
-                                        </label>
-                                        <div class="col-md-9">
-                                            <input type="hidden" name="article_ref" value="{{ $article->reference }}"
-                                                id="">
-                                            <input type="text" id="text"
-                                                value="{{ Str::upper($article->designation) }}" readonly
-                                                class="form-control">
-                                            <div class="invalid-feedback">
-                                                Article est obligatoire.
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mx-auto">
-                                        <label class="col-md-3 label-control" for="date">Date</label>
-                                        <div class="col-md-9">
-                                            <input type="date" id="date" value="{{ request()->get('date') }}"
-                                                required class="form-control" name="date" readonly>
-                                            <div class="invalid-feedback">
-                                                Date est obligatoire.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row mx-auto">
-                                        <label class="col-md-3 label-control" for="real_quantity">Quantité Réelle</label>
-                                        <div class="col-md-9">
-                                            <input type="number" id="real_quantity" required class="form-control"
-                                                name="real_quantity">
-                                            <div class="invalid-feedback">
-                                                Quantité réelle est obligatoire.
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mx-auto last">
-                                        <label class="col-md-3 label-control" for="note">Note</label>
-                                        <div class="col-md-9">
-                                            <textarea id="note" rows="3" name="note" class="form-control" placeholder="note"></textarea>
-                                        </div>
-                                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="card">
+                    <div class="card-body">
+                        <form novalidate action="{{ route('admin.inventaires.adjustStock', $inventory->id) }}"
+                            method="POST" class="needs-validation form form-horizontal striped-rows form-bordered">
+                            @csrf
+                            <div class="col-12 mt-1">
+                                <label class="text-bold-400 text-dark" for="status">Status</label>
+                                <select required name="status" id="status" required class="form-control">
+                                    <option value="">Choisir</option>
+                                    @forelse (\App\Models\Inventory::STATUS_TEXT as $key => $status)
+                                        <option value="{{ \App\Models\Inventory::STATUS[$key] }}"
+                                            @if ($inventory->status == \App\Models\Inventory::STATUS[$key]) selected @endif>
+                                            {{ $status }}
+                                        </option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                <div class="invalid-feedback">
+                                    Veuillez selectionner le status
                                 </div>
-
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="la la-save"></i> Ajuster
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="mt-2  d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="la la-save"></i> Ajuster
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

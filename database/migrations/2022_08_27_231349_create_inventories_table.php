@@ -19,8 +19,8 @@ class CreateInventoriesTable extends Migration
             $table->string("unique_id");
             $table->integer("status")->default(Inventory::STATUS["pending"]);
             $table->unsignedBigInteger("article_reference");
-            $table->unsignedBigInteger("inventorieable_id");
-            $table->string("inventorieable_type");
+            $table->unsignedBigInteger("article_id");
+            $table->string("article_type");
 
             $table->date("date");
             $table->integer("real_quantity")->comment("quantité réelle");

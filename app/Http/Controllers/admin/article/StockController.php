@@ -73,9 +73,10 @@ class StockController extends Controller
             }
             return $bottle;
         })->sort();
-        // dd($saleBottles, $supplierBottles);
+
         // dd($bottles);
-        // dd($stocks);
+        // dd($saleBottles, $supplierBottles);
+       
         // dd($magasins);
         return view("admin.stock.index", compact("stocks", "bottles", "between"));
     }

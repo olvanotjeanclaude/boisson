@@ -62,9 +62,9 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::group(["prefix" =>"inventaires","as" =>"inventaires."],function(){
         Route::get("/",[\App\Http\Controllers\admin\article\InventoryController::class,"index"])->name("index");
         Route::post("/check-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"checkStock"])->name("checkStock");
-        Route::get("/ajustement-de-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"getAdjustStockForm"])->name("getAdjustStockForm");
+        Route::get("/ajustement-de-stock/{inventory}",[\App\Http\Controllers\admin\article\InventoryController::class,"getAdjustStockForm"])->name("getAdjustStockForm");
         Route::post("/demmande-ajustement-de-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"adjustStockRequest"])->name("adjustStockRequest");
-        Route::post("/ajustement-de-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"adjustStock"])->name("adjustStock");
+        Route::post("/ajustement-de-stock/{inventory}",[\App\Http\Controllers\admin\article\InventoryController::class,"adjustStock"])->name("adjustStock");
     });
 
     Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
@@ -97,7 +97,6 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::resource("factures", \App\Http\Controllers\admin\invoice\InvoiceController::class);
 
     Route::resource("clients", \App\Http\Controllers\admin\customer\CustomerController::class);
-    Route::resource("achat-fournisseurs", \App\Http\Controllers\admin\acphat\AchatFournisseurController::class);
 
     Route::get("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "index"])->name("password.index");
     Route::post("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "update"])->name("password.update");

@@ -10,23 +10,19 @@ use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Models\SupplierOrders;
 use App\Http\Controllers\Controller;
+use App\Models\Supplier;
 
 class InventoryController extends Controller
 {
     public function index(Request $request)
     {
-        $between = Stock::getDefaultBetween();
         $articles = SupplierOrders::UniqueArticles("products");
         $packages = SupplierOrders::UniqueArticles("packages");
 
-        if (isset($request->start_date)) {
-            $between[0] = $request->start_date;
-        }
-        if (isset($request->end_date)) {
-            $between[1] = $request->end_date;
-        }
-
-        $inventories = Inventory::orderBy("date")->get();
+        $inventories = Inventory::has("article")
+            ->orderBy("date", "desc")
+            ->orderBy("id", "desc")
+            ->get();
 
         // dd($stocks);
 
@@ -46,7 +42,7 @@ class InventoryController extends Controller
         $stock = $stockDiff["stock"] ?? null;
         $messages = $stockDiff["messages"] ?? [];
 
-        $submitAjustmentBtn = "<button type='submit' class='btn btn-outline-primary'>Demandee L'Ajustement</button>";
+        $submitAjustmentBtn = "<button type='submit' class='btn btn-outline-primary'>Demander L'Ajustement</button>";
 
         // dd($stocks);
         return response()->json([
@@ -56,13 +52,14 @@ class InventoryController extends Controller
         ]);
     }
 
-    public function getAdjustStockForm(Request $request)
+    public function getAdjustStockForm(Inventory $inventory, Request $request)
     {
-        // dd($request->all());
-        $article = Articles::getArticleByReference($request->article_ref);
+
+        $article = $inventory->article;
+
         abort_if(is_null($article), 404);
 
-        return view("admin.inventaire.create", compact("article"));
+        return view("admin.inventaire.create", compact("article", "inventory"));
     }
 
     public function adjustStockRequest(Request $request)
@@ -80,16 +77,16 @@ class InventoryController extends Controller
         if ($stock && $article) {
             $saved = Inventory::updateOrcreate([
                 "article_reference" => $article->reference,
-                "inventorieable_id" => $article->id,
-                "inventorieable_type" => get_class($article),
+                "article_id" => $article->id,
+                "article_type" => get_class($article),
                 "date" => $stock->date,
-            ],[
+            ], [
                 "unique_id" => generateInteger(8),
                 "real_quantity" => $stock->real_quantity,
                 "difference" => $stock->difference,
                 "motif" => $request->motif,
                 "user_id" => auth()->user()->id,
-                "status" =>Inventory::STATUS["pending"]
+                "status" => Inventory::STATUS["pending"]
             ]);
 
             if ($saved) {
@@ -99,10 +96,111 @@ class InventoryController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function adjustStock(Request $request)
+    public function adjustStock(Inventory $inventory, Request $request)
     {
-        dd($request->all());
+        // dd($inventory);
+        abort_if(is_null($inventory->article), 404);
+        $updated = false;
+
+        switch ($request->status) {
+            case Inventory::STATUS["accepted"]:
+                $article = $inventory->article;
+                $between = [Stock::MinDate($inventory->date), $inventory->date];
+                $supplierOrders = SupplierOrders::ByArticleBetween($article->reference, $between)->get();
+
+                $absGap = abs($inventory->difference);
+
+                // dd($supplierOrders, $inventory,$absGap);
+
+                if (count($supplierOrders) > 0) {
+                    if ($inventory->difference > 0) {
+                        $supOrder = $supplierOrders->firstOrFail();
+                        $newQtt = $supOrder->quantity + $inventory->difference;
+                        // dd("Ampio le stock",$supOrder);
+                        $updated = $supOrder->update([
+                            "quantity" => $newQtt,
+                            "isAdjustment" => true,
+                            "update_user_id" => auth()->user()->id
+                        ]);
+                    } else if ($inventory->difference < 0) {
+                        $maxSupOrder = $supplierOrders->where("quantity", ">", $absGap)->first();
+                        $sameSupOrder = $supplierOrders->where("quantity", $absGap)->first();
+
+                        if ($maxSupOrder) {
+                            // dd("anesorana ny quantite le be ndrindra");
+                            $updated =  $maxSupOrder->update([
+                                "quantity" =>  $maxSupOrder->quantity - $absGap,
+                                "isAdjustment" => true,
+                                "update_user_id" => auth()->user()->id
+                            ]);
+                        } else if ($sameSupOrder) {
+                            // dd("mtovy ny quantite");
+                            $updated = $sameSupOrder->update([
+                                "quantity" => 0,
+                                "isAdjustment" => true,
+                                "update_user_id" => auth()->user()->id
+                            ]);
+                        } else {
+                            $sumGap = 0;
+                            $rowIds = [];
+
+                            foreach ($supplierOrders as $supOrder) {
+                                $sumGap += $supOrder->quantity;
+                                $rowIds[$supOrder->id] = $supOrder->quantity;
+                                if ($sumGap >= $absGap) {
+                                    break;
+                                }
+                            }
+
+                            if ($sumGap == $absGap) {
+                                // dd("sum anaty array manome an le difference");
+                                $updated =  $supplierOrders->whereIn("id", array_keys($rowIds))
+                                    ->update([
+                                        "quantity" => 0,
+                                        "isAdjustment" => true,
+                                        "update_user_id" => auth()->user()->id
+                                    ]);
+                            } else if ($sumGap > 0) {
+                                $lastOrder = $supplierOrders->where("id", array_key_last($rowIds))
+                                    ->first();
+
+                                $beforeLastOrders = array_slice($rowIds, 0, count($rowIds) - 1);
+                                $newQtt = $absGap - array_sum($beforeLastOrders);
+                                // dd("le farany atao update an le diffeence", $newQtt);
+                                $updated =  $lastOrder->update([
+                                    "quantity" => $newQtt,
+                                    "isAdjustment" => true,
+                                    "update_user_id" => auth()->user()->id
+                                ]);
+                            }
+                        }
+                    }
+
+                    if ($updated) {
+                        $inventory->update(["status" => Inventory::STATUS["accepted"]]);
+                        return redirect("/admin/inventaires")->with("success", "Stock a ete ajuste avec success!");
+                    }
+                }
+
+                return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
+                break;
+            case Inventory::STATUS["pending"]:
+                $updated = $inventory->update(["status" => Inventory::STATUS["pending"]]);
+                break;
+            case Inventory::STATUS["canceled"]:
+                $updated = $inventory->update(["status" => Inventory::STATUS["canceled"]]);
+                break;
+            default:
+                break;
+        }
+
+        if ($updated) {
+            return redirect("/admin/inventaires")->with("success", "Inventaire a ete modifie avec success");
+        }
+
+        return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
     }
+
 
     private function getStockInfoHtml($stock): array
     {

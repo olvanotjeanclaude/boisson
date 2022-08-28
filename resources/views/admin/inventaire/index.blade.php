@@ -124,22 +124,25 @@
                                     <th>Designation</th>
                                     <th>Quantité</th>
                                     <th>Ecart</th>
-                                    <th>Motif</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($inventories as $inventory)
-                                    @if ($inventory->product)
-                                        <tr>
-                                            <td>{!! $inventory->status_html !!}</td>
-                                            <td>{{ format_date($inventory->date) }}</td>
-                                            <td>{{ $inventory->article_reference }}</td>
-                                            <td>{{ Str::upper($inventory->product->designation) }}</td>
-                                            <td>{{ $inventory->real_quantity }}</td>
-                                            <td>{{ $inventory->difference }}</td>
-                                            <td>{{ $inventory->motif }}</td>
-                                        </tr>
-                                    @endif
+                                    <tr>
+                                        <td>{!! $inventory->status_html !!}</td>
+                                        <td>{{ format_date($inventory->date) }}</td>
+                                        <td>{{ $inventory->article_reference }}</td>
+                                        <td>{{ Str::upper($inventory->article->designation) }}</td>
+                                        <td>{{ $inventory->real_quantity }}</td>
+                                        <td>{{ $inventory->difference }}</td>
+                                        <td>
+                                            <a class="btn btn-info" href="{{ route('admin.inventaires.getAdjustStockForm', $inventory->id) }}">
+                                                <i class="la la-eye"></i>
+                                                Voir
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>

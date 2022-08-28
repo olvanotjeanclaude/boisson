@@ -161,6 +161,19 @@ class SupplierOrders extends Model
             ->orderByDesc("received_at")
             ->get();
     }
+
+    public function scopeByArticleBetween($query, $article_ref, $between)
+    {
+        if (empty($between)) {
+            $between = Stock::getDefaultBetween();
+        }
+
+        return $query->has("product")
+            ->whereBetween("received_at", $between)
+            ->whereNotNull("invoice_number")
+            ->where("article_reference", $article_ref);
+    }
+
     public  function scopeByDate($query, $date = null)
     {
         if (is_null($date)) {
