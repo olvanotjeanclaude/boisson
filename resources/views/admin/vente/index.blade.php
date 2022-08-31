@@ -120,6 +120,11 @@
                                                             {{-- <a href="{{ route('admin.achat-produits.edit', $sale['id']) }}"
                                                             class="dropdown-item"><i class="la la-pencil"></i>
                                                             Editer</a> --}}
+                                                            <a href="{{ route('admin.print.sale.download', $sale->number) }}"
+                                                                class="dropdown-item">
+                                                                <i class="la la-download"></i>
+                                                                Telecharger
+                                                            </a>
                                                             <a href="{{ route('admin.print.sale', $sale->number) }}"
                                                                 class="dropdown-item">
                                                                 <i class="la la-print"></i>

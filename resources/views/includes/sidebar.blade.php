@@ -35,8 +35,8 @@
             </div>
         </div>
     </div>
-    <div class="main-menu-content text-capitalize d-none" style="overflow-y: auto">
-        <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+    <div class="main-menu-content text-capitalize d-none" style="overflow-y: auto;">
+        <ul class="navigation navigation-main mb-5" id="main-menu-navigation" data-menu="menu-navigation">
             <li class=" nav-item">
                 <a href="/admin">
                     <i class="material-icons">settings_input_svideo</i>

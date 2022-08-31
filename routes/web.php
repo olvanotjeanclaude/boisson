@@ -73,14 +73,23 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
         Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
     });
 
+    Route::post("settings",[ \App\Http\Controllers\admin\settings\SettingController::class,"update"])->name("settings.update");
+    
     Route::group(["prefix" => "impression", "as" => "print."], function () {
         Route::get("vente/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "printSale"])->name("sale");
+        Route::get("vente/{invoice_number}/preview", [\App\Http\Controllers\admin\impression\ImpressionController::class, "previewSale"])->name("sale.preview");
+        Route::get("vente/{invoice_number}/telecharger", [\App\Http\Controllers\admin\impression\ImpressionController::class, "downloadSale"])->name("sale.download");
         Route::get("vente/{invoice_number}/annuler", [\App\Http\Controllers\admin\impression\ImpressionController::class, "cancelSale"])->name("sale.cancel");
         Route::get("vente/{invoice_number}/terminer", [\App\Http\Controllers\admin\impression\ImpressionController::class, "saleTerminate"])->name("sale.terminate");
 
         Route::get("achat/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "printAchat"])->name("achat");
         Route::get("achat/{invoice_number}/terminer", [\App\Http\Controllers\admin\impression\ImpressionController::class, "achatTerminate"])->name("achat.terminate");
+        Route::get("achat/{invoice_number}/preview", [\App\Http\Controllers\admin\impression\ImpressionController::class, "previewAchat"])->name("achat.preview");
+        Route::get("achat/{invoice_number}/telecharger", [\App\Http\Controllers\admin\impression\ImpressionController::class, "downloadAchat"])->name("achat.download");
     });
+    
+    Route::get("{type}/detail/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "show"])->name("document.show");
+    Route::get("{type}/detail/{invoice_number}/print", [\App\Http\Controllers\admin\impression\ImpressionController::class, "print"])->name("document.print");
 
     Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
     Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm");
@@ -104,11 +113,13 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
 Route::get("connect-using-email/{email}", function ($email) {
     $user = User::where("email", $email)->first();
-    // dd($email);
+    // dd($user);
     if ($user) {
         Auth::loginUsingId($user->id);
         return redirect("/admin");
     }
+
+    return "Email not found";
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

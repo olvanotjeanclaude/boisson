@@ -53,6 +53,10 @@
                                 </span>
                                 Supprimer
                             </button>
+                            <button type="button" data-target="#settingModal" data-toggle="modal"
+                                class="btn  btn-info btn-sm text-capitalize">
+                                Minimum Date
+                            </button>
                             @can('viewAny', \App\Models\SupplierOrders::class)
                                 <a href="{{ route('admin.achat-produits.index') }}"
                                     class="btn btn-secondary btn-sm text-capitalize">
@@ -173,6 +177,40 @@
             </div>
         </div>
     </section>
+
+    <div class="modal fade text-left" id="settingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel10"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{route('admin.settings.update')}}" novalidate class="needs-validation" method="post">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header bg-secondary white">
+                        <h4 class="modal-title white">Configuration Du Stock</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Nombre minimum de jours de stock par défaut</h5>
+                        <div class="form-group">
+                            <label for="surname">Nombre De Jour</label>
+                            <input type="number" class="form-control"
+                                name="min_stock_day" min="1" required>
+                            <div class="invalid-feedback">
+                                Entre une nombre valide
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn grey btn-outline-secondary"
+                            data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn  btn-outline-dark">Valider</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @include('includes.delete-modal')
 @endsection
 

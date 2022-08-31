@@ -87,14 +87,15 @@ class Stock extends Model
         return [self::MinDate(), now()->toDateString()];
     }
 
-    public static function MinDate($date=null)
+    public static function MinDate($date = null)
     {
-        if(is_null($date)){
+        if (is_null($date)) {
             $date = date("Y-m-d");
         }
 
         $date = new Carbon($date);
-        $n = 7;
+        $setting = Settings::first();
+        $n = is_null($setting) ? 7 : $setting->min_stock_day;
 
         return $date->subDays($n)->toDateString();
     }
@@ -103,7 +104,10 @@ class Stock extends Model
     {
         if (empty($between)) {
             $between = self::getDefaultBetween();
+        } else if ($between[0] == $between[1]) {
+            $between = [self::MinDate($between[0]), $between[0]];
         }
+
         // $between = ["2022-08-01","2022-08-01"];
         // dd($between);
         $stockOut = DB::table("sales")
@@ -115,14 +119,8 @@ class Stock extends Model
             ])
             ->whereNotNull("invoice_number")
             ->whereNotNull("received_at")
-            ->when($between[0] == $between[1], function ($query) use ($between) {
-                return $query->whereDate("received_at", $between[0]);
-            })
-            ->when($between[0] != $between[1], function ($query) use ($between) {
-                return $query->whereBetween("received_at", $between);
-            })
+            ->whereBetween("received_at", $between)
             ->groupBy("article_reference");
-
 
         $stocks = DB::table("supplier_orders")
             ->select([
@@ -138,12 +136,7 @@ class Stock extends Model
             })
             ->whereNotNull("supplier_orders.invoice_number")
             ->whereNotNull("supplier_orders.received_at")
-            ->when($between[0] == $between[1], function ($query) use ($between) {
-                return $query->whereDate("received_at", $between[0]);
-            })
-            ->when($between[0] != $between[1], function ($query) use ($between) {
-                return $query->whereBetween("received_at", $between);
-            })
+            ->whereBetween("received_at", $between)
             ->groupBy("supplier_orders.article_reference")
             ->get()->map(function ($data) {
                 $modelArticle = $data->article_type;

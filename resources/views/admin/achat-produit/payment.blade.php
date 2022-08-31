@@ -5,7 +5,7 @@
 @endsection
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('/assets/css/invoice.css') }}">
+@include('includes.invoice-css')
 @endsection
 
 @section('content-header')
@@ -119,7 +119,7 @@
                     </div>
                 @endif --}}
 
-                <div id="invoice-POS" class="printScreen">
+                <div id="invoice-POS">
 
                     <center id="top">
                         <div class="logo"></div>
@@ -225,51 +225,4 @@
             <!--End Invoice-->
         </div>
     </div>
-@endsection
-
-@section('script')
-    <script>
-        $(document).ready(function() {
-            $("#paid").keyup(function() {
-                const paid = $(this).val();
-                const amount = $("#amount").val();
-                if (paid) {
-                    $("#rest").text(amount - paid);
-                } else {
-                    $("#rest").text("0.00");
-                }
-            });
-
-            $(".printData").click(function() {
-                w = window.open();
-                w.document.write($('.printScreen').html());
-                w.print();
-                w.close();
-            })
-        })
-
-        var beforePrint = function() {
-            alert('Functionality to run before printing.');
-        };
-
-        var afterPrint = function() {
-            alert('Functionality to run after printing');
-        };
-
-        if (window.matchMedia) {
-            var mediaQueryList = window.matchMedia('print');
-
-            mediaQueryList.addListener(function(mql) {
-                //alert($(mediaQueryList).html());
-                if (mql.matches) {
-                    beforePrint();
-                } else {
-                    afterPrint();
-                }
-            });
-        }
-
-        window.onbeforeprint = beforePrint;
-        window.onafterprint = afterPrint;
-    </script>
 @endsection

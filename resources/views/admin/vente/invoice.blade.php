@@ -5,7 +5,7 @@
 @endsection
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('/assets/css/invoice.css') }}">
+@include('includes.invoice-css')
 @endsection
 
 @section('content-header')
@@ -40,8 +40,12 @@
                         @can('print', \App\Models\DocumentVente::class)
                         @endcan
 
+                        <a target="_blank" href="{{ route('admin.print.sale.preview', $invoice->number) }}"
+                            class="ml-2 btn btn-info btn-lg  mb-2">
+                            Imprimer
+                        </a>
+
                         @if ($invoice->status == App\helper\Invoice::STATUS['no_printed'])
-                            <button class="print btn btn-warning btn-lg  printData mb-2">Imprimer</button>
                             <a href="{{ route('admin.print.sale.terminate', $invoice->number) }}"
                                 class="ml-2 btn btn-success btn-lg  mb-2">
                                 Enregistrer
@@ -61,90 +65,115 @@
                     </div>
                 </div>
 
-                <div id="invoice-POS" class="printScreen">
+              
+                <div id="invoice-POS" class="p-1">
 
-                    <center id="to" class="mt-2 text-center">
+                    <center id="" class="mb-2">
                         {{-- <div class="logo"></div> --}}
                         <div class="info">
-                            <h2 class=""><b>{{ getAppName() }}</b></h2>
+                            <h2>{{ getAppName() }}</h2>
                         </div>
                         <!--End Info-->
                     </center>
                     <!--End InvoiceTop-->
-
-                    <div id="mid">
+            
+                    <div id="mid" class="mb-2">
                         <div class="info">
-                            <h2 class="font-weight-bold"></h2>
-                            <p>N<sup><span>&#176;</span></sup> {{ $invoice->number }} <br>
-                                Date : {{ format_date_time($invoice->received_at) }} <br><br>
-                                Client : {{ Str::ucfirst($invoice->customer->identification) }}</br>
-                                Adresse : {{ $invoice->customer->address }}</br>
-                                Téléphone : {{ $invoice->customer->phone }}</br>
-                            </p>
+                            <div class="info">
+                                <p>N<sup><span>&#176;</span></sup> {{ $invoice->number }} <br>
+                                    Date : {{ format_date_time($invoice->received_at) }} <br><br>
+                                    Client : {{ Str::ucfirst($invoice->customer->identification) }}<br>
+                                    Adresse : {{ $invoice->customer->address }}<br>
+                                    Téléphone : {{ $invoice->customer->phone }}<br>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <!--End Invoice Mid-->
-
+            
                     <div id="bot">
-
+            
                         <div id="table">
                             <table>
                                 <tr class="tabletitle">
                                     <td class="item">
-                                        <h2>Designation</h2>
+                                        <h2 style="padding-left: 5px; text-align:left">Désignation</h2>
                                     </td>
                                     <td class="Hours">
                                         <h2>Qté</h2>
                                     </td>
                                     <td class="Rate">
-                                        <h2>Sous Total</h2>
+                                        <h2>PU</h2>
+                                    </td>
+                                    <td class="Rate">
+                                        <h2>Total</h2>
                                     </td>
                                 </tr>
-
+            
                                 @forelse ($invoice->sales as $sale)
                                     <tr class="service">
                                         <td class="tableitem">
-                                            <p class="itemtext">{{ $sale->saleable->designation }}</p>
+                                            <p class="itemtext designation">{{ $sale->saleable->designation }}</p>
                                         </td>
                                         <td class="tableitem">
-                                            <p class="itemtext">{{ $sale->quantity }}</p>
+                                            <p class="itemtext" style="text-align: center">{{ $sale->quantity }}</p>
                                         </td>
                                         <td class="tableitem">
-                                            <p class="itemtext">{{ formatPrice($sale->sub_amount) }}</p>
+                                            <p class="itemtext">{{ ($sale->saleable->price) }}</p>
+                                        </td>
+                                        <td class="tableitem">
+                                            <p class="itemtext" style="font-weight: bold;text-align:right">{{ formatPrice($sale->sub_amount) }}</p>
                                         </td>
                                     </tr>
                                 @empty
                                 @endforelse
-
+            
                                 <tr class="tabletitle">
                                     <td></td>
+                                    <td></td>
                                     <td class="Rate">
-                                        <h2>Total</h2>
+                                        <h2>Total: </h2>
                                     </td>
                                     <td class="payment">
                                         <input type="hidden" value="{{ $amount }}" id="amount">
-                                        <h2>{{ formatPrice($amount) }}</h2>
+                                        <h2 class="pricing">{{ formatPrice($amount) }}</h2>
                                     </td>
                                 </tr>
-
+            
                                 <tr class="tabletitle">
                                     <td></td>
+                                    <td></td>
                                     <td class="Rate">
-                                        <h2></h2>
+                                        {{-- <h2></h2> --}}
                                     </td>
                                     <td class="payment">
-                                        <h2>{{ formatPrice($amount * 5, 'Fmg') }}</h2>
+                                        <h2 class="pricing">{{ formatPrice($amount * 5, 'Fmg') }}</h2>
                                     </td>
                                 </tr>
-
+            
+                                @php
+                                    $reste = $amount - $invoice->paid;
+                                @endphp
+                                <tr class="tabletitle">
+                                    <td></td>
+                                    <td></td>
+                                    <td class="Rate">
+                                        <h2>Reste:</h2>
+                                    </td>
+                                    <td class="payment">
+                                        <h2 class="pricing">{{ formatPrice($reste) }}</h2>
+                                    </td>
+                                </tr>
+            
                             </table>
                         </div>
                         <!--End Table-->
-
+            
                         <div id="legalcopy">
-                            <p class="legal"><strong>Merci beaucoup!</strong></p>
+                            <p class="legal"><strong>Merci beaucoup!</strong>
+                            </p>
                         </div>
-
+            
                     </div>
                     <!--End InvoiceBot-->
                 </div>
@@ -155,39 +184,3 @@
     </div>
 @endsection
 
-@section('script')
-    <script>
-        $(document).ready(function() {
-            $(".printData").click(function() {
-                w = window.open();
-                w.document.write($('.printScreen').html());
-                w.print();
-                w.close();
-            })
-        })
-
-        var beforePrint = function() {
-            alert('Functionality to run before printing.');
-        };
-
-        var afterPrint = function() {
-            alert('Functionality to run after printing');
-        };
-
-        if (window.matchMedia) {
-            var mediaQueryList = window.matchMedia('print');
-
-            mediaQueryList.addListener(function(mql) {
-                //alert($(mediaQueryList).html());
-                if (mql.matches) {
-                    beforePrint();
-                } else {
-                    afterPrint();
-                }
-            });
-        }
-
-        window.onbeforeprint = beforePrint;
-        window.onafterprint = afterPrint;
-    </script>
-@endsection

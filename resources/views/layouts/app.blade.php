@@ -125,11 +125,6 @@
     <script src="{{ asset('app-assets/js/custom/dataController.js') }}"></script>
     <script src="{{ asset('app-assets/js/custom/index.js') }}"></script>
     @yield('script')
-    <script>
-        $(document).ready(function(){
-            $(".main-menu-content").removeClass("d-none");
-        })
-    </script>
 </body>
 <!-- END: Body-->
 

@@ -87,10 +87,10 @@
                             <div class="form-group row mx-auto d-none" id="content_id_containter">
                                 <label class="col-md-3 label-control" for="content_id">Articles</label>
                                 <div class="col-md-9">
-                                    <select  class="form-control"  id="content_id">
+                                    <select  class="form-control"  name="content_id" id="content_id">
                                         <option value="">Choisir</option>
                                         @forelse ($emballages as $emballage)
-                                        <option value="">{{ $emballage->designation }}</option>
+                                        <option value="{{$emballage->id}}">{{ $emballage->designation }}</option>
                                         @empty
                                             
                                         @endforelse

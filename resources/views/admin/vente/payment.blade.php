@@ -5,7 +5,7 @@
 @endsection
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('/assets/css/invoice.css') }}">
+    @include('includes.invoice-css')
 @endsection
 
 @section('content-header')
@@ -101,8 +101,8 @@
                                         </h4>
                                     </div>
                                 </div> --}}
-                                
-                                @if ($invoice->paid!=$invoice->sales->sum("sub_amount"))
+
+                                @if ($invoice->paid != $invoice->sales->sum('sub_amount'))
                                     <div class="col-12">
                                         <button type="submit"
                                             class="btn form-control my-1 border-top text-white btn-secondary">
@@ -129,26 +129,27 @@
                     </div>
                 @endif
 
-                <div id="invoice-POS" class="printScreen">
+                <div id="invoice-POS" class="p-1">
 
-                    <center id="top">
-                        <div class="logo"></div>
-                        <div class="info mt-1">
-                            <h2>Mon Magasin</h2>
+                    <center id="top" class="mb-2">
+                        {{-- <div class="logo"></div> --}}
+                        <div class="info">
+                            <h2>{{ getAppName() }}</h2>
                         </div>
                         <!--End Info-->
                     </center>
                     <!--End InvoiceTop-->
 
-                    <div id="mid">
+                    <div id="mid" class="mb-2">
                         <div class="info">
-                            <h2 class="font-weight-bold"></h2>
-                            <p>N<sup><span>&#176;</span></sup> {{ $invoice->number }} <br>
-                                Date : {{ format_date_time($invoice->received_at) }} <br><br>
-                                Client : {{ Str::ucfirst($invoice->customer->identification) }}</br>
-                                Adresse : {{ $invoice->customer->address }}</br>
-                                Téléphone : {{ $invoice->customer->phone }}</br>
-                            </p>
+                            <div class="info">
+                                <p>N<sup><span>&#176;</span></sup> {{ $invoice->number }} <br>
+                                    Date : {{ format_date_time($invoice->received_at) }} <br><br>
+                                    Client : {{ Str::ucfirst($invoice->customer->identification) }}<br>
+                                    Adresse : {{ $invoice->customer->address }}<br>
+                                    Téléphone : {{ $invoice->customer->phone }}<br>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <!--End Invoice Mid-->
@@ -159,26 +160,33 @@
                             <table>
                                 <tr class="tabletitle">
                                     <td class="item">
-                                        <h2>Designation</h2>
+                                        <h2 style="padding-left: 5px; text-align:left">Désignation</h2>
                                     </td>
                                     <td class="Hours">
                                         <h2>Qté</h2>
                                     </td>
                                     <td class="Rate">
-                                        <h2>Sous Total</h2>
+                                        <h2>PU</h2>
+                                    </td>
+                                    <td class="Rate">
+                                        <h2>Total</h2>
                                     </td>
                                 </tr>
 
                                 @forelse ($invoice->sales as $sale)
                                     <tr class="service">
                                         <td class="tableitem">
-                                            <p class="itemtext">{{ $sale->saleable->designation }}</p>
+                                            <p class="itemtext designation">{{ $sale->saleable->designation }}</p>
                                         </td>
                                         <td class="tableitem">
-                                            <p class="itemtext">{{ $sale->quantity }}</p>
+                                            <p class="itemtext" style="text-align: center">{{ $sale->quantity }}</p>
                                         </td>
                                         <td class="tableitem">
-                                            <p class="itemtext">{{ formatPrice($sale->sub_amount) }}</p>
+                                            <p class="itemtext">{{ $sale->saleable->price }}</p>
+                                        </td>
+                                        <td class="tableitem">
+                                            <p class="itemtext" style="font-weight: bold;text-align:right">
+                                                {{ formatPrice($sale->sub_amount) }}</p>
                                         </td>
                                     </tr>
                                 @empty
@@ -186,35 +194,38 @@
 
                                 <tr class="tabletitle">
                                     <td></td>
+                                    <td></td>
                                     <td class="Rate">
-                                        <h2>Total</h2>
+                                        <h2>Total: </h2>
                                     </td>
                                     <td class="payment">
                                         <input type="hidden" value="{{ $amount }}" id="amount">
-                                        <h2>{{ formatPrice($amount) }}</h2>
+                                        <h2 class="pricing">{{ formatPrice($amount) }}</h2>
                                     </td>
                                 </tr>
 
                                 <tr class="tabletitle">
                                     <td></td>
+                                    <td></td>
                                     <td class="Rate">
-                                        <h2>Total En Fmg</h2>
+                                        {{-- <h2></h2> --}}
                                     </td>
                                     <td class="payment">
-                                        <h2>{{ formatPrice($amount * 5, 'Fmg') }}</h2>
+                                        <h2 class="pricing">{{ formatPrice($amount * 5, 'Fmg') }}</h2>
                                     </td>
                                 </tr>
 
+                                @php
+                                    $reste = $amount - $invoice->paid;
+                                @endphp
                                 <tr class="tabletitle">
                                     <td></td>
+                                    <td></td>
                                     <td class="Rate">
-                                        <h2>Reste A paye</h2>
+                                        <h2>Reste:</h2>
                                     </td>
                                     <td class="payment">
-                                        @php
-                                            $reste = $amount - $invoice->paid;
-                                        @endphp
-                                        <h2>{{ formatPrice($reste, 'Ariary') }}</h2>
+                                        <h2 class="pricing">{{ formatPrice($reste) }}</h2>
                                     </td>
                                 </tr>
 
@@ -223,7 +234,8 @@
                         <!--End Table-->
 
                         <div id="legalcopy">
-                            <p class="legal"><strong>Merci beaucoup!</strong></p>
+                            <p class="legal"><strong>Merci beaucoup!</strong>
+                            </p>
                         </div>
 
                     </div>
@@ -234,51 +246,4 @@
             <!--End Invoice-->
         </div>
     </div>
-@endsection
-
-@section('script')
-    <script>
-        $(document).ready(function() {
-            $("#paid").keyup(function() {
-                const paid = $(this).val();
-                const amount = $("#amount").val();
-                if (paid) {
-                    $("#rest").text(amount - paid);
-                } else {
-                    $("#rest").text("0.00");
-                }
-            });
-
-            $(".printData").click(function() {
-                w = window.open();
-                w.document.write($('.printScreen').html());
-                w.print();
-                w.close();
-            })
-        })
-
-        var beforePrint = function() {
-            // alert('Functionality to run before printing.');
-        };
-
-        var afterPrint = function() {
-            // alert('Functionality to run after printing');
-        };
-
-        if (window.matchMedia) {
-            var mediaQueryList = window.matchMedia('print');
-
-            mediaQueryList.addListener(function(mql) {
-                //alert($(mediaQueryList).html());
-                if (mql.matches) {
-                    beforePrint();
-                } else {
-                    afterPrint();
-                }
-            });
-        }
-
-        window.onbeforeprint = beforePrint;
-        window.onafterprint = afterPrint;
-    </script>
 @endsection

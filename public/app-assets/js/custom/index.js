@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    $(".main-menu-content").removeClass("d-none");
+    
     $(document).on("click", ".delete-btn", deleteItem)
 
     $("button#confirmDelete").click(confirmeDeleteItem)
