@@ -14,8 +14,13 @@ class Articles extends Model
 
     const UNITS = [
         "pcs" => 1,
-        "cageot" => 2,
-        "carton" => 3
+        "litre" => 2,
+    ];
+
+    const PACKAGE_TYPES = [
+        "cageot" => 1,
+        "carton" => 2,
+        "bidon" => 3
     ];
 
     const ARTICLE_TYPES = [
@@ -24,15 +29,17 @@ class Articles extends Model
         "deconsignation" => 3
     ];
 
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
-    
     }
-    public function supplier(){
+    public function supplier()
+    {
         return $this->belongsTo(Supplier::class);
     }
 
-    public function getProductUnityAttribute(){
+    public function getProductUnityAttribute()
+    {
         return array_search($this->unity, self::UNITS);
     }
 
@@ -46,15 +53,22 @@ class Articles extends Model
         return array_search($this->article_type, self::ARTICLE_TYPES);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function user_update(){
-        return $this->belongsTo(User::class,"user_update_id");
+    public function user_update()
+    {
+        return $this->belongsTo(User::class, "user_update_id");
     }
 
-   public function suplier(){
-       return $this->belongsTo(suplier::class);
-   }
+    public function suplier()
+    {
+        return $this->belongsTo(suplier::class);
+    }
+
+    public static function PackageTypes(){
+        return self::PACKAGE_TYPES;
+    }
 }

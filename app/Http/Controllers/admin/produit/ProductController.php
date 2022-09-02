@@ -8,12 +8,15 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductRequest;
+use App\Models\Articles;
+use App\Models\Emballage;
 
 class ProductController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Product::class, "article");
+        // $this->authorizeResource(Product::class, "article");
     }
 
     public function index()
@@ -25,7 +28,8 @@ class ProductController extends Controller
     public function create()
     {
         $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.approvisionnement.product.create", compact("catArticles"));
+        $emballages = Emballage::orderBy("designation")->get();
+        return view("admin.approvisionnement.product.create", compact("catArticles", "emballages"));
     }
 
     public function edit(Product $product)
@@ -34,19 +38,27 @@ class ProductController extends Controller
         return view("admin.approvisionnement.product.edit", compact("catArticles", "product"));
     }
 
-    private function rules(){
-        return [
-            "designation" => "required|string",
-            "price" => "required|numeric",
-            "category_id" => "required"
-        ];
-    }
-
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $request->validate($this->rules());
-
+        // dd($request->all());
+        $consignations= request()->emballage_id;
         $data = $request->except("_token");
+
+        if ($request->contenance && $request->condition) {
+            return back()->withErrors(["errors" => "Contenance et la condition ne peut pas être rempli ensemble"]);
+        }
+        
+        if (is_countable($consignations)) {
+            $emballageLength = count($consignations);
+    
+            if ( $emballageLength==1 || $emballageLength ==2 ) {
+                $data["emballage_id"] =  implode(",",$consignations);
+            }
+            else{
+                return back()->withErrors(["errors" => "Le nombre de la consignation doit être compris  1 ou 2!"]);
+            }
+        }
+
         $data["reference"] = (string) random_int(111111, 999999);
         $data["user_id"] = auth()->user()->id;
 
