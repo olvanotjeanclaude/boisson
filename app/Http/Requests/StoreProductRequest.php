@@ -25,17 +25,28 @@ class StoreProductRequest extends FormRequest
      */
     public function rules()
     {
-        $bidon = Articles::PACKAGE_TYPES["bidon"];
-
+        $litre = Articles::UNITS["litre"];
+        $article = request()->route()->parameter("article");
+        $articleId = $article->id ?? null;
+        // dd($article);
         return [
-            "designation" => "required|string",
+            "designation" => [
+                "required",
+                "string",
+                Rule::unique("products","designation")->ignore($articleId),
+            ],
             "price" => "required|numeric",
             "wholesale_price" => "required|numeric",
             "category_id" => "required|integer",
             "unity" => "required|integer",
             "package_type" => "required|integer",
-            "contenance" => Rule::requiredIf(fn () => request()->package_type != $bidon),
-            "condition" => "required_if:package_type,$bidon",
+            "contenance" => [
+                Rule::requiredIf(fn () => request()->unity != $litre),
+                fn ($a, $v, $f) => $this->validContenanceAndCondition($a, $v, $f)
+            ],
+            "condition" => ["required_if:unity,$litre"],
+            "simple_package" => "nullable|different:big_package",
+            "big_package" => "nullable|different:simple_package",
         ];
     }
 
@@ -43,6 +54,7 @@ class StoreProductRequest extends FormRequest
     {
         return [
             "designation.required" => "la désignation ne peut pas être vide!",
+            "designation.unique" => "L'article " . request()->designation . " est déjà prise!",
             "price.required" => "le prix unitaire de vente ne peut pas être vide!",
             "wholesale_price.required" => "le prix de gros ne peut pas être vide!",
             "category_id.required" => "Selectionnez la famille d'article!",
@@ -51,6 +63,15 @@ class StoreProductRequest extends FormRequest
             "contenance.required" => "Veuillez entrer la contenance!",
             "emballage_id.required" => "Le nombre de la consignation de etre compris  1 ou 2!",
             "condition.required_if" => "Veuillez entrer la condition!",
+            "simple_package.different" => "La consignation simple et le gros doivent être différents!",
+            "big_package.different" => "La consignation gros et le simple doivent être différents!",
         ];
+    }
+
+    private function validContenanceAndCondition($attribute, $value, $fail)
+    {
+        if (request()->contenance && request()->condition) {
+            $fail("Contenance et la condition ne peut pas être rempli ensemble");
+        }
     }
 }

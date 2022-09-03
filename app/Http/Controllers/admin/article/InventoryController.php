@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Models\SupplierOrders;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Supplier;
 
 class InventoryController extends Controller
@@ -19,7 +20,9 @@ class InventoryController extends Controller
         $articles = SupplierOrders::UniqueArticles("products");
         $packages = SupplierOrders::UniqueArticles("packages");
 
-        $inventories = Inventory::has("article")
+        $inventories = Inventory::whereHasMorph("article",[
+            Product::class,
+        ])
             ->orderBy("date", "desc")
             ->orderBy("id", "desc")
             ->get();

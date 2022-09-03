@@ -20,7 +20,8 @@ class Articles extends Model
     const PACKAGE_TYPES = [
         "cageot" => 1,
         "carton" => 2,
-        "bidon" => 3
+        "pack" => 3,
+        "fut" => 4,
     ];
 
     const ARTICLE_TYPES = [

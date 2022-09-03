@@ -63,8 +63,7 @@
                             <div class="card border-grey border-lighten-3 px-1 py-1 m-0">
                                 <div class="card-header border-0">
                                     <div class="card-title text-center">
-                                        <img src="{{ asset('app-assets/images/logo/logo-dark.png') }}"
-                                            alt="branding logo">
+                                      <h2 class=" font-weight-bold">{{ getAppName() }}</h2>
                                     </div>
                                 </div>
                                 <div class="card-content">
@@ -91,7 +90,7 @@
                                         @enderror
 
 
-                                        <form class="form-horizontal" method="POST" action="{{ route('login') }}"
+                                        <form class="form-horizontal needs-validation" method="POST" action="{{ route('login') }}"
                                             novalidate>
                                             @csrf
                                             <fieldset class="form-group position-relative has-icon-left">
@@ -99,6 +98,9 @@
                                                     placeholder="Email" required>
                                                 <div class="form-control-position">
                                                     <i class="ft-user"></i>
+                                                </div>
+                                                <div class="invalid-feedback">
+                                                    Veuillez entrer l' e-mail
                                                 </div>
                                             </fieldset>
                                             <fieldset class="form-group position-relative has-icon-left">

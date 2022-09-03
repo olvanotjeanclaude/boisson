@@ -34,30 +34,15 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $catArticles = Category::orderBy("name", "asc")->get();
-        return view("admin.approvisionnement.product.edit", compact("catArticles", "product"));
+        $catArticles = Category::orderBy("name")->get();
+        $emballages = Emballage::orderBy("designation")->get();
+        return view("admin.approvisionnement.product.edit", compact("catArticles", "product","emballages"));
     }
 
     public function store(StoreProductRequest $request)
     {
         // dd($request->all());
-        $consignations= request()->emballage_id;
-        $data = $request->except("_token");
-
-        if ($request->contenance && $request->condition) {
-            return back()->withErrors(["errors" => "Contenance et la condition ne peut pas être rempli ensemble"]);
-        }
-        
-        if (is_countable($consignations)) {
-            $emballageLength = count($consignations);
-    
-            if ( $emballageLength==1 || $emballageLength ==2 ) {
-                $data["emballage_id"] =  implode(",",$consignations);
-            }
-            else{
-                return back()->withErrors(["errors" => "Le nombre de la consignation doit être compris  1 ou 2!"]);
-            }
-        }
+        $data = $request->all();
 
         $data["reference"] = (string) random_int(111111, 999999);
         $data["user_id"] = auth()->user()->id;
@@ -71,10 +56,8 @@ class ProductController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function update(Product $product, Request $request)
+    public function update(Product $product, StoreProductRequest $request)
     {
-        $request->validate($this->rules());
-
         $data = $request->except("_token");
 
         $data["update_user_id"] = auth()->user()->id;
