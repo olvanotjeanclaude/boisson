@@ -14,7 +14,6 @@ class ProductController extends Controller
     {
         //$products = Product::orderBy("id", "desc")->get();
         $products = [];
-        dd("ok");
         return view("admin.product.index", compact("products"));
     }
 

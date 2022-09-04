@@ -5,8 +5,6 @@ namespace App\Http\Controllers\admin\sale;
 use App\Models\Sale;
 use App\Models\Stock;
 use App\helper\Invoice;
-use App\Models\Package;
-use App\Models\Product;
 use App\Models\Articles;
 use App\Models\Category;
 use App\Models\Supplier;
@@ -41,7 +39,6 @@ class SaleController extends Controller
         $customers = Customers::orderBy("identification", "asc")->get();
 
         $articles = SupplierOrders::UniqueArticles("products");
-        $packages = SupplierOrders::UniqueArticles("packages");
         $emballages = PricingSuplier::Emballages();
         $consignations = PricingSuplier::Articles("emballages");
 
@@ -62,14 +59,13 @@ class SaleController extends Controller
             "amount",
 
             "articles",
-            "packages",
         ));
     }
 
-    public function store(Request $request)
+    public function store(VenteValidation $request)
     {
-        // dd($request->all());
-        $request->validate(VenteValidation::rules(), VenteValidation::messages());
+        // return back()->withInput();
+        dd($request->all());
 
         if (isset($request->saveData)) {
             $preInvoices = Sale::preInvoices()->get();

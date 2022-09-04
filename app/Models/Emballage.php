@@ -25,4 +25,8 @@ class Emballage extends Model
     public function supplier_prices(){
         return $this->morphMany(PricingSuplier::class,"product","article_type","article_id");
     }
+
+    public function getDesignationAttribute($value){
+        return strtoupper($value);
+    }
 }

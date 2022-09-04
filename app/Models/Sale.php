@@ -12,6 +12,7 @@ class Sale extends Model
     use HasFactory, Articles;
 
     protected $guarded = [];
+    const ACTION_TYPES = ["avec-consignation","deconsignation"];
 
     public function saleable()
     {
