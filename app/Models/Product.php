@@ -26,4 +26,12 @@ class Product extends Model
     public function getDesignationAttribute($value){
         return strtoupper($value);
     }
+
+    public function simple_package(){
+        return $this->belongsTo(Emballage::class,"simple_package_id");
+    }
+    
+    public function big_package(){
+        return $this->belongsTo(Emballage::class,"big_package_id");
+    }
 }

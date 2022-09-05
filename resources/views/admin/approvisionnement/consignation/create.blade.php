@@ -66,7 +66,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row mx-auto">
+                            {{-- <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="">Contenant</label>
                                 <div class="col-md-9">
                                     <div class="input-group">
@@ -82,9 +82,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div class="form-group row mx-auto d-none" id="content_id_containter">
+                            {{-- <div class="form-group row mx-auto d-none" id="content_id_containter">
                                 <label class="col-md-3 label-control" for="content_id">Articles</label>
                                 <div class="col-md-9">
                                     <select  class="form-control"  name="content_id" id="content_id">
@@ -99,9 +99,8 @@
                                         Selectionneez l'article
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group row mx-auto d-none" id="quantityContainer">
+                            </div> --}}
+                            {{-- <div class="form-group row mx-auto d-none" id="quantityContainer">
                                 <label class="col-md-3 label-control" for="quantity">Nombre</label>
                                 <div class="col-md-9">
                                     <input type="number" id="quantity" required class="form-control"
@@ -110,7 +109,7 @@
                                         Entrer le nombre
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="price">Prix unitaire de vente</label>
@@ -144,20 +143,20 @@
     </div>
 @endsection
 
-@section('script')
+{{-- @section('script')
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             $(".simpleOrGroup").click(function() {
                 if ($(this).val() == "1") {
                     $("#content_id_containter").addClass("d-none");
                     $("#quantityContainer").addClass("d-none");
-                    $("#quantity").val(1).prop("required",false);
+                    $("#quantity").val(1).prop("required", false);
                 } else {
                     $("#content_id_containter").removeClass("d-none");
                     $("#quantityContainer").removeClass("d-none");
-                    $("#quantity").prop("required",true);
+                    $("#quantity").prop("required", true);
                 }
             })
         })
     </script>
-@endsection
+@endsection --}}

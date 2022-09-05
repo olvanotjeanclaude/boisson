@@ -34,7 +34,9 @@ trait Articles
 
     public function scopePreInvoices($q)
     {
-        return $q->where("user_id", auth()->user()->id)->whereNull("invoice_number");
+        return $q->where("user_id", auth()->user()->id)
+        ->whereNull("invoice_number")
+        ->orderBy("saleable_type","desc");
     }
 
     public function getArticleTypeAttribute($value)

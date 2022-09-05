@@ -17,13 +17,13 @@
                         @foreach ($preInvoices as $preInvoice)
                             <tr>
                                 <td class="pl-1 py-0 text-capitalize">
-                                    {{ $preInvoice->saleable->designation }}
+                                    {{ $preInvoice->designation }}
                                 </td>
                                 <td class="pl-1 py-0">
-                                    {{ $preInvoice->saleable->price }}
+                                    {{ $preInvoice->pricing }}
                                     Ar
                                 </td>
-                                <td class="pl-1 py-0">{{ $preInvoice->quantity }}</td>
+                                <td class="pl-1 py-0">{{ $preInvoice->qty }} </td>
                                 <td class="pl-1 py-0">
                                     {{ formatPrice($preInvoice->sub_amount) }}
                                 </td>

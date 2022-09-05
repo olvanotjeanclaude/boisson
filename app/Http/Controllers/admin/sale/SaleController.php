@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\sale;
 use App\Models\Sale;
 use App\Models\Stock;
 use App\helper\Invoice;
+use App\Models\Product;
 use App\Models\Articles;
 use App\Models\Category;
 use App\Models\Supplier;
@@ -13,10 +14,9 @@ use App\Models\Emballage;
 use Illuminate\Http\Request;
 use App\Models\DocumentVente;
 use App\Message\CustomMessage;
-use App\Models\PricingSuplier;
+use App\Articles\FormatRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VenteValidation;
-use App\Models\SupplierOrders;
 
 class SaleController extends Controller
 {
@@ -27,9 +27,12 @@ class SaleController extends Controller
 
     public function index()
     {
-        $docSales = DocumentVente::has("customer")->when(getUserPermission() == "facturation", function ($q) {
+        $docSales = DocumentVente::has("customer")
+        ->when(getUserPermission() == "facturation", function ($q) {
             return $q->where("user_id", auth()->user()->id);
-        })->orderBy("id", "desc")->get();
+        })
+        ->groupBy("number")
+        ->orderBy("id", "desc")->get();
 
         return view("admin.vente.index", compact("docSales"));
     }
@@ -38,41 +41,54 @@ class SaleController extends Controller
     {
         $customers = Customers::orderBy("identification", "asc")->get();
 
-        $articles = SupplierOrders::UniqueArticles("products");
-        $emballages = PricingSuplier::Emballages();
-        $consignations = PricingSuplier::Articles("emballages");
+        $articles = Product::orderBy("designation")->get();
+        $consignations = Emballage::orderBy("designation")->get();
 
         // dd($consignations);
-
-        $articleTypes = array_filter(Stock::TYPES, function ($type) {
-            return $type != "consignation";
-        });
-
         $preInvoices = Sale::PreInvoices()->get();
-        $amount = Sale::PreArticlesSum();
+        $amount = $preInvoices->sum("sub_amount");
 
         return view("admin.vente.create", compact(
-            "articleTypes",
+            "articles",
+            "consignations",
             "customers",
             "consignations",
             "preInvoices",
             "amount",
-
-            "articles",
         ));
     }
 
-    public function store(VenteValidation $request)
+    public function store(VenteValidation $request, FormatRequest $formatRequest)
     {
-        // return back()->withInput();
-        dd($request->all());
+        // dd($request->all());
+        $articles = $deconsignations = [];
+
+        switch ($request->article_type) {
+            case 'avec-consignation':
+                $articles = $formatRequest->getArticleAndConsignation(
+                    $request->article_reference,
+                    $request->quantity
+                );
+
+                if (isset($request->withBottle) && $request->withBottle == "on") {
+                    $deconsignations = $formatRequest->getAllDeconsignations($request->tab1Deco);
+                }
+                break;
+
+            case "deconsignation":
+                $deconsignations = $formatRequest->getAllDeconsignations($request->tab2Deco);
+                break;
+            default:
+                # code...
+                break;
+        }
 
         if (isset($request->saveData)) {
             $preInvoices = Sale::preInvoices()->get();
             return $this->saveSaleCustomer($request, $preInvoices);
         }
 
-        $datas = $this->getAllArticleDatas($request);
+        $datas = [...$articles, ...$deconsignations];
 
         if (count($datas)) {
             return $this->saveSale($datas);
@@ -83,67 +99,50 @@ class SaleController extends Controller
 
     private function saveSale($datas)
     {
-        $errors = [];
-
         foreach ($datas as  $data) {
-            $articleModel = $data["saleable_type"];
-            $article = $articleModel::find($data["saleable_id"]);
-            
-            $stock = Stock::between();
-            $filter = $stock->where("article_reference", $data["article_reference"])
-                ->where("article_id", $data["saleable_id"])
-                ->where("article_type", $data["saleable_type"])
-                ->first();
-
-            // dd($filter, $data, $datas);
-
-            if ($article) {
-                if ($data["saleable_type"] == "App\Models\Emballage") {
-                    Sale::create($data);
-                } else { //Package or Product
-                    if ($filter) {
-                        if ($data["quantity"] > $filter->final) {
-                            $errors[$article->reference] = "Le nombre d'article ($article->designation) dans le stock est insuffisant!";
-                        } else if ($data["quantity"] < 0) {
-                            $errors[$article->reference] = "$article->designation doit etre superieur a 0";
-                        } else {
-                            Sale::create($data);
-                        }
-                    } else {
-                        $errors[] = ucfirst($article->designation) . " n'existe pas dans le stock";
-                    }
-                }
-            } else {
-                $errors[] = "L'article n'existe pas";
-            }
-        }
-
-        if (count($errors)) {
-            return back()->withErrors($errors);
+            Sale::create($data);
         }
 
         return back();
     }
 
+    private function checkStock()
+    {
+        // $articleModel = $data["saleable_type"];
+        // $article = $articleModel::find($data["saleable_id"]);
+
+        // $stock = Stock::between();
+        // $filter = $stock->where("article_reference", $data["article_reference"])
+        //     ->where("article_id", $data["saleable_id"])
+        //     ->where("article_type", $data["saleable_type"])
+        //     ->first();
+
+        // dd($filter, $data, $datas);
+
+        // if ($article) {
+        //     if ($data["saleable_type"] == "App\Models\Emballage") {
+        //         Sale::create($data);
+        //     } else { //Package or Product
+        //         if ($filter) {
+        //             if ($data["quantity"] > $filter->final) {
+        //                 $errors[$article->reference] = "Le nombre d'article ($article->designation) dans le stock est insuffisant!";
+        //             } else if ($data["quantity"] < 0) {
+        //                 $errors[$article->reference] = "$article->designation doit etre superieur a 0";
+        //             } else {
+        //                 Sale::create($data);
+        //             }
+        //         } else {
+        //             $errors[] = ucfirst($article->designation) . " n'existe pas dans le stock";
+        //         }
+        //     }
+        // } else {
+        //     $errors[] = "L'article n'existe pas";
+        // }
+    }
+
     private function saveSaleCustomer($request, $preInvoices)
     {
         $errors = [];
-
-        // foreach ($preInvoices as $data) {
-        //     $stock = Stock::where("article_reference", $data->article_reference)
-        //         ->where("date", $request->received_at)
-        //         ->first();
-        //     // dd($stock,$data);
-        //     if ($stock) {
-        //         $restInStock =  $stock->final - $data->quantity;
-
-        //         if ($restInStock < 0) {
-        //             $articleModel = $data["saleable_type"];
-        //             $article = $articleModel::find($data["saleable_id"]);
-        //             $errors[$article->reference] = "Le nombre d'article ($article->designation) dans le stock est insuffisant!";
-        //         }
-        //     }
-        // }
 
         if (empty($errors)) {
             $newInvoice = $this->saveVente($request);
@@ -153,72 +152,6 @@ class SaleController extends Controller
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
-    }
-
-    private function getAllArticleDatas($request): array
-    {
-        $datas = [];
-        $articleType = Stock::TYPES[$request->article_type] ?? null;
-
-        switch ($articleType) {
-            case 'article':
-                $datas[] = $this->getArticleData($request->article_reference, $request->quantity, $request);
-                $datas[] = $this->getArticleData(
-                    $request->consignation_id,
-                    $request->quantity,
-                    $request
-                );
-
-                if (isset($request->withBottle)) {
-                    $datas[] =  $this->getDeconsignationData($request);
-                }
-                break;
-            case 'deconsignation':
-                $datas[] =  $this->getDeconsignationData($request);
-                break;
-            case 'sans consignation':
-                $datas[] = $this->getArticleData(
-                    $request->no_consign_ref_id,
-                    $request->no_consign_quantity,
-                    $request
-                );
-                break;
-            default:
-                # code...
-                break;
-        }
-
-        return $datas;
-    }
-
-    private function getDeconsignationData($request)
-    {
-        $deconsignation = $this->getArticleData(
-            $request->deconsignation_id,
-            $request->received_bottle,
-            $request
-        );
-
-        $deconsignation["isWithEmballage"] = true;
-        return $deconsignation;
-    }
-
-    private function getArticleData($articleRef, $quantity, $request): array
-    {
-        $data = [];
-        $article = Sale::getArticleByReference($articleRef);
-
-        if ($article) {
-            $data = [
-                // "article_type" => $request->article_type,
-                "article_reference" => $article->reference,
-                "saleable_id" => $article->id,
-                "saleable_type" => get_class($article),
-                "quantity" => $quantity ?? 0,
-                "user_id" => auth()->user()->id,
-            ];
-        }
-        return $data;
     }
 
     private function saveCustomer($request)

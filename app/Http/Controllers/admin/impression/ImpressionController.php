@@ -15,20 +15,24 @@ class ImpressionController extends Controller
     public function printSale($invoiceNumber)
     {
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
-        $amount = $invoice->sales->sum("sub_amount");
+        $amount = DocumentVente::TotalAmount($invoiceNumber);
+        $paid = DocumentVente::Paid($invoiceNumber);
+        $rest = DocumentVente::Rest($invoiceNumber);
 
-        return view("admin.vente.invoice", compact("invoice", "amount"));
+        return view("admin.vente.invoice", compact("invoice", "amount","paid","rest"));
     }
 
     public function previewSale($invoiceNumber){
-        $invoice = DocumentVente::has("customer")->where("number", $invoiceNumber)->firstOrFail();
-        $amount = $invoice->sales->sum("sub_amount");
-        $reste = $amount - $invoice->paid;
+        $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
+        $amount = DocumentVente::TotalAmount($invoiceNumber);
+        $paid = DocumentVente::Paid($invoiceNumber);
+        $rest = DocumentVente::Rest($invoiceNumber);
 
         $pdf = Pdf::loadView('admin.vente.facture', [
             "invoice" =>$invoice,
             "amount" =>$amount,
-            "reste" =>$reste,
+            "reste" =>$rest,
+            "paid" =>$paid,
         ]);
 
         return $pdf->stream();
@@ -58,14 +62,16 @@ class ImpressionController extends Controller
     }
 
     public function downloadSale($invoiceNumber){
-        $invoice = DocumentVente::has("customer")->where("number", $invoiceNumber)->firstOrFail();
-        $amount = $invoice->sales->sum("sub_amount");
-        $reste = $amount - $invoice->paid;
+        $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
+        $amount = DocumentVente::TotalAmount($invoiceNumber);
+        $paid = DocumentVente::Paid($invoiceNumber);
+        $rest = DocumentVente::Rest($invoiceNumber);
 
         $pdf = Pdf::loadView('admin.vente.facture', [
             "invoice" =>$invoice,
             "amount" =>$amount,
-            "reste" =>$reste,
+            "reste" =>$rest,
+            "paid" =>$paid,
         ]);
 
         return $pdf->download("facture-vente-$invoice->number.pdf");

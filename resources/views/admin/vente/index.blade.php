@@ -102,7 +102,7 @@
                                             <tr id="row_{{ $sale->number }}">
                                                 <td>{!! $sale->status_html !!}</td>
                                                 <td>{{ $sale->number }}</td>
-                                                <td>{{ $sale->customer->identification }}</td>
+                                                <td>{{ Str::upper($sale->customer->identification) }}</td>
                                                 <td>{{ $sale->customer->cl_code }}</td>
                                                 <td>{{ format_date_time($sale->received_at) }}</td>
 

@@ -53,7 +53,7 @@ class ProductController extends Controller
         $supplier = Product::findOrFail($supplierId);
 
         $data = $request->except("_token");
-
+        $data["update_user_id"] = auth()->user()->id;
         $saved = $supplier->update($data);
 
         if ($saved) {

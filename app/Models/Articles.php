@@ -13,15 +13,15 @@ class Articles extends Model
     protected $guarded = [];
 
     const UNITS = [
-        "pcs" => 1,
-        "litre" => 2,
+        "1" => "pcs",
+        "2" => "litre"
     ];
 
     const PACKAGE_TYPES = [
-        "cageot" => 1,
-        "carton" => 2,
-        "pack" => 3,
-        "fut" => 4,
+        "1" => "cageot",
+        "2" => "carton",
+        "3" => "pack",
+        "4" => "fut",
     ];
 
     const ARTICLE_TYPES = [
@@ -69,7 +69,8 @@ class Articles extends Model
         return $this->belongsTo(suplier::class);
     }
 
-    public static function PackageTypes(){
+    public static function PackageTypes()
+    {
         return self::PACKAGE_TYPES;
     }
 }

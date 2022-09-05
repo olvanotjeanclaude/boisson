@@ -25,7 +25,7 @@ class StoreProductRequest extends FormRequest
      */
     public function rules()
     {
-        $litre = Articles::UNITS["litre"];
+        $litre = array_search("litre",Articles::UNITS);
         $article = request()->route()->parameter("article");
         $articleId = $article->id ?? null;
         // dd($article);

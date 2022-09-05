@@ -19,8 +19,8 @@ class AddColumnToProduct extends Migration
             $table->integer("package_type")->after("unity")->comment("Type de Collisage D'Article");
             $table->unsignedBigInteger("contenance")->after("package_type")->nullable()->comment("Nombre de colisage");
             $table->unsignedBigInteger("condition")->after("contenance")->nullable();
-            $table->bigInteger("simple_package")->after("condition")->nullable();
-            $table->bigInteger("big_package")->after("simple_package")->nullable();
+            $table->bigInteger("simple_package_id")->after("condition")->nullable();
+            $table->bigInteger("big_package_id")->after("simple_package_id")->nullable();
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Articles as ModelsArticles;
 use App\Traits\Articles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ class Sale extends Model
     use HasFactory, Articles;
 
     protected $guarded = [];
-    const ACTION_TYPES = ["avec-consignation","deconsignation"];
+    const ACTION_TYPES = ["avec-consignation" => 1, "deconsignation" => 2];
 
     public function saleable()
     {
@@ -43,10 +44,59 @@ class Sale extends Model
         return $type;
     }
 
+    public function getDesignationAttribute()
+    {
+        $designation = $this->saleable->designation;
+        if ($this->saleable_type == "App\Models\Product") {
+            $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
+            if ($this->quantity >= $divider) {
+                $designation = ModelsArticles::PACKAGE_TYPES[$this->saleable->package_type] . " " . $designation;
+            }
+        }
+
+        return strtoupper($designation);
+    }
+
+    public function getQtyAttribute()
+    {
+        $quantity = $this->quantity;
+        
+        if ($this->saleable_type == "App\Models\Product") {
+            $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
+            if ($this->quantity >= $divider) {
+                $quantity = $this->quantity / $divider;
+            }
+        }
+
+        return $quantity;
+    }
+
     public function getSubAmountAttribute()
     {
         $sub_amount = $this->saleable->price * $this->quantity;
+
+        if ($this->saleable_type == "App\Models\Product") {
+            $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
+            if ($this->quantity >= $divider) {
+                $sub_amount = $this->pricing * $this->qty;
+            }
+        }
+
         return $this->isWithEmballage ? -$sub_amount : $sub_amount;
+    }
+
+    public function getPricingAttribute()
+    {
+        $price = $this->saleable->price;
+
+        if ($this->saleable_type == "App\Models\Product") {
+            $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
+            if ($this->quantity >= $divider) {
+                $price = $this->saleable->wholesale_price;
+            }
+        }
+
+        return $price;
     }
 
     public function scopePreArticlesSum($q)

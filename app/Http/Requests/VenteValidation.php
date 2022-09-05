@@ -17,7 +17,7 @@ class VenteValidation extends FormRequest
         ];
 
         $article = [
-            "article_type" => ["required", Rule::in(Sale::ACTION_TYPES)],
+            "article_type" => ["required", Rule::in(array_keys(Sale::ACTION_TYPES))],
 
             "article_reference" => "required_if:article_type,avec-consignation",
             "quantity" => "required_if:article_type,avec-consignation",

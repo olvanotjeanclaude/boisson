@@ -90,9 +90,9 @@
                                             <label class="label-control" for="unity">Unité</label>
                                             <select name="unity" class="form-control" required id="unity">
                                                 <option value="">Choisir</option>
-                                                @foreach (\App\Models\Articles::UNITS as $key => $unit)
-                                                    <option @if ($unit == old('unity')) selected @endif
-                                                        value="{{ $unit }}">{{ ucfirst($key) }}</option>
+                                                @foreach (\App\Models\Articles::UNITS as $key => $val)
+                                                    <option @if ($key == old('unity')) selected @endif
+                                                        value="{{ $key }}">{{ ucfirst($val) }}</option>
                                                 @endforeach
                                             </select>
                                             <div class="invalid-feedback">
@@ -104,9 +104,9 @@
                                             <label class="label-control" for="package_type">Colisage D'Article</label>
                                             <select name="package_type" class="form-control" required id="package_type">
                                                 <option value="">Choisir</option>
-                                                @foreach (\App\Models\Articles::PackageTypes() as $packType => $value)
-                                                    <option @if ($value == old('package_type')) selected @endif
-                                                        value="{{ $value }}">{{ ucfirst($packType) }}</option>
+                                                @foreach (\App\Models\Articles::PackageTypes() as $key => $value)
+                                                    <option @if ($key == old('package_type')) selected @endif
+                                                        value="{{ $key }}">{{ ucfirst($value) }}</option>
                                                 @endforeach
                                             </select>
                                             <div class="invalid-feedback">

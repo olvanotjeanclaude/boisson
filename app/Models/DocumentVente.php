@@ -30,6 +30,47 @@ class DocumentVente extends Model
         return $this->hasMany(Sale::class, "invoice_number", "number");
     }
 
+    public function scopePaid($query, $number = null)
+    {
+        if ($number) {
+            $query = $query->where("number", $number);
+        }
+
+        return $query->get()->sum("paid");
+    }
+
+    public function scopeRest($query, $number = null)
+    {
+        $sale = Sale::whereHasMorph(
+            'saleable',
+            [Product::class, Emballage::class]
+        );
+
+        if ($number) {
+            $query = $query->where("number", $number);
+            $sale = $sale->where("invoice_number", $number);
+        }
+
+        $paid = $query->get()->sum("paid");
+        $totalAmount = $sale->get()->sum("sub_amount");
+
+        return $totalAmount - $paid;
+    }
+
+    public function scopeTotalAmount($query, $number = null)
+    {
+        $sale = Sale::whereHasMorph(
+            'saleable',
+            [Product::class, Emballage::class]
+        );
+
+        if ($number) {
+            $sale = $sale->where("invoice_number", $number);
+        }
+
+        return $sale->get()->sum("sub_amount");
+    }
+
     public function scopeCommercialState()
     {
         return DB::table('document_ventes')

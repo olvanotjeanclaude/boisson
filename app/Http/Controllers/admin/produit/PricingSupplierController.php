@@ -15,7 +15,7 @@ class PricingSupplierController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(PricingSuplier::class, "tarif_fournisseur");
+        // $this->authorizeResource(PricingSuplier::class, "tarif_fournisseur");
     }
 
     public function index()

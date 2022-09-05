@@ -17,10 +17,13 @@ class PaymentController extends Controller
     {
         $this->authorize("makePayment", \App\Models\DocumentVente::class);
 
-        $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
-        $amount = $invoice->sales->sum("sub_amount");
+        $invoice = DocumentVente::has("sales")->where("number", $invoiceNumber)->firstOrFail();
 
-        return view("admin.vente.payment", compact("invoice", "amount"));
+        $paid = DocumentVente::Paid($invoiceNumber);
+        $rest = DocumentVente::Rest($invoiceNumber);
+        $amount = DocumentVente::TotalAmount($invoiceNumber);
+
+        return view("admin.vente.payment", compact("invoice", "paid", "rest", "amount"));
     }
 
     public function achatPaymentForm($invoiceNumber)
@@ -44,35 +47,38 @@ class PaymentController extends Controller
     public function paymentStore($invoiceNumber, Request $request)
     {
         // $this->authorize("pay", \App\Models\Sale::class);
-        $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
+        $invoice = DocumentVente::where("number", $invoiceNumber)->first();
 
-        $paid =  $invoice->paid + $request->paid;
-        $rest = $invoice->sales->sum("sub_amount") - $paid;
+        if ($invoice) {
+            $rest = DocumentVente::Rest($invoiceNumber);
 
-        $docSale = [
-            "checkout" => $request->checkout ?? 0,
-            "payment_type" => $request->payment_type,
-            "status" => $rest == 0 ? Invoice::STATUS["paid"] : Invoice::STATUS["incomplete"],
-            "comment" => $request->comment
-        ];
-
-
-        if ($request->checkout > 0) {
-            $docSale["checkout"] = $request->checkout;
-            $docSale["paid"] = $docSale["rest"] = 0;
-            $docSale["status"] =  Invoice::STATUS["paid"];
-        } else if ($request->paid) {
-            if ($rest < 0) {
-                return back()->withErrors(["error" => "Nihoatra ny vola napidirinao!"]);
+            if ($rest <= 0) {
+                $status = Invoice::STATUS["paid"];
+            } else if ($rest > 0) {
+                $status = Invoice::STATUS["incomplete"];
             }
 
-            $docSale["paid"] = $paid;
-            $docSale["rest"] = $rest;
+            $docSale = [
+                "status" => $status,
+                "customer_id" => $invoice->customer_id,
+                "number" => $invoiceNumber,
+                "paid" => $request->paid,
+                "checkout" => $request->checkout ?? 0,
+                "payment_type" => $request->payment_type,
+                "received_at" => now()->toDateTimeString(),
+                "comment" => $request->comment,
+                "user_id" => auth()->user()->id
+            ];
+
+            if (is_null($invoice->paid) && is_null($invoice->checkout)) {
+                $docSale["update_user_id"] = auth()->user()->id;
+                $saved = $invoice->update($docSale);
+            } else {
+                $saved = DocumentVente::create($docSale);
+            }
+
+            DocumentVente::whereNumber($invoiceNumber)->update(["status" => $status]);
         }
-
-        // dd($docSale);
-
-        $saved = $invoice->update($docSale);
 
         if ($saved) {
             return redirect("/admin/ventes")->with("success", "Payment effectuer avec success");

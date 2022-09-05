@@ -79,21 +79,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="category_id">Famille D'article</label>
-                                <div class="col-md-9">
-                                    <select name="category_id" class="form-control" required id="category_id">
-                                        <option value="">Choisir</option>
-                                        @foreach ($catArticles as $catArticle)
-                                            <option @if($catArticle->id==$consignation->category_id) selected @endif value="{{ $catArticle->id }}">{{ $catArticle->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Selectionneez la famille d'article
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="form-group row mx-auto last">
                                 <label class="col-md-3 label-control" for="note">Note</label>
                                 <div class="col-md-9">

@@ -85,7 +85,7 @@
             </div>
 
             <div class="card d-none" id="paymentAndFactureContainer">
-                payment-facture
+                @include('admin.vente.includes.payment-facture')
             </div>
         </div>
 
@@ -115,6 +115,31 @@
 
         $(".action").click(function() {
             $("#actionType").val($(this).data("action"));
+        })
+
+        $("#validFacture").click(function() {
+            $("#addArticle").addClass("d-none");
+            $("#paymentAndFactureContainer").removeClass("d-none");
+            $(this).removeClass("btn-secondary").addClass("btn-primary");
+            $("#cancelBtn").removeClass("d-none");
+            $(this).addClass("d-none");
+        })
+
+        $("#cancelBtn").click(function() {
+            $("#addArticle").removeClass("d-none");
+            $("#paymentAndFactureContainer").addClass("d-none");
+            $("#validFacture").addClass("btn-secondary").removeClass("btn-primary d-none");
+            $(this).addClass("d-none");
+        })
+
+        $(".newCustomer").click(function() {
+            if ($(this).val() == "1") {
+                $("#newCustomerBlock").removeClass("d-none");
+                $("#customerBlock").addClass("d-none");
+            } else {
+                $("#customerBlock").removeClass("d-none");
+                $("#newCustomerBlock").addClass("d-none");
+            }
         })
     </script>
 @endsection

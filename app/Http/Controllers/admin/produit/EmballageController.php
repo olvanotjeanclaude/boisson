@@ -13,7 +13,7 @@ class EmballageController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Product::class, "emballage");
+        // $this->authorizeResource(Product::class, "emballage");
     }
 
     public function index()
@@ -29,8 +29,9 @@ class EmballageController extends Controller
         return view("admin.approvisionnement.consignation.create", compact("catArticles","emballages"));
     }
 
-    public function edit(Consignation $consignation)
+    public function edit($id)
     {
+        $consignation = Emballage::findOrFail($id);
         $catArticles = Category::orderBy("name", "asc")->get();
         return view("admin.approvisionnement.consignation.edit", compact("catArticles", "consignation"));
     }
@@ -60,15 +61,15 @@ class EmballageController extends Controller
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
     }
 
-    public function update(Emballage $cosnignation, Request $request)
+    public function update($id, Request $request)
     {
         $request->validate($this->rules());
-
+        $consignation = Emballage::findOrFail($id);
         $data = $request->except("_token");
-
+      
         $data["update_user_id"] = auth()->user()->id;
 
-        $saved = $cosnignation->update($data);
+        $saved = $consignation->update($data);
 
         if ($saved) {
             return back()->with("success", CustomMessage::Success("L'article"));
