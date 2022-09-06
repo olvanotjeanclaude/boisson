@@ -91,6 +91,7 @@
                                             <th>Ref</th>
                                             <th>Designation</th>
                                             <th>Prix</th>
+                                            <th>Prix De Gros</th>
                                             <th>Fam</th>
                                             @can('update', $products->first())
                                                 <th>Action</th>
@@ -107,6 +108,7 @@
                                                 <td>{{ $product->reference }}</td>
                                                 <td>{{ $product->designation }}</td>
                                                 <td>{{ formatPrice($product->price) }}</td>
+                                                <td>{{ formatPrice($product->wholesale_price) }}</td>
                                                 <td>{{ $product->category->name }}</td>
                                                 @can('update', $product)
                                                     <td>

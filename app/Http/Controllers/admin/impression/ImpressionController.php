@@ -23,6 +23,7 @@ class ImpressionController extends Controller
     }
 
     public function previewSale($invoiceNumber){
+        
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
         $amount = DocumentVente::TotalAmount($invoiceNumber);
         $paid = DocumentVente::Paid($invoiceNumber);

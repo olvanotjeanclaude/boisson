@@ -22,7 +22,7 @@
             'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => auth()->user()->can('create', \App\Models\Sale::class),
+            'show' => true,
         ],
     ])
 @endsection

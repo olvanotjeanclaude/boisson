@@ -117,7 +117,7 @@
                 <li class="nav-item">
                     <a href="{{ route('admin.achat-produits.index') }}">
                         <span class="material-icons">liquor</span>
-                        <span class="menu-title">Bon De Commande</span>
+                        <span class="menu-title">Bon D'Entré</span>
                     </a>
                 </li>
             @endcan

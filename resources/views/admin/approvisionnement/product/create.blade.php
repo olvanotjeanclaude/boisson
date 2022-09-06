@@ -180,11 +180,11 @@
                             <div class="card-body">
                                 <div class="form-body">
                                     <div class="col-12">
-                                        <label class="label" for="simple_package">Consignation Simple</label>
-                                        <select name="simple_package" class="form-control" id="simple_package">
+                                        <label class="label" for="simple_package_id">Consignation Simple</label>
+                                        <select name="simple_package_id" class="form-control" id="simple_package_id">
                                             <option value="">Choisir</option>
                                             @foreach ($emballages as $emballage)
-                                                <option @if ($emballage->id == old('simple_package')) selected @endif
+                                                <option @if ($emballage->id == old('simple_package_id')) selected @endif
                                                     value="{{ $emballage->id }}">
                                                     {{ Str::upper($emballage->designation) }}
                                                 </option>
@@ -192,11 +192,11 @@
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label class="label-control" for="big_package">Consignation De Gros</label>
-                                        <select name="big_package" class="form-control" id="big_package">
+                                        <label class="label-control" for="big_package_id">Consignation De Gros</label>
+                                        <select name="big_package_id" class="form-control" id="big_package_id">
                                             <option value="">Choisir</option>
                                             @foreach ($emballages as $emballage)
-                                                <option @if ($emballage->id == old('big_package')) selected @endif
+                                                <option @if ($emballage->id == old('big_package_id')) selected @endif
                                                     value="{{ $emballage->id }}">
                                                     {{ Str::upper($emballage->designation) }}
                                                 </option>

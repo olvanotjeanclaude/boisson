@@ -30,31 +30,52 @@ class DocumentVente extends Model
         return $this->hasMany(Sale::class, "invoice_number", "number");
     }
 
+    public function scopeSolds($q, $invoiceNumber = null)
+    {
+        $query = Sale::query();
+
+        if ($invoiceNumber) {
+            $query =  $query->where("invoice_number", $invoiceNumber);
+        }
+        return $query->whereHasMorph(
+            'saleable',
+            [Product::class, Emballage::class]
+        );
+    }
+
     public function scopePaid($query, $number = null)
     {
         if ($number) {
             $query = $query->where("number", $number);
         }
 
-        return $query->get()->sum("paid");
+        $all = $query->get()->map(function ($doc) {
+            $firstSale = $doc->sales()->first();
+            $actionType = array_search($firstSale->action_type, Sale::ACTION_TYPES);
+            if ($actionType == "avec-consignation") {
+                $doc->payment = $doc->paid;
+            } else {
+                $doc->payment = -$doc->checkout;
+            }
+            return $doc;
+        });
+
+        return $all->sum("payment");
+    }
+
+    public function scopeCheckout($query, $number = null)
+    {
+        if ($number) {
+            $query = $query->where("number", $number);
+        }
+
+        return $query->get()->sum("checkout");
     }
 
     public function scopeRest($query, $number = null)
     {
-        $sale = Sale::whereHasMorph(
-            'saleable',
-            [Product::class, Emballage::class]
-        );
-
-        if ($number) {
-            $query = $query->where("number", $number);
-            $sale = $sale->where("invoice_number", $number);
-        }
-
-        $paid = $query->get()->sum("paid");
-        $totalAmount = $sale->get()->sum("sub_amount");
-
-        return $totalAmount - $paid;
+        // dd(self::totalAmount($number), self::paid($number));
+        return self::totalAmount($number) - self::paid($number);
     }
 
     public function scopeTotalAmount($query, $number = null)

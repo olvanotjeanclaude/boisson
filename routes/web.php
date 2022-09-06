@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 Route::get("/link-storage", function () {
-    //dd(storage_path('app/public'), public_path('storage'));
+        // dd($symLn);
     File::link(storage_path('app/public'), public_path('storage'));
     return "Symbolik link created";
 });
@@ -59,12 +59,12 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
     Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
     Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class)->only("index");
-    Route::group(["prefix" =>"inventaires","as" =>"inventaires."],function(){
-        Route::get("/",[\App\Http\Controllers\admin\article\InventoryController::class,"index"])->name("index");
-        Route::post("/check-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"checkStock"])->name("checkStock");
-        Route::get("/ajustement-de-stock/{inventory}",[\App\Http\Controllers\admin\article\InventoryController::class,"getAdjustStockForm"])->name("getAdjustStockForm");
-        Route::post("/demmande-ajustement-de-stock",[\App\Http\Controllers\admin\article\InventoryController::class,"adjustStockRequest"])->name("adjustStockRequest");
-        Route::post("/ajustement-de-stock/{inventory}",[\App\Http\Controllers\admin\article\InventoryController::class,"adjustStock"])->name("adjustStock");
+    Route::group(["prefix" => "inventaires", "as" => "inventaires."], function () {
+        Route::get("/", [\App\Http\Controllers\admin\article\InventoryController::class, "index"])->name("index");
+        Route::post("/check-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "checkStock"])->name("checkStock");
+        Route::get("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "getAdjustStockForm"])->name("getAdjustStockForm");
+        Route::post("/demmande-ajustement-de-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStockRequest"])->name("adjustStockRequest");
+        Route::post("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStock"])->name("adjustStock");
     });
 
     Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
@@ -73,8 +73,8 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
         Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
     });
 
-    Route::post("settings",[ \App\Http\Controllers\admin\settings\SettingController::class,"update"])->name("settings.update");
-    
+    Route::post("settings", [\App\Http\Controllers\admin\settings\SettingController::class, "update"])->name("settings.update");
+
     Route::group(["prefix" => "impression", "as" => "print."], function () {
         Route::get("vente/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "printSale"])->name("sale");
         Route::get("vente/{invoice_number}/preview", [\App\Http\Controllers\admin\impression\ImpressionController::class, "previewSale"])->name("sale.preview");
@@ -87,7 +87,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
         Route::get("achat/{invoice_number}/preview", [\App\Http\Controllers\admin\impression\ImpressionController::class, "previewAchat"])->name("achat.preview");
         Route::get("achat/{invoice_number}/telecharger", [\App\Http\Controllers\admin\impression\ImpressionController::class, "downloadAchat"])->name("achat.download");
     });
-    
+
     Route::get("{type}/detail/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "show"])->name("document.show");
     Route::get("{type}/detail/{invoice_number}/print", [\App\Http\Controllers\admin\impression\ImpressionController::class, "print"])->name("document.print");
 

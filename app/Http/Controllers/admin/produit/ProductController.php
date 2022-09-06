@@ -22,6 +22,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::has("category")->orderBy("id", "desc")->get();
+        $this->pricing($products);
         return view("admin.approvisionnement.product.index", compact("products"));
     }
 
@@ -36,7 +37,7 @@ class ProductController extends Controller
     {
         $catArticles = Category::orderBy("name")->get();
         $emballages = Emballage::orderBy("designation")->get();
-        return view("admin.approvisionnement.product.edit", compact("catArticles", "product","emballages"));
+        return view("admin.approvisionnement.product.edit", compact("catArticles", "product", "emballages"));
     }
 
     public function store(StoreProductRequest $request)
@@ -84,5 +85,14 @@ class ProductController extends Controller
         }
 
         return response()->json($result);
+    }
+
+    private function pricing($products)
+    {
+        foreach ($products as $key => $value) {
+            $price = $value->price;
+
+            $value->update(["wholesale_price" => $price - 500]);
+        }
     }
 }

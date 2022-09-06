@@ -45,10 +45,10 @@
                 @forelse ($invoice->sales as $sale)
                     <tr class="service">
                         <td class="tableitem">
-                            <p class="itemtext designation">{{ $sale->designation }}</p>
+                            <p class="itemtext designation">{{ $sale->saleable->designation }}</p>
                         </td>
                         <td class="tableitem">
-                            <p class="itemtext" style="text-align: center">{{ $sale->qty }}</p>
+                            <p class="itemtext" style="text-align: center">{{ $sale->quantity }}</p>
                         </td>
                         <td class="tableitem">
                             <p class="itemtext">{{ ($sale->pricing) }}</p>

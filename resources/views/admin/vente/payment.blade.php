@@ -19,7 +19,7 @@
             'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => auth()->user()->can('create', \App\Models\Sale::class),
+            'show' => true,
         ],
     ])
 @endsection
@@ -60,29 +60,33 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm mt-1">
-                                    <div class="form-group">
-                                        <label class="text-bold-400 text-dark" for="checkout">
-                                            Sortie De Caisse
-                                        </label>
-                                        <input type="number" step="0.001" required id="checkout"
-                                            value="{{ $invoice->checkout ?? 0 }}" name="checkout" class="form-control"
-                                            placeholder="0 Ariary">
-                                    </div>
-                                </div>
-                                <div class="col-sm mt-1">
-                                    <div class="form-group">
-                                        <label class="text-bold-400 text-dark" for="paid">
-                                            Entrée De Caisse
-                                        </label>
-                                        <input type="number" step="0.001" required id="paid"
-                                            value="{{$rest}}" name="paid" class="form-control"
-                                            placeholder="0 Ariary">
-                                        <div class="invalid-feedback">
-                                            Entrer le montant
+
+                                @if ($actionType == 'deconsignation')
+                                    <div class="col-sm mt-1">
+                                        <div class="form-group">
+                                            <label class="text-bold-400 text-dark" for="checkout">
+                                                Sortie De Caisse
+                                            </label>
+                                            <input type="number" step="0.001" id="checkout" value="{{ abs($rest) }}"
+                                                name="checkout" class="form-control" placeholder="0 Ariary">
                                         </div>
                                     </div>
-                                </div>
+                                @endif
+
+                                @if ($actionType == 'avec-consignation')
+                                    <div class="col-sm mt-1">
+                                        <div class="form-group">
+                                            <label class="text-bold-400 text-dark" for="paid">
+                                                Entrée De Caisse
+                                            </label>
+                                            <input type="number" step="0.001" id="paid" value="{{ $rest }}"
+                                                name="paid" class="form-control" placeholder="0 Ariary">
+                                            <div class="invalid-feedback">
+                                                Entrer le montant
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 <div class="col-md-8 mt-1">
                                     <div class="form-group">
@@ -92,17 +96,8 @@
                                         <textarea name="comment" id="comment" class="form-control" rows="3">{{ $invoice->comment }}</textarea>
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-4 mt-1">
-                                    <div class="form-group">
-                                        <label class="text-bold-400 text-dark" for="rest">
-                                            Reste À Payer
-                                        </label>
-                                        <h4 class=""><span id="rest">{{ $invoice->rest }}</span> Ar
-                                        </h4>
-                                    </div>
-                                </div> --}}
-
-                                @if ($invoice->paid != $invoice->sales->sum('sub_amount'))
+                               
+                                @if ($rest != 0)
                                     <div class="col-12">
                                         <button type="submit"
                                             class="btn form-control my-1 border-top text-white btn-secondary">
@@ -128,13 +123,13 @@
                         </div>
                     </div>
                 @endif
-                    
+
                 @include('admin.vente.includes.invoice-table', [
                     'invoice' => $invoice,
                     'sales' => $invoice->sales,
-                    "reste" =>$rest,
-                    "paid" =>$paid,
-                    "amount" =>$amount,
+                    'reste' => $rest,
+                    'paid' => $paid,
+                    'amount' => $amount,
                 ])
             </div>
 

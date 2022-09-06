@@ -78,7 +78,7 @@ class Sale extends Model
         if ($this->saleable_type == "App\Models\Product") {
             $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
             if ($this->quantity >= $divider) {
-                $sub_amount = $this->pricing * $this->qty;
+                $sub_amount = $this->saleable->wholesale_price * $this->quantity;
             }
         }
 
