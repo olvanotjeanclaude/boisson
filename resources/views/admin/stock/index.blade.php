@@ -16,10 +16,12 @@
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Nouvelle Vente',
-            'link' => route('admin.ventes.create'),
+            'text' => 'Nouveau Stock',
+            // 'link' => route('admin.stocks.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,
+            "type" =>"modalBtn",
+            "modalTarget" =>"modalStock"
         ],
     ])
 @endsection
@@ -129,7 +131,7 @@
                                                 @foreach ($stocks as $stock)
                                                     <tr>
                                                         {{-- <td>{{ format_date($stock->date) }}</td> --}}
-                                                        <td>{{ $stock->article_reference }}</td>
+                                                        <td>{{ $stock->article_ref }}</td>
                                                         <td>{{ Str::upper($stock->designation) }}</td>
                                                         <td>{{ $stock->sum_entry }}</td>
                                                         <td>{{ $stock->sum_out }}</td>
@@ -210,7 +212,10 @@
             </form>
         </div>
     </div>
-
+    @include('admin.stock.modal-create',[
+        "articles" =>$articles,
+        "emballages" =>$emballages,
+    ])
     @include('includes.delete-modal')
 @endsection
 

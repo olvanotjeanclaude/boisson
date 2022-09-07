@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\helper\Invoice;
 use App\Traits\Articles;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -74,13 +75,6 @@ class Stock extends Model
         return $this->final * $this->stockable->price;
     }
 
-    public function scopePrev($query, $article_ref)
-    {
-        return $query->where("article_reference", $article_ref)
-            ->where("date", "<=", date("Y-m-d"))
-            ->orderBy("id", "desc")
-            ->get();
-    }
 
     public static function getDefaultBetween()
     {
@@ -108,100 +102,54 @@ class Stock extends Model
             $between = [self::MinDate($between[0]), $between[0]];
         }
 
-        // $between = ["2022-08-01","2022-08-01"];
-        // dd($between);
-        $stockOut = DB::table("sales")
+        $sales = DB::table('document_ventes')
             ->select([
-                "article_reference",
-                DB::raw("SUM(quantity) AS sum_out"),
-                "saleable_id",
-                "saleable_type"
+                "document_ventes.status as status",
+                "document_ventes.number as invoice_number",
+                "sales.saleable_id as article_id",
+                "sales.saleable_type as article_type",
+                "sales.article_reference as article_ref",
+                DB::raw("SUM(sales.quantity) AS sum_out"),
             ])
-            ->whereNotNull("invoice_number")
-            ->whereNotNull("received_at")
-            ->whereBetween("received_at", $between)
-            ->groupBy("article_reference");
-
-        $stocks = DB::table("supplier_orders")
-            ->select([
-                DB::raw("supplier_orders.article_reference AS article_reference"),
-                DB::raw("supplier_orders.article_id AS article_id"),
-                DB::raw("supplier_orders.article_type AS article_type"),
-                DB::raw("SUM(supplier_orders.quantity) AS sum_entry"),
-                "stock_out.sum_out"
-            ])
-            // dd($stocks,$stockOut->get());
-            ->leftJoinSub($stockOut, "stock_out", function ($join) use ($stockOut) {
-                $join->on("supplier_orders.article_reference", "=", "stock_out.article_reference");
+            ->join("sales", function ($join) use ($between) {
+                $join->on("sales.invoice_number", "document_ventes.number")
+                    ->whereNotNull("sales.invoice_number")
+                    ->whereNotNull("sales.received_at")
+                    ->whereBetween("sales.received_at", $between);
+                // ->where("sales.article_reference","762625");
             })
-            ->whereNotNull("supplier_orders.invoice_number")
-            ->whereNotNull("supplier_orders.received_at")
-            ->whereBetween("received_at", $between)
-            ->groupBy("supplier_orders.article_reference")
-            ->get()->map(function ($data) {
-                $modelArticle = $data->article_type;
-                $article = $modelArticle::find($data->article_id);
-                if ($article) {
-                    $data->designation = $article->designation;
-                    $data->sum_out = is_null($data->sum_out) ? 0 : $data->sum_out;
-                    $data->final = $data->sum_entry - $data->sum_out;
-                }
-
-                return $data;
-            });
-
-        return $stocks;
-    }
-
-    public function scopeDate($query, $date = null)
-    {
-        if (!$date) {
-            $date = date("Y-m-d");
-        }
-
-        $minDate = self::MinDate($date);
-
-        $stockOut = DB::table("sales")
-            ->select([
-                "article_reference",
-                DB::raw("SUM(quantity) AS sum_out"),
-                "saleable_id",
-                "saleable_type"
-            ])
-            ->whereNotNull("invoice_number")
-            ->whereNotNull("received_at")
-            ->whereBetween("received_at", [$minDate, $date])
-            ->groupBy("article_reference");
-
-
-        $stocks = DB::table("supplier_orders")
-            ->select([
-                DB::raw("supplier_orders.article_reference AS article_reference"),
-                DB::raw("supplier_orders.article_id AS article_id"),
-                DB::raw("supplier_orders.article_type AS article_type"),
-                DB::raw("SUM(supplier_orders.quantity) AS sum_entry"),
-                "stock_out.sum_out"
-            ])
-            // dd($stocks,$stockOut->get());
-            ->leftJoinSub($stockOut, "stock_out", function ($join) use ($stockOut) {
-                $join->on("supplier_orders.article_reference", "=", "stock_out.article_reference");
+            ->where(function ($query) {
+                $query->where("document_ventes.status", Invoice::STATUS["paid"])
+                    ->orWhere("document_ventes.status", Invoice::STATUS["incomplete"]);
             })
-            ->whereNotNull("supplier_orders.invoice_number")
-            ->whereNotNull("supplier_orders.received_at")
-            ->whereBetween("received_at", [$minDate, $date])
-            ->groupBy("supplier_orders.article_reference")
-            ->get()->map(function ($data) {
-                $modelArticle = $data->article_type;
-                $article = $modelArticle::find($data->article_id);
-                if ($article) {
-                    $data->designation = $article->designation;
-                    $data->sum_out = is_null($data->sum_out) ? 0 : $data->sum_out;
-                    $data->final = $data->sum_entry - $data->sum_out;
-                }
+            ->groupBy("sales.article_reference");
+        // dd($sales->get());
 
-                return $data;
+        $stocks = DB::table("stocks")
+            ->whereBetween("date", $between)
+            ->select([
+                "stocks.article_reference as article_ref",
+                "stocks.stockable_id as article_id",
+                "stocks.stockable_type as article_type",
+                "stocks.date as date",
+                DB::raw("SUM(stocks.entry) AS sum_entry"),
+                "sales.sum_out",
+            ])
+            ->leftJoinSub($sales, "sales", function ($join) {
+                $join->on("stocks.article_reference", "sales.article_ref");
             });
+        // ->whereBetween("document_ventes.received_at", $between);;
+        return $stocks->groupBy("stocks.article_reference")
+            ->get()
+            ->map(function ($stock) {
+                $stock->sum_out = $stock->sum_out ?? 0;
+                $stock->final = $stock->sum_entry - $stock->sum_out;
+                $article = self::getArticleByReference($stock->article_ref);
 
-        return $stocks;
+                if($article){
+                    $stock->designation = $article->designation;
+                }
+                return $stock;
+            });
     }
 }

@@ -92,6 +92,7 @@
                                             <th>Designation</th>
                                             <th>Prix</th>
                                             <th>Prix De Gros</th>
+                                            <th>Quantité</th>
                                             <th>Fam</th>
                                             @can('update', $products->first())
                                                 <th>Action</th>
@@ -109,6 +110,7 @@
                                                 <td>{{ $product->designation }}</td>
                                                 <td>{{ formatPrice($product->price) }}</td>
                                                 <td>{{ formatPrice($product->wholesale_price) }}</td>
+                                                <td>{{ $product->contenance??$product->condition??0 }}</td>
                                                 <td>{{ $product->category->name }}</td>
                                                 @can('update', $product)
                                                     <td>

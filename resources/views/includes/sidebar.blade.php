@@ -115,7 +115,7 @@
             </li>
             @can('viewAny', \App\Models\SupplierOrders::class)
                 <li class="nav-item">
-                    <a href="{{ route('admin.achat-produits.index') }}">
+                    <a href="{{ route('admin.stocks.index') }}">
                         <span class="material-icons">liquor</span>
                         <span class="menu-title">Bon D'Entré</span>
                     </a>

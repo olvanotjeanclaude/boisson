@@ -39,6 +39,13 @@ class SupplierOrders extends Model
         return $this->isWithEmballage ? -$sub_amount : $sub_amount;
     }
 
+    public function scopePreInvoices($q)
+    {
+        return $q->where("user_id", auth()->user()->id)
+        ->whereNull("invoice_number")
+        ->orderBy("article_type","desc");
+    }
+
     public function scopePreArticlesSum($q)
     {
         $orders = $q->where("user_id", auth()->user()->id)->whereNull("invoice_number")->get();

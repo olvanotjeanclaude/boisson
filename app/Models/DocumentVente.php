@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\helper\Invoice;
 use App\Traits\Articles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -51,11 +52,13 @@ class DocumentVente extends Model
 
         $all = $query->get()->map(function ($doc) {
             $firstSale = $doc->sales()->first();
-            $actionType = array_search($firstSale->action_type, Sale::ACTION_TYPES);
-            if ($actionType == "avec-consignation") {
-                $doc->payment = $doc->paid;
-            } else {
-                $doc->payment = -$doc->checkout;
+            if($firstSale){
+                $actionType = array_search($firstSale->action_type, Sale::ACTION_TYPES);
+                if ($actionType == "avec-consignation") {
+                    $doc->payment = $doc->paid;
+                } else {
+                    $doc->payment = -$doc->checkout;
+                }
             }
             return $doc;
         });
@@ -90,6 +93,16 @@ class DocumentVente extends Model
         }
 
         return $sale->get()->sum("sub_amount");
+    }
+
+    public function getStatusAttribute($value){
+        $rest= self::Rest($this->number);
+       
+        if($rest>0 && $value== Invoice::STATUS["paid"]){
+           $value = Invoice::STATUS["incomplete"];
+        }
+        
+        return $value;
     }
 
     public function scopeCommercialState()

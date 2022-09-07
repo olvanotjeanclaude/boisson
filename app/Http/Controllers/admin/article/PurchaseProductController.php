@@ -37,6 +37,7 @@ class PurchaseProductController extends Controller
         });
 
         $preInvoices = SupplierOrders::PreInvoices()->get();
+
         $amount = SupplierOrders::PreArticlesSum();
 
         return view("admin.achat-produit.create", compact(

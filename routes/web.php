@@ -48,7 +48,6 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
     Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
     Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
-    // Route::resource("produits",\App\Http\Controllers\admin\product\ProductController::class);
     Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class);
 
     Route::post("pre-save-articles", [\App\Http\Controllers\admin\article\ArticleController::class, "preSaveArticle"])->name("article.preSaveArticle");
@@ -58,7 +57,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
 
     Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
-    Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class)->only("index");
+    Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
     Route::group(["prefix" => "inventaires", "as" => "inventaires."], function () {
         Route::get("/", [\App\Http\Controllers\admin\article\InventoryController::class, "index"])->name("index");
         Route::post("/check-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "checkStock"])->name("checkStock");

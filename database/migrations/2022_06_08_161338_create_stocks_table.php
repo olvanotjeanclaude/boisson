@@ -20,7 +20,7 @@ class CreateStocksTable extends Migration
             $table->string("stockable_type");
             // $table->unsignedBigInteger("initial");
             $table->unsignedBigInteger("entry")->default(0)->nullable();
-            $table->unsignedBigInteger("out")->default(0)->nullable();
+            $table->unsignedBigInteger("user_id");
             $table->date("date")->default(date("Y-m-d"));
             $table->timestamps();
         });

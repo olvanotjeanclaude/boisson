@@ -17,6 +17,7 @@ use App\Message\CustomMessage;
 use App\Articles\FormatRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VenteValidation;
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -28,11 +29,11 @@ class SaleController extends Controller
     public function index()
     {
         $docSales = DocumentVente::has("customer")
-        ->when(getUserPermission() == "facturation", function ($q) {
-            return $q->where("user_id", auth()->user()->id);
-        })
-        ->groupBy("number")
-        ->orderBy("id", "desc")->get();
+            ->when(getUserPermission() == "facturation", function ($q) {
+                return $q->where("user_id", auth()->user()->id);
+            })
+            ->groupBy("number")
+            ->orderBy("id", "desc")->get();
 
         return view("admin.vente.index", compact("docSales"));
     }
@@ -61,7 +62,7 @@ class SaleController extends Controller
     public function store(VenteValidation $request, FormatRequest $formatRequest)
     {
         // dd($request->all());
-        $articles = $deconsignations = [];
+        $articles = $deconsignations = $errorStocks = [];
 
         switch ($request->article_type) {
             case 'avec-consignation':
@@ -79,7 +80,6 @@ class SaleController extends Controller
                 $deconsignations = $formatRequest->getAllDeconsignations($request->tab2Deco);
                 break;
             default:
-                # code...
                 break;
         }
 
@@ -91,6 +91,13 @@ class SaleController extends Controller
         $datas = [...$articles, ...$deconsignations];
 
         if (count($datas)) {
+            $products = $this->getProductRequest($datas);
+            $errorStocks = $this->getErrorStocks($products);
+        
+            if(count($errorStocks)){
+                return back()->withErrors($errorStocks)->withInput();
+            }
+
             return $this->saveSale($datas);
         }
 
@@ -106,38 +113,72 @@ class SaleController extends Controller
         return back();
     }
 
-    private function checkStock()
+    private function getProductRequest(array $articles)
     {
-        // $articleModel = $data["saleable_type"];
-        // $article = $articleModel::find($data["saleable_id"]);
+        $products = Sale::PreInvoices()
+            ->where("saleable_type", "App\Models\Product")
+            ->select([
+                "article_reference", "quantity", "saleable_type",
+                DB::raw("SUM(quantity) as quantity")
+            ])
+            ->groupBy("article_reference")
+            ->get()
+            ->toArray();
 
-        // $stock = Stock::between();
-        // $filter = $stock->where("article_reference", $data["article_reference"])
-        //     ->where("article_id", $data["saleable_id"])
-        //     ->where("article_type", $data["saleable_type"])
-        //     ->first();
+        $products = array_filter([...$articles, ...$products], function ($product) {
+            return count($product) && $product["saleable_type"] == "App\Models\Product";
+        });
 
-        // dd($filter, $data, $datas);
+        $products = collect($products);
 
-        // if ($article) {
-        //     if ($data["saleable_type"] == "App\Models\Emballage") {
-        //         Sale::create($data);
-        //     } else { //Package or Product
-        //         if ($filter) {
-        //             if ($data["quantity"] > $filter->final) {
-        //                 $errors[$article->reference] = "Le nombre d'article ($article->designation) dans le stock est insuffisant!";
-        //             } else if ($data["quantity"] < 0) {
-        //                 $errors[$article->reference] = "$article->designation doit etre superieur a 0";
-        //             } else {
-        //                 Sale::create($data);
-        //             }
-        //         } else {
-        //             $errors[] = ucfirst($article->designation) . " n'existe pas dans le stock";
-        //         }
-        //     }
-        // } else {
-        //     $errors[] = "L'article n'existe pas";
-        // }
+        return $products->groupBy("article_reference")->map(function ($product) {
+            $product = collect($product);
+            return [
+                "article_reference" => $product[0]["article_reference"],
+                "sum_quantity" => $product->sum("quantity")
+            ];
+        });
+    }
+
+    private function getErrorStocks($products)
+    {
+        $errorStocks = [];
+
+        foreach ($products as  $product) {
+            $errorStocks[] = $this->checkStock(
+                $product["article_reference"],
+                $product["sum_quantity"]
+            );
+        }
+
+        return array_filter($errorStocks, function ($error) {
+            return !is_null($error);
+        });
+    }
+
+    private function checkStock($articleRef, $quantity)
+    {
+        $errors = null;
+
+        $article = Stock::getArticleByReference($articleRef);
+
+        if ($article && $quantity > 0) {
+            $stock = Stock::between();
+            $filter = $stock->where("article_ref", $article->reference)->first();
+
+            if ($filter) {
+                // dd($filter,$filter->final ,$rest,$quantity);
+                if ($quantity > $filter->final) {
+                    $errors = "Stock de ($article->designation) insuffisant!";
+                }
+            } else {
+                $errors = ucfirst($article->designation) . " n'existe pas dans le stock";
+            }
+        } else {
+            $errors = "L'article n'existe pas";
+        }
+
+        return $errors;
     }
 
     private function saveSaleCustomer($request, $preInvoices)

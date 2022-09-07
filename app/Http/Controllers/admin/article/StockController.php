@@ -3,81 +3,68 @@
 namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\Product;
 
-use Illuminate\Support\Facades\DB;
+use App\Models\Emballage;
+use Illuminate\Http\Request;
+use App\Message\CustomMessage;
+use App\Http\Controllers\Controller;
 
 class StockController extends Controller
 {
     public function index(Request $request)
     {
         $between = Stock::getDefaultBetween();
+        $articles = Product::orderBy("designation")->get();
+        // $emballages = Emballage::orderBy("designation")->get();
+        $emballages = [];
 
-        if(isset($request->start_date)){
+        if (isset($request->start_date)) {
             $between[0] = $request->start_date;
         }
-        if(isset($request->end_date)){
+        if (isset($request->end_date)) {
             $between[1] = $request->end_date;
         }
 
-        $stocks = Stock::between($between)->filter(function ($stock) {
-            return $stock->article_type != "App\Models\Emballage";
-        });
-        // dd($between);
+        $stocks = Stock::between($between)->sortBy("designation");
+        // $stocks = [];
         // dd($stocks);
+        $bottles = [];
 
-        $saleBottles = DB::table("sales")
-            ->select([
-                "article_reference",
-                DB::raw("SUM(quantity) AS sum_bottle"),
-                "saleable_id as article_id",
-                "saleable_type as article_type",
-                "isWithEmballage"
-            ])
-            ->where("saleable_type", "App\Models\Emballage")
-            ->whereNotNull("invoice_number")
-            ->whereNotNull("received_at")
-            ->whereBetween("received_at", $between)
-            ->groupBy("article_reference")
-            ->get()->map(function ($sale) {
-                $sale->type = "sale";
-                return $sale;
-            });
+        return view("admin.stock.index", compact(
+            "articles",
+            "emballages",
+            "stocks",
+            "bottles",
+            "between"
+        ));
+    }
 
+    public function create()
+    {
+        $articles = Product::orderBy("designation")->get();
+        $emballages = Emballage::orderBy("designation")->get();
 
-        $supplierBottles = DB::table("supplier_orders")
-            ->select([
-                "article_reference",
-                DB::raw("SUM(quantity) AS sum_bottle"),
-                "article_id",
-                "article_type",
-                "isWithEmballage",
-            ])
-            ->where("article_type", "App\Models\Emballage")
-            ->whereNotNull("invoice_number")
-            ->whereNotNull("received_at")
-            ->whereBetween("received_at", $between)
-            ->groupBy("article_reference")
-            ->get()->map(function ($sale) {
-                $sale->type = "supplier";
-                return $sale;
-            });
+        return view("admin.stock.create", compact("articles", "emballages"));
+    }
 
-        $bottles = $saleBottles->merge($supplierBottles)->map(function ($bottle) {
-            $articleModel = $bottle->article_type;
-            $article = $articleModel::find($bottle->article_id);
-            if ($article) {
-                $bottle->exists = true;
-                $bottle->designation = strtoupper($article->designation);
-            }
-            return $bottle;
-        })->sort();
+    public function store(Request $request)
+    {
+        $article = Stock::getArticleByReference($request->article_reference);
 
-        // dd($bottles);
-        // dd($saleBottles, $supplierBottles);
-       
-        // dd($magasins);
-        return view("admin.stock.index", compact("stocks", "bottles", "between"));
+        if ($article) {
+            Stock::create([
+                "article_reference" => $request->article_reference,
+                "stockable_id" => $article->id,
+                "stockable_type" => get_class($article),
+                "date" => now()->toDateString(),
+                "entry" => $request->quantity,
+                "user_id" =>auth()->user()->id
+            ]);
+
+            return back()->with("success", CustomMessage::Success("Stock"));
+        }
+
+        return back()->with("error", "Erreur inattendue. Peut être que l'article a été supprimé.");
     }
 }
