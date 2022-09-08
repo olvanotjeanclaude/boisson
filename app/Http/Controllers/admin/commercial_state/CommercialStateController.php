@@ -16,12 +16,8 @@ class CommercialStateController extends Controller
         $this->authorize("commercialState", \App\Models\DocumentVente::class);
 
         $type = $request->get("filtrerPar");
-        $states = DocumentVente::with("sales")->State($type)->get();
-        // dd($states);
-        $states = $states->map(function ($state) use ($type) {
-            return $this->callbackSales($state, $type);
-        });
-
+        $states = [];
+      
         $type = DocumentVente::FILTER_TYPE[$type] ?? "Date";
         // dd($states);
         return view("admin.commercial_state.index", compact("states", "type"));

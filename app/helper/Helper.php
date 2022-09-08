@@ -78,7 +78,7 @@ function get_user_name()
 
 function  formatPrice($price, $devise = "Ar")
 {
-    return $price . " $devise";
+    return number_format($price,0,"."," ") . " $devise";
 }
 
 function generateInteger($n = 6):string

@@ -35,7 +35,7 @@ trait Articles
     public function scopePreInvoices($q)
     {
         return $q->where("user_id", auth()->user()->id)
-        ->whereNull("invoice_number")
+       ->where("status",false)
         ->orderBy("saleable_type","desc");
     }
 

@@ -78,7 +78,7 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <!-- Invoices List table -->
-                            @if (count($states))
+                            {{-- @if (count($states)<0) --}}
                                 <div class="table-responsive">
                                     <table
                                         class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
@@ -94,7 +94,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($states as $state)
+                                            {{-- @foreach ($states as $state)
                                                 <tr>
                                                     <td>{{ $state->formated_date ?? ($state->week_days ?? ($state->formated_month_of_year ?? ($state->year ?? ''))) }}
                                                     </td>
@@ -110,15 +110,15 @@
                                                         </a>
                                                     </td>
                                                 </tr>
-                                            @endforeach
+                                            @endforeach --}}
                                         </tbody>
                                     </table>
                                 </div>
-                            @else
+                            {{-- @else
                                 <div class="text-danger">
                                     Aucune donnée à afficher
                                 </div>
-                            @endif
+                            @endif --}}
 
                             <!--/ Invoices table -->
                         </div>

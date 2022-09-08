@@ -113,18 +113,10 @@ class Stock extends Model
             ])
             ->join("sales", function ($join) use ($between) {
                 $join->on("sales.invoice_number", "document_ventes.number")
-                    ->whereNotNull("sales.invoice_number")
-                    ->whereNotNull("sales.received_at")
                     ->whereBetween("sales.received_at", $between);
-                // ->where("sales.article_reference","762625");
-            })
-            ->where(function ($query) {
-                $query->where("document_ventes.status", Invoice::STATUS["paid"])
-                    ->orWhere("document_ventes.status", Invoice::STATUS["incomplete"]);
             })
             ->groupBy("sales.article_reference");
-        // dd($sales->get());
-
+            
         $stocks = DB::table("stocks")
             ->whereBetween("date", $between)
             ->select([
@@ -138,7 +130,7 @@ class Stock extends Model
             ->leftJoinSub($sales, "sales", function ($join) {
                 $join->on("stocks.article_reference", "sales.article_ref");
             });
-        // ->whereBetween("document_ventes.received_at", $between);;
+
         return $stocks->groupBy("stocks.article_reference")
             ->get()
             ->map(function ($stock) {
@@ -146,7 +138,7 @@ class Stock extends Model
                 $stock->final = $stock->sum_entry - $stock->sum_out;
                 $article = self::getArticleByReference($stock->article_ref);
 
-                if($article){
+                if ($article) {
                     $stock->designation = $article->designation;
                 }
                 return $stock;

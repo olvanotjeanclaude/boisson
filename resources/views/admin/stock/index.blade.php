@@ -59,12 +59,12 @@
                                 class="btn  btn-info btn-sm text-capitalize">
                                 Minimum Date
                             </button>
-                            @can('viewAny', \App\Models\SupplierOrders::class)
+                            {{-- @can('viewAny', \App\Models\SupplierOrders::class)
                                 <a href="{{ route('admin.achat-produits.index') }}"
                                     class="btn btn-secondary btn-sm text-capitalize">
                                     Achat Produits
                                 </a>
-                            @endcan
+                            @endcan --}}
                             <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
                                 Ventes
                             </a>

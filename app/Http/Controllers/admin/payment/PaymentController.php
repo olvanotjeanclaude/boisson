@@ -17,7 +17,6 @@ class PaymentController extends Controller
     public function paymentForm($invoiceNumber, Request $request)
     {
         // $this->authorize("makePayment", \App\Models\DocumentVente::class);
-
         $invoice = DocumentVente::has("sales")->where("number", $invoiceNumber)->firstOrFail();
 
         $paid = DocumentVente::Paid($invoiceNumber);

@@ -84,17 +84,16 @@ class SaleController extends Controller
         }
 
         if (isset($request->saveData)) {
-            $preInvoices = Sale::preInvoices()->get();
-            return $this->saveSaleCustomer($request, $preInvoices);
+            return $this->saveSaleCustomer($request);
         }
 
-        $datas = [...$articles, ...$deconsignations];
+        $datas = $this->generateInvoiceNumberTo([...$articles, ...$deconsignations]);
 
         if (count($datas)) {
             $products = $this->getProductRequest($datas);
             $errorStocks = $this->getErrorStocks($products);
-        
-            if(count($errorStocks)){
+
+            if (count($errorStocks)) {
                 return back()->withErrors($errorStocks)->withInput();
             }
 
@@ -104,10 +103,48 @@ class SaleController extends Controller
         return back();
     }
 
+    private function generateInvoiceNumberTo(array $datas)
+    {
+        $datas = array_filter($datas, function ($data) {
+            return count($data);
+        });
+
+        if (count($datas)) {
+            $preInvoice = Sale::preInvoices()->get()->first();
+
+            if ($preInvoice) {
+                $invoiceNumber = $preInvoice->invoice_number;
+            } else {
+                $invoiceNumber = generateInteger(7);
+            }
+
+            return array_map(function ($data) use ($invoiceNumber) {
+                $data["invoice_number"] = $invoiceNumber;
+
+                return $data;
+            }, $datas);
+        }
+
+        return [];
+    }
+
     private function saveSale($datas)
     {
-        foreach ($datas as  $data) {
-            Sale::create($data);
+
+        if (count($datas)) {
+            $invoiceNumber = collect($datas)->first()["invoice_number"];
+
+            DocumentVente::firstOrCreate([
+                "number" => $invoiceNumber,
+            ], [
+                "status" => Invoice::STATUS["no_printed"],
+                "customer_id" =>  0,
+                "user_id" => auth()->user()->id
+            ]);
+
+            foreach ($datas as  $data) {
+                Sale::create($data);
+            }
         }
 
         return back();
@@ -115,19 +152,7 @@ class SaleController extends Controller
 
     private function getProductRequest(array $articles)
     {
-        $products = Sale::PreInvoices()
-            ->where("saleable_type", "App\Models\Product")
-            ->select([
-                "article_reference", "quantity", "saleable_type",
-                DB::raw("SUM(quantity) as quantity")
-            ])
-            ->groupBy("article_reference")
-            ->get()
-            ->toArray();
-
-        $products = array_filter([...$articles, ...$products], function ($product) {
-            return count($product) && $product["saleable_type"] == "App\Models\Product";
-        });
+        $products = array_filter($articles, fn ($product) =>  $product["saleable_type"] == "App\Models\Product");
 
         $products = collect($products);
 
@@ -169,7 +194,7 @@ class SaleController extends Controller
             if ($filter) {
                 // dd($filter,$filter->final ,$rest,$quantity);
                 if ($quantity > $filter->final) {
-                    $errors = "Stock de ($article->designation) insuffisant!";
+                    $errors = "Article $article->designation insuffisant!";
                 }
             } else {
                 $errors = ucfirst($article->designation) . " n'existe pas dans le stock";
@@ -181,15 +206,12 @@ class SaleController extends Controller
         return $errors;
     }
 
-    private function saveSaleCustomer($request, $preInvoices)
+    private function saveSaleCustomer($request)
     {
-        $errors = [];
+        $invoice = $this->saveVente($request);
 
-        if (empty($errors)) {
-            $newInvoice = $this->saveVente($request);
-            if ($newInvoice) {
-                return redirect()->route("admin.print.sale", $newInvoice->number);
-            }
+        if ($invoice) {
+            return redirect()->route("admin.print.sale", $invoice->number);
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);
@@ -214,30 +236,25 @@ class SaleController extends Controller
 
     private function saveVente(Request $request)
     {
+        $preInvoice = Sale::preInvoices()->get()->first();
         $customer = $this->saveCustomer($request);
 
-        if ($customer && isset($request->saveData)) {
-
+        if ($customer && isset($request->saveData) && $preInvoice) {
             $date = $request->received_at ?? date("Y-m-d");
-            $invoiceData = [
+
+            $invoice =  DocumentVente::updateOrCreate([
+                "number" => $preInvoice->invoice_number,
+                "user_id" => auth()->user()->id
+            ], [
                 "status" => Invoice::STATUS["no_printed"],
-                "number" => generateInteger(7),
                 "received_at" => $date . " " . now()->toTimeString(),
                 "comment" => $request->comment,
                 "customer_id" =>  $customer->id,
-                "user_id" => auth()->user()->id
-            ];
+            ]);
 
-            $invoice = DocumentVente::create($invoiceData);
+            Sale::preInvoices()->update(["received_at" => $date, "status" => true]);
 
-            if ($invoice) {
-                $preInvoices = Sale::preInvoices();
-                $preInvoices->update([
-                    "invoice_number" => $invoice->number,
-                    "received_at" => $date
-                ]);
-                return $invoice;
-            }
+            return $invoice;
         }
 
         return false;

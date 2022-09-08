@@ -20,6 +20,7 @@ class FormatRequest
                 "saleable_type" => get_class($article),
                 "quantity" => $quantity,
                 "user_id" => auth()->user()->id,
+                "received_at" =>now()->toDateString()
             ];
         }
 
@@ -59,7 +60,7 @@ class FormatRequest
                         $datas[] = $this->format_article($actionType, $article, $rest);
 
                         if ($sampleConsignation) {
-                            $datas[] = $this->format_article($actionType, $sampleConsignation, $rest);
+                            $datas[] = $this->format_article($actionType, $sampleConsignation, $quantity);
                         }
                     }
 

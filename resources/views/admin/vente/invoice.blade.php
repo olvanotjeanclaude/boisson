@@ -33,15 +33,15 @@
     </div>
 
     <div class="row">
-        <div class="col-md-5 d-flex justify-content-end">
+        <div class="col-md-10">
             <div>
                 <div class="row">
-                    <div class="col-12 d-flex justify-content-between">
+                    <div class="col-12 d-flex">
                         @can('print', \App\Models\DocumentVente::class)
                         @endcan
 
                         <a target="_blank" href="{{ route('admin.print.sale.preview', $invoice->number) }}"
-                            class="ml-2 btn btn-info btn-lg  mb-2">
+                            class="btn btn-info btn-lg  mb-2">
                             Imprimer
                         </a>
 
@@ -50,11 +50,11 @@
                                 class="ml-2 btn btn-success btn-lg  mb-2">
                                 Enregistrer
                             </a>
-                            <a href="{{ route('admin.print.sale.cancel', $invoice->number) }}"
-                                class="ml-2 btn btn-danger btn-lg  mb-2">
-                                Annuler
-                            </a>
                         @endif
+                        <a href="{{ route('admin.print.sale.cancel', $invoice->number) }}"
+                            class="ml-2 btn btn-danger btn-lg  mb-2">
+                            Annuler
+                        </a>
                         {{-- {{ $invoice }} --}}
                         @can('cancel', $invoice)
                         @endcan
@@ -65,13 +65,14 @@
                     </div>
                 </div>
 
-
-                @include('admin.vente.includes.invoice-table', [
-                    "invoice" => $invoice,
-                    'sales' => $invoice->sales,
-                    'reste' => $rest,
-                    "paid" =>$paid
-                ])
+                <div class="d-flex justify-content-md-start justify-content-center">
+                    @include('admin.vente.includes.invoice-table', [
+                        'invoice' => $invoice,
+                        'sales' => $invoice->sales,
+                        'reste' => $rest,
+                        'paid' => $paid,
+                    ])
+                </div>
             </div>
 
             <!--End Invoice-->
