@@ -19,8 +19,13 @@ class CommercialStateController extends Controller
         $states = [];
       
         $type = DocumentVente::FILTER_TYPE[$type] ?? "Date";
+        $paymentTypes = DocumentVente::PAYMENT_TYPES;
         // dd($states);
-        return view("admin.commercial_state.index", compact("states", "type"));
+        return view("admin.commercial_state.index", compact(
+            "paymentTypes",
+            "states",
+            "type"
+        ));
     }
 
     public function show(Request $request)

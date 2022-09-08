@@ -10,9 +10,27 @@
     Etat Commerciale
 @endsection
 
+@section('page-css')
+    @include('includes.invoice-css')
+    <style>
+        input.form-control {
+            border: none;
+        }
+
+        .input-group-text {
+            text-align: center;
+            min-width: 65px;
+        }
+
+        .card-header {
+            padding: 10px !important;
+        }
+    </style>
+@endsection
+
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Etat Commericiale',
+        'page' => 'Etat Commerciale',
         'breadcrumbs' => [
             ['text' => 'Etat Commerciale', 'link' => route('admin.commercialState.index')],
             ['text' => 'List', 'link' => route('admin.commercialState.index')],
@@ -37,96 +55,158 @@
             @endif
         </div>
     </div>
+    <div class="row">
+        <div class="col-xl-8">
+            <div class="row">
+                <div class="col-sm">
+                    <div class="input-group bg-white p-0 m-0">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-dark text-white">Debut</span>
+                        </div>
+                        <input type="date" class="form-control" name="start_date">
+                    </div>
+                </div>
+                <div class="col-sm mt-2 mt-sm-0 d-flex">
+                    <div class="input-group bg-white p-0 m-0">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-dark text-white">Fin</span>
+                        </div>
+                        <input type="date" class="form-control small" name="end_date">
+                    </div>
+                </div>
 
-    <!-- Material Data Tables -->
-    <section id="material-datatables">
-        <div class="row">
-            <div class="col-12">
-                <div class="card mb-0">
-                    <div class="card-header">
-                        <h4 class="card-title"> Etat Commerciale</h4>
-                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            {{-- <a href="{{ route('admin.factures.index') }}"
-                                class="btn btn-secondary btn-sm text-capitalize">
-                                <span class="material-icons">
-                                    inventory
-                                </span>
-                                toutes les factures
-                            </a> --}}
-                            <div class="">
-                                <span class="dropdown">
-                                    <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="true"
-                                        class="btn btn-warning btn-sm dropdown-toggle dropdown-menu-right"><i
-                                            class="ft-download-cloud white"></i></button>
-                                    <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
-                                        <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'jour']) }}"
-                                            class="dropdown-item ml-1">Jour</a>
-                                        <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'hebdomadaire']) }}"
-                                            class="dropdown-item ml-1">Hebdomadaire </a>
-                                        <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'mois']) }}"
-                                            class="dropdown-item ml-1">Mensuel</a>
-                                        <a href="{{ route('admin.commercialState.index', ['filtrerPar' => 'annuel']) }}"
-                                            class="dropdown-item ml-1">Annuel</a>
-                                    </span>
-                                </span>
-                                <button class="btn btn-success btn-sm"><i class="ft-settings white"></i></button>
+                <div class="col-sm-3">
+                    <button type="submit" class="btn btn-outline-dark mt-1 mt-sm-0 w-100 h-100">Filtrer</button>
+                </div>
+            </div>
+            <hr>
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="text-white">Recapulatif De Vente</h3>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    @php
+                                        $recaps = ['Entrée' => 10, 'Vendu' => 20, 'Bouteille Consigné' => 30, 'Bouteille Deconsigné' => 25];
+                                    @endphp
+                                    @foreach ($recaps as $recap => $total)
+                                        <div class="col-sm-6">
+                                            <div class="card border">
+                                                <div class="card-header">
+                                                    <h4 class="card-title text-center">{{ $recap }}</h4>
+                                                </div>
+                                                <div class="card-content">
+                                                    <div class="card-body text-center">
+                                                        <div class="badge badge-pill badge-secondary badge-square">
+                                                            {{ $total }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card  bg-success">
+                                    <div class="card-body bg-secondary">
+                                        <h1 class="text-white">Vendu</h1>
+                                        <div class="badge badge-pill badge-white  badge-square">
+                                            <h3 class="text-white">1 000 000 Fmg</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card  bg-success">
+                                    <div class="card-body bg-success">
+                                        <h1 class="text-white">En Caisse</h1>
+                                        <div class="badge badge-pill badge-white  badge-square">
+                                            <h3>1 000 000 Fmg</h3>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-content collapse show">
-                        <div class="card-body">
-                            <!-- Invoices List table -->
-                            {{-- @if (count($states)<0) --}}
-                                <div class="table-responsive">
-                                    <table
-                                        class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
-                                        <thead class="bg-light">
-                                            <tr class="text-capitalize">
-                                                <th>{{ $type }}</th>
-                                                <th>Quantité</th>
-                                                <th>Entrée De Caisse</th>
-                                                <th>Sortie De Caisse</th>
-                                                <th>Reste à payer</th>
-                                                <th>Caisse</th>
-                                                <th>Voir</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {{-- @foreach ($states as $state)
-                                                <tr>
-                                                    <td>{{ $state->formated_date ?? ($state->week_days ?? ($state->formated_month_of_year ?? ($state->year ?? ''))) }}
-                                                    </td>
-                                                    <td>{{ $state->sum_quantity }}</td>
-                                                    <td>{{ formatPrice($state->paid) }}</td>
-                                                    <td>{{ formatPrice($state->sum_checkout) }}</td>
-                                                    <td>{{ formatPrice($state->rest) }}</td>
-                                                    <td>{{ formatPrice($state->amount_received) }}</td>
-                                                    <td>
-                                                        <a class="btn btn-info" href="{{ $state->url }}">
-                                                            <i class="la la-eye"></i>
-                                                            Voir
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach --}}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {{-- @else
-                                <div class="text-danger">
-                                    Aucune donnée à afficher
-                                </div>
-                            @endif --}}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card mb-0">
+                                <div class="card-content collapse show">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table datatable table-striped table-hover table-bordered">
+                                                <thead class="bg-light">
+                                                    <tr class="text-capitalize">
+                                                        <th>Désignation</th>
+                                                        <th>Quantité</th>
+                                                        <th>Payment</th>
+                                                        <th>Reste</th>
+                                                        <th>Reçu</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
 
-                            <!--/ Invoices table -->
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+
+        <div class="col-xl-4">
+            <div class="mb-2">
+                <a href="{{ route('admin.factures.index') }}" class="btn btn-secondary  text-capitalize">
+                    <span class="material-icons">
+                        inventory
+                    </span>
+                    toutes les factures
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-dark">
+                    <h3 class="text-white">Payment</h3>
+                </div>
+                <ul class="list-group">
+                    @foreach ($paymentTypes as $payType)
+                        <a href="#" class="list-group-item list-group-item-action">
+                            {{ $payType }}
+                            <span class="badge badge-primary badge-pill float-right">5</span>
+                        </a>
+                    @endforeach
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header bg-dark d-flex justify-content-between">
+                    <h3 class="text-white">Facture</h3>
+                    <button type="button" class="btn btn-light">Imprimer</button>
+                </div>
+                @php
+                    $invoice = \App\Models\DocumentVente::first();
+                @endphp
+                @include('admin.vente.includes.invoice-table', [
+                    'invoice' => $invoice,
+                    'sales' => $invoice->sales,
+                    'reste' => 0,
+                    'paid' => 0,
+                    'amount' => 0,
+                ])
+            </div>
+
+        </div>
+    </div>
     @include('includes.delete-modal')
 @endsection
 

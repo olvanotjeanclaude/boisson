@@ -21,6 +21,14 @@ class DocumentVente extends Model
         "annuel" => "Année"
     ];
 
+    const PAYMENT_TYPES = [
+        "1" => "Chèque",
+        "2" => "Espèce",
+        "3" => "Mvola",
+        "4" => "Orange Money",
+        "5" => "Airtel Money",
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customers::class);
