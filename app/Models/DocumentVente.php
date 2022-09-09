@@ -39,19 +39,6 @@ class DocumentVente extends Model
         return $this->hasMany(Sale::class, "invoice_number", "number");
     }
 
-    public function scopeSolds($q, $invoiceNumber = null)
-    {
-        $query = Sale::query();
-
-        if ($invoiceNumber) {
-            $query =  $query->where("invoice_number", $invoiceNumber);
-        }
-        return $query->whereHasMorph(
-            'saleable',
-            [Product::class, Emballage::class]
-        );
-    }
-
     public function scopePaid($query, $number = null)
     {
         if ($number) {
@@ -85,7 +72,6 @@ class DocumentVente extends Model
 
     public function scopeRest($query, $number = null)
     {
-        // dd(self::totalAmount($number), self::paid($number));
         return self::totalAmount($number) - self::paid($number);
     }
 

@@ -46,6 +46,9 @@ Auth::routes();
 
 Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], function () {
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
+    Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");
+    Route::get("dashboard/facture/telecharger", [\App\Http\Controllers\admin\AdminController::class, "download"])->name("dashboard.download");
+
     Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
     Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
     Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class);

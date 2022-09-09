@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\helper\Filter;
 use App\helper\Invoice;
 use App\Traits\Articles;
 use Carbon\Carbon;
@@ -29,35 +30,26 @@ class Stock extends Model
         "4" => "sans consignation"
     ];
 
-    public function scopePreArticlesSum($q)
+    private static function  defaultSelect()
     {
-        $article = $q->where("user_id", auth()->user()->id)->whereNull("invoice_number")->get();
-
-        $articleAndConsignation = $article->filter(function ($article) {
-            return $article->article_type != "deconsignation";
-        })->sum(function ($article) {
-            return $article->buying_price * $article->quantity;
-        });
-
-        $deconsignation = $article->filter(function ($article) {
-            return $article->article_type == "deconsignation";
-        })->sum(function ($article) {
-            return $article->buying_price * $article->quantity;
-        });
-
-        return $articleAndConsignation - $deconsignation;
-    }
-
-    public function scopePreInvoiceAmount($q)
-    {
-        return $q->whereNull("invoice_number")->sum($this->quantity * $this->buying_price);
-    }
-
-    public function getPreSubAmountAttribute()
-    {
-        $result = $this->buying_price * $this->quantity;
-
-        return $this->article_type != 4 ? $result : -$result;
+        return [
+            "sale" => [
+                "document_ventes.status as status",
+                "document_ventes.number as invoice_number",
+                "sales.saleable_id as article_id",
+                "sales.saleable_type as article_type",
+                "sales.article_reference as article_ref",
+                DB::raw("SUM(sales.quantity) AS sum_out"),
+            ],
+            "stock" => [
+                "stocks.article_reference as article_ref",
+                "stocks.stockable_id as article_id",
+                "stocks.stockable_type as article_type",
+                "stocks.date as date",
+                DB::raw("SUM(stocks.entry) AS sum_entry"),
+                "sales.sum_out",
+            ]
+        ];
     }
 
     public function stockable()
@@ -74,7 +66,6 @@ class Stock extends Model
     {
         return $this->final * $this->stockable->price;
     }
-
 
     public static function getDefaultBetween()
     {
@@ -103,45 +94,46 @@ class Stock extends Model
         }
 
         $sales = DB::table('document_ventes')
-            ->select([
-                "document_ventes.status as status",
-                "document_ventes.number as invoice_number",
-                "sales.saleable_id as article_id",
-                "sales.saleable_type as article_type",
-                "sales.article_reference as article_ref",
-                DB::raw("SUM(sales.quantity) AS sum_out"),
-            ])
-            ->join("sales", function ($join) use ($between) {
+            ->select(self::defaultSelect()["sale"])->join("sales", function ($join) use ($between) {
                 $join->on("sales.invoice_number", "document_ventes.number")
                     ->whereBetween("sales.received_at", $between);
-            })
-            ->groupBy("sales.article_reference");
-            
-        $stocks = DB::table("stocks")
-            ->whereBetween("date", $between)
-            ->select([
-                "stocks.article_reference as article_ref",
-                "stocks.stockable_id as article_id",
-                "stocks.stockable_type as article_type",
-                "stocks.date as date",
-                DB::raw("SUM(stocks.entry) AS sum_entry"),
-                "sales.sum_out",
-            ])
+            })->groupBy("sales.article_reference");
+
+        return DB::table("stocks")
+            ->whereBetween("date", $between)->select(self::defaultSelect()["stock"])
             ->leftJoinSub($sales, "sales", function ($join) {
                 $join->on("stocks.article_reference", "sales.article_ref");
-            });
-
-        return $stocks->groupBy("stocks.article_reference")
+            })->groupBy("stocks.article_reference")
             ->get()
-            ->map(function ($stock) {
-                $stock->sum_out = $stock->sum_out ?? 0;
-                $stock->final = $stock->sum_entry - $stock->sum_out;
-                $article = self::getArticleByReference($stock->article_ref);
+            ->map(fn ($stock) => $this->mapStock($stock));
+    }
 
-                if ($article) {
-                    $stock->designation = $article->designation;
-                }
-                return $stock;
-            });
+    public function scopefilterBetween($query, $between = null)
+    {
+        $stocks = $query->select([
+            "article_reference", "stockable_id", "stockable_type",
+            DB::raw("SUM(entry) as entry")
+        ])
+            ->whereHasMorph(
+                'stockable',
+                [Product::class]
+            );
+
+        $stocks = Filter::queryBetween($query,$between,"date");
+       
+        return $stocks->groupBy("article_reference")
+            ->get();
+    }
+
+    private function mapStock($stock)
+    {
+        $stock->sum_out = $stock->sum_out ?? 0;
+        $stock->final = $stock->sum_entry - $stock->sum_out;
+        $article = self::getArticleByReference($stock->article_ref);
+
+        if ($article) {
+            $stock->designation = $article->designation;
+        }
+        return $stock;
     }
 }

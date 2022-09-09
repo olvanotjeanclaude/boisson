@@ -60,7 +60,7 @@ class Sale extends Model
     public function getQtyAttribute()
     {
         $quantity = $this->quantity;
-        
+
         if ($this->saleable_type == "App\Models\Product") {
             $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
             if ($this->quantity >= $divider) {
@@ -134,52 +134,39 @@ class Sale extends Model
             ->get();
     }
 
-    public  function scopeByDate($query, $isWithEmballage = false, $date = null)
+    public  function scopewithSumQuantity($query, $between)
     {
-        return DB::table("sales")
-            ->whereNotNull("invoice_number")
-            ->whereNotNull("received_at")
-            ->where("isWithEmballage", $isWithEmballage)
-            ->when(!is_null($date), function ($query) use ($date) {
-                return $query->whereDate("received_at", $date);
-            })
+        return  $query->whereHasMorph('saleable', [Product::class])
+            ->where("status", true)
+            ->whereBetween("received_at", $between)
             ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at')
-            ->groupBy("article_reference", "received_at")
+            ->groupBy("article_reference")
             ->get();
     }
 
-    public  function scopeCommercialState($query)
+    public function scopeBottles($query, $type, $date = null)
     {
-        return self::whereNotNull("invoice_number")
-            ->whereNotNull("received_at")
-            ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
-            ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage");
-    }
+        $date = is_null($date) ? now()->toDateString() : $date;
 
-    public  function scopeCommercialStateByDate($query, $date = null)
-    {
-        $sales = self::whereNotNull("invoice_number")
-            ->whereNotNull("received_at");
-
-        if (is_null($date)) {
-            $date = date("Y-m-d");
+        $bottles =  $query->select([
+            DB::raw("SUM(quantity) as sum_bottle"),
+            "article_reference", "saleable_id", "saleable_type", "received_at"
+        ])
+            ->whereDate("received_at", $date)
+            ->whereHasMorph('saleable', [Emballage::class]);
+        switch ($type) {
+            case 'consignation':
+                $bottles = $bottles->where("isWithEmballage", false);
+                break;
+            case 'deconsignation':
+                $bottles = $bottles->where("isWithEmballage", true);
+                break;
+            default:
+                # code...
+                break;
         }
 
-        return $sales->where("received_at", $date)
-            ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
-            ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
-            ->get();
-    }
-
-    public  function scopeCommercialStateBetween($query, $between)
-    {
-        $sales = self::whereNotNull("invoice_number")
-            ->whereNotNull("received_at");
-
-        return $sales->whereBetween("received_at", $between)
-            ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
-            ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
-            ->get();
+        return $bottles->groupBy("article_reference", "isWithEmballage")->get();
     }
 
     public  function scopeFilterBy($query, $type, $criteria = [])

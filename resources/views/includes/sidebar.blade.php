@@ -117,7 +117,7 @@
                 <li class="nav-item">
                     <a href="{{ route('admin.stocks.index') }}">
                         <span class="material-icons">liquor</span>
-                        <span class="menu-title">Bon D'Entré</span>
+                        <span class="menu-title">Bon D'Entrée</span>
                     </a>
                 </li>
             @endcan
@@ -141,14 +141,14 @@
                     <span class="menu-title">Inventaire</span>
                 </a>
             </li>
-            @can('commercialState', \App\Models\DocumentVente::class)
+            {{-- @can('commercialState', \App\Models\DocumentVente::class)
                 <li class="nav-item">
                     <a href="{{ route('admin.commercialState.index') }}">
                         <span class="material-icons">account_balance_wallet</span>
                         <span class="menu-title">Etat Commerciale</span>
                     </a>
                 </li>
-            @endcan
+            @endcan --}}
             {{-- <li class="nav-item">
                 <a href="{{ route('admin.articles.index') }}">
                     <span class="material-icons">liquor</span>
