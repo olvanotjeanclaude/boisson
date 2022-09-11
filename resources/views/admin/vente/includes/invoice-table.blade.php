@@ -49,10 +49,10 @@
                                 <p class="itemtext designation">{{ $sale->saleable->designation }}</p>
                             </td>
                             <td class="tableitem">
-                                <p class="itemtext" style="text-align: center">{{ $sale->quantity }}</p>
+                                <p class="itemtext" style="text-align: right">{{ $sale->quantity }}</p>
                             </td>
                             <td class="tableitem">
-                                <p class="itemtext">{{ $sale->pricing }}</p>
+                                <p class="itemtext" style="text-align: right">{{ round($sale->pricing) }}</p>
                             </td>
                             <td class="tableitem">
                                 <p class="itemtext" style="font-weight: bold;text-align:right">

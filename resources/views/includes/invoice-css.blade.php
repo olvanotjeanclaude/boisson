@@ -74,6 +74,7 @@
 
     #invoice-POS .title p {
         text-align: right;
+        padding: 0;
     }
 
     #invoice-POS table {
@@ -93,7 +94,8 @@
 
     #invoice-POS .itemtext {
         font-size: .68em;
-        padding: 1px;
+        padding: 2px;
+        margin: 0!important;
         text-transform: capitalize;
     }
 
@@ -112,3 +114,4 @@
         text-align: start;
     }
 </style>
+

@@ -64,13 +64,14 @@ class AdminController extends Controller
             "article_reference" => $article[0]->article_reference,
             "payment_names" => $article->pluck("payment_name")->toArray(),
             "designation" => $article[0]->designation,
-            "sum_quantity" => $article[0]->sum_quantity,
+            "sum_quantity" => $article->sum("sum_quantity"),
             "sum_paid" => $article->sum("sum_paid"),
         ];
     }
 
     public function printReport(Dashboard $dashboard)
     {
+        // return view('admin.dashboard.invoice',  $this->getDocumentData($dashboard));
         $pdf = Pdf::loadView('admin.dashboard.invoice',  $this->getDocumentData($dashboard));
 
         return $pdf->stream();

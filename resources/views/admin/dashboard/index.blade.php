@@ -11,7 +11,7 @@
 @endsection
 
 @section('page-css')
-    @include('includes.invoice-css')
+@include('includes.invoice-style')
     <style>
         input.form-control {
             border: none;
@@ -92,7 +92,7 @@
                 <div class="card mb-0">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <div class="row">
                                     @foreach ($recaps as $recap => $total)
                                         <div class="col-sm-6">
@@ -127,7 +127,7 @@
                                     <div class="col-xl-6">
                                         <div class="card  bg-success">
                                             <div class="card-body bg-danger">
-                                                <h4 class="text-white">Sortant</h4>
+                                                <h4 class="text-white">Sortie De Caisse</h4>
                                                 <div class="badge badge-pill badge-white  badge-square">
                                                     <h3 class="text-white">{{ formatPrice($recettes['sum_checkout']) }}</h3>
                                                 </div>
@@ -216,7 +216,7 @@
             <div class="card">
                 <div class="card-header bg-dark d-flex justify-content-between">
                     <h3 class="text-white">Facture</h3>
-                    <a href="{{ route('admin.dashboard.printReport', ['start_date' => $between[0], 'end_date' => $between[1]]) }}"
+                    <a target="_blink" href="{{ route('admin.dashboard.printReport', ['start_date' => $between[0], 'end_date' => $between[1]]) }}"
                         class="btn btn-light">
                         Imprimer
                     </a>

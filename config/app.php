@@ -13,11 +13,11 @@ return [
     |
     */
 
-// DB_HOST=89.19.25.234
-// DB_PORT=3306
-// DB_DATABASE=suarenext_magasin
-// DB_USERNAME=suarenex_olvanot
-// DB_PASSWORD=qw3HamQ&Fa1,
+    // DB_HOST=89.19.25.234
+    // DB_PORT=3306
+    // DB_DATABASE=suarenext_magasin
+    // DB_USERNAME=suarenex_olvanot
+    // DB_PASSWORD=qw3HamQ&Fa1,
 
 
     'name' => env('APP_NAME', 'Laravel'),

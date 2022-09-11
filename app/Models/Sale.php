@@ -144,16 +144,10 @@ class Sale extends Model
             ->get();
     }
 
-    public function scopeBottles($query, $type, $date = null)
+    public function scopeBottles($query, $type)
     {
-        $date = is_null($date) ? now()->toDateString() : $date;
-
-        $bottles =  $query->select([
-            DB::raw("SUM(quantity) as sum_bottle"),
-            "article_reference", "saleable_id", "saleable_type", "received_at"
-        ])
-            ->whereDate("received_at", $date)
-            ->whereHasMorph('saleable', [Emballage::class]);
+        $bottles =  $query->whereHasMorph('saleable', [Emballage::class])->get();
+        
         switch ($type) {
             case 'consignation':
                 $bottles = $bottles->where("isWithEmballage", false);
@@ -166,7 +160,7 @@ class Sale extends Model
                 break;
         }
 
-        return $bottles->groupBy("article_reference", "isWithEmballage")->get();
+        return $bottles;
     }
 
     public  function scopeFilterBy($query, $type, $criteria = [])

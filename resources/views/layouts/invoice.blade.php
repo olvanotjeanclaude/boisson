@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Facture | @yield('title') </title>
-    @include('includes.invoice-css')
+    @include('includes.invoice-style')
     <script>
         if (document.location.search.match(/type=embed/gi)) {
             window.parent.postMessage("resize", "*");
@@ -13,9 +13,13 @@
 </head>
 
 <body translate="no">
-
-
-    @yield('table')
+    <div id="invoice-container">
+        <h4 class="title">{{ getAppName() }}</h4>
+        <div class="caption">
+            @yield('header')
+        </div>
+        @yield('table')
+    </div>
 
     <!--End Invoice-->
 </body>

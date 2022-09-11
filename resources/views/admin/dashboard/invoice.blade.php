@@ -1,5 +1,10 @@
 @extends('layouts.invoice')
 
+@section('title')
+    Historique de vente {{ format_date($between[0]) }}-{{ format_date($between[1]) }}
+@endsection
+
+
 @section('header')
     <h5>Historique de vente {{ format_date($between[0]) }}-{{ format_date($between[1]) }}</h5>
 @endsection

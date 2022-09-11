@@ -48,8 +48,8 @@ class Dashboard
 
         return  [
             "Vendu" => Sale::withSumQuantity($between)->sum("sum_sale"),
-            "Bouteille Consigné" => $sales->bottles("consignation")->sum("sum_bottle"),
-            "Bouteille Deconsigné" => $sales->bottles("deconsignation")->sum("sum_bottle"),
+            "Consignation" => $sales->bottles("consignation")->sum("quantity"),
+            "Deconsignation" => $sales->bottles("deconsignation")->sum("quantity"),
         ];
     }
 
@@ -81,15 +81,25 @@ class Dashboard
 
     public function getSolds($between)
     {
-        return Sale::select([
-            "*",
-            DB::raw("SUM(sales.quantity) as sum_quantity")
-        ])
+        $sales = Sale::with("saleable")
             ->whereHasMorph('saleable', [Product::class, Emballage::class])
             ->whereBetween("received_at", $between)
-            ->groupBy("article_reference", "isWithEmballage")
             ->orderBy("saleable_type")
             ->get();
+        // ->groupBy(fn($sale) =>$sale->article_reference);
+        // ->map(function($sale,$article_ref){
+        //     dd($sale);
+        //     return (object)[
+        //         "article_reference" =>$sale->article_reference,
+        //         "saleable_type" =>$sale->saleable_type,
+        //         "saleable_id" =>$sale->saleable_id,
+        //         "designation" =>$sale->designation,
+        //         "sum_quantity" =>$sale->sum("quantity"),
+        //     ];
+        // });
+
+        return $sales;
+        dd($sales);
     }
 
     public function getRecettes($sales, $between)
