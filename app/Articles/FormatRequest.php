@@ -32,10 +32,10 @@ class FormatRequest
         $datas = [];
 
         $article = Product::whereReference($articleRef)->first();
-        $actionType = Sale::ACTION_TYPES[request()->article_type];
-        $sampleConsignation = $article->simple_package;
-        $packConsignation = $article->big_package;
-        $unity = Articles::UNITS[$article->unity];
+        $actionType = Sale::ACTION_TYPES[request()->article_type]??null;
+        $sampleConsignation = $article->simple_package??null;
+        $packConsignation = $article->big_package??null;
+        $unity = Articles::UNITS[$article->unity]??null;
         // $quantity = 100;
         // $divider =20;
 

@@ -36,7 +36,7 @@ class AdminController extends Controller
         $saleAndPaymentDetails = $saleAndPaymentDetails->groupBy("article_reference");
 
         $solds = $dashboard->getSolds($between);
-
+        
         // dd($solds->sum("sub_amount") , $sales->sum("paid"));
         $recettes = [
             "sum_amount" => $solds->sum("sub_amount"),
@@ -46,7 +46,8 @@ class AdminController extends Controller
             "sum_rest" => $solds->sum("sub_amount") - $sales->sum("paid"),
         ];
 
-        $recaps = array_merge(["Entrée" => $stock->sum("entry")], $dashboard->getRecaps($between));
+
+        $recaps = $dashboard->getRecaps($between);
 
         return view("admin.dashboard.index", [
             "between" => $between,

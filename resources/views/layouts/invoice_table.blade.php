@@ -12,10 +12,10 @@
             @forelse ($invoices["datas"] as $data)
                 <tr>
                     <td>
-                        {{ $data->saleable->designation }}
+                        {{ $data->designation }}
                     </td>
                     <td>
-                        {{ $data->quantity }}
+                        {{ $data->sum_quantity }}
                     </td>
                     <td>
                         {{ round($data->pricing) }}
@@ -84,6 +84,16 @@
                     </td>
                 </tr>
             @endisset
+            {{-- <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <h6>Nombre D'Article: </h6>
+                </td>
+                <td>
+                    <h6>{{ count($invoices["datas"]) }}</h6>
+                </td>
+            </tr> --}}
         </tfoot>
     </table>
     <h5>Merci beaucoup !</h5>

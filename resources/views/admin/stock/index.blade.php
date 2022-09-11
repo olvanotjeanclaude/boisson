@@ -8,20 +8,37 @@
     Etat Du Stock
 @endsection
 
+@section('page-css')
+    <style>
+        .input-group-text {
+            text-align: center;
+            min-width: 65px;
+        }
+
+        .card-header {
+            padding: 10px !important;
+        }
+
+        table input[type='search'] {
+            background: #eee;
+        }
+    </style>
+@endsection
+
 @section('content-header')
     @include('includes.content-header', [
         'page' => 'Stocks',
         'breadcrumbs' => [
             ['text' => 'Stocks', 'link' => route('admin.stocks.index')],
-            ['text' => 'List', 'link' => route('admin.index')],
+            ['text' => 'Liste', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Nouveau Stock',
-            // 'link' => route('admin.stocks.create'),
+            'link' => route('admin.stocks.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
-            "type" =>"modalBtn",
-            "modalTarget" =>"modalStock"
+            'show' => false,
+            // "type" =>"modalBtn",
+            // "modalTarget" =>"modalStock"
         ],
     ])
 @endsection
@@ -41,7 +58,7 @@
     <!-- Material Data Tables -->
     <section id="material-datatables">
         <div class="row">
-            <div class="col-12">
+            <div class="col-md-8 col-xl-9">
                 <div class="card mb-0">
                     <div class="card-header">
                         <h3 class="card-title"> Liste D'articles</h3>
@@ -71,111 +88,110 @@
                         </div>
                     </div>
                     <div class="card-content collapse show">
-                        <form action="{{ route('admin.stocks.index') }}" method="get">
-                            <div class="col-11 col-sm-7 col-md-10">
-                                <div class="d-flex justify-content-start align-items-center">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Debut</span>
-                                        </div>
-                                        <input type="date" value="{{ $between[0] }}" name="start_date"
-                                            class="form-control bg-light" placeholder="Username" aria-label="Username">
-                                    </div>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Fin</span>
-                                        </div>
-                                        <input type="date" value="{{ $between[1] }}" name="end_date"
-                                            class="form-control bg-light" placeholder="Username" aria-label="Username">
-                                    </div>
-
-                                    <div class="ml-2" style="margin-top: 10px">
-                                        <button type="submit" class="btn btn-sm btn-outline-dark">
-                                            Filtrer
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
                         <div class="card-body">
-                            <ul class="nav nav-justified nav-tabs" id="justifiedTab" role="tablist">
-                                <li class="nav-item">
-                                    <a aria-controls="default" aria-selected="true" class="nav-link active"
-                                        data-toggle="tab" href="#default" id="default-tab" role="tab">Produits &
-                                        Packages</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a aria-controls="bottle" aria-selected="false" class="nav-link" data-toggle="tab"
-                                        href="#bottle" id="bottle-tab" role="tab">Bouteille</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="justifiedTabContent">
-                                <div aria-labelledby="default-tab" class="tab-pane fade show active" id="default"
-                                    role="tabpanel">
-                                    <!-- Invoices List table -->
-                                    <div class="table-responsive">
-                                        <table
-                                            class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
-                                            <thead class="bg-light">
+                            <div class="table-responsive">
+                                <table
+                                    class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            {{-- <th>Date</th> --}}
+                                            <th>Ref</th>
+                                            <th>Type</th>
+                                            <th>Designation</th>
+                                            <th>Entrées</th>
+                                            <th>Vendu</th>
+                                            {{-- <th>Montant</th> --}}
+                                            <th>En Stock</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($stocks as $stock)
+                                            @if (!($stock->sum_entry == 0 && $stock->sum_out == 0))
                                                 <tr>
-                                                    {{-- <th>Date</th> --}}
-                                                    <th>Ref</th>
-                                                    <th>Designation</th>
-                                                    <th>Entrées</th>
-                                                    <th>Vendu</th>
-                                                    {{-- <th>Montant</th> --}}
-                                                    <th>En Stock</th>
+                                                    {{-- <td>{{ format_date($stock->date) }}</td> --}}
+                                                    <td>{{ $stock->article_ref }}</td>
+                                                    <td>{{ Str::upper($stock->type) }}</td>
+                                                    <td>{{ Str::upper($stock->designation) }}</td>
+                                                    <td>{{ $stock->sum_entry }}</td>
+                                                    <td>{{ $stock->sum_out }}</td>
+                                                    {{-- <td>{{ formatPrice($stock->amount) }}</td> --}}
+                                                    <td>{{ $stock->final }}</td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($stocks as $stock)
-                                                    <tr>
-                                                        {{-- <td>{{ format_date($stock->date) }}</td> --}}
-                                                        <td>{{ $stock->article_ref }}</td>
-                                                        <td>{{ Str::upper($stock->designation) }}</td>
-                                                        <td>{{ $stock->sum_entry }}</td>
-                                                        <td>{{ $stock->sum_out }}</td>
-                                                        {{-- <td>{{ formatPrice($stock->amount) }}</td> --}}
-                                                        <td>{{ $stock->final }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!--/ Invoices table -->
-                                </div>
-
-                                <div aria-labelledby="bottle-tab" class="tab-pane fade" id="bottle" role="tabpanel">
-                                    <div class="table-responsive">
-                                        <table
-                                            class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
-                                            <thead class="bg-light">
-                                                <tr>
-                                                    {{-- <th>Date</th> --}}
-                                                    <th>Ref</th>
-                                                    <th>Designation</th>
-                                                    <th>Quantite</th>
-                                                    <th>Etat</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse ($bottles as $bottle)
-                                                    <tr>
-                                                        <td>{{ $bottle->article_reference }}</td>
-                                                        <td>{{ $bottle->designation }}</td>
-                                                        <td>{{ $bottle->sum_bottle }}</td>
-                                                        <td>{{ $bottle->isWithEmballage ? 'Deconsigné' : 'Consigné' }}</td>
-                                                    </tr>
-                                                @empty
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-4 col-xl-3">
+                <form action="{{ route('admin.stocks.index') }}" method="get">
+                    <div class="form-group">
+                        <div class="input-group bg-white p-0 m-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-dark text-white">Debut</span>
+                            </div>
+                            <input type="date" value="{{ $between[0] }}" class="form-control" name="start_date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group bg-white p-0 m-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-dark text-white">Fin</span>
+                            </div>
+                            <input type="date" value="{{ $between[1] }}" class="form-control small" name="end_date">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-dark mt-1 mt-sm-0 w-100 h-100">Filtrer</button>
+                    </div>
+                </form>
+
+                <form novalidate class="needs-validation" action="{{ route('admin.stocks.store') }}" method="POST">
+                    @csrf
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="text-bold-400 text-dark mb-1" for="article_reference">Articles</label>
+                                <select name="article_reference" required class="select2 form-control articleBySupplier"
+                                    id="article_reference">
+                                    <option value=''>Choisir</option>
+                                    @foreach ($articles as $article)
+                                        <option value="{{ $article->reference }}">{{ $article->designation }}</option>
+                                    @endforeach
+                                    @foreach ($emballages as $emballage)
+                                        <option value="{{ $emballage->reference }}">{{ $emballage->designation }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback">
+                                    Selectionnez l'article
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="text-bold-400 text-dark" for="quantity">
+                                    Quantité
+                                </label>
+                                <input type="number" placeholder="0" class="form-control" required id="quantity"
+                                    name="quantity">
+                                <div class="invalid-feedback">
+                                    Entrer le nombre de bouteille
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button type="submit" id="addArticle" class="btn float-right my-1 btn-primary">
+                                        <span class="material-icons">add</span>
+                                        Ajouter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
@@ -183,7 +199,7 @@
     <div class="modal fade text-left" id="settingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel10"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form action="{{route('admin.settings.update')}}" novalidate class="needs-validation" method="post">
+            <form action="{{ route('admin.settings.update') }}" novalidate class="needs-validation" method="post">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header bg-secondary white">
@@ -196,8 +212,7 @@
                         <h5>Nombre minimum de jours de stock par défaut</h5>
                         <div class="form-group">
                             <label for="surname">Nombre De Jour</label>
-                            <input type="number" class="form-control"
-                                name="min_stock_day" min="1" required>
+                            <input type="number" class="form-control" name="min_stock_day" min="1" required>
                             <div class="invalid-feedback">
                                 Entre une nombre valide
                             </div>
@@ -212,9 +227,9 @@
             </form>
         </div>
     </div>
-    @include('admin.stock.modal-create',[
-        "articles" =>$articles,
-        "emballages" =>$emballages,
+    @include('admin.stock.modal-create', [
+        'articles' => $articles,
+        'emballages' => $emballages,
     ])
     @include('includes.delete-modal')
 @endsection

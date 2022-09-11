@@ -67,12 +67,6 @@
                                         </option>
                                     @empty
                                     @endforelse
-                                    @forelse ($packages as $packages)
-                                        <option value="{{ $packages->reference }}">
-                                            {{ Str::upper($packages->designation) }}
-                                        </option>
-                                    @empty
-                                    @endforelse
                                 </select>
                                 <div class="invalid-feedback">
                                     Choisir l'article

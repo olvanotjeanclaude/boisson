@@ -39,6 +39,7 @@ class Stock extends Model
                 "sales.saleable_id as article_id",
                 "sales.saleable_type as article_type",
                 "sales.article_reference as article_ref",
+                "sales.isWithEmballage as isWithEmballage",
                 DB::raw("SUM(sales.quantity) AS sum_out"),
             ],
             "stock" => [
@@ -48,6 +49,7 @@ class Stock extends Model
                 "stocks.date as date",
                 DB::raw("SUM(stocks.entry) AS sum_entry"),
                 "sales.sum_out",
+                "sales.isWithEmballage"
             ]
         ];
     }
@@ -97,13 +99,13 @@ class Stock extends Model
             ->select(self::defaultSelect()["sale"])->join("sales", function ($join) use ($between) {
                 $join->on("sales.invoice_number", "document_ventes.number")
                     ->whereBetween("sales.received_at", $between);
-            })->groupBy("sales.article_reference");
-
+            })->groupBy("sales.article_reference","sales.isWithEmballage");
+            // dd($sales->get());
         return DB::table("stocks")
             ->whereBetween("date", $between)->select(self::defaultSelect()["stock"])
             ->leftJoinSub($sales, "sales", function ($join) {
                 $join->on("stocks.article_reference", "sales.article_ref");
-            })->groupBy("stocks.article_reference")
+            })->groupBy("stocks.article_reference","sales.isWithEmballage")
             ->get()
             ->map(fn ($stock) => $this->mapStock($stock));
     }
@@ -112,7 +114,7 @@ class Stock extends Model
     {
         $stocks = $query->select([
             "article_reference", "stockable_id", "stockable_type",
-            DB::raw("SUM(entry) as entry")
+            DB::raw("SUM(entry) as entry"),
         ])
             ->whereHasMorph(
                 'stockable',
@@ -128,12 +130,23 @@ class Stock extends Model
     private function mapStock($stock)
     {
         $stock->sum_out = $stock->sum_out ?? 0;
-        $stock->final = $stock->sum_entry - $stock->sum_out;
         $article = self::getArticleByReference($stock->article_ref);
-
+        // dd($stock);
         if ($article) {
+            $stock->type = "article";
+            if($stock->article_type=="App\Models\Emballage"){
+               if($stock->isWithEmballage==0){
+                $stock->type="consignation";
+            }
+            else{
+                   $stock->type="deconsignation";
+                   $stock->sum_entry = $stock->sum_out;
+                   $stock->sum_out= 0;
+               }
+            }
             $stock->designation = $article->designation;
         }
+        $stock->final = $stock->sum_entry - $stock->sum_out;
         return $stock;
     }
 }

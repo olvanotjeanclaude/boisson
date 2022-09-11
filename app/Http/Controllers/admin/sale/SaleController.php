@@ -78,6 +78,7 @@ class SaleController extends Controller
 
             case "deconsignation":
                 $deconsignations = $formatRequest->getAllDeconsignations($request->tab2Deco);
+                // dd($deconsignations);
                 break;
             default:
                 break;
@@ -143,11 +144,38 @@ class SaleController extends Controller
             ]);
 
             foreach ($datas as  $data) {
+                // dd($data);
                 Sale::create($data);
             }
+            $this->updateStock($datas);
         }
 
         return back();
+    }
+
+    private function updateStock(array $datas)
+    {
+        $deconsignations = array_filter($datas, function ($data) {
+            return ($data["saleable_type"] == "App\Models\Emballage" &&
+                isset($data["isWithEmballage"]) &&
+                $data["isWithEmballage"] == true);
+        });
+
+        // dd($deconsignations);
+        foreach ($deconsignations as $key => $deco) {
+            $stock = Stock::where("article_reference",$deco["article_reference"])->first();
+          
+            if(is_null($stock)){
+                Stock::create([
+                    "article_reference" => $deco["article_reference"],
+                    "stockable_id" => $deco["saleable_id"],
+                    "stockable_type" => $deco["saleable_type"],
+                    "date" => now()->toDateString(),
+                    "entry" => 0,
+                    "user_id" => auth()->user()->id
+                ]);
+            }
+        }
     }
 
     private function getProductRequest(array $articles)

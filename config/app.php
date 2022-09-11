@@ -19,6 +19,12 @@ return [
     // DB_USERNAME=suarenex_olvanot
     // DB_PASSWORD=qw3HamQ&Fa1,
 
+// DB_HOST=94.73.146.71
+// DB_PORT=3306
+// DB_DATABASE=u0857742_magasin
+// DB_USERNAME=u0857742_olvanot
+// DB_PASSWORD=WV.m1ArlyBy2,
+
 
     'name' => env('APP_NAME', 'Laravel'),
 

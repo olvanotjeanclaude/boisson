@@ -81,25 +81,25 @@ class Dashboard
 
     public function getSolds($between)
     {
-        $sales = Sale::with("saleable")
-            ->whereHasMorph('saleable', [Product::class, Emballage::class])
+        $sales = Sale::whereHasMorph('saleable', [Product::class, Emballage::class])
             ->whereBetween("received_at", $between)
             ->orderBy("saleable_type")
             ->get();
-        // ->groupBy(fn($sale) =>$sale->article_reference);
-        // ->map(function($sale,$article_ref){
-        //     dd($sale);
-        //     return (object)[
-        //         "article_reference" =>$sale->article_reference,
-        //         "saleable_type" =>$sale->saleable_type,
-        //         "saleable_id" =>$sale->saleable_id,
-        //         "designation" =>$sale->designation,
-        //         "sum_quantity" =>$sale->sum("quantity"),
-        //     ];
-        // });
+            // ->groupBy(fn ($sale) => $sale->article_reference)
+            // ->map(function ($sale, $article_ref) {
+            //     return (object)[
+            //         "article_reference" => $sale[0]->saleable->reference,
+            //         "saleable_type" => $sale[0]->saleable_type,
+            //         "saleable_id" => $sale[0]->saleable_id,
+            //         "designation" => $sale[0]->saleable->designation,
+            //         "pricing" => $sale[0]->pricing,
+            //         "sub_amount" => $sale[0]->sub_amount,
+            //         "sum_quantity" => $sale->sum("quantity"),
+            //     ];
+            // });
 
+            // dd($sales);
         return $sales;
-        dd($sales);
     }
 
     public function getRecettes($sales, $between)

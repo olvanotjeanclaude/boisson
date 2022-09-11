@@ -93,22 +93,20 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-5">
-                                <div class="row">
+                                <div class="d-flex flex-column">
                                     @foreach ($recaps as $recap => $total)
-                                        <div class="col-sm-6">
-                                            <div class="card border">
-                                                <div class="card-header">
-                                                    <h4 class="card-title text-center">{{ $recap }}</h4>
-                                                </div>
-                                                <div class="card-content">
-                                                    <div class="card-body text-center">
-                                                        <div class="badge badge-pill badge-secondary badge-square">
-                                                            {{ $total }}
-                                                        </div>
-                                                    </div>
+                                    <div class="card border">
+                                        <div class="card-header">
+                                            <h4 class="card-title text-center">{{ $recap }}</h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-body text-center">
+                                                <div class="badge badge-pill badge-secondary badge-square">
+                                                    {{ $total }}
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
                                     @endforeach
                                 </div>
                             </div>
@@ -140,6 +138,14 @@
                                         <h4 class="text-white">En Caisse</h4>
                                         <div class="badge badge-pill badge-white  badge-square">
                                             <h3 class="text-white">{{ formatPrice($recettes['sum_caisse']) }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card  bg-success">
+                                    <div class="card-body bg-warning">
+                                        <h4 class="text-white">Reste</h4>
+                                        <div class="badge badge-pill badge-white  badge-square">
+                                            <h3 class="text-white">{{ formatPrice($recettes['sum_rest']) }}</h3>
                                         </div>
                                     </div>
                                 </div>

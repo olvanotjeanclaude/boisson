@@ -40,7 +40,7 @@
     @endif
     <div class="row">
         <div class="col-md-7">
-            <form novalidate class="needs-validation" action="{{ route('admin.achat-produits.store') }}" method="POST">
+            <form novalidate class="needs-validation" action="{{ route('admin.stocks.store') }}" method="POST">
                 @csrf
                 <div class="card">
                     <div class="card-body">

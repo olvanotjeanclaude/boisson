@@ -17,10 +17,9 @@ class InventoryController extends Controller
 {
     public function index(Request $request)
     {
-        $articles = SupplierOrders::UniqueArticles("products");
-        $packages = SupplierOrders::UniqueArticles("packages");
+        $articles = Product::orderBy("designation")->get();
 
-        $inventories = Inventory::whereHasMorph("article",[
+        $inventories = Inventory::whereHasMorph("article", [
             Product::class,
         ])
             ->orderBy("date", "desc")
@@ -29,7 +28,7 @@ class InventoryController extends Controller
 
         // dd($stocks);
 
-        return view("admin.inventaire.index", compact("inventories", "articles", "packages"));
+        return view("admin.inventaire.index", compact("inventories", "articles"));
     }
 
     public function checkStock(Request $request)
@@ -109,75 +108,21 @@ class InventoryController extends Controller
             case Inventory::STATUS["accepted"]:
                 $article = $inventory->article;
                 $between = [Stock::MinDate($inventory->date), $inventory->date];
-                $supplierOrders = SupplierOrders::ByArticleBetween($article->reference, $between)->get();
-
-                $absGap = abs($inventory->difference);
-
+                $stock = Stock::between($between)->where("article_ref",$article->reference)->first();
+             
+                // dd($stock,$inventory);
                 // dd($supplierOrders, $inventory,$absGap);
-
-                if (count($supplierOrders) > 0) {
-                    if ($inventory->difference > 0) {
-                        $supOrder = $supplierOrders->firstOrFail();
-                        $newQtt = $supOrder->quantity + $inventory->difference;
-                        // dd("Ampio le stock",$supOrder);
-                        $updated = $supOrder->update([
-                            "quantity" => $newQtt,
-                            "isAdjustment" => true,
-                            "update_user_id" => auth()->user()->id
-                        ]);
-                    } else if ($inventory->difference < 0) {
-                        $maxSupOrder = $supplierOrders->where("quantity", ">", $absGap)->first();
-                        $sameSupOrder = $supplierOrders->where("quantity", $absGap)->first();
-
-                        if ($maxSupOrder) {
-                            // dd("anesorana ny quantite le be ndrindra");
-                            $updated =  $maxSupOrder->update([
-                                "quantity" =>  $maxSupOrder->quantity - $absGap,
-                                "isAdjustment" => true,
-                                "update_user_id" => auth()->user()->id
-                            ]);
-                        } else if ($sameSupOrder) {
-                            // dd("mtovy ny quantite");
-                            $updated = $sameSupOrder->update([
-                                "quantity" => 0,
-                                "isAdjustment" => true,
-                                "update_user_id" => auth()->user()->id
-                            ]);
-                        } else {
-                            $sumGap = 0;
-                            $rowIds = [];
-
-                            foreach ($supplierOrders as $supOrder) {
-                                $sumGap += $supOrder->quantity;
-                                $rowIds[$supOrder->id] = $supOrder->quantity;
-                                if ($sumGap >= $absGap) {
-                                    break;
-                                }
-                            }
-
-                            if ($sumGap == $absGap) {
-                                // dd("sum anaty array manome an le difference");
-                                $updated =  $supplierOrders->whereIn("id", array_keys($rowIds))
-                                    ->update([
-                                        "quantity" => 0,
-                                        "isAdjustment" => true,
-                                        "update_user_id" => auth()->user()->id
-                                    ]);
-                            } else if ($sumGap > 0) {
-                                $lastOrder = $supplierOrders->where("id", array_key_last($rowIds))
-                                    ->first();
-
-                                $beforeLastOrders = array_slice($rowIds, 0, count($rowIds) - 1);
-                                $newQtt = $absGap - array_sum($beforeLastOrders);
-                                // dd("le farany atao update an le diffeence", $newQtt);
-                                $updated =  $lastOrder->update([
-                                    "quantity" => $newQtt,
-                                    "isAdjustment" => true,
-                                    "update_user_id" => auth()->user()->id
-                                ]);
-                            }
-                        }
-                    }
+                
+                if ($stock) {
+                  $updated=  Stock::create([
+                        "article_reference" => $article->reference,
+                        "stockable_id" => $article->id,
+                        "stockable_type" => get_class($article),
+                        "date" => now()->toDateString(),
+                        "entry" => $inventory->difference,
+                        "user_id" => auth()->user()->id,
+                        "isAdjustment" =>true
+                    ]);
 
                     if ($updated) {
                         $inventory->update(["status" => Inventory::STATUS["accepted"]]);
@@ -217,7 +162,7 @@ class InventoryController extends Controller
 
             if ($stock->difference != 0) {
                 $date = '<input type="hidden" value="' . $stock->date . '"  name="date"/>';
-                $article_ref = '<input type="hidden" value="' . $stock->article_reference . '"
+                $article_ref = '<input type="hidden" value="' . $stock->article_ref . '"
                   name="article_reference"/>';
                 $realQtt = '<input type="hidden" id="real_quantity"  
                   value="' . $stock->real_quantity . '" 
@@ -241,13 +186,17 @@ class InventoryController extends Controller
         $messages = [];
 
         $article = Articles::getArticleByReference($article_ref);
-
+        if (!$date) {
+            $date = date("Y-m-d");
+        }
         if ($article) {
-            $stock = Stock::date($date)->filter(function ($stock) {
-                return $stock->article_type != "App\Models\Emballage";
-            })
-                ->where("article_reference", $article->reference)
+            $stock = Stock::between([Stock::MinDate($date), $date])
+                // ->filter(function ($stock) {
+                //     return $stock->article_type != "App\Models\Emballage";
+                // })
+                ->where("article_ref", $article->reference)
                 ->first();
+            // dd($stock);
 
             if ($stock) {
                 $stock->date = $date;
