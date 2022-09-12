@@ -33,6 +33,10 @@ class Inventory extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function stock(){
+        return $this->hasOne(Stock::class);
+    }
+
     public function getProductAttribute()
     {
         return Articles::getArticleByReference($this->article_reference);

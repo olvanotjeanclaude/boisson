@@ -5,15 +5,7 @@
 @endsection
 
 @section('page-css')
-    <style>
-        table#preInvoice td {
-            margin: .4rem auto;
-        }
-
-        label {
-            margin-bottom: 7px;
-        }
-    </style>
+    @include('includes.invoice-style')
 @endsection
 
 @section('content-header')
@@ -90,6 +82,7 @@
         </div>
 
         <div class="col-md-5">
+           
             @include('admin.vente.includes.ticket')
         </div>
     </div>

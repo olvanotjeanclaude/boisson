@@ -20,6 +20,10 @@ class Sale extends Model
         return $this->morphTo();
     }
 
+    public function invoice(){
+        return $this->belongsTo(DocumentVente::class,"number","invoie_number");
+    }
+
     public function getArticleTypeAttribute()
     {
         switch ($this->saleable_type) {

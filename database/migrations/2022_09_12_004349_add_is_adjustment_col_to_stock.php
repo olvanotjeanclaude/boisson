@@ -14,7 +14,9 @@ class AddIsAdjustmentColToStock extends Migration
     public function up()
     {
         Schema::table('stocks', function (Blueprint $table) {
-            $table->boolean("isAdjustment")->after("user_id")->default(false);
+            $table->foreignId("inventory_id")->after("user_id")->nullable()->constrained()
+            ->onUpdate("cascade")
+            ->onDelete("cascade");
         });
     }
 
@@ -26,7 +28,7 @@ class AddIsAdjustmentColToStock extends Migration
     public function down()
     {
         Schema::table('stocks', function (Blueprint $table) {
-            $table->dropColumn("isAdjustment");
+            $table->dropConstrainedForeignId("inventory_id");
         });
     }
 }

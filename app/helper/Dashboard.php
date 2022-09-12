@@ -82,7 +82,7 @@ class Dashboard
     public function getSolds($between)
     {
         $sales = Sale::whereHasMorph('saleable', [Product::class, Emballage::class])
-            ->whereBetween("received_at", $between)
+            ->where(fn($query) =>Filter::queryBetween($query,$between))
             ->orderBy("saleable_type")
             ->get();
             // ->groupBy(fn ($sale) => $sale->article_reference)

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Models\SupplierOrders;
 use App\Http\Controllers\Controller;
+use App\Models\Emballage;
 use App\Models\Product;
 use App\Models\Supplier;
 
@@ -18,9 +19,12 @@ class InventoryController extends Controller
     public function index(Request $request)
     {
         $articles = Product::orderBy("designation")->get();
+        $emballages = Emballage::orderBy("designation")->get();
+        $articles = $articles->merge($emballages);
 
         $inventories = Inventory::whereHasMorph("article", [
             Product::class,
+            Emballage::class
         ])
             ->orderBy("date", "desc")
             ->orderBy("id", "desc")
@@ -121,7 +125,7 @@ class InventoryController extends Controller
                         "date" => now()->toDateString(),
                         "entry" => $inventory->difference,
                         "user_id" => auth()->user()->id,
-                        "isAdjustment" =>true
+                        "inventory_id" =>$inventory->id
                     ]);
 
                     if ($updated) {
@@ -133,9 +137,11 @@ class InventoryController extends Controller
                 return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
                 break;
             case Inventory::STATUS["pending"]:
+                $inventory->stock()->delete();
                 $updated = $inventory->update(["status" => Inventory::STATUS["pending"]]);
                 break;
             case Inventory::STATUS["canceled"]:
+                $inventory->stock()->delete();
                 $updated = $inventory->update(["status" => Inventory::STATUS["canceled"]]);
                 break;
             default:
