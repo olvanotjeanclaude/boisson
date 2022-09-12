@@ -46,6 +46,7 @@ Auth::routes();
 
 Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], function () {
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
+    Route::get("{filter_type}/articles",[\App\Http\Controllers\admin\filter\FilterController::class, "filterArticle"]);
     Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");
     Route::get("dashboard/facture/telecharger", [\App\Http\Controllers\admin\AdminController::class, "download"])->name("dashboard.download");
 
@@ -57,7 +58,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::post("pre-save-invoice-articles", [\App\Http\Controllers\admin\article\ArticleController::class, "preSaveInvoiceArticle"])->name("article.preSaveInvoiceArticle");
 
     Route::resource("articles", \App\Http\Controllers\admin\article\ArticleController::class);
-    Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
+    // Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
 
     Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
     Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
@@ -72,7 +73,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
         Route::resource("articles", \App\Http\Controllers\admin\produit\ProductController::class);
         Route::resource("emballages", \App\Http\Controllers\admin\produit\EmballageController::class);
-        Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
+        // Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
     });
 
     Route::post("settings", [\App\Http\Controllers\admin\settings\SettingController::class, "update"])->name("settings.update");

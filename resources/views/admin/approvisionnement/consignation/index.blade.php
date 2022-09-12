@@ -75,7 +75,6 @@
                                             <th>Ref</th>
                                             <th>Designation</th>
                                             <th>Prix</th>
-                                            <th>Fam</th>
                                             @can('update', $consignations->first())
                                                 <th>Action</th>
                                             @endcan
@@ -91,7 +90,6 @@
                                                 <td>{{ $consignation->reference }}</td>
                                                 <td>{{ $consignation->designation }}</td>
                                                 <td>{{ formatPrice($consignation->price) }}</td>
-                                                <td>{{ $consignation->category->name ?? '-' }}</td>
                                                 @can('update', $consignation)
                                                     <td>
                                                         <a href="{{ route('admin.approvisionnement.emballages.edit', $consignation->id) }}"

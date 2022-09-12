@@ -106,18 +106,16 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($stocks as $stock)
-                                            @if (!($stock->sum_entry == 0 && $stock->sum_out == 0))
-                                                <tr>
-                                                    {{-- <td>{{ format_date($stock->date) }}</td> --}}
-                                                    <td>{{ $stock->article_ref }}</td>
-                                                    <td>{{ Str::upper($stock->type) }}</td>
-                                                    <td>{{ Str::upper($stock->designation) }}</td>
-                                                    <td>{{ $stock->sum_entry }}</td>
-                                                    <td>{{ $stock->sum_out }}</td>
-                                                    {{-- <td>{{ formatPrice($stock->amount) }}</td> --}}
-                                                    <td>{{ $stock->final }}</td>
-                                                </tr>
-                                            @endif
+                                        <tr>
+                                            {{-- <td>{{ format_date($stock->date) }}</td> --}}
+                                            <td>{{ $stock->article_ref }}</td>
+                                            <td>{{ Str::upper($stock->type) }}</td>
+                                            <td>{{ Str::upper($stock->designation) }}</td>
+                                            <td>{{ $stock->sum_entry }}</td>
+                                            <td>{{ $stock->sum_out }}</td>
+                                            {{-- <td>{{ formatPrice($stock->amount) }}</td> --}}
+                                            <td>{{ $stock->final }}</td>
+                                        </tr>
                                         @endforeach
                                     </tbody>
                                 </table>

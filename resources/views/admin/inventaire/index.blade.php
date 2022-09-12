@@ -44,8 +44,8 @@
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
                     @can('viewAny', \App\Models\SupplierOrders::class)
-                        <a href="{{ route('admin.achat-produits.index') }}" class="btn btn-secondary btn-sm text-capitalize">
-                            Achat Produits
+                        <a href="{{ route('admin.stocks.index') }}" class="btn btn-secondary btn-sm text-capitalize">
+                            Bon d'entrée
                         </a>
                     @endcan
                     <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
@@ -61,9 +61,9 @@
                             <div class="input-group">
                                 <select required name="article_reference" id="article_reference"
                                     class="select2 form-control">
-                                    @forelse ($articles as $article)
-                                        <option value="{{ $article->reference }}">
-                                            {{ Str::upper($article->designation) }}
+                                    @forelse ($stocks as $stock)
+                                        <option value="{{ $stock->article_ref }}">
+                                            {{ Str::upper($stock->designation) }}
                                         </option>
                                     @empty
                                     @endforelse

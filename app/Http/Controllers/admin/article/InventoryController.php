@@ -18,10 +18,7 @@ class InventoryController extends Controller
 {
     public function index(Request $request)
     {
-        $articles = Product::orderBy("designation")->get();
-        $emballages = Emballage::orderBy("designation")->get();
-        $articles = $articles->merge($emballages);
-
+        $stocks = Stock::between();
         $inventories = Inventory::whereHasMorph("article", [
             Product::class,
             Emballage::class
@@ -32,7 +29,7 @@ class InventoryController extends Controller
 
         // dd($stocks);
 
-        return view("admin.inventaire.index", compact("inventories", "articles"));
+        return view("admin.inventaire.index", compact("inventories", "stocks"));
     }
 
     public function checkStock(Request $request)

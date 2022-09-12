@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\admin\produit;
 
+use App\Models\Stock;
 use App\Models\Category;
+use App\Models\Emballage;
+use App\Models\Consignation;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Models\Consignation;
-use App\Models\Emballage;
 
 class EmballageController extends Controller
 {
@@ -36,9 +38,9 @@ class EmballageController extends Controller
         return view("admin.approvisionnement.consignation.edit", compact("catArticles", "consignation"));
     }
 
-    private function rules(){
+    private function rules($emballage_id=null){
         return [
-            "designation" => "required|string",
+            "designation" =>[ "required","string", Rule::unique("emballages","designation")->ignore($emballage_id)],
             "price" => "required|numeric",
             // "category_id" => "required"
         ];
@@ -52,9 +54,18 @@ class EmballageController extends Controller
         $data["reference"] = (string) random_int(11111, 99999);
         $data["user_id"] = auth()->user()->id;
     
-        $saved = Emballage::create($data);
+        $emballage = Emballage::create($data);
+       
+        Stock::create([
+            "article_reference" => $emballage->reference,
+            "stockable_id" => $emballage->id,
+            "stockable_type" => get_class($emballage),
+            "date" => now()->toDateString(),
+            "entry" => 0,
+            "user_id" => auth()->user()->id
+        ]);
 
-        if ($saved) {
+        if ($emballage) {
             return back()->with("success", CustomMessage::Success("Deconsignation d'article"));
         }
 
@@ -63,7 +74,7 @@ class EmballageController extends Controller
 
     public function update($id, Request $request)
     {
-        $request->validate($this->rules());
+        $request->validate($this->rules($id));
         $consignation = Emballage::findOrFail($id);
         $data = $request->except("_token");
       

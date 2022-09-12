@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\admin\produit;
 
+use App\Models\Stock;
 use App\Models\Product;
+use App\Models\Articles;
 use App\Models\Category;
 use App\Models\Supplier;
+use App\Models\Emballage;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
-use App\Models\Articles;
-use App\Models\Emballage;
 
 class ProductController extends Controller
 {
@@ -48,9 +49,18 @@ class ProductController extends Controller
         $data["reference"] = (string) random_int(111111, 999999);
         $data["user_id"] = auth()->user()->id;
 
-        $saved = Product::create($data);
+        $article = Product::create($data);
 
-        if ($saved) {
+        Stock::create([
+            "article_reference" => $article->reference,
+            "stockable_id" => $article->id,
+            "stockable_type" => get_class($article),
+            "date" => now()->toDateString(),
+            "entry" => 0,
+            "user_id" => auth()->user()->id
+        ]);
+        
+        if ($article) {
             return back()->with("success", CustomMessage::Success("L'article"));
         }
 

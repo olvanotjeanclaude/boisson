@@ -18,7 +18,8 @@ class AdminController extends Controller
         $paymentTypes  = [];
         $startDate = request()->get("start_date") ?? date("Y-m-d");
         $endDate = request()->get("end_date") ?? date("Y-m-d");
-
+        $filterType = request()->get("filter_type");
+        // dd($filterType);
         $between = [$startDate, $endDate];
 
         $sales = DocumentVente::has("sales")
@@ -26,6 +27,7 @@ class AdminController extends Controller
             ->get();
 
         $saleAndPaymentDetails = $dashboard->getSaleAndPaymentDetails($between);
+        // dd($saleAndPaymentDetails);
         $saleAndPaymentDetails->map(fn ($sale) => $dashboard->mapSalePayment($sale))
             ->filter(fn ($saleable) => !is_null($saleable));
 
@@ -38,20 +40,7 @@ class AdminController extends Controller
 
         // dd($solds);
         // dd($solds->sum("sub_amount") , $sales->sum("paid"));
-
-        $sumAmount = $solds->sum("sub_amount");
-        $rest = $sumAmount - $sales->sum("paid") + $sales->sum("checkout");
-        // dd($rest,$sumAmount);
-        // dd($sales);
-        $recettes = [
-            "sum_amount" => $sumAmount,
-            "sum_paid" => $sales->sum("paid"),
-            "sum_checkout" => $sales->sum("checkout"),
-            "sum_caisse" => $sales->sum("paid") - $sales->sum("checkout"),
-            "sum_rest" => count($solds) ? $rest : 0,
-        ];
-
-
+        $recettes = $this->getRecettes($solds, $sales);
         $recaps = $dashboard->getRecaps($between);
 
         return view("admin.dashboard.index", [
@@ -94,13 +83,7 @@ class AdminController extends Controller
             ->where(fn ($query) => Filter::queryBetween($query, $between))
             ->get();
 
-        $recettes = [
-            "sum_amount" => $solds->sum("sub_amount"),
-            "sum_paid" => $sales->sum("paid"),
-            "sum_checkout" => $sales->sum("checkout"),
-            "sum_caisse" => $sales->sum("paid") - $sales->sum("checkout"),
-            "sum_rest" => $solds->sum("sub_amount") - $sales->sum("paid"),
-        ];
+        $recettes = $this->getRecettes($solds, $sales);
 
         return  [
             'invoices' => [
@@ -110,6 +93,18 @@ class AdminController extends Controller
             "solds" => $solds,
             "recettes" => $recettes,
             "between" => $between
+        ];
+    }
+
+    private function getRecettes($solds, $sales)
+    {
+        $rest = $solds->sum("sub_amount") - $sales->sum("paid");
+        return  [
+            "sum_amount" => $solds->sum("sub_amount"),
+            "sum_paid" => $sales->sum("paid"),
+            "sum_checkout" => $sales->sum("checkout"),
+            "sum_caisse" => $sales->sum("paid") - $sales->sum("checkout"),
+            "sum_rest" => $rest > 0 ? $rest : 0,
         ];
     }
 }

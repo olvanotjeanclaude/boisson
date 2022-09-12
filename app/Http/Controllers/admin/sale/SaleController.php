@@ -164,7 +164,6 @@ class SaleController extends Controller
         // dd($deconsignations);
         foreach ($deconsignations as $key => $deco) {
             $stock = Stock::where("article_reference",$deco["article_reference"])->first();
-          
             if(is_null($stock)){
                 Stock::create([
                     "article_reference" => $deco["article_reference"],

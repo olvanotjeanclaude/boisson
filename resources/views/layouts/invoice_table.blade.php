@@ -12,10 +12,10 @@
             @forelse ($invoices["datas"] as $data)
                 <tr>
                     <td>
-                        {{ $data->designation }}
+                        {{ $data->saleable->designation }}
                     </td>
                     <td>
-                        {{ $data->sum_quantity }}
+                        {{ $data->quantity }}
                     </td>
                     <td>
                         {{ round($data->pricing) }}
@@ -55,23 +55,25 @@
                     <td></td>
                     <td></td>
                     <td>
-                        <h6>Sorti:</h6>
+                        <h6>Sortie De Caisse:</h6>
                     </td>
                     <td>
                         <h6>{{ formatPrice($checkout) }}</h6>
                     </td>
                 </tr>
             @endisset
-            <tr>
-                <td></td>
-                <td></td>
-                <td>
-                    <h6>Reste:</h6>
-                </td>
-                <td>
-                    <h6>{{ formatPrice(abs($rest)) }}</h6>
-                </td>
-            </tr>
+            @isset($rest)
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <h6>Credit:</h6>
+                    </td>
+                    <td>
+                        <h6>{{ formatPrice(abs($rest)) }}</h6>
+                    </td>
+                </tr>
+            @endisset
             @isset($caisse)
                 <tr>
                     <td></td>
@@ -84,20 +86,10 @@
                     </td>
                 </tr>
             @endisset
-            {{-- <tr>
-                <td></td>
-                <td></td>
-                <td>
-                    <h6>Nombre D'Article: </h6>
-                </td>
-                <td>
-                    <h6>{{ count($invoices["datas"]) }}</h6>
-                </td>
-            </tr> --}}
         </tfoot>
     </table>
-    <h5>Merci beaucoup !</h5>
-    <h6 class="print-text">Imprimé le {{format_date_time(now()->toDateTimeString())}}</h6>
+    <h5 style="margin-top: 15px">Merci beaucoup !</h5>
+    <h6 class="print-text">Imprimé le {{ format_date_time(now()->toDateTimeString()) }}</h6>
 @else
     <div class="card">
         <div class="cad-body ml-1 pt-2">

@@ -102,7 +102,7 @@ class PaymentController extends Controller
                 "paid" => request()->paid,
                 "checkout" => request()->checkout ?? 0,
                 "payment_type" => request()->payment_type,
-                "received_at" => now()->toDateTimeString(),
+                "received_at" => $invoice->received_at??now()->toDateString(),
                 "comment" => request()->comment,
                 "user_id" => auth()->user()->id
             ];

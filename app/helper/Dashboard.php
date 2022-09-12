@@ -12,13 +12,16 @@ class Dashboard
 {
     public function getSaleDetail($between)
     {
-        return DB::table("sales")->select([
+        $sales= DB::table("sales")->select([
             "invoice_number", "article_reference", "saleable_id", "saleable_type", "received_at",
             DB::raw("SUM(sales.quantity) as sum_quantity")
         ])
-            ->where("saleable_type", "App\Models\Product")
+            // ->where("saleable_type", "App\Models\Product")
             ->where(fn ($query) => Filter::queryBetween($query, $between))
             ->groupBy("sales.invoice_number");
+            // dd($sales->get());
+
+            return $sales;
     }
 
     public function getSaleAndPaymentDetails($between)
