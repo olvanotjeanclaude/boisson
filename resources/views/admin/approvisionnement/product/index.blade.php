@@ -92,7 +92,7 @@
                                             <th>Designation</th>
                                             <th>Prix</th>
                                             <th>Prix De Gros</th>
-                                            <th>Quantité</th>
+                                            <th>Contenance/Condition</th>
                                             <th>Fam</th>
                                             @can('update', $products->first())
                                                 <th>Action</th>

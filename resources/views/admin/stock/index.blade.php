@@ -106,16 +106,18 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($stocks as $stock)
-                                        <tr>
-                                            {{-- <td>{{ format_date($stock->date) }}</td> --}}
-                                            <td>{{ $stock->article_ref }}</td>
-                                            <td>{{ Str::upper($stock->type) }}</td>
-                                            <td>{{ Str::upper($stock->designation) }}</td>
-                                            <td>{{ $stock->sum_entry }}</td>
-                                            <td>{{ $stock->sum_out }}</td>
-                                            {{-- <td>{{ formatPrice($stock->amount) }}</td> --}}
-                                            <td>{{ $stock->final }}</td>
-                                        </tr>
+                                            @isset($stock->designation)
+                                                <tr>
+                                                    {{-- <td>{{ format_date($stock->date) }}</td> --}}
+                                                    <td>{{ $stock->article_ref }}</td>
+                                                    <td>{{ Str::upper($stock->type ?? '-') }}</td>
+                                                    <td>{{ Str::upper($stock->designation) }}</td>
+                                                    <td>{{ $stock->sum_entry }}</td>
+                                                    <td>{{ $stock->sum_out }}</td>
+                                                    {{-- <td>{{ formatPrice($stock->amount) }}</td> --}}
+                                                    <td>{{ $stock->final }}</td>
+                                                </tr>
+                                            @endisset
                                         @endforeach
                                     </tbody>
                                 </table>

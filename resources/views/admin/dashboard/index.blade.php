@@ -60,7 +60,7 @@
         <div class="col-12">
             @include('admin.dashboard.filter-component')
         </div>
-    
+
         <div class="col-xl-8 mt-1">
             <div class="card">
                 <div class="card-header bg-secondary">
@@ -118,7 +118,7 @@
                     </div>
                 </div>
             </div>
-          
+
             <div class="card">
                 <div class="card-header bg-secondary">
                     <h3 class="text-white">Recapulatif D'Emballages</h3>
@@ -173,14 +173,18 @@
                     <h3 class="text-white">Facture</h3>
                     @if (count($solds))
                         <a target="_blink"
-                            href="{{ route('admin.dashboard.printReport', ['start_date' => $between[0], 'end_date' => $between[1]]) }}"
+                            href="{{ route('admin.dashboard.printReport', [
+                                'start_date' => $between[0],
+                                'end_date' => $between[1],
+                                'filter_type' => request()->get('filter_type'),
+                            ]) }}"
                             class="btn btn-light">
                             Imprimer
                         </a>
                     @endif
                 </div>
 
-                <div style="max-height:250px" class="overflow-auto">
+                <div style="max-height:350px" class="overflow-auto">
                     <div class="card-body">
                         @if (count($solds))
                             @include('layouts.invoice_table', [

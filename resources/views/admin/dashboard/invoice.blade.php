@@ -6,7 +6,8 @@
 
 
 @section('header')
-    <h5>Historique de vente {{ format_date($between[0]) }}-{{ format_date($between[1]) }}</h5>
+    <h5>Historique de vente ({{ Str::title(request()->get('filter_type')) }})
+        {{ format_date($between[0]) }}-{{ format_date($between[1]) }}</h5>
 @endsection
 
 @section('table')

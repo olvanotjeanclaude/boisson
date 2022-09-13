@@ -131,7 +131,6 @@ class SaleController extends Controller
 
     private function saveSale($datas)
     {
-
         if (count($datas)) {
             $invoiceNumber = collect($datas)->first()["invoice_number"];
 

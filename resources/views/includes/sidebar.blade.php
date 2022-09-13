@@ -88,7 +88,7 @@
                     <li>
                         <a class="menu-item" href="{{ route('admin.approvisionnement.articles.index') }}">
                             <i class="material-icons"></i>
-                            <span>Article En Detail</span>
+                            <span>Article</span>
                         </a>
                     </li>
                     {{-- <li>

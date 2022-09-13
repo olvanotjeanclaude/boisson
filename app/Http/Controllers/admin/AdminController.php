@@ -13,22 +13,18 @@ use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
-    public function index(Dashboard $dashboard)
+    public function yedek(Dashboard $dashboard)
     {
         $paymentTypes  = [];
         $startDate = request()->get("start_date") ?? date("Y-m-d");
         $endDate = request()->get("end_date") ?? date("Y-m-d");
-        $filterType = request()->get("filter_type");
-        // dd($filterType);
+        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
         $between = [$startDate, $endDate];
 
-        $sales = DocumentVente::has("sales")
-            ->where(fn ($query) => Filter::queryBetween($query, $between))
-            ->get();
-
+        $docVente = $dashboard->getDocVente($between);
         $saleAndPaymentDetails = $dashboard->getSaleAndPaymentDetails($between);
         // dd($saleAndPaymentDetails);
-        $saleAndPaymentDetails->map(fn ($sale) => $dashboard->mapSalePayment($sale))
+        $saleAndPaymentDetails = $saleAndPaymentDetails->map(fn ($sale) => $dashboard->mapSalePayment($sale))
             ->filter(fn ($saleable) => !is_null($saleable));
 
         $payments = $saleAndPaymentDetails->groupBy("payment_type");
@@ -36,12 +32,9 @@ class AdminController extends Controller
 
         $saleAndPaymentDetails = $saleAndPaymentDetails->groupBy("article_reference");
 
-        $solds = $dashboard->getSolds($between);
-
-        // dd($solds);
-        // dd($solds->sum("sub_amount") , $sales->sum("paid"));
-        $recettes = $this->getRecettes($solds, $sales);
-        $recaps = $dashboard->getRecaps($between);
+        $solds = $dashboard->getSolds($between, $filterType);
+        $recettes = $this->getRecettes($solds, $docVente);
+        $recaps = $dashboard->getRecaps($between, $filterType);
 
         return view("admin.dashboard.index", [
             "between" => $between,
@@ -49,6 +42,33 @@ class AdminController extends Controller
             "recaps" => $recaps,
             "recettes" => $recettes,
             "saleAndPaymentDetails" => $saleAndPaymentDetails->map(fn ($article) => $this->mapSalPaymentCol($article)),
+            "solds" => $solds
+        ]);
+    }
+
+    public function index(Dashboard $dashboard)
+    {
+        $paymentTypes  = [];
+        $startDate = request()->get("start_date") ?? date("Y-m-d");
+        $endDate = request()->get("end_date") ?? date("Y-m-d");
+        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
+        $between = [$startDate, $endDate];
+
+        $solds = $dashboard->getSolds($between, $filterType);
+        $docVente = $dashboard->getDocVente($between);
+        $soldPayments = $dashboard->getSaleAndPaymentDetails($between, $filterType);
+        $soldPayments = $this->getSaleDocs($soldPayments, $filterType);
+        $payments = $soldPayments->groupBy("payment_type");
+        $paymentTypes = $dashboard->getPaymentTypes($payments);
+        // dd($soldPayments);
+        $recettes = $this->getRecettes($solds, $docVente);
+        $recaps = $dashboard->getRecaps($between, $filterType);
+
+        return view("admin.dashboard.index", [
+            "between" => $between,
+            "paymentTypes" => $paymentTypes,
+            "recaps" => $recaps,
+            "recettes" => $recettes,
             "solds" => $solds
         ]);
     }
@@ -77,13 +97,11 @@ class AdminController extends Controller
         $startDate = request()->get("start_date") ?? date("Y-m-d");
         $endDate = request()->get("end_date") ?? date("Y-m-d");
         $between = [$startDate, $endDate];
+        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
+        $solds = $dashboard->getSolds($between, $filterType);
+        $docVente = $dashboard->getDocVente($between);
 
-        $solds = $dashboard->getSolds($between);
-        $sales = DocumentVente::has("sales")
-            ->where(fn ($query) => Filter::queryBetween($query, $between))
-            ->get();
-
-        $recettes = $this->getRecettes($solds, $sales);
+        $recettes = $this->getRecettes($solds, $docVente);
 
         return  [
             'invoices' => [
@@ -96,15 +114,49 @@ class AdminController extends Controller
         ];
     }
 
-    private function getRecettes($solds, $sales)
+    private function getSaleDocs($saleDocs, $filterType)
     {
-        $rest = $solds->sum("sub_amount") - $sales->sum("paid");
+        // dd($saleDocs,$filterType);
+        $articles = $saleDocs->filter(fn ($data) => $data->saleable_type == "App\Models\Product");
+        $consignations = $saleDocs->filter(function ($data) {
+            return  $data->saleable_type == "App\Models\Emballage" && $data->isWithEmballage == 0;
+        });
+        $deconsignations = $saleDocs->filter(function ($data) {
+            return  $data->saleable_type == "App\Models\Emballage" && $data->isWithEmballage == 1;
+        });
+
+        switch ($filterType) {
+            case 'article':
+                $saleDocs = $articles;
+                break;
+            case 'consignation':
+                $saleDocs = $consignations;
+                break;
+            case 'deconsignation':
+                $saleDocs = $deconsignations;
+                break;
+            default:
+                break;
+        }
+
+        return $saleDocs;
+    }
+
+    private function getRecettes($solds, $docVente)
+    {
+        // $docVente = $docVente->get();
+        $rest = $solds->sum("sub_amount") - $docVente->sum("paid");
+
         return  [
+            // "sum_paid" => 0,
+            // "sum_checkout" => 0,
+            // "sum_caisse" => 0,
+            // "sum_rest" => 0,
             "sum_amount" => $solds->sum("sub_amount"),
-            "sum_paid" => $sales->sum("paid"),
-            "sum_checkout" => $sales->sum("checkout"),
-            "sum_caisse" => $sales->sum("paid") - $sales->sum("checkout"),
-            "sum_rest" => $rest > 0 ? $rest : 0,
+            "sum_paid" => $docVente->sum("paid"),
+            "sum_checkout" => $docVente->sum("checkout"),
+            "sum_caisse" => $docVente->sum("paid") - $docVente->sum("checkout"),
+            "sum_rest" => $rest
         ];
     }
 }
