@@ -62,9 +62,11 @@
                                 <select required name="article_reference" id="article_reference"
                                     class="select2 form-control">
                                     @forelse ($stocks as $stock)
-                                        <option value="{{ $stock->article_ref }}">
-                                            {{ Str::upper($stock->designation) }}
-                                        </option>
+                                        @isset ($stock->designation)
+                                            <option value="{{ $stock->article_ref }}">
+                                                {{ Str::upper($stock->designation) }}
+                                            </option>
+                                        @endisset
                                     @empty
                                     @endforelse
                                 </select>
@@ -131,7 +133,8 @@
                                         <td>{{ $inventory->real_quantity }}</td>
                                         <td>{{ $inventory->difference }}</td>
                                         <td>
-                                            <a class="btn btn-info" href="{{ route('admin.inventaires.getAdjustStockForm', $inventory->id) }}">
+                                            <a class="btn btn-info"
+                                                href="{{ route('admin.inventaires.getAdjustStockForm', $inventory->id) }}">
                                                 <i class="la la-eye"></i>
                                                 Voir
                                             </a>

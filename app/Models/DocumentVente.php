@@ -66,7 +66,6 @@ class DocumentVente extends Model
         if ($number) {
             $query = $query->where("number", $number);
         }
-
         return $query->get()->sum("checkout");
     }
 

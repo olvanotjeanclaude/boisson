@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
-    public function yedek(Dashboard $dashboard)
+    public function indexo(Dashboard $dashboard)
     {
         $paymentTypes  = [];
         $startDate = request()->get("start_date") ?? date("Y-m-d");
@@ -55,10 +55,9 @@ class AdminController extends Controller
         $between = [$startDate, $endDate];
 
         $solds = $dashboard->getSolds($between, $filterType);
+
         $docVente = $dashboard->getDocVente($between);
-        $soldPayments = $dashboard->getSaleAndPaymentDetails($between, $filterType);
-        $soldPayments = $this->getSaleDocs($soldPayments, $filterType);
-        $payments = $soldPayments->groupBy("payment_type");
+        $payments = $docVente->get()->groupBy("payment_type");
         $paymentTypes = $dashboard->getPaymentTypes($payments);
         // dd($soldPayments);
         $recettes = $this->getRecettes($solds, $docVente);
@@ -114,33 +113,6 @@ class AdminController extends Controller
         ];
     }
 
-    private function getSaleDocs($saleDocs, $filterType)
-    {
-        // dd($saleDocs,$filterType);
-        $articles = $saleDocs->filter(fn ($data) => $data->saleable_type == "App\Models\Product");
-        $consignations = $saleDocs->filter(function ($data) {
-            return  $data->saleable_type == "App\Models\Emballage" && $data->isWithEmballage == 0;
-        });
-        $deconsignations = $saleDocs->filter(function ($data) {
-            return  $data->saleable_type == "App\Models\Emballage" && $data->isWithEmballage == 1;
-        });
-
-        switch ($filterType) {
-            case 'article':
-                $saleDocs = $articles;
-                break;
-            case 'consignation':
-                $saleDocs = $consignations;
-                break;
-            case 'deconsignation':
-                $saleDocs = $deconsignations;
-                break;
-            default:
-                break;
-        }
-
-        return $saleDocs;
-    }
 
     private function getRecettes($solds, $docVente)
     {

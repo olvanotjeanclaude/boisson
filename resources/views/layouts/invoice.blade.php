@@ -15,6 +15,7 @@
 <body translate="no">
     <div id="invoice-container">
         <h4 class="title">{{ getAppName() }}</h4>
+        <br>
         <div class="caption">
             @yield('header')
         </div>

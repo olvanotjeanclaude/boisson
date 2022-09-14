@@ -38,6 +38,11 @@
     <link rel="stylesheet" type="text/css"
         href="{{ asset('app-assets/css/core/menu/menu-types/material-vertical-menu-modern.css') }}">
     @yield('page-css')
+    <style>
+        table th, table td{
+            padding: .5rem!important;
+        }
+    </style>
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->

@@ -2,17 +2,17 @@
     <table id="invoiceTable">
         <thead>
             <tr>
-                <th>Désignation</th>
+                <th style="width: 180px">Désignation</th>
                 <th>Qté</th>
                 <th>PU</th>
-                <th style="min-width: 100px">Total</th>
+                <th style="text-align: right">Total</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($invoices["datas"] as $data)
                 <tr>
                     <td>
-                        {{ $data->saleable->designation }}
+                        {{ Str::title($data->saleable->designation) }}
                     </td>
                     <td>
                         {{ $data->quantity }}
@@ -20,72 +20,68 @@
                     <td>
                         {{ round($data->pricing) }}
                     </td>
-                    <td>
-                        {{ formatPrice($data->sub_amount) }}
+                    <td style="text-align: right">
+                        {{ $data->sub_amount }}
                     </td>
                 </tr>
             @empty
             @endforelse
         </tbody>
+        <br>
         <tfoot>
-            <tr>
-                <td></td>
-                <td></td>
-                <td>
-                    <h6 style="margin-top: 8px">Total:</h6>
-                </td>
-                <td>
-                    <h6 style="margin-top: 8px">{{ formatPrice($amount) }}</h6>
-                </td>
-            </tr>
+            @isset($amount)
+                <tr>
+                    <td colspan="2">
+                        <h6 style="text-align: right">Total :</h6>
+                    </td>
+                    <td colspan="2">
+                        <h6> &nbsp; {{ formatPrice(abs($amount)) }}</h6>
+                    </td>
+                </tr>
+            @endisset
 
-            <tr>
-                <td></td>
-                <td></td>
-                <td>
-                    <h6>Paye:</h6>
-                </td>
-                <td>
-                    <h6>{{ formatPrice(abs($paid)) }}</h6>
-                </td>
-            </tr>
-
-            @isset($checkout)
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <h6>Sortie De Caisse:</h6>
-                    </td>
-                    <td>
-                        <h6>{{ formatPrice($checkout) }}</h6>
-                    </td>
-                </tr>
-            @endisset
-            @isset($rest)
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <h6>Credit:</h6>
-                    </td>
-                    <td>
-                        <h6>{{ formatPrice(abs($rest)) }}</h6>
-                    </td>
-                </tr>
-            @endisset
-            @isset($caisse)
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <h6>Caisse:</h6>
-                    </td>
-                    <td>
-                        <h6>{{ formatPrice($caisse) }}</h6>
-                    </td>
-                </tr>
-            @endisset
+            @if (request()->get('filter_type') == 'tout')
+                @isset($paid)
+                    <tr>
+                        <td colspan="2">
+                            <h6 style="text-align: right">Paye :</h6>
+                        </td>
+                        <td colspan="2">
+                            <h6> &nbsp; {{ formatPrice(abs($paid)) }}</h6>
+                        </td>
+                    </tr>
+                @endisset
+                @isset($checkout)
+                    <tr>
+                        <td colspan="2">
+                            <h6 style="text-align: right">Sortie De Caisse :</h6>
+                        </td>
+                        <td colspan="2">
+                            <h6> &nbsp; {{ formatPrice(abs($checkout)) }}</h6>
+                        </td>
+                    </tr>
+                @endisset
+                @isset($rest)
+                    <tr>
+                        <td colspan="2">
+                            <h6 style="text-align: right">Rest :</h6>
+                        </td>
+                        <td colspan="2">
+                            <h6> &nbsp; {{ formatPrice(abs($rest)) }}</h6>
+                        </td>
+                    </tr>
+                @endisset
+                @isset($caisse)
+                    <tr>
+                        <td colspan="2">
+                            <h6 style="text-align: right">Caisse :</h6>
+                        </td>
+                        <td colspan="2">
+                            <h6> &nbsp; {{ formatPrice(abs($caisse)) }}</h6>
+                        </td>
+                    </tr>
+                @endisset
+            @endif
         </tfoot>
     </table>
     <h5 style="margin-top: 15px">Merci beaucoup !</h5>

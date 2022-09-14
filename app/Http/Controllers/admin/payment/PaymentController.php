@@ -62,33 +62,38 @@ class PaymentController extends Controller
         $request->checkout = abs($request->checkout);
 
         $rest = abs(DocumentVente::Rest($invoiceNumber));
+        $amount = abs(DocumentVente::TotalAmount($invoiceNumber));
+
         $docSale = $this->saleDoc($invoice);
-        $actionValid=false;
-        
+        $actionValid = false;
+
         if ($request->paid > 0) { //Avec consignation
             if ($request->paid > $rest) {
                 return back()->withErrors(["errors" => "Mihoatra ny vola nampidirinao!"]);
             }
             $rest = $rest - $request->paid;
-            $actionValid =true;
-            
+            $actionValid = true;
         } else if ($request->checkout > 0) {
             if ($request->checkout > $rest) {
                 return back()->withErrors(["errors" => "Mihoatra ny vola nampidirinao!"]);
+            } else if ($request->checkout < $amount) {
+                return back()->withErrors(["errors" => "Tsy ampy ny vola nampidirinao!"]);
+            } else if ($request->checkout != $amount) {
+                return back()->withErrors(["errors" => "Amarino ny vola nampidirinao!"]);
             }
 
             $rest = $rest - $request->checkout;
-            $actionValid =true;
+            $actionValid = true;
         }
-      
-        if($actionValid){
+
+        if ($actionValid) {
             $docSale["status"] = $this->checkStatus($rest);
             $this->updateInvoice($invoice, $docSale);
-    
+
             return redirect("/admin/ventes")->with("success", "Payment effectuer avec success");
         }
 
-        return back()->withErrors(["errors" =>CustomMessage::DEFAULT_ERROR]);
+        return back()->withErrors(["errors" => CustomMessage::DEFAULT_ERROR]);
     }
 
     private function saleDoc($invoice)
@@ -102,7 +107,7 @@ class PaymentController extends Controller
                 "paid" => request()->paid,
                 "checkout" => request()->checkout ?? 0,
                 "payment_type" => request()->payment_type,
-                "received_at" => $invoice->received_at??now()->toDateString(),
+                "received_at" => $invoice->received_at ?? now()->toDateString(),
                 "comment" => request()->comment,
                 "user_id" => auth()->user()->id
             ];

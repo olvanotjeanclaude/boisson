@@ -88,7 +88,7 @@
                         </div>
                     </div>
                     <div class="card-content collapse show">
-                        <div class="card-body">
+                        <div class="card-body mt-2">
                             <div class="table-responsive">
                                 <table
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">

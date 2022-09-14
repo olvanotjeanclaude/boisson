@@ -21,7 +21,7 @@ class Dashboard
             // ->where("saleable_type", "App\Models\Product")
             // ->where(fn ($query) => Filter::querySales($query, $filterType))
             ->where(fn ($query) => Filter::queryBetween($query, $between))
-            ->groupBy("sales.article_reference", "sales.invoice_number","isWithEmballage");
+            ->groupBy("sales.article_reference", "sales.invoice_number", "isWithEmballage");
         // dd($between, $sales->get());
 
         return $sales;
@@ -85,7 +85,7 @@ class Dashboard
         foreach (DocumentVente::PAYMENT_TYPES as $key => $name) {
             if (isset($payments[$key])) {
                 $payment = $payments[$key];
-                $price = $payment->sum("sum_paid");
+                $price = $payment->sum("paid");
                 $paymentTypes[$name] = formatPrice($price);
             }
         }
@@ -95,7 +95,14 @@ class Dashboard
 
     public function getSolds($between, $articleType = "all")
     {
-        $sales = Sale::whereHasMorph('saleable', [Product::class, Emballage::class])
+        $sales = Sale::whereHasMorph(
+            'saleable',
+            [Product::class, Emballage::class],
+            function ($query) {
+                $search = strtolower(request()->get("chercher"));
+                $query->where('designation', 'like', "%$search%");
+            }
+        )
             ->where(fn ($query) => Filter::queryBetween($query, $between))
             ->where(function ($query) use ($articleType) {
                 switch ($articleType) {
@@ -147,7 +154,6 @@ class Dashboard
 
     public function getDocVente($between)
     {
-        return DocumentVente::has("sales")
-            ->where(fn ($query) => Filter::queryBetween($query, $between));
+        return DocumentVente::where(fn ($query) => Filter::queryBetween($query, $between));
     }
 }
