@@ -87,12 +87,49 @@
                             </a>
                         </div>
                     </div>
-                  
+
                     <div class="card-content collapse show">
                         <div class="card-body mt-2">
-                            <div class="table-responsive">
-                                <table data-columns="{{ $collumns }}" data-url="{{ route('admin.stocks.getData') }}"
-                                    class="table datatable ajax-datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
+                            <div class="bg-dark p-1">
+                                <form action="{{ route('admin.stocks.index') }}" method="GET">
+                                    <input type="hidden" value="{{ $between[0] }}" class="form-control"
+                                        name="start_date">
+                                    <input type="hidden" value="{{ $between[1] }}" class="form-control" name="end_date">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <input type="text" value="{{ request()->get('chercher') }}" name="chercher"
+                                                placeholder="Reference Ou Designation..." style=""
+                                                class="bg-white form-control">
+                                        </div>
+                                        <div class="col">
+                                            <select name="filter_type" class="bg-white form-control" id="filterArticle">
+                                                @foreach (\App\helper\Filter::TYPES as $value)
+                                                    <option @if ($value == request()->get('filter_type')) selected @endif
+                                                        value="{{ $value }}">
+                                                        {{ Str::title($value) }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <div class="d-flex mt-1 mt-sm-0">
+                                                <button type="submit" class="btn btn-secondary">Filtrer</button>
+                                                <a target="_blink"
+                                                    href="{{ route('admin.stocks.printReport', [
+                                                        'start_date' => $between[0],
+                                                        'end_date' => $between[1],
+                                                        'filter_type' => request()->get('filter_type'),
+                                                        'chercher' => request()->get('chercher'),
+                                                    ]) }}"
+                                                    class="btn btn-light">
+                                                    Imprimer
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="table-responsive" style="max-height:450px">
+                                <table class="table table-striped">
                                     <thead class="bg-light">
                                         <tr>
                                             <th>Ref</th>
@@ -105,18 +142,29 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @foreach ($stocks as $stock)
+                                        @foreach ($stocks as $stock)
                                             @isset($stock->designation)
                                                 <tr>
                                                     <td>{{ $stock->article_ref }}</td>
-                                                    <td>{{ Str::upper($stock->type ?? '-') }}</td>
+                                                    <td>
+                                                        {{-- @if ($stock->type == 'deconsignation')
+                                                            DECO
+                                                        @endif
+                                                        @if ($stock->type == 'consignation')
+                                                            CONSI
+                                                        @endif
+                                                        @if ($stock->type == 'article')
+                                                            ARTICLE
+                                                        @endif --}}
+                                                        {{ Str::upper($stock->type) }}
+                                                    </td>
                                                     <td>{{ Str::upper($stock->designation) }}</td>
                                                     <td>{{ $stock->sum_entry }}</td>
                                                     <td>{{ $stock->sum_out }}</td>
                                                     <td>{{ $stock->final }}</td>
                                                 </tr>
                                             @endisset
-                                        @endforeach --}}
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -131,7 +179,8 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text bg-dark text-white">Debut</span>
                             </div>
-                            <input type="date" value="{{ $between[0] }}" class="form-control" name="start_date">
+                            <input type="date" value="{{ request()->get('start_date') ?? $between[0] }}"
+                                class="form-control" name="start_date">
                         </div>
                     </div>
                     <div class="form-group">
@@ -139,7 +188,8 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text bg-dark text-white">Fin</span>
                             </div>
-                            <input type="date" value="{{ $between[1] }}" class="form-control small" name="end_date">
+                            <input type="date" value="{{ request()->get('end_date') ?? $between[1] }}"
+                                class="form-control small" name="end_date">
                         </div>
                     </div>
 
@@ -238,8 +288,6 @@
 
 @section('script')
     <script>
-        $(document).ready(function() {
-            loadDatatableAjax();
-        })
+        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
     </script>
 @endsection

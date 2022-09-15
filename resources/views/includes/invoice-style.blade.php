@@ -12,19 +12,19 @@
     #invoiceTable h4,
     #invoiceTable h5,
     #invoiceTable h6{
-        font-family: 'Courier New', Courier, monospace;
+        font-family: 'arial';
+        font-weight: 100!important;
     }
 
     #invoice-container {
-        font-size: .78rem;
+        font-size: 1.5rem;
         max-width: 80mm;
         border-collapse: collapse;
         margin-left: 7px;
     }
 
     #invoiceTable * {
-        font-family: 'Courier New', Courier, monospace;
-        font-size: .7rem;
+        font-size: 1rem;
     }
 
     table {
@@ -33,18 +33,18 @@
 
     #invoiceTable td,
     #invoiceTable th {
-        border-bottom: 1px dashed #ddd;
+        border-bottom: 1px dashed rgb(201, 195, 195);
         padding: 3px;
         margin: 2px;
     }
 
     #invoiceTable th {
-        border-bottom: 1px solid #ddd;
-        font-size: .66rem;
+        border-bottom: 1px solid rgb(201, 195, 195);
+        font-size: 1rem;
     }
 
     #invoiceTable td {
-        font-size: .7rem;
+        font-size: 1rem;
     }
 
     #invoiceTable tr:nth-child(even) {
@@ -62,9 +62,9 @@
     }
 
     tfoot h6 {
-        /* font-size: .9rem!important; */
+        font-size: .9rem!important;
         margin: 0;
-        font-family: 'Courier New', Courier, monospace;
+        font-family: 'arial';
     }
 
     tfoot tr,
@@ -77,18 +77,18 @@
 
     .title {
         text-align: center;
-        margin: 5px;
-        font-size: 1.6rem;
+        margin-top: 35px;
+        font-size: 1.8rem;
     }
 
     .caption {
-        margin: 5px;
-        font-size: .78rem;
-        font-family: 'Courier New', Courier, monospace;
+        margin: 5px auto;
+        font-size: 1.2rem;
+        font-family: 'arial';
     }
 
     .print-text {
         font-style: italic;
-        font-size: .67rem
+        font-size: .77rem
     }
 </style>

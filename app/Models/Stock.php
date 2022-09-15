@@ -92,24 +92,26 @@ class Stock extends Model
     {
         if (empty($between)) {
             $between = self::getDefaultBetween();
-        } else if ($between[0] == $between[1]) {
+        } 
+        else if ($between[0] == $between[1]) {
             $between = [self::MinDate($between[0]), $between[0]];
         }
 
         $sales = DB::table('document_ventes')
             ->select(self::defaultSelect()["sale"])->join("sales", function ($join) use ($between) {
                 $join->on("sales.invoice_number", "document_ventes.number")
-                    ->whereBetween("sales.received_at", $between);
-            })->groupBy("sales.article_reference","sales.isWithEmballage");
-            // dd($sales->get());
+                    ->where(fn ($query) => Filter::queryBetween($query, $between, "sales.received_at"));
+            })->groupBy("sales.article_reference", "sales.isWithEmballage");
+        // dd($sales->get());
         return DB::table("stocks")
-            ->whereBetween("date", $between)->select(self::defaultSelect()["stock"])
+            ->where(fn ($query) => Filter::queryBetween($query, $between, "date"))
+            ->select(self::defaultSelect()["stock"])
             ->leftJoinSub($sales, "sales", function ($join) {
                 $join->on("stocks.article_reference", "sales.article_ref");
-            })->groupBy("stocks.article_reference","sales.isWithEmballage")
+            })->groupBy("stocks.article_reference", "sales.isWithEmballage")
             ->get()
             ->map(fn ($stock) => $this->mapStock($stock))
-            ->filter(fn($stock) =>isset($stock->type) && isset($stock));
+            ->filter(fn ($stock) => isset($stock->type) && isset($stock));
     }
 
     public function scopefilterBetween($query, $between = null)
@@ -123,8 +125,8 @@ class Stock extends Model
                 [Product::class]
             );
 
-        $stocks = Filter::queryBetween($query,$between,"date");
-       
+        $stocks = Filter::queryBetween($query, $between, "date");
+
         return $stocks->groupBy("article_reference")
             ->get();
     }
@@ -136,15 +138,14 @@ class Stock extends Model
         // dd($stock);
         if ($article) {
             $stock->type = "article";
-            if($stock->article_type=="App\Models\Emballage"){
-               if($stock->isWithEmballage==0){
-                $stock->type="consignation";
-            }
-            else{
-                   $stock->type="deconsignation";
-                   $stock->sum_entry = $stock->sum_out;
-                   $stock->sum_out= 0;
-               }
+            if ($stock->article_type == "App\Models\Emballage") {
+                if ($stock->isWithEmballage == 0) {
+                    $stock->type = "consignation";
+                } else {
+                    $stock->type = "deconsignation";
+                    $stock->sum_entry = $stock->sum_out;
+                    $stock->sum_out = 0;
+                }
             }
             $stock->designation = $article->designation;
         }

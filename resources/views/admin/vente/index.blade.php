@@ -84,7 +84,8 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <!-- Invoices List table -->
-                            <div class="table-responsive">
+                             <p class="loa">Chargement...</p>
+                             <div class="table-responsive">
                                 <table
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">

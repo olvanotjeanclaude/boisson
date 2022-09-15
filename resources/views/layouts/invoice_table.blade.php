@@ -3,8 +3,8 @@
         <table id="invoiceTable">
             <thead>
                 <tr>
-                    <th style="width: 180px">Désignation</th>
-                    <th>Qté</th>
+                    <th style="width: 160px">Désignation</th>
+                    <th style="padding:0 10px">Qté</th>
                     <th>PU</th>
                     <th style="text-align: right">Total</th>
                 </tr>
@@ -15,7 +15,7 @@
                         <td>
                             {{ Str::title($data->saleable->designation) }}
                         </td>
-                        <td>
+                        <td style="text-align: :center">
                             {{ $data->quantity }}
                         </td>
                         <td>
@@ -33,10 +33,10 @@
                 @isset($amount)
                     <tr>
                         <td colspan="1">
-                            <h6 style="text-align: right">Total :</h6>
+                            <p style="text-align: right">Total :</p>
                         </td>
                         <td colspan="3">
-                            <h6> &nbsp; {{ formatPrice(abs($amount)) }}</h6>
+                            <p> &nbsp; {{ formatPrice(abs($amount)) }}</p>
                         </td>
                     </tr>
                 @endisset
@@ -45,40 +45,40 @@
                     @isset($paid)
                         <tr>
                             <td colspan="1">
-                                <h6 style="text-align: right">Paye :</h6>
+                                <p style="text-align: right">Paye :</p>
                             </td>
                             <td colspan="3">
-                                <h6> &nbsp; {{ formatPrice(abs($paid)) }}</h6>
+                                <p> &nbsp; {{ formatPrice(abs($paid)) }}</p>
                             </td>
                         </tr>
                     @endisset
                     @isset($checkout)
                         <tr>
                             <td colspan="1">
-                                <h6 style="text-align: right">Sortie De Caisse :</h6>
+                                <p style="text-align: right">Sortie De Caisse :</p>
                             </td>
                             <td colspan="3">
-                                <h6> &nbsp; {{ formatPrice(abs($checkout)) }}</h6>
+                                <p> &nbsp; {{ formatPrice(abs($checkout)) }}</p>
                             </td>
                         </tr>
                     @endisset
                     @isset($rest)
                         <tr>
                             <td colspan="1">
-                                <h6 style="text-align: right">Rest :</h6>
+                                <p style="text-align: right">Rest :</p>
                             </td>
                             <td colspan="3">
-                                <h6> &nbsp; {{ formatPrice(abs($rest)) }}</h6>
+                                <p> &nbsp; {{ formatPrice(abs($rest)) }}</p>
                             </td>
                         </tr>
                     @endisset
                     @isset($caisse)
                         <tr>
                             <td colspan="1">
-                                <h6 style="text-align: right">Caisse :</h6>
+                                <p style="text-align: right">Caisse :</p>
                             </td>
                             <td colspan="3">
-                                <h6> &nbsp; {{ formatPrice(abs($caisse)) }}</h6>
+                                <p> &nbsp; {{ formatPrice(abs($caisse)) }}</p>
                             </td>
                         </tr>
                     @endisset
@@ -88,10 +88,10 @@
                     @foreach ($recaps as $recap => $total)
                         <tr>
                             <td colspan="1">
-                                <h6 style="text-align: right">{{ $recap }} :</h6>
+                                <p style="text-align: right">{{ $recap }} :</p>
                             </td>
                             <td colspan="3">
-                                <h6> &nbsp; {{ $total }}</h6>
+                                <p> &nbsp; {{ $total }}</p>
                             </td>
                         </tr>
                     @endforeach
@@ -99,9 +99,11 @@
 
             </tfoot>
         </table>
-        <h4 style="margin-top: 15px">Merci beaucoup !</h4>
-        <br>
-        <h6 class="print-text">Imprimé le {{ format_date_time(now()->toDateTimeString()) }}</h6>
+        @section('footer')
+            <p style="margin-top: 15px">Merci beaucoup !</p>
+            <br>
+            <h6 class="print-text">Imprimé le {{ format_date_time(now()->toDateTimeString()) }}</h6>
+        @endsection
     </div>
 @else
     <div class="card">

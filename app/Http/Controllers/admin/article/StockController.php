@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
+use App\helper\Filter;
 use App\Models\Product;
-use App\Models\Emballage;
 
+use App\Models\Emballage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Articles\FormatRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,19 +25,8 @@ class StockController extends Controller
         $emballages = Emballage::orderBy("designation")->get();
         // $emballages = [];
 
-        if (isset($request->start_date)) {
-            $between[0] = $request->start_date;
-        }
-        if (isset($request->end_date)) {
-            $between[1] = $request->end_date;
-        }
+        $stocks = $this->getData();
 
-        $stocks = Stock::between($between)
-            ->filter(function ($stock) {
-                return $stock->designation == "article";
-            });
-        // ->where("type","LIKE","%consignation%");
-        // $stocks = [];
         // dd($stocks);
         $collumns = [
             ["data" => "article_ref"],
@@ -57,21 +48,70 @@ class StockController extends Controller
         ));
     }
 
-    public function getData(Request $request)
+    public function getData()
     {
         $between = Stock::getDefaultBetween();
-        if (isset($request->start_date)) {
-            $between[0] = $request->start_date;
-        }
-        if (isset($request->end_date)) {
-            $between[1] = $request->end_date;
+        $startDate = request()->get("start_date") ?? date("Y-m-d");
+        $endDate = request()->get("end_date") ?? date("Y-m-d");
+        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
+        $between = [$startDate, $endDate];
+        $keyword = strtolower(request()->get("chercher"));
+
+        $stocks =  Stock::between($between);
+
+        if ($filterType != "tout") {
+            $stocks = $stocks->filter(function ($stock) use ($filterType) {
+                return $stock->type == $filterType;
+            });
         }
 
-        $stocks = Stock::between($between);
-        // dd($stocks);
-        $datatables = DataTables::of($stocks);
+        if ($keyword) {
+            $stocks = $stocks->filter(function ($stock) use ($keyword) {
+                $designation = strtolower($stock->designation);
+                return $stock->article_ref == $keyword ||  Str::startsWith($designation, $keyword);
+            });
+        }
 
-        return $datatables->make();
+        return $stocks;
+    }
+
+    public function printReport()
+    {
+        // return view('admin.stock.invoice',  $this->getDocumentData());
+        $pdf = Pdf::loadView('admin.stock.invoice',  $this->getDocumentData());
+
+        return $pdf->stream();
+    }
+
+    private function getDocumentData()
+    {
+        $between = Stock::getDefaultBetween();
+        $startDate = request()->get("start_date") ?? date("Y-m-d");
+        $endDate = request()->get("end_date") ?? date("Y-m-d");
+        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
+        $between = [$startDate, $endDate];
+        $keyword = strtolower(request()->get("chercher"));
+
+        $stocks =  Stock::between($between);
+
+        if ($filterType != "tout") {
+            $stocks = $stocks->filter(function ($stock) use ($filterType) {
+                return $stock->type == $filterType;
+            });
+        }
+
+        if ($keyword) {
+            $stocks = $stocks->filter(function ($stock) use ($keyword) {
+                $designation = strtolower($stock->designation);
+                return $stock->article_ref == $keyword ||  Str::startsWith($designation, $keyword);
+            });
+        }
+
+        return [
+            "stocks" => $stocks,
+            "sum_quantity" => $stocks->sum("final"),
+            "between" =>$between
+        ];
     }
 
     public function create()

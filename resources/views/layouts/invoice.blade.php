@@ -20,6 +20,9 @@
             @yield('header')
         </div>
         @yield('table')
+        <div class="caption">
+            @yield('footer')
+        </div>
     </div>
 
     <!--End Invoice-->

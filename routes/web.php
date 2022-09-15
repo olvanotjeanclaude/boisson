@@ -63,6 +63,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
     Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
     Route::get("get-stock-data",[\App\Http\Controllers\admin\article\StockController::class,"getData"])->name("stocks.getData");
+    Route::get("get-stock-data",[\App\Http\Controllers\admin\article\StockController::class,"printReport"])->name("stocks.printReport");
     Route::group(["prefix" => "inventaires", "as" => "inventaires."], function () {
         Route::get("/", [\App\Http\Controllers\admin\article\InventoryController::class, "index"])->name("index");
         Route::post("/check-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "checkStock"])->name("checkStock");
