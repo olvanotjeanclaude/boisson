@@ -39,8 +39,9 @@
         href="{{ asset('app-assets/css/core/menu/menu-types/material-vertical-menu-modern.css') }}">
     @yield('page-css')
     <style>
-        table th, table td{
-            padding: .5rem!important;
+        table th,
+        table td {
+            padding: .5rem !important;
         }
     </style>
     <!-- END: Page CSS-->
@@ -130,6 +131,38 @@
     <script src="{{ asset('app-assets/js/custom/dataController.js') }}"></script>
     <script src="{{ asset('app-assets/js/custom/index.js') }}"></script>
     @yield('script')
+    <script>
+        function loadDatatableAjax(tableElement = ".ajax-datatable") {
+            const url = $(tableElement).data("url");
+            const table = $(tableElement);
+            if (table.length && url) {
+                const columns = $(tableElement).data("columns");
+                $('.ajax-datatable').DataTable({
+                    processing: true,
+                    ajax: {
+                        url: url, // json datasource
+                        type: "get", // type of method  , by default would be get
+                        // error: function() { // error handling code
+                        //     $(".ajax-datatable").css("display", "none");
+                        // }
+                    },
+                    columns: columns,
+                    dom: 'lBfrtip',
+                    buttons: [{
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                            'copy',
+                            'excel',
+                            'csv',
+                            'pdf',
+                            'print'
+                        ]
+                    }]
+                });
+            }
+        }
+    </script>
 </body>
 <!-- END: Body-->
 

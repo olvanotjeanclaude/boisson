@@ -19,7 +19,6 @@ class ArticleController extends Controller
     {
         $users = [];
         $articles = Articles::has("category")->orderBy("id", "desc")->get();
-        dd($articles);
         $articleTypes = Articles::ARTICLE_TYPES;
         $units = Articles::UNITS;
         $articleCategories = Category::pluck("id", "name")->toArray();

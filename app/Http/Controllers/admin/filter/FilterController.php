@@ -8,6 +8,6 @@ use Illuminate\Http\Request;
 class FilterController extends Controller
 {
     public function filterArticle(Request $request){
-        dd($request->all());
+       
     }
 }

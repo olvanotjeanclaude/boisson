@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\admin\article;
 
-use App\Articles\FormatRequest;
 use App\Models\Stock;
 use App\Models\Product;
-
 use App\Models\Emballage;
+
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
-use App\Http\Controllers\Controller;
+use App\Articles\FormatRequest;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
 
 class StockController extends Controller
 {
@@ -28,18 +30,48 @@ class StockController extends Controller
             $between[1] = $request->end_date;
         }
 
-        $stocks = Stock::between($between);
+        $stocks = Stock::between($between)
+            ->filter(function ($stock) {
+                return $stock->designation == "article";
+            });
+        // ->where("type","LIKE","%consignation%");
         // $stocks = [];
         // dd($stocks);
-        $bottles = [];
+        $collumns = [
+            ["data" => "article_ref"],
+            ["data" => "type"],
+            ["data" => "designation"],
+            ["data" => "sum_entry"],
+            ["data" => "sum_out"],
+            ["data" => "final"],
+        ];
+
+        $collumns = json_encode($collumns);
 
         return view("admin.stock.index", compact(
             "articles",
             "emballages",
             "stocks",
-            "bottles",
-            "between"
+            "between",
+            "collumns"
         ));
+    }
+
+    public function getData(Request $request)
+    {
+        $between = Stock::getDefaultBetween();
+        if (isset($request->start_date)) {
+            $between[0] = $request->start_date;
+        }
+        if (isset($request->end_date)) {
+            $between[1] = $request->end_date;
+        }
+
+        $stocks = Stock::between($between);
+        // dd($stocks);
+        $datatables = DataTables::of($stocks);
+
+        return $datatables->make();
     }
 
     public function create()

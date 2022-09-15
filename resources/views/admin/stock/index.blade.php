@@ -87,14 +87,14 @@
                             </a>
                         </div>
                     </div>
+                  
                     <div class="card-content collapse show">
                         <div class="card-body mt-2">
                             <div class="table-responsive">
-                                <table
-                                    class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
+                                <table data-columns="{{ $collumns }}" data-url="{{ route('admin.stocks.getData') }}"
+                                    class="table datatable ajax-datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            {{-- <th>Date</th> --}}
                                             <th>Ref</th>
                                             <th>Type</th>
                                             <th>Designation</th>
@@ -105,20 +105,18 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($stocks as $stock)
+                                        {{-- @foreach ($stocks as $stock)
                                             @isset($stock->designation)
                                                 <tr>
-                                                    {{-- <td>{{ format_date($stock->date) }}</td> --}}
                                                     <td>{{ $stock->article_ref }}</td>
                                                     <td>{{ Str::upper($stock->type ?? '-') }}</td>
                                                     <td>{{ Str::upper($stock->designation) }}</td>
                                                     <td>{{ $stock->sum_entry }}</td>
                                                     <td>{{ $stock->sum_out }}</td>
-                                                    {{-- <td>{{ formatPrice($stock->amount) }}</td> --}}
                                                     <td>{{ $stock->final }}</td>
                                                 </tr>
                                             @endisset
-                                        @endforeach
+                                        @endforeach --}}
                                     </tbody>
                                 </table>
                             </div>
@@ -240,6 +238,8 @@
 
 @section('script')
     <script>
-        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
+        $(document).ready(function() {
+            loadDatatableAjax();
+        })
     </script>
 @endsection

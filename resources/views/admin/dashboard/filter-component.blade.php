@@ -27,7 +27,7 @@
             </select>
         </div> --}}
 
-        <div class="col-12  col-sm-2 mt-2 mt-sm-0">
+        <div class="col-12  col-sm-2 mt-2 mb-1 mt-sm-0">
             <button type="submit" class="btn  btn-outline-dark w-100">Filtrer</button>
         </div>
     </div>

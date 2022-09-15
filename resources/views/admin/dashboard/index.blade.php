@@ -60,19 +60,21 @@
         <div class="col-12">
             @include('admin.dashboard.filter-component')
         </div>
-
+        <br>
         <div class="col-md-4">
             @include('admin.dashboard.recap-vente')
-            <hr>
-            @include('admin.dashboard.payment-methode')
-            <hr>
-            @include('admin.dashboard.recap-emballage')
-
-            {{-- @include('admin.dashboard.saleAndPayDetail') --}}
         </div>
 
         <div class="col-md">
             @include('admin.dashboard.sale')
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            @include('admin.dashboard.payment-methode')
+        </div>
+        <div class="col-md-6">
+            @include('admin.dashboard.recap-emballage')
         </div>
     </div>
 @endsection

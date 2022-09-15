@@ -49,7 +49,8 @@ class Stock extends Model
                 "stocks.date as date",
                 DB::raw("SUM(stocks.entry) AS sum_entry"),
                 "sales.sum_out",
-                "sales.isWithEmballage"
+                // "sales.isWithEmballage"
+                DB::raw("COALESCE(sales.isWithEmballage,0) as isWithEmballage")
             ]
         ];
     }
@@ -107,7 +108,8 @@ class Stock extends Model
                 $join->on("stocks.article_reference", "sales.article_ref");
             })->groupBy("stocks.article_reference","sales.isWithEmballage")
             ->get()
-            ->map(fn ($stock) => $this->mapStock($stock));
+            ->map(fn ($stock) => $this->mapStock($stock))
+            ->filter(fn($stock) =>isset($stock->type) && isset($stock));
     }
 
     public function scopefilterBetween($query, $between = null)

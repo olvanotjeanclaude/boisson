@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-6">
                     <input type="text" value="{{ request()->get('chercher') }}" name="chercher"
-                        placeholder="Designation..." style="" class="bg-white form-control">
+                        placeholder="Reference Ou Designation..." style="" class="bg-white form-control">
                 </div>
                 <div class="col">
                     <select name="filter_type" class="bg-white form-control" id="filterArticle">
@@ -17,7 +17,7 @@
                     </select>
                 </div>
                 <div class="col">
-                    <div class="d-flex">
+                    <div class="d-flex mt-1 mt-sm-0">
                         <button type="submit" class="btn btn-secondary">Filtrer</button>
                         <a target="_blink"
                             href="{{ route('admin.dashboard.printReport', [
@@ -36,7 +36,7 @@
     </div>
     <div class="card-body">
         @if (count($solds))
-            <div class=" overflow-auto" style="max-height: 430px">
+            <div class=" overflow-auto" style="max-height: 270px">
                 <div class="table-responsive">
                     <table class="table table-striped small">
                         <thead>
@@ -69,13 +69,11 @@
                         @if (count($solds))
                             <tfoot>
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <h6 style="margin-top: 8px">Total:</h6>
+                                    <td colspan="1">
+                                        <h5 style="margin-top: 8px" class="text-right">Total:</h5>
                                     </td>
-                                    <td>
-                                        <h6 style="margin-top: 8px">{{ formatPrice($recettes['sum_amount']) }}</h6>
+                                    <td colspan="3">
+                                        <h5 style="margin-top: 8px">{{ formatPrice($recettes['sum_amount']) }}</h5>
                                     </td>
                                 </tr>
                             </tfoot>

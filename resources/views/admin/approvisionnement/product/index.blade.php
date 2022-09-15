@@ -46,14 +46,6 @@
                         <h4 class="card-title"> Liste D'articles</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
-                            <button type="button" id="deleteIcheckBtn" data-target="#deleteAllModal" data-toggle="modal"
-                                data-url="{{ route('admin.articles.destroy', ['article' => 'item']) }}"
-                                class="btn delete-btn d-none btn-danger btn-sm text-capitalize">
-                                <span class="material-icons">
-                                    delete
-                                </span>
-                                Supprimer
-                            </button>
                             {{-- <a href="{{ route('admin.factures.index') }}"
                                 class="btn btn-secondary btn-sm text-capitalize">
                                 <span class="material-icons">

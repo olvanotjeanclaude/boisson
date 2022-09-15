@@ -46,7 +46,7 @@ Auth::routes();
 
 Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], function () {
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
-    Route::get("{filter_type}/articles",[\App\Http\Controllers\admin\filter\FilterController::class, "filterArticle"]);
+    // Route::get("{filter_type}/articles",[\App\Http\Controllers\admin\filter\FilterController::class, "filterArticle"]);
     Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");
     Route::get("dashboard/facture/telecharger", [\App\Http\Controllers\admin\AdminController::class, "download"])->name("dashboard.download");
 
@@ -62,6 +62,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
     Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
     Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
+    Route::get("get-stock-data",[\App\Http\Controllers\admin\article\StockController::class,"getData"])->name("stocks.getData");
     Route::group(["prefix" => "inventaires", "as" => "inventaires."], function () {
         Route::get("/", [\App\Http\Controllers\admin\article\InventoryController::class, "index"])->name("index");
         Route::post("/check-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "checkStock"])->name("checkStock");

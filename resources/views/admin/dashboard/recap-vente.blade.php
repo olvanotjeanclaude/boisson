@@ -2,7 +2,7 @@
     <div class="card-header bg-secondary">
         <h3 class="text-white">Recapulatif De Vente</h3>
     </div>
-    <div class="card mb-0 overflow-auto" style="max-height:250px">
+    <div class="card mb-0 overflow-auto" style="max-height:300px">
         <div class="card-body">
             <div class="card bg-success">
                 <div class="card-body bg-success">

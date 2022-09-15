@@ -10,47 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class Dashboard
 {
-    public function getSaleDetail($between, $filterType = "all")
-    {
-        $sales = DB::table("sales")->select([
-            "invoice_number", "article_reference", "saleable_id", "saleable_type",
-            "received_at",
-            "isWithEmballage",
-            DB::raw("SUM(sales.quantity) as sum_quantity")
-        ])
-            // ->where("saleable_type", "App\Models\Product")
-            // ->where(fn ($query) => Filter::querySales($query, $filterType))
-            ->where(fn ($query) => Filter::queryBetween($query, $between))
-            ->groupBy("sales.article_reference", "sales.invoice_number", "isWithEmballage");
-        // dd($between, $sales->get());
-
-        return $sales;
-    }
-
-    public function getSaleAndPaymentDetails($between, $filterType = "all")
-    {
-        // $between = [now()->subDays(3)->toDateString(),now()->toDateString()];
-        return DB::table("document_ventes")
-            ->rightJoinSub($this->getSaleDetail($between, $filterType), "sales", function ($join) {
-                $join->on("document_ventes.number", "sales.invoice_number");
-            })
-            ->select([
-                "sales.article_reference",  "sales.saleable_id", "sales.saleable_type",
-                "sales.received_at",
-                "sales.sum_quantity",
-                "sales.isWithEmballage",
-                "document_ventes.number",
-                "document_ventes.payment_type as payment_type",
-                DB::raw("SUM(document_ventes.paid) as sum_paid"),
-                DB::raw("SUM(document_ventes.checkout) as sum_checkout"),
-            ])
-            // ->where(fn ($query) => Filter::querySales($query, $filterType))
-            ->where(fn ($query) => Filter::queryBetween($query, $between, "document_ventes.received_at"))
-            ->whereNotNull("document_ventes.payment_type")
-            ->groupBy("sales.article_reference", "document_ventes.number", "sales.isWithEmballage")
-            ->get();
-    }
-
     public function getRecaps($between, $filterType = "all")
     {
         $solds =  $this->getSolds($between, $filterType);
@@ -67,26 +26,16 @@ class Dashboard
         ];
     }
 
-    public function mapSalePayment($sale)
-    {
-        $article = DocumentVente::getArticleByReference($sale->article_reference);
-
-        if ($article) {
-            $sale->designation = $article->designation;
-            $sale->payment_name = DocumentVente::PAYMENT_TYPES[$sale->payment_type] ?? "-";
-        }
-
-        return $sale;
-    }
-
     public function getPaymentTypes($payments)
     {
         $paymentTypes = [];
         foreach (DocumentVente::PAYMENT_TYPES as $key => $name) {
             if (isset($payments[$key])) {
                 $payment = $payments[$key];
-                $price = $payment->sum("paid");
-                $paymentTypes[$name] = formatPrice($price);
+                $paymentTypes[$name] = [
+                    "paid" =>  $payment->sum("paid"),
+                    "checkout" => $payment->sum("checkout")
+                ];
             }
         }
 
@@ -100,7 +49,8 @@ class Dashboard
             [Product::class, Emballage::class],
             function ($query) {
                 $search = strtolower(request()->get("chercher"));
-                $query->where('designation', 'like', "%$search%");
+                $query->where('designation', 'like', "%$search%")
+                    ->orWhere('reference', 'like', "%$search%");
             }
         )
             ->where(fn ($query) => Filter::queryBetween($query, $between))
@@ -124,31 +74,28 @@ class Dashboard
             })
             ->orderBy("saleable_type")
             ->get();
-        // ->groupBy(fn ($sale) => $sale->article_reference)
-        // ->map(function ($sale, $article_ref) {
-        //     return (object)[
-        //         "article_reference" => $sale[0]->saleable->reference,
-        //         "saleable_type" => $sale[0]->saleable_type,
-        //         "saleable_id" => $sale[0]->saleable_id,
-        //         "designation" => $sale[0]->saleable->designation,
-        //         "pricing" => $sale[0]->pricing,
-        //         "sub_amount" => $sale[0]->sub_amount,
-        //         "sum_quantity" => $sale->sum("quantity"),
-        //     ];
-        // });
 
-        // dd($sales);
         return in_array($articleType, Filter::TYPES) ? $sales : collect([]);
     }
 
-    public function getRecettes($sales, $between)
+    public function getRecettes($solds, $docVente, $between = [])
     {
-        $solds = $this->getSolds($between);
+        // $docVente = $docVente->get();
+        $sum_amount = $solds->sum("sub_amount");
+        $sum_paid = $docVente->sum("paid");
+        $sum_checkout = $docVente->sum("checkout");
+        $all = Sale::whereHasMorph(
+            'saleable',
+            [Product::class, Emballage::class],
+        )
+            ->where(fn ($query) => Filter::queryBetween($query, $between))
+            ->get();
         return  [
-            "sum_amount" => $solds->sum("sub_amount"),
-            "sum_paid" => $sales->sum("paid"),
-            "sum_checkout" => $sales->sum("checkout"),
-            "sum_caisse" => $sales->sum("paid") - $sales->sum("checkout")
+            "sum_amount" => $sum_amount,
+            "sum_paid" => $sum_paid,
+            "sum_checkout" => $sum_checkout,
+            "sum_caisse" => $sum_paid - $sum_checkout,
+            "sum_rest" => $all->sum("sub_amount") - $sum_paid + $sum_checkout
         ];
     }
 

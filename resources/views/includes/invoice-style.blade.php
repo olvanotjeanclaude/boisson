@@ -6,7 +6,17 @@
         margin: 0;
     }
 
+    #invoiceTable h1,
+    #invoiceTable h2,
+    #invoiceTable h3,
+    #invoiceTable h4,
+    #invoiceTable h5,
+    #invoiceTable h6{
+        font-family: 'Courier New', Courier, monospace;
+    }
+
     #invoice-container {
+        font-size: .78rem;
         max-width: 80mm;
         border-collapse: collapse;
         margin-left: 7px;
@@ -32,9 +42,11 @@
         border-bottom: 1px solid #ddd;
         font-size: .66rem;
     }
+
     #invoiceTable td {
         font-size: .7rem;
     }
+
     #invoiceTable tr:nth-child(even) {
         /* background-color: #f2f2f2; */
     }
@@ -71,10 +83,12 @@
 
     .caption {
         margin: 5px;
-        font-size: .9rem;
+        font-size: .78rem;
+        font-family: 'Courier New', Courier, monospace;
     }
-    .print-text{
-        font-size: .8rem;
+
+    .print-text {
         font-style: italic;
+        font-size: .67rem
     }
 </style>
