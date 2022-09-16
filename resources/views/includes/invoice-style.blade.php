@@ -21,6 +21,7 @@
         max-width: 80mm;
         border-collapse: collapse;
         margin-left: 7px;
+        text-transform: uppercase;
     }
 
     #invoiceTable * {
@@ -80,11 +81,16 @@
         margin-top: 35px;
         font-size: 1.8rem;
     }
+    .invoice-title{
+        text-align: center;
+        margin: 10px auto;
+    }
 
     .caption {
         margin: 5px auto;
         font-size: 1.2rem;
         font-family: 'arial';
+        text-transform: uppercase;
     }
 
     .print-text {

@@ -41,24 +41,20 @@
                     </tr>
                 @endisset
 
-                @if (request()->get('filter_type') == 'tout')
+                @php
+                    $routeName = Route::currentRouteName();
+                @endphp
+
+                @if ($routeName == 'admin.print.sale.preview' ||
+                    request()->get('filter_type') == '' ||
+                    request()->get('filter_type') == 'tout')
                     @isset($paid)
                         <tr>
                             <td colspan="1">
                                 <p style="text-align: right">Paye :</p>
                             </td>
                             <td colspan="3">
-                                <p> &nbsp; {{ formatPrice(abs($paid)) }}</p>
-                            </td>
-                        </tr>
-                    @endisset
-                    @isset($checkout)
-                        <tr>
-                            <td colspan="1">
-                                <p style="text-align: right">Sortie De Caisse :</p>
-                            </td>
-                            <td colspan="3">
-                                <p> &nbsp; {{ formatPrice(abs($checkout)) }}</p>
+                                <p> &nbsp; {{ formatPrice($paid) }}</p>
                             </td>
                         </tr>
                     @endisset
@@ -69,6 +65,19 @@
                             </td>
                             <td colspan="3">
                                 <p> &nbsp; {{ formatPrice(abs($rest)) }}</p>
+                            </td>
+                        </tr>
+                    @endisset
+                @endif
+
+                @if (request()->get('filter_type') == 'tout')
+                    @isset($checkout)
+                        <tr>
+                            <td colspan="1">
+                                <p style="text-align: right">Sortie De Caisse :</p>
+                            </td>
+                            <td colspan="3">
+                                <p> &nbsp; {{ formatPrice(abs($checkout)) }}</p>
                             </td>
                         </tr>
                     @endisset
