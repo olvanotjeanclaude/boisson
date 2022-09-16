@@ -17,7 +17,7 @@
                         <span class="align-middle">Mot de Passe</span>
                     </a>
 
-                
+
                     <form class="dropdown-item" action="{{ route('logout') }}" method="post">
                         @csrf
                         <button type="submit">
@@ -50,9 +50,10 @@
                     data-original-title="Ecommerce">more_horiz</i>
             </li>
 
-            @if (getUserPermission() == 'super admin' || getUserPermission() == 'admin' || getUserPermission() == 'directeur')
-            @endif
+
             @can('viewAny', \App\Models\User::class)
+            @endcan
+            @can('admin')
                 <li class="nav-item">
                     <a href="{{ route('admin.utilisateurs.index') }}">
                         <span class="material-icons">people</span>

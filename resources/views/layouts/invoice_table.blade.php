@@ -61,7 +61,7 @@
                     @isset($rest)
                         <tr>
                             <td colspan="1">
-                                <p style="text-align: right">Rest :</p>
+                                <p style="text-align: right">credit :</p>
                             </td>
                             <td colspan="3">
                                 <p> &nbsp; {{ formatPrice(abs($rest)) }}</p>

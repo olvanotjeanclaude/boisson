@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\admin\users;
 
-use App\helper\UploadFile;
-use App\Http\Controllers\Controller;
-use App\Message\CustomMessage;
+use App\helper\Access;
 use App\Models\User;
+use App\helper\UploadFile;
 use Illuminate\Http\Request;
+use App\Message\CustomMessage;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -63,8 +65,9 @@ class UserController extends Controller
         }
 
         $data["password"] = Hash::make($request->password);
-        //dd($data);
+
         $saved = User::create($data);
+        Access::syncRolePermission($saved);
 
         if ($saved) {
             return redirect("/admin/utilisateurs")->with("success", CustomMessage::Success("L'utlisateur"));
@@ -83,9 +86,8 @@ class UserController extends Controller
         if ($request->file("image")) {
             $data["image"] =  UploadFile::upload($request->file("image"), "users");
         }
-
+        Access::syncRolePermission($user);
         $saved = $user->update($data);
-
         if ($saved) {
             return redirect("/admin/utilisateurs")->with("success", CustomMessage::Success("L'utlisateur"));
         }
@@ -102,6 +104,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        User::with('roles')->where("id", $user->id)->delete();
         deleteFile($user->image);
         $delete = $user->delete();
         //$delete =true;
