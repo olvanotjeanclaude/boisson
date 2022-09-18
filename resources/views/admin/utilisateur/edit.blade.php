@@ -101,7 +101,7 @@
                                 <select id="permission_access" name="permission_access" class="form-control border-primary"
                                     required>
                                     <option value="" disabled="">Choisir</option>
-                                    @forelse (\App\Helper\Access::ROLES as $permission =>$data)
+                                    @forelse (\App\helper\Access::ROLES as $permission =>$data)
                                         @if ($permission == 'super admin' && auth()->user()->permission_access != 'super admin')
                                             @continue
                                         @endif

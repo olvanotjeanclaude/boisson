@@ -111,37 +111,42 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-5">
-                <div class="card">
-                    <div class="card-body">
-                        <form novalidate action="{{ route('admin.inventaires.adjustStock', $inventory->id) }}"
-                            method="POST" class="needs-validation form form-horizontal striped-rows form-bordered">
-                            @csrf
-                            <div class="col-12 mt-1">
-                                <label class="text-bold-400 text-dark" for="status">Status</label>
-                                <select required name="status" id="status" required class="form-control">
-                                    <option value="">Choisir</option>
-                                    @forelse (\App\Models\Inventory::STATUS_TEXT as $key => $status)
-                                        <option value="{{ \App\Models\Inventory::STATUS[$key] }}"
-                                            @if ($inventory->status == \App\Models\Inventory::STATUS[$key]) selected @endif>
-                                            {{ $status }}
-                                        </option>
-                                    @empty
-                                    @endforelse
-                                </select>
-                                <div class="invalid-feedback">
-                                    Veuillez selectionner le status
+            
+            @can('valid inventory')
+                <div class="col-sm-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <form novalidate action="{{ route('admin.inventaires.adjustStock', $inventory->id) }}"
+                                method="POST" class="needs-validation form form-horizontal striped-rows form-bordered">
+                                @csrf
+                                <div class="col-12 mt-1">
+                                    <label class="text-bold-400 text-dark" for="status">Status</label>
+                                    <select required name="status" id="status" required class="form-control">
+                                        <option value="">Choisir</option>
+                                        @forelse (\App\Models\Inventory::STATUS_TEXT as $key => $status)
+                                            <option value="{{ \App\Models\Inventory::STATUS[$key] }}"
+                                                @if ($inventory->status == \App\Models\Inventory::STATUS[$key]) selected @endif>
+                                                {{ $status }}
+                                            </option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Veuillez selectionner le status
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mt-2  d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="la la-save"></i> Ajuster
-                                </button>
-                            </div>
-                        </form>
+
+                                <div class="mt-2  d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="la la-save"></i> Ajuster
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endcan
         </div>
     </section>
 @endsection

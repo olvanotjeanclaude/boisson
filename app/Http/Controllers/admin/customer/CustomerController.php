@@ -2,17 +2,52 @@
 
 namespace App\Http\Controllers\admin\customer;
 
+use App\helper\Columns;
 use App\Models\Customers;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller
 {
+    private function getColumns()
+    {
+        return ["status", "identification", "code", "phone", "address", "created_at"];
+    }
+
     public function index()
     {
-        $customers = Customers::orderBy("id","desc")->get();
-        return view("admin.customer.index", compact("customers"));
+        $columns = Columns::format_columns($this->getColumns());
+        $columns[] = ["data" => "action", "name" => "action"];
+
+        // $customers = Customers::orderBy("id", "desc")->get();
+        return view("admin.customer.index", [
+            // "customers" => $customers,
+            "columns" => json_encode($columns),
+        ]);
+    }
+
+    public function getData(Request $request)
+    {
+        if ($request->ajax()) {
+            $columns = ["id", ...$this->getColumns()];
+            $customers = Customers::select($columns)->orderBy("id", "desc");
+
+            return DataTables::of($customers)
+                ->setRowId(fn ($customer) => "row_$customer->id")
+                ->addColumn("status", fn ($customer) => $customer->badge)
+                ->addColumn("code", fn ($customer) => $customer->cl_code)
+                ->addColumn("created_at", fn ($customer) => format_date_time($customer->created_at))
+                ->addColumn('action', function ($customer) {
+                    $editUrl =  route('admin.clients.edit', $customer->id);
+                    $deleteUrl =  route('admin.clients.destroy', $customer->id);
+
+                    return Columns::actionColumns($customer, $editUrl, $deleteUrl);
+                })
+                ->rawColumns(["status", "action"])
+                ->make(true);
+        }
     }
 
     public function create()

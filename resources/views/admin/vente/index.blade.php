@@ -22,7 +22,7 @@
             'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => currentUser()->can("make sale"),
         ],
     ])
 @endsection
@@ -84,7 +84,6 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <!-- Invoices List table -->
-                             <p class="loa">Chargement...</p>
                              <div class="table-responsive">
                                 <table
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
@@ -131,7 +130,7 @@
                                                                 <i class="la la-print"></i>
                                                                 Factures
                                                             </a>
-                                                            @can('makePayment', \App\Models\DocumentVente::class)
+                                                            @can('make payment')
                                                                 <a href="{{ route('admin.sale.paymentForm', $sale->number) }}"
                                                                     class="dropdown-item">
                                                                     <i class="la la-credit-card"></i>
@@ -139,13 +138,13 @@
                                                                 </a>
                                                             @endcan
 
-                                                            @can('delete', $sale)
+                                                            {{-- @can('delete', $sale)
                                                                 <a data-id="{{ $sale['number'] }}"
                                                                     data-url="{{ route('admin.ventes.destroy', ['vente' => $sale['number'], 'invoice' => true]) }}"
                                                                     class="dropdown-item delete-btn"><i class="la la-trash"></i>
                                                                     Supprimer
                                                                 </a>
-                                                            @endcan
+                                                            @endcan --}}
 
                                                         </span>
                                                     </span>

@@ -54,15 +54,11 @@
                     <div class="card-actions d-flex mt-2 justify-content-center">
                         {{-- <a class="btn btn-primary" href="{{ route('admin.utilisateurs.show', $user->id) }}">Voir</a> --}}
 
-                        @can('update', \App\Models\User::class)
-                            <a class="btn btn-info" href="{{ route('admin.utilisateurs.edit',['utilisateur'=> $user->id]) }}">Editer</a>
-                        @endcan
-                        @can('delete', \App\Models\User::class)
-                            <button data-id="{{ $user->id }}" parent-id="#user-container" class="btn btn-danger delete-btn"
-                                data-url="{{ route('admin.utilisateurs.destroy', $user->id) }}">
-                                Supprimer
-                            </button>
-                        @endcan
+                        <a class="btn btn-info" href="{{ route('admin.utilisateurs.edit',['utilisateur'=> $user->id]) }}">Editer</a>
+                        <button data-id="{{ $user->id }}" parent-id="#user-container" class="btn btn-danger delete-btn"
+                            data-url="{{ route('admin.utilisateurs.destroy', $user->id) }}">
+                            Supprimer
+                        </button>
                     </div>
                 </div>
             </div>

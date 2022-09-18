@@ -37,12 +37,14 @@
     </div>
     <div class="main-menu-content text-capitalize d-none" style="overflow-y: auto;">
         <ul class="navigation navigation-main mb-5" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class=" nav-item">
-                <a href="/admin">
-                    <i class="material-icons">settings_input_svideo</i>
-                    <span class="menu-title" data-i18n="">Dashboard</span>
-                </a>
-            </li>
+            @can('view dashboard')
+                <li class=" nav-item">
+                    <a href="/admin">
+                        <i class="material-icons">settings_input_svideo</i>
+                        <span class="menu-title" data-i18n="">Dashboard</span>
+                    </a>
+                </li>
+            @endcan
 
             <li class=" navigation-header">
                 <span data-i18n="nav.category.ecommerce">Mon Magasin</span>
@@ -51,9 +53,7 @@
             </li>
 
 
-            @can('viewAny', \App\Models\User::class)
-            @endcan
-            @can('admin')
+            @can('view all')
                 <li class="nav-item">
                     <a href="{{ route('admin.utilisateurs.index') }}">
                         <span class="material-icons">people</span>
@@ -61,20 +61,23 @@
                     </a>
                 </li>
             @endcan
+
             <li class="nav-item">
                 <a href="{{ route('admin.clients.index') }}">
                     <span class="material-icons">groups</span>
                     <span class="menu-title">Clients</span>
                 </a>
             </li>
-            @can('viewAny', \App\Models\Supplier::class)
+
+            @can('view all')
                 <li class="nav-item">
                     <a href="{{ route('admin.fournisseurs.index') }}">
                         <span class="material-icons">real_estate_agent</span>
-                        <span class="menu-title">Fournisseur</span>
+                        <span class="menu-title">Fournisseurs</span>
                     </a>
                 </li>
             @endcan
+
             <li class=" nav-item">
                 <a href="#">
                     <i class="material-icons">content_paste</i>
@@ -114,14 +117,7 @@
                     </li>
                 </ul>
             </li>
-            @can('viewAny', \App\Models\SupplierOrders::class)
-                <li class="nav-item">
-                    <a href="{{ route('admin.stocks.index') }}">
-                        <span class="material-icons">liquor</span>
-                        <span class="menu-title">Bon D'Entrée</span>
-                    </a>
-                </li>
-            @endcan
+
             <li class="nav-item">
                 <a href="{{ route('admin.ventes.index') }}">
                     <span class="material-icons">
@@ -130,18 +126,24 @@
                     <span class="menu-title">Ventes</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.stocks.index') }}">
-                    <span class="material-icons">table_rows</span>
-                    <span class="menu-title">Stocks</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.inventaires.index') }}">
-                    <span class="material-icons">table_rows</span>
-                    <span class="menu-title">Inventaire</span>
-                </a>
-            </li>
+
+            @can('view stock')
+                <li class="nav-item">
+                    <a href="{{ route('admin.stocks.index') }}">
+                        <span class="material-icons">liquor</span>
+                        <span class="menu-title">Stocks</span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('view inventory')
+                <li class="nav-item">
+                    <a href="{{ route('admin.inventaires.index') }}">
+                        <span class="material-icons">table_rows</span>
+                        <span class="menu-title">Inventaire</span>
+                    </a>
+                </li>
+            @endcan
             {{-- @can('commercialState', \App\Models\DocumentVente::class)
                 <li class="nav-item">
                     <a href="{{ route('admin.commercialState.index') }}">
@@ -150,12 +152,6 @@
                     </a>
                 </li>
             @endcan --}}
-            {{-- <li class="nav-item">
-                <a href="{{ route('admin.articles.index') }}">
-                    <span class="material-icons">liquor</span>
-                    <span class="menu-title">Document D' Articles</span>
-                </a>
-            </li> --}}
         </ul>
     </div>
 </div>

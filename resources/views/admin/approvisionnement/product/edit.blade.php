@@ -37,7 +37,7 @@
         <form method="POST" action="{{ route('admin.approvisionnement.articles.update', $product->id) }}"
             class="form form-horizontal striped-rows form-bordered needs-validation" novalidate>
             @csrf
-            @method("put")
+            @method('put')
             <div class="row">
                 <div class="col-12">
                     <h4 class="form-section"><i class="la la-clipboard"></i>Modification De L'article
@@ -125,9 +125,11 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mb-2 float-right">
-                        <i class="la la-check-square-o"></i> Enregister
-                    </button>
+                    @can('update article')
+                        <button type="submit" class="btn btn-primary mb-2 float-right">
+                            <i class="la la-check-square-o"></i> Enregister
+                        </button>
+                    @endcan
                 </div>
 
                 <div class="col-md-5">

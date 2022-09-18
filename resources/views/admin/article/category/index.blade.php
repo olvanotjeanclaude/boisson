@@ -23,7 +23,7 @@
             'text' => 'Nouveau catégorie',
             'link' => route('admin.clients.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => auth()->user()->can('create', \App\Models\Category::class),
+            'show' => auth()->user()->can('create article'),
             'type' => 'modalBtn',
             'modalTarget' => 'addCategory',
         ],
@@ -68,7 +68,7 @@
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
-                            <table class="table datatable table- text-nowrap  material-table">
+                            <table class="table datatable table- text-nowrap table-striped  material-table">
                                 <thead>
                                     <tr>
                                         <th>Catégorie</th>
@@ -85,7 +85,7 @@
                                             <td>{{ $category->name }}</td>
                                             <td>{{ format_date_time($category->created_at) }}</td>
 
-                                            @can('update', $category)
+                                            @can('update article')
                                                 <td>
                                                     <button
                                                         data-url="{{ route('admin.category-articles.edit', $category->id) }}"

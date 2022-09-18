@@ -12,18 +12,16 @@ use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
+use App\Traits\ArticlesAuthorizable;
 
 class ProductController extends Controller
 {
-    public function __construct()
-    {
-        // $this->authorizeResource(Product::class, "article");
-    }
-
+    use ArticlesAuthorizable;
+    
     public function index()
     {
         $products = Product::has("category")->orderBy("id", "desc")->get();
-        $this->pricing($products);
+        // $this->pricing($products);
         return view("admin.approvisionnement.product.index", compact("products"));
     }
 

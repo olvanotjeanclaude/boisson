@@ -15,13 +15,14 @@ class Access
     ];
 
     const PERMISSIONS = [
+        "view all",
         "create user",
         "create emballage",
-        "create article",
-
+        "view article","create article","edit article","update article","delete article",
         "edit articles",
         "edit selling price",
         "edit sales",
+        "make sale",
 
         "delete articles",
         "cancel sales",
@@ -36,13 +37,23 @@ class Access
         "view inventory",
         "make payment",
         "print sale",
-        "view dashboard"
+        "view dashboard",
+        "create emballage"
     ];
 
     const CAISSE = [
         "make payment",
         "print sale",
-        "view dashboard"
+        "view dashboard",
+        "view article",
+        "view stock",
+    ];
+
+    const FACTURATION = [
+        "view article",
+        "make sale",
+        "view stock",
+        "view inventory",
     ];
 
     public static function syncRolePermission($user, $role = null)
@@ -62,7 +73,7 @@ class Access
                     $user->syncPermissions(Access::CAISSE);
                     break;
                 case Access::ROLES["facturation"]:
-                    // $user->syncPermissions(Access::CAISSE);
+                    $user->syncPermissions(Access::FACTURATION);
                     break;
                 default:
                     # code...

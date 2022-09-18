@@ -65,6 +65,7 @@ class PaymentController extends Controller
         $amount = abs(DocumentVente::TotalAmount($invoiceNumber));
 
         $docSale = $this->saleDoc($invoice);
+        // dd($docSale);
         $actionValid = false;
 
         if ($request->paid > 0) { //Avec consignation
@@ -109,7 +110,7 @@ class PaymentController extends Controller
                 "payment_type" => request()->payment_type,
                 "received_at" => $invoice->received_at ?? now()->toDateString(),
                 "comment" => request()->comment,
-                "user_id" => auth()->user()->id
+                "user_id" => $invoice->user_id
             ];
         }
 

@@ -6,15 +6,12 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
-
+use App\Traits\ArticlesAuthorizable;
 
 class CategoryArticleController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Category::class, "category_article");
-    }
-
+    use ArticlesAuthorizable;
+    
     public function index()
     {
         $catArticles = Category::orderBy("id","desc")->get();

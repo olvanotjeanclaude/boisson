@@ -133,13 +133,16 @@
     @yield('script')
     <script>
         $(document).ready(function(){
-           ;
+           
         })
         function loadDatatableAjax(tableElement = ".ajax-datatable") {
             const url = $(tableElement).data("url");
             const table = $(tableElement);
-            if (table.length && url) {
-                const columns = $(tableElement).data("columns");
+            const columns = $(tableElement).data("columns");
+           
+            if (table.length && url &&columns) {
+                // console.log(columns)
+                // return;
                 $('.ajax-datatable').DataTable({
                     processing: true,
                     ajax: {

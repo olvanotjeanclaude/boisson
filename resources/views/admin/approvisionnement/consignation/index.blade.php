@@ -20,7 +20,7 @@
             'text' => 'Nouveau',
             'link' => route('admin.approvisionnement.emballages.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => auth()->user()->can('create', \App\Models\Emballage::class),
+            'show' => auth()->user()->can('create emballage'),
         ],
     ])
 @endsection

@@ -20,7 +20,7 @@
             'text' => 'Nouveau Article',
             'link' => route('admin.approvisionnement.articles.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => auth()->user()->can('create', \App\Models\Product::class),
+            'show' => auth()->user()->can('create article'),
         ],
     ])
 @endsection
@@ -84,9 +84,9 @@
                                             <th>Designation</th>
                                             <th>Prix</th>
                                             <th>Prix De Gros</th>
-                                            <th>Contenance/Condition</th>
+                                            <th>Cont./Cond</th>
                                             <th>Fam</th>
-                                            @can('update', $products->first())
+                                            @can('update article')
                                                 <th>Action</th>
                                             @endcan
                                         </tr>
@@ -104,7 +104,7 @@
                                                 <td>{{ formatPrice($product->wholesale_price) }}</td>
                                                 <td>{{ $product->contenance??$product->condition??0 }}</td>
                                                 <td>{{ $product->category->name }}</td>
-                                                @can('update', $product)
+                                                @can('update article')
                                                     <td>
                                                         <a href="{{ route('admin.approvisionnement.articles.edit', $product->id) }}"
                                                             class="btn btn-info">

@@ -61,7 +61,7 @@ class UserController extends Controller
         $data = $request->except("_token");
 
         if ($request->file("image")) {
-            $data["image"] =  UploadFile::upload($request->file("image"), "users");
+            $data["image"] =  UploadFile::save(rand(1111,9999),"users",$request->file("image"));
         }
 
         $data["password"] = Hash::make($request->password);
@@ -84,7 +84,7 @@ class UserController extends Controller
         $data = $request->except("_token");
 
         if ($request->file("image")) {
-            $data["image"] =  UploadFile::upload($request->file("image"), "users");
+            $data["image"] =  UploadFile::save(rand(1111,9999),"users",$request->file("image"));
         }
         Access::syncRolePermission($user);
         $saved = $user->update($data);

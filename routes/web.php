@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 Route::get("/link-storage", function () {
-        // dd($symLn);
+    // dd($symLn);
     File::link(storage_path('app/public'), public_path('storage'));
     return "Symbolik link created";
 });
@@ -45,37 +45,49 @@ Route::redirect("/", "/admin");
 Auth::routes();
 
 Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], function () {
+
+    Route::group(["middleware" => ["can:view all"]], function () {
+        Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
+        Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
+        Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
+        // Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
+    });
+
+    // Dashboard
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
     // Route::get("{filter_type}/articles",[\App\Http\Controllers\admin\filter\FilterController::class, "filterArticle"]);
-    Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");
-    Route::get("dashboard/facture/telecharger", [\App\Http\Controllers\admin\AdminController::class, "download"])->name("dashboard.download");
+    Route::group(["middleware" => "can:view dashboard"], function () {
+        Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");
+        Route::get("dashboard/facture/telecharger", [\App\Http\Controllers\admin\AdminController::class, "download"])->name("dashboard.download");
+    });
 
-    Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
-    Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
-    Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class);
+    //Articles & Emballages
+    Route::resource("articles", \App\Http\Controllers\admin\article\ArticleController::class);
+    Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class)->except("show");
+    Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
+        Route::resource("articles", \App\Http\Controllers\admin\produit\ProductController::class)->except("show");
+        Route::resource("emballages", \App\Http\Controllers\admin\produit\EmballageController::class)->except("show");
+        // Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
+    });
 
+    //ventes
     Route::post("pre-save-articles", [\App\Http\Controllers\admin\article\ArticleController::class, "preSaveArticle"])->name("article.preSaveArticle");
     Route::post("pre-save-invoice-articles", [\App\Http\Controllers\admin\article\ArticleController::class, "preSaveInvoiceArticle"])->name("article.preSaveInvoiceArticle");
 
-    Route::resource("articles", \App\Http\Controllers\admin\article\ArticleController::class);
-    // Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
+    //Stock
+    Route::group(["middleware" => "can:view stock"], function () {
+        Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
+        Route::get("get-stock-data", [\App\Http\Controllers\admin\article\StockController::class, "getData"])->name("stocks.getData");
+        Route::get("print-report-stock", [\App\Http\Controllers\admin\article\StockController::class, "printReport"])->name("stocks.printReport");
+    });
 
-    Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
-    Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
-    Route::get("get-stock-data",[\App\Http\Controllers\admin\article\StockController::class,"getData"])->name("stocks.getData");
-    Route::get("get-stock-data",[\App\Http\Controllers\admin\article\StockController::class,"printReport"])->name("stocks.printReport");
-    Route::group(["prefix" => "inventaires", "as" => "inventaires."], function () {
+    // Inventaire
+    Route::group(["prefix" => "inventaires", "as" => "inventaires.", "middleware" => "can:view inventory"], function () {
         Route::get("/", [\App\Http\Controllers\admin\article\InventoryController::class, "index"])->name("index");
         Route::post("/check-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "checkStock"])->name("checkStock");
         Route::get("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "getAdjustStockForm"])->name("getAdjustStockForm");
         Route::post("/demmande-ajustement-de-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStockRequest"])->name("adjustStockRequest");
-        Route::post("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStock"])->name("adjustStock");
-    });
-
-    Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
-        Route::resource("articles", \App\Http\Controllers\admin\produit\ProductController::class);
-        Route::resource("emballages", \App\Http\Controllers\admin\produit\EmballageController::class);
-        // Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
+        Route::post("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStock"])->name("adjustStock")->can("valid inventory");
     });
 
     Route::post("settings", [\App\Http\Controllers\admin\settings\SettingController::class, "update"])->name("settings.update");
@@ -84,7 +96,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
         Route::get("vente/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "printSale"])->name("sale");
         Route::get("vente/{invoice_number}/preview", [\App\Http\Controllers\admin\impression\ImpressionController::class, "previewSale"])->name("sale.preview");
         Route::get("vente/{invoice_number}/telecharger", [\App\Http\Controllers\admin\impression\ImpressionController::class, "downloadSale"])->name("sale.download");
-        Route::get("vente/{invoice_number}/annuler", [\App\Http\Controllers\admin\impression\ImpressionController::class, "cancelSale"])->name("sale.cancel");
+        Route::get("vente/{invoice_number}/annuler", [\App\Http\Controllers\admin\impression\ImpressionController::class, "cancelSale"])->name("sale.cancel")->middleware("can:cancel sales");
         Route::get("vente/{invoice_number}/terminer", [\App\Http\Controllers\admin\impression\ImpressionController::class, "saleTerminate"])->name("sale.terminate");
 
         Route::get("achat/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "printAchat"])->name("achat");
@@ -97,7 +109,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::get("{type}/detail/{invoice_number}/print", [\App\Http\Controllers\admin\impression\ImpressionController::class, "print"])->name("document.print");
 
     Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
-    Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm");
+    Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm")->middleware("can:make payment");
     Route::post("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentStore"])->name("sale.paymentStore");
     Route::get("achat-produits/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "achatPaymentForm"])->name("achat.paymentForm");
     Route::post("achat-produits/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "achatPaymentStore"])->name("achat.paymentStore");
@@ -111,6 +123,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::resource("factures", \App\Http\Controllers\admin\invoice\InvoiceController::class);
 
     Route::resource("clients", \App\Http\Controllers\admin\customer\CustomerController::class);
+    Route::get("get-customers", [\App\Http\Controllers\admin\customer\CustomerController::class, "getData"])->name("customer.getData");
 
     Route::get("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "index"])->name("password.index");
     Route::post("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "update"])->name("password.update");

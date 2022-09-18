@@ -57,7 +57,8 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table datatable text-nowrap  material-table">
+                                <table data-columns="{{ $columns }}" data-url="{{ route('admin.customer.getData') }}"
+                                    class="table table-hover table-sm nowrap ajax-datatable table-striped">
                                     <thead>
                                         <tr>
                                             <th>Status</th>
@@ -70,7 +71,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($customers as $customer)
+                                        {{-- @forelse ($customers as $customer)
                                             <tr>
                                                 <td>
                                                     {!! $customer->badge !!}
@@ -89,7 +90,7 @@
                                                 </td>
                                             </tr>
                                         @empty
-                                        @endforelse
+                                        @endforelse --}}
                                     </tbody>
                                 </table>
                             </div>
@@ -108,6 +109,8 @@
 
 @section('script')
     <script>
-        loadDatatable();
+        $(document).ready(function() {
+            loadDatatableAjax();
+        })
     </script>
 @endsection

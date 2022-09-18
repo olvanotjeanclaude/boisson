@@ -29,6 +29,7 @@ class SaleController extends Controller
     public function index()
     {
         $docSales = DocumentVente::has("customer")
+            ->has("sales")
             ->when(getUserPermission() == "facturation", function ($q) {
                 return $q->where("user_id", auth()->user()->id);
             })
@@ -40,6 +41,7 @@ class SaleController extends Controller
 
     public function create()
     {
+        abort_if(!currentUser()->can("make sale"),403);
         $customers = Customers::orderBy("identification", "asc")->get();
 
         $articles = Product::orderBy("designation")->get();
@@ -162,8 +164,8 @@ class SaleController extends Controller
 
         // dd($deconsignations);
         foreach ($deconsignations as $key => $deco) {
-            $stock = Stock::where("article_reference",$deco["article_reference"])->first();
-            if(is_null($stock)){
+            $stock = Stock::where("article_reference", $deco["article_reference"])->first();
+            if (is_null($stock)) {
                 Stock::create([
                     "article_reference" => $deco["article_reference"],
                     "stockable_id" => $deco["saleable_id"],

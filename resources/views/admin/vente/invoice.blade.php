@@ -37,8 +37,6 @@
             <div>
                 <div class="row">
                     <div class="col-12 d-flex">
-                        @can('print', \App\Models\DocumentVente::class)
-                        @endcan
 
                         <a target="_blank" href="{{ route('admin.print.sale.preview', $invoice->number) }}"
                             class="btn btn-info btn-lg  mb-2">
@@ -51,16 +49,12 @@
                                 Enregistrer
                             </a>
                         @endif
-                        <a href="{{ route('admin.print.sale.cancel', $invoice->number) }}"
-                            class="ml-2 btn btn-danger btn-lg  mb-2">
-                            Annuler
-                        </a>
-                        {{-- {{ $invoice }} --}}
-                        @can('cancel', $invoice)
-                        @endcan
 
-
-                        @can('terminate', \App\Models\DocumentVente::class)
+                        @can('cancel-doc-vente',$invoice)
+                            <a href="{{ route('admin.print.sale.cancel', $invoice->number) }}"
+                                class="ml-2 btn btn-danger btn-lg  mb-2">
+                                Annuler
+                            </a>
                         @endcan
                     </div>
                 </div>

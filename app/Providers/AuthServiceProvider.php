@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\helper\Invoice;
+use App\Models\User;
+use App\Models\DocumentVente;
 use App\Models\PricingSuplier;
+use Illuminate\Support\Facades\Gate;
 use App\Policies\PricingSupplierPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -31,6 +34,20 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::before(function ($user, $ability) {
             return $user->hasRole('super admin') ? true : null;
+        });
+
+        Gate::define('cancel-doc-vente', function (User $user, DocumentVente $docVente) {
+            if($user->hasRole("admin")){
+                if (
+                    $docVente->status == Invoice::STATUS["paid"] ||
+                    $docVente->status == Invoice::STATUS["incomplete"]
+                ) {
+                    return false;
+                }
+                return true;
+            }
+
+            return false;
         });
     }
 }

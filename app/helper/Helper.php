@@ -78,10 +78,10 @@ function get_user_name()
 
 function  formatPrice($price, $devise = "Ar")
 {
-    return number_format($price,0,"."," ") . " $devise";
+    return number_format($price, 0, ".", " ") . " $devise";
 }
 
-function generateInteger($n = 6):string
+function generateInteger($n = 6): string
 {
     $start = 1;
     $end = 9;
@@ -100,10 +100,20 @@ function getStartAndEndDate($week, $year)
     $response['week_start'] = $dto->format('Y-m-d');
     $dto->modify('+6 days');
     $response['week_end'] = $dto->format('Y-m-d');
-    
+
     return $response;
 }
 
-function getAppName(){
+function getAppName()
+{
     return "Magasin SOA";
+}
+
+function currentUser()
+{
+    if (Auth::check()) {
+        return User::find(auth()->user()->id);
+    }
+
+    return null;
 }

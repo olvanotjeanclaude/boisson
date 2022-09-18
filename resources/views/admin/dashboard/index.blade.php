@@ -40,7 +40,7 @@
             'text' => 'Nouveau Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => currentUser()->can("make sale"),
         ],
     ])
 @endsection
