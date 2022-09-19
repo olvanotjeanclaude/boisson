@@ -7,6 +7,7 @@ use App\Models\Customers;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
 
 class CustomerController extends Controller
@@ -18,6 +19,7 @@ class CustomerController extends Controller
 
     public function index()
     {
+        // dd(Route::currentRouteName());
         $columns = Columns::format_columns($this->getColumns());
         $columns[] = ["data" => "action", "name" => "action"];
 
@@ -28,7 +30,7 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function getData(Request $request)
+    public function ajaxPostData(Request $request)
     {
         if ($request->ajax()) {
             $columns = ["id", ...$this->getColumns()];

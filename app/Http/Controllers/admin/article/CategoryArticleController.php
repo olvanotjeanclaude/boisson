@@ -2,30 +2,82 @@
 
 namespace App\Http\Controllers\admin\article;
 
+use App\helper\Columns;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
+use App\Models\Customers;
 use App\Traits\ArticlesAuthorizable;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryArticleController extends Controller
 {
     use ArticlesAuthorizable;
-    
+
     public function index()
     {
-        $catArticles = Category::orderBy("id","desc")->get();
+        $catArticles = Category::orderBy("id", "desc")->get();
 
-        if(request()->ajax()){
+        if (request()->ajax()) {
             return response()->json($catArticles);
         }
-        
-        return view("admin.article.category.index", compact("catArticles"));
+
+        $columns = Columns::format_columns($this->getColumns());
+        $actionBtn =  ["data" => "action", "name" => "action"];
+
+        if (!currentUser()->can("update article")) {
+            $actionBtn["visible"] = false;
+        }
+        $columns[] = $actionBtn;
+
+        // dd($columns);
+
+        return view("admin.article.category.index", [
+            "catArticles" => $catArticles,
+            "columns" => json_encode($columns)
+        ]);
+    }
+
+    public function ajaxPostData(Request $request)
+    {
+        // if ($request->ajax()) {
+        $columns = ["id", ...$this->getColumns()];
+
+        $catArticles = Category::select($columns)->orderBy("id", "desc");
+
+        return DataTables::of($catArticles)
+            ->setRowId(fn ($catArticle) => "row_$catArticle->id")
+            ->addColumn("created_at", fn ($catArticle) => format_date_time($catArticle->created_at))
+            ->addColumn('action', function ($catArticle) {
+                $editUrl = route('admin.category-articles.edit', $catArticle->id);
+                $deleteUrl = route('admin.category-articles.destroy', $catArticle->id);
+
+                $actionBtn= '<button data-url="'.$editUrl.'" class="btn btn-info edit-category" data-id="{{ $category->id }}">
+                                Editer
+                            </button>
+                           <button class="btn btn-danger delete-btn"
+                              data-url="'.$deleteUrl.'"
+                              data-id="'.$catArticle->id.'">
+                              Supprimer
+                            </button>';
+
+                return $actionBtn;
+            })
+            // ->orderColumn('status', 'status $1')
+            ->rawColumns(["action"])
+            ->make(true);
+        // }
+    }
+
+    private function getColumns()
+    {
+        return ["name", "created_at"];
     }
 
     public function allCategories()
     {
-        $catArticles = Category::select(["id","name"])->orderBy("id","desc")->get();
+        $catArticles = Category::select(["id", "name"])->orderBy("id", "desc")->get();
         return response()->json($catArticles);
     }
 

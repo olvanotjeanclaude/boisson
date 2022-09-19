@@ -20,7 +20,6 @@ class Filter
 
     public static function querySales($query, $filterType)
     {
-        dd($query,$filterType);
         switch ($filterType) {
             case 'article':
                 $query =  $query->where("saleable_type", "App\Models\Product");

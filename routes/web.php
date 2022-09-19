@@ -66,6 +66,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class)->except("show");
     Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
         Route::resource("articles", \App\Http\Controllers\admin\produit\ProductController::class)->except("show");
+        Route::post("get-articles", [\App\Http\Controllers\admin\produit\ProductController::class, "getData"])->name("articles.getData");
         Route::resource("emballages", \App\Http\Controllers\admin\produit\EmballageController::class)->except("show");
         // Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
     });
@@ -123,7 +124,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::resource("factures", \App\Http\Controllers\admin\invoice\InvoiceController::class);
 
     Route::resource("clients", \App\Http\Controllers\admin\customer\CustomerController::class);
-    Route::get("get-customers", [\App\Http\Controllers\admin\customer\CustomerController::class, "getData"])->name("customer.getData");
+    Route::post("get-customers", [\App\Http\Controllers\admin\customer\CustomerController::class, "getData"])->name("customer.getData");
 
     Route::get("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "index"])->name("password.index");
     Route::post("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "update"])->name("password.update");

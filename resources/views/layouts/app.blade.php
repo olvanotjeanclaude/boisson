@@ -8,7 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta name="description" content="">
     <meta name="keywords" content="">
-    <meta name="author" content="PIXINVENT">
+    <meta name="author" content="Olvanot Jean Claude Rakotonirina">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
     <title>@yield('title')</title>
     <link rel="apple-touch-icon" href="{{ asset('app-assets/images/ico/apple-icon-120.png') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/images/ico/favicon.ico') }}">
@@ -132,39 +134,104 @@
     <script src="{{ asset('app-assets/js/custom/index.js') }}"></script>
     @yield('script')
     <script>
-        $(document).ready(function(){
-           
-        })
+        $(document).ready(function() {})
+
         function loadDatatableAjax(tableElement = ".ajax-datatable") {
             const url = $(tableElement).data("url");
             const table = $(tableElement);
             const columns = $(tableElement).data("columns");
-           
-            if (table.length && url &&columns) {
+
+            if (table.length && url && columns) {
                 // console.log(columns)
                 // return;
-                $('.ajax-datatable').DataTable({
+                let exportColumns = columns[columns.length - 1].name == "action" ? columns.slice(0, columns.length - 1) :
+                    columns;
+                exportColumns = exportColumns.map((col, index) => index);
+
+                const datatable = table.DataTable({
+                    serverSide: true,
                     processing: true,
+                    deferRender: true,
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Tout"]],
                     ajax: {
-                        url: url, // json datasource
-                        type: "get", // type of method  , by default would be get
-                        // error: function() { // error handling code
-                        //     $(".ajax-datatable").css("display", "none");
-                        // }
+                        url: url,
+                        type: "post",
+                        data: function(params) {
+                            params._token= "{{ csrf_token() }}";
+                        }
                     },
                     columns: columns,
                     dom: 'lBfrtip',
                     buttons: [{
                         extend: 'collection',
-                        text: 'Export',
-                        buttons: [
-                            'copy',
-                            'excel',
-                            'csv',
-                            'pdf',
-                            'print'
+                        text: 'Exporter',
+                        buttons: [{
+                                extend: 'copyHtml5',
+                                exportOptions: {
+                                    columns: exportColumns
+                                }
+                            },
+                            {
+                                extend: 'excelHtml5',
+                                exportOptions: {
+                                    columns: exportColumns
+                                }
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                exportOptions: {
+                                    columns: exportColumns
+                                }
+                            },
+                            {
+                                extend: 'csvHtml5',
+                                exportOptions: {
+                                    columns: exportColumns
+                                }
+                            },
+                            // 'copy',
+                            // 'excel',
+                            // 'csv',
+                            // 'pdf',
+                            // 'print'
                         ]
-                    }]
+                    }],
+                    language: {
+                        "sDecimal": ",",
+                        "sEmptyTable": "Aucune donnée disponible dans le tableau",
+                        "sInfo": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        "sInfoEmpty": "Aucun enregistrement",
+                        "sInfoFiltered": "(_MAX_ trouvé)",
+                        "sInfoPostFix": "",
+                        "sInfoThousands": ".",
+                        "sLengthMenu": "Afficher _MENU_ entrées",
+                        "sLoadingRecords": "chargement...",
+                        "sProcessing": "En cours de traitement...",
+                        "sSearch": "Chercher:",
+                        "sZeroRecords": "Aucun enregistrements correspondants trouvés",
+                        "oPaginate": {
+                            "sFirst": "Première",
+                            "sLast": "Fin",
+                            "sNext": "Prochain",
+                            "sPrevious": "Avant"
+                        },
+                        "oAria": {
+                            "sSortAscending": ": Activer le tri croissant des colonnes",
+                            "sSortDescending": ": Activer le tri par colonne décroissante"
+                        },
+                        "select": {
+                            "rows": {
+                                "_": "%d enregistrement sélectionné",
+                                "0": "",
+                                "1": "1 enregistrement sélectionné"
+                            }
+                        }
+                    },
+                });
+
+                $("input#search").keyup(function() {
+                    input = $(this).val();
+                    console.log(input);
                 });
             }
         }

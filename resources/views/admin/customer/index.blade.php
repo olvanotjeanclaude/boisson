@@ -56,9 +56,9 @@
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table data-columns="{{ $columns }}" data-url="{{ route('admin.customer.getData') }}"
-                                    class="table table-hover table-sm nowrap ajax-datatable table-striped">
+                            <div class="overflow-auto">
+                                <table data-columns="{{ $columns }}" data-url="{{ route('admin.clients.ajaxPostData') }}"
+                                    class="table w-100 table-hover table-sm table-striped ajax-datatable" id="customerTable">
                                     <thead>
                                         <tr>
                                             <th>Status</th>
@@ -71,26 +71,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @forelse ($customers as $customer)
-                                            <tr>
-                                                <td>
-                                                    {!! $customer->badge !!}
-                                                </td>
-                                                <td>{{ $customer->identification }}</td>
-                                                <td>{{ $customer->cl_code }}</td>
-                                                <td>{{ $customer->phone }}</td>
-                                                <td>{{ Str::limit($customer->address, 20) }}</td>
-                                                <td>{{ format_date($customer->created_at) }}</td>
-                                                <td>
-                                                    @include('includes.action-button', [
-                                                        'id' => $customer->id,
-                                                        'editLink' => route('admin.clients.edit', $customer->id),
-                                                        'deleteLink' => route('admin.clients.destroy', $customer->id),
-                                                    ])
-                                                </td>
-                                            </tr>
-                                        @empty
-                                        @endforelse --}}
                                     </tbody>
                                 </table>
                             </div>

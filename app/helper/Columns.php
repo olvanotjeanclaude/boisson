@@ -9,11 +9,6 @@ class Columns
         return array_map(fn ($col) => ["data" => $col, "name" => $col], $columns);
     }
 
-    function getActionButtons()
-    {
-        return  "ok";
-    }
-
     public static  function actionColumns($data, $editUrl = null, $deleteUrl = null, $viewUrl = null)
     {
 

@@ -1,14 +1,11 @@
 @extends('layouts.app')
 
 @section('vendor')
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css"> --}}
-    <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/material-vendors.min.css') }}">
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css') }}">
+    @include('includes.datatable.css')
 @endsection
 
 @section('title')
-    Liste De Clients
+    Categorie d'articles
 @endsection
 
 @section('content-header')
@@ -68,40 +65,42 @@
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
-                            <table class="table datatable table- text-nowrap table-striped  material-table">
-                                <thead>
-                                    <tr>
-                                        <th>Catégorie</th>
-                                        <th>Date De Création</th>
+                            <div class=" overflow-auto">
+                                <table style="width: 100%" data-columns="{{ $columns }}"
+                                    data-url="{{ route('admin.category-articles.ajaxPostData') }}"
+                                    class="table table-hover table-sm  ajax-datatable table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 45%">Catégorie</th>
+                                            <th style="width: 25%">Date De Création</th>
 
-                                        @can('update', $catArticles->first())
                                             <th>Action</th>
-                                        @endcan
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($catArticles as $category)
-                                        <tr id="row_{{ $category->id }}">
-                                            <td>{{ $category->name }}</td>
-                                            <td>{{ format_date_time($category->created_at) }}</td>
-
-                                            @can('update article')
-                                                <td>
-                                                    <button
-                                                        data-url="{{ route('admin.category-articles.edit', $category->id) }}"
-                                                        class="btn btn-info edit-category" data-id="{{ $category->id }}">
-                                                        Editer
-                                                    </button>
-                                                    <button class="btn btn-danger delete-btn"
-                                                        data-url="{{ route('admin.category-articles.destroy', $category->id) }}"
-                                                        data-id="{{ $category->id }}">Supprimer</button>
-                                                </td>
-                                            @endcan
                                         </tr>
-                                    @empty
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {{-- @forelse ($catArticles as $category)
+                                            <tr id="row_{{ $category->id }}">
+                                                <td>{{ $category->name }}</td>
+                                                <td>{{ format_date_time($category->created_at) }}</td>
+
+                                                @can('update article')
+                                                    <td>
+                                                        <button
+                                                            data-url="{{ route('admin.category-articles.edit', $category->id) }}"
+                                                            class="btn btn-info edit-category" data-id="{{ $category->id }}">
+                                                            Editer
+                                                        </button>
+                                                        <button class="btn btn-danger delete-btn"
+                                                            data-url="{{ route('admin.category-articles.destroy', $category->id) }}"
+                                                            data-id="{{ $category->id }}">Supprimer</button>
+                                                    </td>
+                                                @endcan
+                                            </tr>
+                                        @empty
+                                        @endforelse --}}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -116,28 +115,29 @@
 @endsection
 
 @section('page-js')
-    <script src="{{ asset('app-assets/vendors/js/tables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/tables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js') }}"></script>
+    @include('includes.datatable.js')
 @endsection
 
 @section('script')
     <script>
-        loadDatatable();
-        $(".edit-category").click(function() {
-            const url = $(this).data("url");
-            const modalId = $(this).data("modalID");
+        $(document).ready(function() {
+            loadDatatableAjax();
+            
+            $(document).on("click", ".edit-category", function() {
+                const url = $(this).data("url");
+                const modalId = $(this).data("modalID");
 
-            if (url) {
-                axios.get(url)
-                    .then((response) => {
-                        $("#ajax-response").html(response.data);
-                        $("#editCategory").modal("show");
-                    })
-                    .catch((response) => {
-                        alert("error occured");
-                    })
-            }
+                if (url) {
+                    axios.get(url)
+                        .then((response) => {
+                            $("#ajax-response").html(response.data);
+                            $("#editCategory").modal("show");
+                        })
+                        .catch((response) => {
+                            alert("error occured");
+                        })
+                }
+            })
         })
     </script>
 @endsection
