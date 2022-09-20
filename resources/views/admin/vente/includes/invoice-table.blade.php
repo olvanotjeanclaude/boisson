@@ -44,21 +44,23 @@
                     </tr>
 
                     @forelse ($invoice->sales as $sale)
-                        <tr class="service">
-                            <td class="tableitem">
-                                <p class="itemtext designation">{{ $sale->saleable->designation }}</p>
-                            </td>
-                            <td class="tableitem">
-                                <p class="itemtext" style="text-align: right">{{ $sale->quantity }}</p>
-                            </td>
-                            <td class="tableitem">
-                                <p class="itemtext" style="text-align: right">{{ round($sale->pricing) }}</p>
-                            </td>
-                            <td class="tableitem">
-                                <p class="itemtext" style="font-weight: bold;text-align:right">
-                                    {{ formatPrice($sale->sub_amount) }}</p>
-                            </td>
-                        </tr>
+                        @isset($sale->saleable)
+                            <tr class="service">
+                                <td class="tableitem">
+                                    <p class="itemtext designation">{{ $sale->saleable->designation }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext" style="text-align: right">{{ $sale->quantity }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext" style="text-align: right">{{ round($sale->pricing) }}</p>
+                                </td>
+                                <td class="tableitem">
+                                    <p class="itemtext" style="font-weight: bold;text-align:right">
+                                        {{ formatPrice($sale->sub_amount) }}</p>
+                                </td>
+                            </tr>
+                        @endisset
                     @empty
                     @endforelse
 
@@ -119,7 +121,7 @@
         </div>
         <!--End InvoiceBot-->
     </div>
-    @else
+@else
     <div class="card">
         <div class="cad-body ml-1 pt-2">
             PAS DE DONEE

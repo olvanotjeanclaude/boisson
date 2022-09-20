@@ -11,20 +11,22 @@
             </thead>
             <tbody>
                 @forelse ($invoices["datas"] as $data)
-                    <tr>
-                        <td>
-                            {{ Str::title($data->saleable->designation) }}
-                        </td>
-                        <td style="text-align: :center">
-                            {{ $data->quantity }}
-                        </td>
-                        <td>
-                            {{ round($data->pricing) }}
-                        </td>
-                        <td style="text-align: right">
-                            {{ $data->sub_amount }}
-                        </td>
-                    </tr>
+                    @isset($data->saleable)
+                        <tr>
+                            <td>
+                                {{ Str::title($data->saleable->designation) }}
+                            </td>
+                            <td style="text-align: :center">
+                                {{ $data->quantity }}
+                            </td>
+                            <td>
+                                {{ round($data->pricing) }}
+                            </td>
+                            <td style="text-align: right">
+                                {{ $data->sub_amount }}
+                            </td>
+                        </tr>
+                    @endisset
                 @empty
                 @endforelse
             </tbody>
