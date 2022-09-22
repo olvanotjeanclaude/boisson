@@ -106,7 +106,7 @@ function getStartAndEndDate($week, $year)
 
 function getAppName()
 {
-    return "Magasin SOA";
+    return "MAGASIN SOA ANKIRIHIRY";
 }
 
 function currentUser()

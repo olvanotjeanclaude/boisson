@@ -17,12 +17,6 @@ class CategoryArticleController extends Controller
 
     public function index()
     {
-        $catArticles = Category::orderBy("id", "desc")->get();
-
-        if (request()->ajax()) {
-            return response()->json($catArticles);
-        }
-
         $columns = Columns::format_columns($this->getColumns());
         $actionBtn =  ["data" => "action", "name" => "action"];
 
@@ -34,14 +28,14 @@ class CategoryArticleController extends Controller
         // dd($columns);
 
         return view("admin.article.category.index", [
-            "catArticles" => $catArticles,
+
             "columns" => json_encode($columns)
         ]);
     }
 
     public function ajaxPostData(Request $request)
     {
-        // if ($request->ajax()) {
+        if ($request->ajax()) {
         $columns = ["id", ...$this->getColumns()];
 
         $catArticles = Category::select($columns)->orderBy("id", "desc");
@@ -67,7 +61,7 @@ class CategoryArticleController extends Controller
             // ->orderColumn('status', 'status $1')
             ->rawColumns(["action"])
             ->make(true);
-        // }
+        }
     }
 
     private function getColumns()

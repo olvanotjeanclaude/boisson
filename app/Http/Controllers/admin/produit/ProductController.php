@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin\produit;
 
 use App\Models\Stock;
+use App\helper\Columns;
 use App\Models\Product;
 use App\Models\Articles;
 use App\Models\Category;
@@ -11,18 +12,57 @@ use App\Models\Emballage;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductRequest;
 use App\Traits\ArticlesAuthorizable;
+use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\StoreProductRequest;
+use Illuminate\Support\Facades\Route;
 
 class ProductController extends Controller
 {
     use ArticlesAuthorizable;
-    
+
     public function index()
     {
-        $products = Product::has("category")->orderBy("id", "desc")->get();
         // $this->pricing($products);
-        return view("admin.approvisionnement.product.index", compact("products"));
+        $columns = json_encode($this->getFormatedCols());
+
+        return view("admin.approvisionnement.product.index", compact("columns"));
+    }
+
+    public function ajaxPostData(Request $request)
+    {
+        if ($request->ajax()) {
+            $products = Product::has("category")->orderBy("id","desc");
+
+            return DataTables::of($products)
+                ->setRowId(fn ($product) => "row_$product->id")
+                ->addColumn("price",fn ($product) => formatPrice($product->price))
+                ->addColumn("wholesale_price",fn ($product) => formatPrice($product->wholesale_price))
+                ->addColumn("cont_or_condition", fn ($product) => $product->contenance ?? $product->condition ?? null)
+                ->addColumn("category", fn ($product) =>  $product->category->name)
+                ->addColumn('action', function ($product) {
+                    $editUrl = route('admin.approvisionnement.articles.edit', $product->id);
+                    $deleteUrl = route('admin.approvisionnement.articles.destroy', $product->id);
+                    $actionBtn = Columns::actionColumns($product,$editUrl,$deleteUrl);
+                    return $actionBtn;
+                })
+                ->rawColumns(["action"])
+                ->make(true);
+        }
+    }
+
+    private function getFormatedCols(): array
+    {
+        $columns = Columns::format_columns($this->getColumns());
+        $actionBtn = Columns::sampleAction();
+
+        if (!currentUser()->can("update article")) {
+            $actionBtn["visible"] = false;
+        }
+
+        $columns[] = $actionBtn;
+        
+        return $columns;
     }
 
     public function create()
@@ -57,7 +97,7 @@ class ProductController extends Controller
             "entry" => 0,
             "user_id" => auth()->user()->id
         ]);
-        
+
         if ($article) {
             return back()->with("success", CustomMessage::Success("L'article"));
         }
@@ -102,5 +142,10 @@ class ProductController extends Controller
 
             $value->update(["wholesale_price" => $price - 500]);
         }
+    }
+
+    private function getColumns()
+    {
+        return ["reference", "designation", "price", "wholesale_price", "cont_or_condition", "category"];
     }
 }

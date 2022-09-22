@@ -75,11 +75,12 @@
                         <div class="card-body">
                             <!-- Invoices List table -->
                             <div class="table-responsive">
-                                <table
-                                    class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
-                                    <thead class="bg-light">
+                                <table data-columns="{{ $columns }}"
+                                    data-url="{{ route('admin.approvisionnement.articles.ajaxPostData') }}"
+                                    class="table w-100 table-hover table-sm table-striped ajax-datatable"
+                                    id="customerTable">
+                                    <thead>
                                         <tr>
-                                            {{-- <th><input type="checkbox" class="input-chk-all"></th> --}}
                                             <th>Ref</th>
                                             <th>Designation</th>
                                             <th>Prix</th>
@@ -91,34 +92,7 @@
                                             @endcan
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @forelse ($products as $product)
-                                            <tr id="row_{{ $product->id }}">
-                                                {{-- <td>
-                                                    <input type="checkbox" data-id="{{ $product['id'] }}"
-                                                        class="input-chk">
-                                                </td> --}}
-                                                <td>{{ $product->reference }}</td>
-                                                <td>{{ $product->designation }}</td>
-                                                <td>{{ formatPrice($product->price) }}</td>
-                                                <td>{{ formatPrice($product->wholesale_price) }}</td>
-                                                <td>{{ $product->contenance??$product->condition??0 }}</td>
-                                                <td>{{ $product->category->name }}</td>
-                                                @can('update article')
-                                                    <td>
-                                                        <a href="{{ route('admin.approvisionnement.articles.edit', $product->id) }}"
-                                                            class="btn btn-info">
-                                                            Editer
-                                                        </a>
-                                                        <button class="btn btn-danger delete-btn"
-                                                            data-url="{{ route('admin.approvisionnement.articles.destroy', $product->id) }}"
-                                                            data-id="{{ $product->id }}">Supprimer</button>
-                                                    </td>
-                                                @endcan
-                                            </tr>
-                                        @empty
-                                        @endforelse
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                             <!--/ Invoices table -->
@@ -137,6 +111,8 @@
 
 @section('script')
     <script>
-        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
+        $(document).ready(function() {
+            loadDatatableAjax();
+        })
     </script>
 @endsection

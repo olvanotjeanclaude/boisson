@@ -40,12 +40,6 @@
     <link rel="stylesheet" type="text/css"
         href="{{ asset('app-assets/css/core/menu/menu-types/material-vertical-menu-modern.css') }}">
     @yield('page-css')
-    <style>
-        table th,
-        table td {
-            padding: .5rem !important;
-        }
-    </style>
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
@@ -136,7 +130,7 @@
     <script>
         $(document).ready(function() {})
 
-        function loadDatatableAjax(tableElement = ".ajax-datatable") {
+        function loadDatatableAjax(tableElement = ".ajax-datatable", method = "post") {
             const url = $(tableElement).data("url");
             const table = $(tableElement);
             const columns = $(tableElement).data("columns");
@@ -152,15 +146,19 @@
                     serverSide: true,
                     processing: true,
                     deferRender: true,
-                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Tout"]],
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, "Tout"]
+                    ],
                     ajax: {
                         url: url,
-                        type: "post",
+                        type: method,
                         data: function(params) {
-                            params._token= "{{ csrf_token() }}";
+                            params._token = "{{ csrf_token() }}";
                         }
                     },
                     columns: columns,
+                    ordering: false,
                     dom: 'lBfrtip',
                     buttons: [{
                         extend: 'collection',

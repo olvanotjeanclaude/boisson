@@ -40,4 +40,16 @@ class Columns
 
         return $actionBtns;
     }
+
+    public static function sampleAction()
+    {
+        return  ["data" => "action", "name" => "action"];
+    }
+
+    public static function push(String $colName, array $columns = [])
+    {
+        $newCol =  ["data" => $colName, "name" => $colName];
+        $columns[] = $newCol;
+        return $columns;
+    }
 }
