@@ -73,7 +73,7 @@
                                         </div>
                                         <div class="col-sm-6 col-lg-4">
                                             <label class="label-control" for="category_id">Famille</label>
-                                            <select name="category_id" class="form-control" required id="category_id">
+                                            <select name="category_id" class="form-control select2" required id="category_id">
                                                 <option value="">Choisir</option>
                                                 @foreach ($catArticles as $catArticle)
                                                     <option @if ($catArticle->id == old('category_id')) selected @endif
@@ -181,7 +181,7 @@
                                 <div class="form-body">
                                     <div class="col-12">
                                         <label class="label" for="simple_package_id">Consignation Simple</label>
-                                        <select name="simple_package_id" class="form-control" id="simple_package_id">
+                                        <select name="simple_package_id" class="form-control select2" id="simple_package_id">
                                             <option value="">Choisir</option>
                                             @foreach ($emballages as $emballage)
                                                 <option @if ($emballage->id == old('simple_package_id')) selected @endif
@@ -193,7 +193,7 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="label-control" for="big_package_id">Consignation De Gros</label>
-                                        <select name="big_package_id" class="form-control" id="big_package_id">
+                                        <select name="big_package_id" class="form-control select2" id="big_package_id">
                                             <option value="">Choisir</option>
                                             @foreach ($emballages as $emballage)
                                                 <option @if ($emballage->id == old('big_package_id')) selected @endif
