@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnOut extends Migration
+class AddOutCollumnToInventory extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddColumnOut extends Migration
      */
     public function up()
     {
-        Schema::table('stocks', function (Blueprint $table) {
-            $table->unsignedBigInteger("out_quantity")->after("entry")->default(0);
+        Schema::table('inventories', function (Blueprint $table) {
+            $table->unsignedBigInteger("out")->after("date")->default(0)->comment("sorti de stock");
         });
     }
 
@@ -25,8 +25,8 @@ class AddColumnOut extends Migration
      */
     public function down()
     {
-        Schema::table('stocks', function (Blueprint $table) {
-            $table->dropColumn("out_quantity");
+        Schema::table('inventories', function (Blueprint $table) {
+            $table->dropColumn("out");
         });
     }
 }

@@ -1,7 +1,6 @@
-<div class="modal fade text-left" id="stockOutForm"  role="dialog" aria-labelledby="myModalLabel10"
-    aria-hidden="true">
+<div class="modal fade text-left" id="stockOutForm" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form action="{{ route('admin.stocks.storeOut') }}" class="needs-validation" novalidate method="POST">
+        <form action="{{ route('admin.inventaires.storeOut') }}" class="needs-validation" novalidate method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header bg-secondary white">
@@ -13,15 +12,16 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="text-bold-400 text-dark mb-1" for="article_reference">Articles</label>
-                        <select name="article_reference" required class="form-control select2"
-                            id="articleRefOut">
+                        <select name="article_reference" required class="form-control select2" id="articleRefOut">
                             <option value=''>Choisir</option>
                             @foreach ($articles as $article)
-                                <option value="{{ $article->reference }}">{{ $article->designation }}
+                                <option @if ($article->reference == old('article_reference')) selected @endif
+                                    value="{{ $article->reference }}">{{ $article->designation }}
                                 </option>
                             @endforeach
                             @foreach ($emballages as $emballage)
-                                <option value="{{ $emballage->reference }}">{{ $emballage->designation }}
+                                <option @if ($emballage->reference == old('article_reference')) selected @endif
+                                    value="{{ $emballage->reference }}">{{ $emballage->designation }}
                                 </option>
                             @endforeach
                         </select>
@@ -34,10 +34,20 @@
                         <label class="text-bold-400 text-dark" for="quantity">
                             Quantité
                         </label>
-                        <input type="number" placeholder="0" class="form-control" required id="quantity"
-                            name="quantity">
+                        <input type="number" placeholder="0" value="{{ old('quantity') }}" class="form-control"
+                            required id="quantity" name="quantity">
                         <div class="invalid-feedback">
                             Entrer le nombre de bouteille
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="text-bold-400 text-dark" for="motif">
+                            Motif
+                        </label>
+                        <textarea name="motif" id="motif" rows="" class="form-control" required>{{ old('motif') }}</textarea>
+                        <div class="invalid-feedback">
+                            Entrer le motif
                         </div>
                     </div>
 

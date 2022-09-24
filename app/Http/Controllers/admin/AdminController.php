@@ -29,7 +29,7 @@ class AdminController extends Controller
         // dd($paymentTypes);
         $recettes = $dashboard->getRecettes($solds, $docVente, $between);
         $recaps = $dashboard->getRecaps($between, $filterType);
-
+        
         return view("admin.dashboard.index", [
             "between" => $between,
             "paymentTypes" => $paymentTypes,

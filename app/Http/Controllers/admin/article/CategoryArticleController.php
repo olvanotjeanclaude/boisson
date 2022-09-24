@@ -7,7 +7,6 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
-use App\Models\Customers;
 use App\Traits\ArticlesAuthorizable;
 use Yajra\DataTables\Facades\DataTables;
 

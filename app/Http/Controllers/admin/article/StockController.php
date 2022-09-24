@@ -12,9 +12,7 @@ use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Articles\FormatRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
 
 class StockController extends Controller
 {
@@ -24,7 +22,7 @@ class StockController extends Controller
         $articles = Product::orderBy("designation")->get();
         $emballages = Emballage::orderBy("designation")->get();
         // $emballages = [];
-
+        // dd($between);
         $stocks = $this->getData();
         // dd($stocks);
         $collumns = [
@@ -154,46 +152,6 @@ class StockController extends Controller
                 foreach ($datas as $data) {
                     Stock::create($data);
                 }
-                return back()->with("success", CustomMessage::Success("Stock"));
-            }
-        }
-
-        return back()->with("error", "Erreur inattendue. Peut être que l'article a été supprimé.");
-    }
-
-    public function storeOut(Request $request)
-    {
-        $request->validate(["article_reference", "quantity"]);
-
-        $stocks = Stock::between();
-        $stock = $stocks->where("article_ref", $request->article_reference)->first();
-        $article = Stock::getArticleByReference($request->article_reference);
-
-        if ($article) {
-            if ($stock) {
-                if ($request->quantity > $stock->final) {
-                    $errors = "Article $article->designation insuffisant!";
-                }
-            } else {
-                $errors = ucfirst($article->designation) . " n'existe pas dans le stock";
-            }
-
-            if (isset($errors)) {
-                return back()->withErrors(["errors" => $errors]);
-            }
-
-            $saved = Stock::create(
-                [
-                    "article_reference" => $article->reference,
-                    "stockable_id" => $article->id,
-                    "stockable_type" => get_class($article),
-                    "date" => now()->toDateString(),
-                    "out_quantity" => $request->quantity,
-                    "user_id" => auth()->user()->id
-                ]
-            );
-
-            if ($saved) {
                 return back()->with("success", CustomMessage::Success("Stock"));
             }
         }

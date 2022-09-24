@@ -78,7 +78,6 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     //Stock
     Route::group(["middleware" => "can:view stock"], function () {
         Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
-        Route::post("store-out",[\App\Http\Controllers\admin\article\StockController::class,"storeOut"])->name("stocks.storeOut");
         Route::get("get-stock-data", [\App\Http\Controllers\admin\article\StockController::class, "getData"])->name("stocks.getData");
         Route::get("print-report-stock", [\App\Http\Controllers\admin\article\StockController::class, "printReport"])->name("stocks.printReport");
     });
@@ -86,10 +85,15 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     // Inventaire
     Route::group(["prefix" => "inventaires", "as" => "inventaires.", "middleware" => "can:view inventory"], function () {
         Route::get("/", [\App\Http\Controllers\admin\article\InventoryController::class, "index"])->name("index");
+        Route::post("get-data", [\App\Http\Controllers\admin\article\InventoryController::class, "ajaxPostData"])->name("ajaxPostData");
         Route::post("/check-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "checkStock"])->name("checkStock");
         Route::get("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "getAdjustStockForm"])->name("getAdjustStockForm");
         Route::post("/demmande-ajustement-de-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStockRequest"])->name("adjustStockRequest");
         Route::post("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStock"])->name("adjustStock")->can("valid inventory");
+        
+        Route::post("store-out",[\App\Http\Controllers\admin\article\StockOutController::class,"storeOut"])->name("storeOut");
+        Route::get("/sortie/{inventory}", [\App\Http\Controllers\admin\article\StockOutController::class, "getValidOutForm"])->name("getValidOutForm");
+        Route::post("/sortie/{inventory}", [\App\Http\Controllers\admin\article\StockOutController::class, "validStockOut"])->name("validStockOut");
     });
 
     Route::post("settings", [\App\Http\Controllers\admin\settings\SettingController::class, "update"])->name("settings.update");

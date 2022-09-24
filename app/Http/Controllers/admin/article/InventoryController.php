@@ -3,33 +3,73 @@
 namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
+use App\helper\Columns;
+use App\Models\Product;
 use App\Traits\Articles;
+use App\Models\Emballage;
 use App\Models\Inventory;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
-use App\Models\SupplierOrders;
 use App\Http\Controllers\Controller;
-use App\Models\Emballage;
-use App\Models\Product;
-use App\Models\Supplier;
+use Yajra\DataTables\Facades\DataTables;
 
 class InventoryController extends Controller
 {
     public function index(Request $request)
     {
         $stocks = Stock::between();
+        $between = Stock::getDefaultBetween();
+        $articles = Product::orderBy("designation")->get();
+        $emballages = Emballage::orderBy("designation")->get();
+        $columns = Columns::format_columns($this->getColumns());
+        $columns = json_encode($columns);
+
+        return view("admin.inventaire.index", compact(
+            "stocks",
+            "articles",
+            "emballages",
+            "columns",
+            "between"
+        ));
+    }
+
+    public function ajaxPostData(Request $request)
+    {
         $inventories = Inventory::whereHasMorph("article", [
             Product::class,
             Emballage::class
         ])
             ->orderBy("date", "desc")
-            ->orderBy("id", "desc")
-            ->get();
+            ->orderBy("id", "desc");
 
-        // dd($stocks);
 
-        return view("admin.inventaire.index", compact("inventories", "stocks"));
+        // if ($request->ajax()) {
+        return DataTables::of($inventories)
+            ->setRowId(fn ($inventory) => "row_$inventory->id")
+            ->addColumn("status", fn ($inventory) => $inventory->status_html)
+            ->addColumn("sortie", fn ($inventory) => $inventory->out)
+            ->addColumn("ecart", fn ($inventory) => $inventory->difference)
+            ->addColumn("date", fn ($inventory) => format_date($inventory->date))
+            ->addColumn("designation", fn ($inventory) => Str::upper($inventory->article->designation))
+            ->addColumn('action', function ($inventory) {
+                if ($inventory->out > 0) {
+                    $route = route('admin.inventaires.getValidOutForm', $inventory->id);
+                } else {
+                    $route = route('admin.inventaires.getAdjustStockForm', $inventory->id);
+                }
+
+                $show = '<a class="btn btn-info" href="' . $route . '">
+                            <i class="la la-eye"></i>
+                            Voir
+                        </a>';
+
+                return $show;
+            })
+            // ->orderColumn('status', 'status $1')
+            ->rawColumns(["status", "action"])
+            ->make(true);
+        // }
     }
 
     public function checkStock(Request $request)
@@ -67,7 +107,6 @@ class InventoryController extends Controller
 
     public function adjustStockRequest(Request $request)
     {
-        // dd($request->all(), "eto");
         $stockDiff = $this->getStockDifference(
             $request->date,
             $request->article_reference,
@@ -109,20 +148,20 @@ class InventoryController extends Controller
             case Inventory::STATUS["accepted"]:
                 $article = $inventory->article;
                 $between = [Stock::MinDate($inventory->date), $inventory->date];
-                $stock = Stock::between($between)->where("article_ref",$article->reference)->first();
-             
+                $stock = Stock::between($between)->where("article_ref", $article->reference)->first();
+
                 // dd($stock,$inventory);
                 // dd($supplierOrders, $inventory,$absGap);
-                
+
                 if ($stock) {
-                  $updated=  Stock::create([
+                    $updated =  Stock::create([
                         "article_reference" => $article->reference,
                         "stockable_id" => $article->id,
                         "stockable_type" => get_class($article),
                         "date" => now()->toDateString(),
                         "entry" => $inventory->difference,
                         "user_id" => auth()->user()->id,
-                        "inventory_id" =>$inventory->id
+                        "inventory_id" => $inventory->id
                     ]);
 
                     if ($updated) {
@@ -151,7 +190,6 @@ class InventoryController extends Controller
 
         return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
     }
-
 
     private function getStockInfoHtml($stock): array
     {
@@ -229,5 +267,10 @@ class InventoryController extends Controller
             "stock" => $stock ?? null,
             "messages" => $messages
         ];
+    }
+
+    private function getColumns()
+    {
+        return ["status", "date", "designation", "sortie", "ecart", "action"];
     }
 }

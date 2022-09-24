@@ -82,10 +82,15 @@ class Stock extends Model
         }
 
         $date = new Carbon($date);
-        $setting = Settings::first();
-        $n = is_null($setting) ? 7 : $setting->min_stock_day;
+       
+        $n = self::minDateNumber();
 
         return $date->subDays($n)->toDateString();
+    }
+
+    public static function minDateNumber(){
+        $setting = Settings::first();
+        return is_null($setting) ? 7 : $setting->min_stock_day;
     }
 
     public function scopeBetween($query, $between = [])

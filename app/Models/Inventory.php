@@ -19,7 +19,7 @@ class Inventory extends Model
 
     const STATUS_TEXT = [
         "accepted" => "Accepté",
-        "pending" => "En attente de validation",
+        "pending" => "En attente",
         "canceled" => "Annulé",
     ];
 

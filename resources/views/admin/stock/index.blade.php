@@ -199,14 +199,6 @@
                         Nouveau Stock
                     </button>
                 </div>
-
-                <div class="form-group">
-                    <button type="button" data-toggle="modal" data-target="#stockOutForm"
-                        class="btn float-right w-100 my-1 btn-primary">
-                        <span class="material-icons">add</span>
-                        Nouveau Sorti
-                    </button>
-                </div>
             </div>
         </div>
     </section>
@@ -227,7 +219,8 @@
                         <h5>Nombre minimum de jours de stock par défaut</h5>
                         <div class="form-group">
                             <label for="surname">Nombre De Jour</label>
-                            <input type="number" class="form-control" name="min_stock_day" min="1" required>
+                            <input type="number" value="{{ \App\Models\Stock::minDateNumber() }}" class="form-control"
+                                name="min_stock_day" min="1" required>
                             <div class="invalid-feedback">
                                 Entre une nombre valide
                             </div>
@@ -246,11 +239,6 @@
         'articles' => $articles,
         'emballages' => $emballages,
     ])
-    @include('admin.stock.out-form', [
-        'articles' => $articles,
-        'emballages' => $emballages,
-    ])
-    @include('includes.delete-modal')
 @endsection
 
 @section('page-js')
