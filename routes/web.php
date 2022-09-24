@@ -78,6 +78,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     //Stock
     Route::group(["middleware" => "can:view stock"], function () {
         Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
+        Route::post("store-out",[\App\Http\Controllers\admin\article\StockController::class,"storeOut"])->name("stocks.storeOut");
         Route::get("get-stock-data", [\App\Http\Controllers\admin\article\StockController::class, "getData"])->name("stocks.getData");
         Route::get("print-report-stock", [\App\Http\Controllers\admin\article\StockController::class, "printReport"])->name("stocks.printReport");
     });

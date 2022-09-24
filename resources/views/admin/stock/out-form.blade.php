@@ -1,11 +1,11 @@
-<div class="modal fade text-left" id="modalStock"  role="dialog"
+<div class="modal fade text-left" id="stockOutForm"  role="dialog" aria-labelledby="myModalLabel10"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form action="{{ route('admin.stocks.store') }}" class="needs-validation" novalidate method="POST">
+        <form action="{{ route('admin.stocks.storeOut') }}" class="needs-validation" novalidate method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header bg-secondary white">
-                    <h4 class="modal-title white" id="myModalLabel10">Nouveau Stock</h4>
+                    <h4 class="modal-title white">Nouveau Sorti</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -13,8 +13,8 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="text-bold-400 text-dark mb-1" for="article_reference">Articles</label>
-                        <select name="article_reference" required class="select2 form-control"
-                            id="articleRefIn">
+                        <select name="article_reference" required class="form-control select2"
+                            id="articleRefOut">
                             <option value=''>Choisir</option>
                             @foreach ($articles as $article)
                                 <option value="{{ $article->reference }}">{{ $article->designation }}

@@ -83,7 +83,7 @@
                                         <tr>
                                             <th>Ref</th>
                                             <th>Designation</th>
-                                            <th>Prix</th>
+                                            <th style="min-width:80px">Prix</th>
                                             <th>Prix De Gros</th>
                                             <th>Cont./Cond</th>
                                             <th>Fam</th>

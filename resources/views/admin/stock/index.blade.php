@@ -46,6 +46,7 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            @include('includes.error')
             @if (session('success'))
                 @include('component.alert', [
                     'type' => 'success',
@@ -136,6 +137,7 @@
                                             <th>Type</th>
                                             <th>Designation</th>
                                             <th>Entrées</th>
+                                            {{-- <th>Sorti</th> --}}
                                             <th>Vendu</th>
                                             {{-- <th>Montant</th> --}}
                                             <th>En Stock</th>
@@ -147,19 +149,11 @@
                                                 <tr>
                                                     <td>{{ $stock->article_ref }}</td>
                                                     <td>
-                                                        {{-- @if ($stock->type == 'deconsignation')
-                                                            DECO
-                                                        @endif
-                                                        @if ($stock->type == 'consignation')
-                                                            CONSI
-                                                        @endif
-                                                        @if ($stock->type == 'article')
-                                                            ARTICLE
-                                                        @endif --}}
                                                         {{ Str::upper($stock->type) }}
                                                     </td>
                                                     <td>{{ Str::upper($stock->designation) }}</td>
                                                     <td>{{ $stock->sum_entry }}</td>
+                                                    {{-- <td>{{ $stock->sum_stock_out }}</td> --}}
                                                     <td>{{ $stock->sum_out }}</td>
                                                     <td>{{ $stock->final }}</td>
                                                 </tr>
@@ -198,48 +192,21 @@
                     </div>
                 </form>
 
-                <form novalidate class="needs-validation" action="{{ route('admin.stocks.store') }}" method="POST">
-                    @csrf
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label class="text-bold-400 text-dark mb-1" for="article_reference">Articles</label>
-                                <select name="article_reference" required class="select2 form-control articleBySupplier"
-                                    id="article_reference">
-                                    <option value=''>Choisir</option>
-                                    @foreach ($articles as $article)
-                                        <option value="{{ $article->reference }}">{{ $article->designation }}</option>
-                                    @endforeach
-                                    @foreach ($emballages as $emballage)
-                                        <option value="{{ $emballage->reference }}">{{ $emballage->designation }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback">
-                                    Selectionnez l'article
-                                </div>
-                            </div>
+                <div class="form-group">
+                    <button type="button" data-toggle="modal" data-target="#modalStock"
+                        class="btn float-right my-1 w-100 btn-primary">
+                        <span class="material-icons">add</span>
+                        Nouveau Stock
+                    </button>
+                </div>
 
-                            <div class="form-group">
-                                <label class="text-bold-400 text-dark" for="quantity">
-                                    Quantité
-                                </label>
-                                <input type="number" placeholder="0" class="form-control" required id="quantity"
-                                    name="quantity">
-                                <div class="invalid-feedback">
-                                    Entrer le nombre de bouteille
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <button type="submit" id="addArticle" class="btn float-right my-1 btn-primary">
-                                        <span class="material-icons">add</span>
-                                        Ajouter
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                <div class="form-group">
+                    <button type="button" data-toggle="modal" data-target="#stockOutForm"
+                        class="btn float-right w-100 my-1 btn-primary">
+                        <span class="material-icons">add</span>
+                        Nouveau Sorti
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -276,6 +243,10 @@
         </div>
     </div>
     @include('admin.stock.modal-create', [
+        'articles' => $articles,
+        'emballages' => $emballages,
+    ])
+    @include('admin.stock.out-form', [
         'articles' => $articles,
         'emballages' => $emballages,
     ])

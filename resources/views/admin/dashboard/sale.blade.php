@@ -11,6 +11,9 @@
                 <div class="col">
                     <select name="filter_type" class="bg-white form-control" id="filterArticle">
                         @foreach (\App\helper\Filter::TYPES as $value)
+                        @if ($value=="sorti")
+                            @continue
+                        @endif
                             <option @if ($value == request()->get('filter_type')) selected @endif value="{{ $value }}">
                                 {{ Str::title($value) }}</option>
                         @endforeach

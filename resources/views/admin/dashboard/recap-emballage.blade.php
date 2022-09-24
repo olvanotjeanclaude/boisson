@@ -4,8 +4,8 @@
     </div>
     <div class="d-flex flex-wrap justify-content-center">
         @foreach ($recaps as $recap => $total)
-            <div class="border m-1 p-1">
-                <h4 class="card-title">{{ $recap }}</h4>
+            <div class="border m-1 p-1" style="min-width: 150px">
+                <h4 class="card-title text-center">{{ $recap }}</h4>
                 <div class="text-center">
                     <div class="badge badge-pill  badge-secondary badge-square">
                         {{ $total }}
