@@ -49,6 +49,7 @@ class Stock extends Model
                 "stocks.date as date",
                 DB::raw("SUM(stocks.entry) AS sum_entry"),
                 "sales.sum_out",
+                DB::raw("SUM(stocks.out) as sum_stock_out"),
                 // "sales.isWithEmballage"
                 DB::raw("COALESCE(sales.isWithEmballage,0) as isWithEmballage")
             ]
@@ -82,13 +83,14 @@ class Stock extends Model
         }
 
         $date = new Carbon($date);
-       
+
         $n = self::minDateNumber();
 
         return $date->subDays($n)->toDateString();
     }
 
-    public static function minDateNumber(){
+    public static function minDateNumber()
+    {
         $setting = Settings::first();
         return is_null($setting) ? 7 : $setting->min_stock_day;
     }
@@ -97,8 +99,7 @@ class Stock extends Model
     {
         if (empty($between)) {
             $between = self::getDefaultBetween();
-        } 
-        else if ($between[0] == $between[1]) {
+        } else if ($between[0] == $between[1]) {
             $between = [self::MinDate($between[0]), $between[0]];
         }
 
@@ -108,15 +109,24 @@ class Stock extends Model
                     ->where(fn ($query) => Filter::queryBetween($query, $between, "sales.received_at"));
             })->groupBy("sales.article_reference", "sales.isWithEmballage");
         // dd($sales->get());
-        return DB::table("stocks")
-            ->where(fn ($query) => Filter::queryBetween($query, $between, "date"))
-            ->select(self::defaultSelect()["stock"])
+        $stocks = DB::table("stocks")
+            // ->leftJoin("inventories", "stocks.inventory_id", "inventories.id")
+            ->where(fn ($query) => Filter::queryBetween($query, $between, "stocks.date"))
+            ->select([
+                ...self::defaultSelect()["stock"],
+                // "inventories.out as stock_out", "inventories.id as inventory_id"
+            ])
             ->leftJoinSub($sales, "sales", function ($join) {
                 $join->on("stocks.article_reference", "sales.article_ref");
-            })->groupBy("stocks.article_reference", "sales.isWithEmballage")
-            ->get()
-            ->map(fn ($stock) => $this->mapStock($stock))
+            })
+            ->groupBy("stocks.article_reference", "sales.isWithEmballage")
+            ->orderByDesc("id")
+            ->get();
+        // dd();
+        $stocks = $stocks->map(fn ($stock) => $this->mapStock($stock))
             ->filter(fn ($stock) => isset($stock->type) && isset($stock));
+
+            return $stocks;
     }
 
     public function scopefilterBetween($query, $between = null)
@@ -141,6 +151,7 @@ class Stock extends Model
         $stock->sum_out = $stock->sum_out ?? 0;
         $article = self::getArticleByReference($stock->article_ref);
         // dd($stock);
+
         if ($article) {
             $stock->type = "article";
             if ($stock->article_type == "App\Models\Emballage") {

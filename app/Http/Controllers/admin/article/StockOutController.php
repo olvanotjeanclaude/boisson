@@ -88,7 +88,8 @@ class StockOutController extends Controller
                         "stockable_id" => $article->id,
                         "stockable_type" => get_class($article),
                         "date" => now()->toDateString(),
-                        "entry" => -$inventory->out,
+                        "entry" => 0,
+                        "out" =>$inventory->out,
                         "user_id" => auth()->user()->id,
                         "inventory_id" => $inventory->id
                     ]);

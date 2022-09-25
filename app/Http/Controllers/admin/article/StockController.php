@@ -65,7 +65,7 @@ class StockController extends Controller
         if ($keyword) {
             $stocks = $stocks->filter(function ($stock) use ($keyword) {
                 $designation = strtolower($stock->designation);
-                return $stock->article_ref == $keyword ||  Str::startsWith($designation, $keyword);
+                return $stock->article_ref == $keyword ||  Str::contains($designation, $keyword);
             });
         }
 
@@ -100,7 +100,7 @@ class StockController extends Controller
         if ($keyword) {
             $stocks = $stocks->filter(function ($stock) use ($keyword) {
                 $designation = strtolower($stock->designation);
-                return $stock->article_ref == $keyword ||  Str::startsWith($designation, $keyword);
+                return $stock->article_ref == $keyword ||  Str::contains($designation, $keyword);
             });
         }
 
