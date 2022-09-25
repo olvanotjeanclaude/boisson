@@ -50,7 +50,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
         Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
         Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
         Route::resource("achat-produits", \App\Http\Controllers\admin\article\PurchaseProductController::class);
-        // Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
+        Route::resource("tarif-fournisseurs", \App\Http\Controllers\admin\produit\PricingSupplierController::class)->except("show");
     });
 
     // Dashboard

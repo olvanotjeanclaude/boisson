@@ -16,6 +16,7 @@ class CreatePricingSupliersTable extends Migration
         Schema::create('pricing_supliers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("supplier_id");
+            $table->string("article_reference");
             $table->unsignedBigInteger("article_id");
             $table->string("article_type");
             $table->decimal("buying_price")->comment("prix d'achat");

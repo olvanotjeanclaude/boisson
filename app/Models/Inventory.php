@@ -23,6 +23,12 @@ class Inventory extends Model
         "canceled" => "Annulé",
     ];
 
+    const ACTION_TYPES = [
+       "inventaire",
+       "sortie",
+       "retour fournisseur"
+    ];
+
     public function article()
     {
         return $this->morphTo(__FUNCTION__, "article_type", "article_id");
@@ -33,7 +39,8 @@ class Inventory extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function stock(){
+    public function stock()
+    {
         return $this->hasOne(Stock::class);
     }
 

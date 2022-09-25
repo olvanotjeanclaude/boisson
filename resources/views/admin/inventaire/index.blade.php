@@ -46,7 +46,7 @@
                 <div class="heading-elements">
                     @can('view stock')
                         <a href="{{ route('admin.stocks.index') }}" class="btn btn-secondary btn-sm text-capitalize">
-                            Bon d'entrée
+                           Stock
                         </a>
                     @endcan
                     <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
@@ -153,23 +153,10 @@
                             </div>
                         </form>
                     </div>
-                    <div class="table-responsive">
-                        <table style="width: 100%" data-columns="{{ $columns }}"
-                            data-url="{{ route('admin.inventaires.ajaxPostData') }}"
-                            class="table table-hover table-sm  ajax-datatable table-striped">
-                            <thead class="bg-light">
-                                <tr>
-                                    @foreach (json_decode($columns, true) as $column)
-                                        <td>
-                                            {{ $column['data'] }}
-                                        </td>
-                                    @endforeach
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+
+                    @include('includes.datatable.table', [
+                        'dataUrl' => route('admin.inventaires.ajaxPostData'),
+                    ])
                 </div>
             </div>
         </div>

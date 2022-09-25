@@ -58,52 +58,24 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <!-- Invoices List table -->
-                            <div class="table-responsive">
-                                <table
-                                    class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th>Founrisseur</th>
-                                            <th>Article</th>
-                                            <th>Prix D'Achat</th>
-                                            @can('update', $tarifs->first())
+                            <div class="card-body">  
+                                <div class="table-responsive">
+                                    <table style="width: 100%" data-columns="{{ $columns }}" data-url="{{ route('admin.tarif-fournisseurs.ajaxPostData') }}"
+                                        class="table table-hover table-sm  ajax-datatable table-striped">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th>Fournisseur</th>
+                                                <th style="width: 170px">Article</th>
+                                                <th>Prix D'Achat</th>
+                                                <th>Date</th>
                                                 <th>Action</th>
-                                            @endcan
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($tarifs as $tarif)
-                                            <tr id="row_{{ $tarif->id }}">
-                                                <td>{{ $tarif->supplier->identification }}</td>
-                                                <td>{{ $tarif->product->designation }}</td>
-                                                <td>{{ formatPrice($tarif->buying_price) }}</td>
-                                                @can('update', $tarif)
-                                                    <td>
-                                                        <span class="dropdown">
-                                                            <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
-                                                                aria-haspopup="true" aria-expanded="true"
-                                                                class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
-                                                                    class="ft-settings"></i></button>
-                                                            <span aria-labelledby="btnSearchDrop2"
-                                                                class="dropdown-menu mt-1 dropdown-menu-right">
-                                                                <a href="{{ route('admin.tarif-fournisseurs.edit', $tarif['id']) }}"
-                                                                    class="dropdown-item"><i class="la la-pencil"></i>
-                                                                    Editer
-                                                                </a>
-
-                                                                <a data-id="{{ $tarif['id'] }}"
-                                                                    data-url="{{ route('admin.tarif-fournisseurs.destroy', $tarif['id']) }}"
-                                                                    class="dropdown-item delete-btn"><i class="la la-trash"></i>
-                                                                    Supprimer</a>
-                                                            </span>
-                                                        </span>
-                                                    </td>
-                                                @endcan
                                             </tr>
-                                        @empty
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+    
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <!--/ Invoices table -->
                         </div>
@@ -121,6 +93,8 @@
 
 @section('script')
     <script>
-        loadDatatable();
+        $(document).ready(function() {
+            loadDatatableAjax();
+        })
     </script>
 @endsection

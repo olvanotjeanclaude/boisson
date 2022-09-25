@@ -35,8 +35,8 @@ trait Articles
     public function scopePreInvoices($q)
     {
         return $q->where("user_id", auth()->user()->id)
-       ->where("status",false)
-        ->orderBy("saleable_type","desc");
+            ->where("status", false)
+            ->orderBy("saleable_type", "desc");
     }
 
     public function getArticleTypeAttribute($value)
@@ -86,5 +86,17 @@ trait Articles
     public function getInvoiceStatusAttribute()
     {
         return array_search($this->status, Invoice::STATUS);
+    }
+
+    public static function search($query,$relation, $keyword)
+    {
+        return $query->whereHasMorph(
+            $relation,
+            [Product::class, Emballage::class],
+            function ($query) use ($keyword) {
+                return $query->where("designation", "LIKE", "%$keyword%")
+                ->orWhere("reference","LIKE","%$keyword%");
+            }
+        );
     }
 }

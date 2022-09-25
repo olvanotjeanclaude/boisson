@@ -44,14 +44,14 @@
                     <form method="POST" action="{{ route('admin.tarif-fournisseurs.update', $pricingSuplier->id) }}"
                         class="form form-horizontal striped-rows form-bordered needs-validation" novalidate>
                         @csrf
-                        @method("put")
+                        @method('put')
                         <div class="form-body">
                             <h4 class="form-section"><i class="la la-clipboard"></i>Nouveau Tarif Fournisseur</h4>
 
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="supplier_id">Fournisseur</label>
                                 <div class="col-md-9">
-                                    <select name="supplier_id" class="form-control" required id="supplier_id">
+                                    <select name="supplier_id" class="form-control select2" required id="supplier_id">
                                         <option value="">Choisir</option>
                                         @foreach ($suppliers as $supplier)
                                             <option value="{{ $supplier->id }}"
@@ -66,18 +66,18 @@
                             </div>
 
                             <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="product_id">Articles</label>
+                                <label class="col-md-3 label-control" for="article_reference">Articles</label>
                                 <div class="col-md-9">
-                                    <select name="product_id" class="form-control" required id="product_id">
+                                    <select name="article_reference" class="form-control select2" required
+                                        id="article_reference">
                                         <option value="">Choisir</option>
                                         @foreach ($products as $product)
-                                            <option @if ($product->id == $pricingSuplier->product->id) selected @endif
-                                                value="{{ $product->reference }}">{{ $product->designation }}
-                                            </option>
+                                            <option @if($product->reference==$pricingSuplier->article_reference) selected @endif value="{{ $product->reference }}">{{ $product->designation }}</option>
                                         @endforeach
-                                        @foreach ($packages as $package)
-                                            <option @if ($package->id == $pricingSuplier->product->id) selected @endif
-                                                value="{{ $package->reference }}">{{ $package->designation }}
+
+                                        @foreach ($emballages as $emballage)
+                                            <option @if($product->reference==$pricingSuplier->article_reference) selected @endif value="{{ $emballage->reference }}">
+                                                {{ Str::upper($emballage->designation) }}
                                             </option>
                                         @endforeach
                                     </select>

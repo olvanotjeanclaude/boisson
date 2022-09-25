@@ -15,6 +15,7 @@ class AddOutCollumnToInventory extends Migration
     {
         Schema::table('inventories', function (Blueprint $table) {
             $table->unsignedBigInteger("out")->after("date")->default(0)->comment("sorti de stock");
+            $table->boolean("action_type")->after("out")->default(1)->comment("type d'action");
         });
     }
 
@@ -27,6 +28,7 @@ class AddOutCollumnToInventory extends Migration
     {
         Schema::table('inventories', function (Blueprint $table) {
             $table->dropColumn("out");
+            $table->dropColumn("action_type");
         });
     }
 }

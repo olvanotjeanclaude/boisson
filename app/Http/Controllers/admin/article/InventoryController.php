@@ -36,10 +36,11 @@ class InventoryController extends Controller
 
     public function ajaxPostData(Request $request)
     {
-        $inventories = Inventory::whereHasMorph("article", [
-            Product::class,
-            Emballage::class
-        ])
+        $keyword = $request->search["value"];
+
+        $inventories = Inventory::orWhere(function ($query) use ($keyword) {
+            return \App\Traits\Articles::search($query, "article", $keyword);
+        })
             ->orderBy("date", "desc")
             ->orderBy("id", "desc");
 

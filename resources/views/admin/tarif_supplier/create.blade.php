@@ -6,7 +6,7 @@
 
 @section('content-header')
     @include('includes.content-header', [
-         'page' => 'Tarif Fournisseurs',
+        'page' => 'Tarif Fournisseurs',
         'breadcrumbs' => [
             ['text' => 'Tarif Fournisseurs', 'link' => route('admin.tarif-fournisseurs.index')],
             ['text' => 'Nouveau', 'link' => route('admin.index')],
@@ -31,7 +31,7 @@
                 </ul>
             </div>
         @endif
-        
+
         @if (session('success'))
             @include('component.alert', [
                 'type' => 'success',
@@ -50,10 +50,11 @@
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="supplier_id">Fournisseur</label>
                                 <div class="col-md-9">
-                                    <select name="supplier_id" class="form-control" required id="supplier_id">
+                                    <select name="supplier_id" class="form-control select2" required id="supplier_id">
                                         <option value="">Choisir</option>
                                         @foreach ($suppliers as $supplier)
-                                            <option value="{{ $supplier->id }}">{{ $supplier->identification }}</option>
+                                            <option value="{{ $supplier->id }}">{{ Str::upper($supplier->identification) }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback">
@@ -63,18 +64,18 @@
                             </div>
 
                             <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="product_id">Articles</label>
+                                <label class="col-md-3 label-control" for="article_reference">Articles</label>
                                 <div class="col-md-9">
-                                    <select name="product_id" class="form-control" required id="product_id">
+                                    <select name="article_reference" class="form-control select2" required id="article_reference">
                                         <option value="">Choisir</option>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->reference }}">{{ $product->designation }}</option>
                                         @endforeach
-                                        @foreach ($packages as $package)
-                                            <option value="{{ $package->reference }}">{{ $package->designation }}</option>
-                                        @endforeach
+
                                         @foreach ($emballages as $emballage)
-                                            <option value="{{ $emballage->reference }}">{{ $emballage->designation }}</option>
+                                            <option value="{{ $emballage->reference }}">
+                                                {{ Str::upper($emballage->designation) }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback">
@@ -93,17 +94,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="unit_price">Prix Unitaire</label>
-                                <div class="col-md-9">
-                                    <input type="number" id="unit_price" step="0.001" required class="form-control"
-                                        placeholder="Prix d'achat" name="unit_price">
-                                    <div class="invalid-feedback">
-                                        Entrer le prix unitaire
-                                    </div>
-                                </div>
-                            </div> --}}
 
                             <div class="form-group row mx-auto last">
                                 <label class="col-md-3 label-control" for="note">Note</label>

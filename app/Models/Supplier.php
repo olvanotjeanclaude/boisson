@@ -31,6 +31,10 @@ class Supplier extends Model
         return (string) random_int(111111, 999999);
     }
 
+    public function getIdentificationAttribute($value){
+        return strtoupper($value);
+    }
+
     public function getCodeIdentificationAttribute(){
         return "{$this->code}-{$this->identification}";
     }

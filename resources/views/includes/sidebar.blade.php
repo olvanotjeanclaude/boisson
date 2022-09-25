@@ -101,14 +101,14 @@
                             <span>Article En Gros</span>
                         </a>
                     </li> --}}
-                    {{-- @can('viewAny', \App\Models\PricingSuplier::class)
+                    @can('view all')
                         <li>
                             <a class="menu-item" href="{{ route('admin.tarif-fournisseurs.index') }}">
                                 <i class="material-icons"></i>
                                 <span>Tarif Fournisseurs</span>
                             </a>
                         </li>
-                    @endcan --}}
+                    @endcan
                     <li>
                         <a class="menu-item" href="{{ route('admin.approvisionnement.emballages.index') }}">
                             <i class="material-icons"></i>

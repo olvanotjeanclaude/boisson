@@ -41,4 +41,8 @@ class Customers extends Model
         "actif",
         "attente"
     ];
+
+    public function getIdentificationAttribute($value){
+        return strtoupper($value);
+    }
 }

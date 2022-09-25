@@ -55,36 +55,9 @@
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
-                            <table class="table datatable table-responsive-sm  material-table">
-                                <thead>
-                                    <tr>
-                                        <th>Identification</th>
-                                        <th>Code</th>
-                                        <th>Telephone</th>
-                                        <th>Date</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($suppliers as $supplier)
-                                        <tr id="row_{{ $supplier->id }}">
-                                            <td>{{ $supplier->identification }}</td>
-                                            <td>{{ $supplier->fr_code }}</td>
-                                            <td>{{ $supplier->phone }}</td>
-                                            <td>{{ format_date($supplier->created_at) }}</td>
-                                            <td>
-                                                @include('includes.action-button', [
-                                                    'id' => $supplier->id,
-                                                    'editLink' => route('admin.fournisseurs.edit', $supplier->id),
-                                                    'showLink' => route('admin.fournisseurs.show', $supplier->id),
-                                                    'deleteLink' => route('admin.fournisseurs.destroy', $supplier->id),
-                                                ])
-                                            </td>
-                                        </tr>
-                                    @empty
-                                    @endforelse
-                                </tbody>
-                            </table>
+                            @include('includes.datatable.table', [
+                                'dataUrl' => route('admin.fournisseurs.ajaxPostData'),
+                            ])
                         </div>
                     </div>
                 </div>
@@ -106,6 +79,8 @@
 
 @section('script')
     <script>
-        loadDatatable();
+        $(document).ready(function() {
+            loadDatatableAjax();
+        })
     </script>
 @endsection
