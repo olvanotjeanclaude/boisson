@@ -272,6 +272,6 @@ class InventoryController extends Controller
 
     private function getColumns()
     {
-        return ["status", "date", "designation", "sortie", "ecart", "action"];
+        return ["status", "date", "designation",  "ecart", "action"];
     }
 }

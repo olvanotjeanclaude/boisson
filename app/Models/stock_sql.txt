@@ -1,0 +1,23 @@
+SELECT 
+    stock_and_sale.article_reference,
+    stock_and_sale.article_type,
+    SUM(stock_and_sale.entry) as "sum_entry",
+    SUM(stock_and_sale.out_quantity) AS "sum_out_quantity",
+    (SUM(stock_and_sale.entry) - SUM(stock_and_sale.out_quantity)) as "final"
+FROM
+(SELECT article_reference,
+saleable_type as article_type,
+CASE WHEN (isWithEmballage=1 AND saleable_type="App\\Models\\Emballage") THEN (SELECT quantity) ELSE 0 END AS "entry",
+CASE
+WHEN ((isWithEmballage=0 AND saleable_type="App\\Models\\Emballage") OR (saleable_type="App\\Models\\Product") )
+THEN  (SELECT quantity) ELSE 0 END AS "out_quantity"
+FROM `sales` 
+ UNION ALL
+SELECT article_reference,
+stockable_type as article_type,
+entry,
+out_quantity
+FROM stocks) as stock_and_sale
+
+GROUP BY stock_and_sale.article_reference
+ORDER BY  (SUM(stock_and_sale.entry) - SUM(stock_and_sale.out_quantity)) DESC

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\admin\password\PasswordController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;

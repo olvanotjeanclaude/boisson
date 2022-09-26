@@ -61,39 +61,25 @@ class ArticleController extends Controller
 
     public function getArticleBySupplier($supplier_id)
     {
-        $articles = [
-            "articles" => [],
-            "emballages" => [],
-        ];
-
+        $articles = [];
+        
         $datas = PricingSuplier::has("supplier")
             ->whereHasMorph(
                 'product',
-                [Product::class, Package::class,Emballage::class]
+                [Product::class, Emballage::class]
             )
             ->where("supplier_id", $supplier_id)
-            ->groupBy("article_type","article_id")-> get();
-
-        $emballages = PricingSuplier::Emballages($supplier_id);
+            ->groupBy("article_reference")
+            ->get();
 
         if (count($datas)) {
             foreach ($datas as $pricing) {
                 if ($pricing && $pricing->product) {
-                    $articles["articles"][] = $pricing->product;
+                    $articles[] = $pricing->product;
                 }
             }
         }
 
-        if (count($emballages)) {
-            foreach ($emballages as $pricing) {
-                // dd($pricing);
-                if ($pricing) {
-                    $articles["emballages"][] = $pricing;
-                }
-            }
-        }
-
-       
         return response()->json($articles);
     }
 }

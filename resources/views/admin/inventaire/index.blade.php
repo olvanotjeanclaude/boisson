@@ -52,11 +52,11 @@
                     <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
                         Ventes
                     </a>
-                    <a href="javascript:void(0)" data-toggle="modal" data-target="#stockOutForm"
+                    {{-- <a href="javascript:void(0)" data-toggle="modal" data-target="#stockOutForm"
                         class="btn btn-primary btn-sm text-capitalize">
                         <span class="material-icons">add</span>
                         Nouveau Bon De Sorti
-                    </a>
+                    </a> --}}
                 </div>
             </div>
             <div class="card-content collapse show">
@@ -189,10 +189,10 @@
     </div>
 @endsection
 
-@include('admin.inventaire.out-form', [
+{{-- @include('admin.inventaire.out-form', [
     'articles' => $articles,
     'emballages' => $emballages,
-])
+]) --}}
 
 @section('page-js')
     @include('includes.datatable.js')

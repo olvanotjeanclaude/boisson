@@ -1,68 +1,212 @@
 @extends('layouts.app')
 
 @section('title')
-    Nouveau Achat Fournisseur
+    Nouveau Bon D'Entrée
+@endsection
+
+@section('page-css')
+    <style>
+        table#preInvoice td {
+            margin: .4rem auto;
+        }
+    </style>
 @endsection
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Client',
+        'page' => 'Achat Fournisseur',
         'breadcrumbs' => [
-            ['text' => 'Achat Fournisseurs', 'link' => route('admin.achat-fournisseurs.index')],
+            ['text' => "Bon D'Entrée", 'link' => route('admin.achat-fournisseurs.index')],
             ['text' => 'Nouveau', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
+            'text' => 'Nouveau Achat Fournisseur',
+            'link' => route('admin.achat-fournisseurs.create'),
+            'icon' => '<span class="material-icons">add</span>',
             'show' => false,
         ],
     ])
 @endsection
 
 @section('content')
-    <div class="isiaFormRepeater repeat-section" id="achatFournisseur" data-field-id="achat" data-items-index-array="[1]">
-        <div class="repeat-items">
-            <div class="card repeat-item" data-field-index="1">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    <div class="row">
+        <div class="col-md-7">
+            <form novalidate class="needs-validation" action="{{ route('admin.achat-fournisseurs.store') }}" method="POST">
+                @csrf
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 mt-1">
+                                <label class="text-bold-400 text-dark" for="supplier_id">Fournisseur</label>
+                                <select required name="supplier_id" id="supplier_id" required class="select2 form-control">
+                                    <option value="">Choisir</option>
+                                    @forelse ($suppliers as  $supplier)
+                                        <option @if ($firstAchat && $firstAchat->supplier_id == $supplier->id) selected @endif
+                                            value="{{ $supplier->id }}">{{ $supplier->identification }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                <div class="invalid-feedback">
+                                    le fournisseur ne peut pas être vide
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-8 mt-1 col-article">
+                                <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
+                                <select name="article_reference" required class="select2 form-control articleBySupplier"
+                                    id="article_reference">
+                                    <option value=''>Choisir</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Selectionnez l'article
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4 mt-1">
+                                <label class="text-bold-400 text-dark" for="quantity">
+                                    Quantité
+                                </label>
+                                <input type="number" placeholder="0" class="form-control" required id="quantity"
+                                    name="quantity">
+                                <div class="invalid-feedback">
+                                    Entrer le nombre de bouteille
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" id="addArticle" class="btn float-right my-1 btn-primary">
+                                    <span class="material-icons">add</span>
+                                    Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="card d-none" id="paymentAndFactureContainer">
+                <form action="{{ route('admin.achat-produits.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="saveData" value="saveData" id="">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md">
+                                <div class="form-group">
+                                    <label class="text-bold-400 text-dark" for="received_at">
+                                        Date
+                                    </label>
+                                    <input type="date" value="{{ date('Y-m-d') }}" class="form-control" id="received_at"
+                                        name="received_at">
+                                </div>
+                            </div>
+
+                            <div class="col-md-7 mt-1">
+                                <div class="form-group">
+                                    <label for="comment">Commentaire</label>
+                                    <textarea name="comment" id="comment" class="form-control" placeholder="Note"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn form-control my-1 border-top text-white btn-secondary">
+                                    <i class="la la-save"></i>
+                                    Valider
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-12 d-flex justify-content-between">
-                            <a data-repeat-remove-btn class="repeat-remove btn-sm btn btn-danger mb-1" href="#">Supprimer</a>
-                            <span class="badge badge-pill badge-primary">1000 Ariary</span>
+                    <h4 class="text-capitalize text-right font-weight-bold">Ticket D'Achat</h4>
+                    @if (count($preInvoices))
+                        <div class="table-responsive">
+                            <table class="table p-0 table-sm text-nowrap table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr class="p-0">
+                                        <td>Designation</td>
+                                        <td>Prix</td>
+                                        <td>Qtt</td>
+                                        <td>Sous Total</td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($preInvoices as $preInvoice)
+                                        @php
+                                            $pricing = $preInvoice->supplier_price;
+                                        @endphp
+                                        @if ($pricing)
+                                            <tr>
+                                                <td class="pl-1 py-0 text-capitalize">
+                                                    {{ $preInvoice->stockable->designation }}
+                                                </td>
+                                                <td class="pl-1 py-0">
+                                                    {{ $pricing->buying_price }}
+                                                    Ar
+                                                </td>
+                                                <td class="pl-1 py-0">{{ $preInvoice->entry }}</td>
+                                                <td class="pl-1 py-0">
+                                                    {{ formatPrice($preInvoice->sub_amount) }}
+                                                </td>
+                                                <td class="pl-1 py-0">
+                                                    <form method="POST"
+                                                        action="{{ route('admin.achat-fournisseurs.destroy', $preInvoice->id) }}">
+                                                        @csrf
+                                                        @method('delete')
+                                                        <button type="submit"
+                                                            class="btn btn-outline-accent-1 remove-article">
+                                                            <span class="material-icons text-danger">
+                                                                remove_circle
+                                                            </span>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6 col-md-3 mt-1">
-                            <label class="text-bold-400 text-dark">Designation</label>
-                            <input type="text" class="repeat-el form-control" placeholder="Designation"
-                                id="achat[designation][1]" name="achat[designation][1]">
+                        <div class="d-flex mt-1 flex-column align-items-end">
+                            <span id="amountToPay" data-amount="{{ $amount }}"></span>
+                            <span> {{ number_format($amount, 2, ',', ' ') ?? '0' }} Ar</span>
+                            <span> {{ number_format($amount * 5, 2, ',', ' ') ?? '0' }} Fmg</span>
                         </div>
-                        <div class="col-sm-6 col-md mt-1">
-                            <label class="text-bold-400 text-dark">Type</label>
-                            <select name="type" class="form-control" id="type">
-                                <option value="">Choisir</option>
-                                <option value="">Cageot</option>
-                                <option value="">Carton</option>
-                            </select>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-actions float-right">
+                                    <button type="button" id="cancelBtn" class="btn btn-warning d-none mr-1">
+                                        <i class="ft-x"></i> Anuller
+                                    </button>
+                                    <button type="button" id="validFacture" class="btn btn-primary">
+                                        <i class="la la-check-square-o"></i> Enregister
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-sm-6 col-md mt-1">
-                            <label class="text-bold-400 text-dark">Quantité Bll</label>
-                            <input type="number" class="repeat-el form-control" placeholder="Quantité Bll"
-                                id="achat[qtt_bll][1]" name="achat[qtt_bll][1]">
-                        </div>
-                        <div class="col-sm-6 col-md mt-1">
-                            <label class="text-bold-400 text-dark">Contenance</label>
-                            <input type="number" placeholder="Contenance" class="repeat-el form-control"
-                                id="achat[contenance][1]" name="achat[contenance][1]">
-                        </div>
-                        <div class="col-sm-6 col-md mt-1">
-                            <label class="text-bold-400 text-dark">Unite</label>
-                            <input type="text" value="pcs" disabled placeholder="pcs" class="repeat-el form-control"
-                                id="achat[unity][1]" name="achat[unity][1]">
-                        </div>
-                        <div class="col-sm-6 col-md mt-1">
-                            <label class="text-bold-400 text-dark">Prix Unitaire</label>
-                            <input type="number" class="repeat-el form-control" id="achat[unit_price][1]"
-                                name="achat[unit_price][1]" placeholder="0">
-                        </div>
-                    </div>
+                    @else
+                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette
+                            zone.
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -70,176 +214,38 @@
 @endsection
 
 @section('page-js')
+    {{-- <script src="{{ asset('app-assets/js/custom/articleController.js') }}"></script> --}}
+@endsection
+
+
+@section('script')
     <script>
-        /* ========= THE PLUGIN ========= */
-
-        (function($, window, document, undefined) {
-
-            'use strict';
-
-            // Create the defaults once
-            // Declare global variables
-            let pluginName = 'formRepeater',
-                el, addEl, removeEl, fieldId, itemsIndexArray, maxItemIndex, repeatItem;
-            const defaults = {
-                addButton: '<div class="repeat-add-wrapper"><a data-repeat-add-btn class="repeat-add" href="#">Add</a></div>',
-                //removeButton: '<a data-repeat-remove-btn class="repeat-remove" href="#">Remove</a>',
-            };
-
-            // The actual plugin constructor
-            function Plugin(element, options) {
-                this.element = element;
-                this.el = el;
-                this.addEl = addEl;
-                this.removeEl = removeEl;
-                this.fieldId = fieldId;
-                this.itemsIndexArray = itemsIndexArray;
-                this.maxItemIndex = maxItemIndex;
-                this.repeatItem = repeatItem;
-                this.settings = $.extend({}, defaults, options);
-                this._defaults = defaults;
-                this._name = pluginName;
-                this.init();
-            }
-
-            // Avoid Plugin.prototype conflicts
-            $.extend(Plugin.prototype, {
-                init() {
-
-                    /**
-                     * [el The element id]
-                     * @type {String}
-                     */
-                    this.el = '#' + this.element.id;
-
-                    /**
-                     * [addEl The add button class]
-                     * @type {[type]}
-                     */
-                    this.addEl = $('a[data-repeat-add-btn]');
-
-                    /**
-                     * [removeEl The remove button class]
-                     * @type {[type]}
-                     */
-                    this.removeEl = $('a[data-repeat-remove-btn]');
-
-                    /**
-                     * [fieldId The id of the option field]
-                     * @type {[type]}
-                     */
-                    this.fieldId = $(this.el).attr('data-field-id');
-
-                    /**
-                     * [itemsIndexArray The keys of the array items currently present ]
-                     * @type {[type]}
-                     */
-                    this.itemsIndexArray = JSON.parse($(this.el).attr('data-items-index-array'));
-
-                    this.maxItemIndex = Math.max.apply(null, this.itemsIndexArray);
-
-                    //Create add button
-                    this.createAddButton(this.settings.addButton);
-
-                    //Create remove button
-                    this.createRemoveButton(this.settings.removeButton);
-
-                    //Add Item
-                    this.addItem(this.el, this.addEl, this.itemsIndexArray, this.maxItemIndex, this.settings
-                        .removeButton, this.repeatItem);
-
-                    //Remove Item
-                    this.removeItem(this.el, this.removeEl, this.itemsIndexArray, this.maxItemIndex);
-
-                },
-                createAddButton(addButton) {
-                    $(this.el).append(addButton);
-                },
-                createRemoveButton(removeButton) {
-                    $(this.el + ' .repeat-item').each(function(i) {
-                        if (i !== 0) {
-                            $(this).prepend(removeButton);
-                        }
-                    });
-                },
-                addItem(el, addEl, itemsIndexArray, maxItemIndex, removeButton, repeatItem) {
-                    $(this.el).on('click', addEl, function(event) {
-                        event.preventDefault();
-                        if (!event.target.hasAttribute('data-repeat-add-btn')) {
-                            event.stopPropagation();
-                        } else {
-                            itemsIndexArray.push(maxItemIndex + 1);
-
-                            $(el).attr('data-items-index-array', '[' + itemsIndexArray.toString() +
-                                ']');
-
-                            maxItemIndex = Math.max.apply(null, itemsIndexArray);
-
-                            repeatItem = $(el + ' .repeat-item:first').clone(true);
-                            repeatItem.attr('data-field-index', maxItemIndex);
-                            repeatItem.find(':input').val('');
-                            repeatItem.find('checkbox').checked = false;
-                            repeatItem.find('radio').checked = false;
-                            repeatItem.find('.repeat-el').each(function() {
-                                const newName = this.name.replace(/[[]\d+[\]]/g, '[' +
-                                    maxItemIndex + ']');
-                                this.name = newName;
-                            });
-
-                            repeatItem.prepend(removeButton);
-                            repeatItem.appendTo(el + ' .repeat-items');
-
-                        }
-                    });
-
-                },
-                removeItem(el, removeEl, itemsIndexArray) {
-                    $(el + ' .repeat-item').on('click', removeEl, function(event) {
-                        event.preventDefault();
-                        if (!event.target.hasAttribute('data-repeat-remove-btn')) {
-                            event.stopPropagation();
-                        } else {
-                            const currentFieldIndex = parseInt($(this).attr('data-field-index'));
-                            if (currentFieldIndex !== 1) {
-                                const remove_index = itemsIndexArray.indexOf(currentFieldIndex);
-
-                                if (remove_index > -1) {
-                                    itemsIndexArray.splice(remove_index, 1);
-                                    maxItemIndex = Math.max.apply(null, itemsIndexArray);
-                                }
-
-                                $(el).attr('data-items-index-array', '[' + itemsIndexArray.toString() +
-                                    ']');
-
-                                $(el + ' .repeat-item[data-field-index=' + currentFieldIndex + ']')
-                                    .remove();
-                            }
-                        }
-
-                    });
-                },
-
-            });
-
-            // A really lightweight plugin wrapper around the constructor,
-            // preventing against multiple instantiations
-            $.fn[pluginName] = function(options) {
-                return this.each(function() {
-                    if (!$.data(this, 'plugin_' + pluginName)) {
-                        $.data(this, 'plugin_' +
-                            pluginName, new Plugin(this, options));
-                    }
-                });
-            };
-
-        }(jQuery, window, document));
-
-        /* ========= DEMO SET UP ========= */
         $(document).ready(function() {
-            $('#achatFournisseur').formRepeater({
-                addButton: '<div class="repeat-add-wrapper"><a data-repeat-add-btn class="repeat-add btn-sm btn btn-success" href="#">Ajouter</a></div>',
-                //removeButton: '<a data-repeat-remove-btn class="repeat-remove btn-sm btn btn-danger mb-1" href="#">Supprimer</a>'
-            });
-        });
+            $("#supplier_id").change(getArticleBySupplier);
+            $("#supplier_id").trigger("change");
+        })
+
+        function getArticleBySupplier() {
+            const suplier_id = $(this).val();
+            let articleOptions = "<option value=''>Choisir</option>";
+
+            $(".articleBySupplier").html(articleOptions);
+
+            if (suplier_id) {
+                const url = `/api/supplier/${suplier_id}/articles`;
+                axios.get(url)
+                    .then((response) => {
+                        const articles = response.data;
+
+                        if (articles.length) {
+                            articles.forEach(article => {
+                                articleOptions +=
+                                    `<option value="${article.reference}">${article.designation}</option>`;
+                            });
+                            $(".articleBySupplier").html(articleOptions);
+                        }
+                    })
+            }
+        }
     </script>
 @endsection

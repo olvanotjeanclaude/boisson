@@ -44,7 +44,7 @@ class PricingSupplierController extends Controller
             ->addColumn("fournisseur", function (PricingSuplier $tarif) {
                 return $tarif->supplier ?  $tarif->supplier->identification  : '';
             })
-            ->addColumn("article", fn ($tarif) => $tarif->product->designation)
+            ->addColumn("article", fn ($tarif) =>$tarif->product? $tarif->product->designation:"")
             ->addColumn("date", fn ($tarif) => format_date($tarif->created_at))
             ->addColumn("buying_price", fn ($tarif) => formatPrice($tarif->buying_price))
             ->addColumn('action', function ($tarif) {

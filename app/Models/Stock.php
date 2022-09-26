@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\helper\Filter;
-use App\helper\Invoice;
 use App\Traits\Articles;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +29,33 @@ class Stock extends Model
         "4" => "sans consignation"
     ];
 
+    const ACTION_TYPES = [
+        "new_stock" =>1,
+        "sample_out" =>2,
+        "out_to_supplier" =>3,
+    ];
+
+    public function scopePreInvoices($q)
+    {
+        return $q->where("is_pending",true)->where("user_id",auth()->id())->get();
+    }
+
+    public function supplier_price()
+    {
+        return $this->belongsTo(PricingSuplier::class, "pricing_id");
+    }
+
+    public function getSubAmountAttribute()
+    {
+        $sub_amount = 0;
+
+        if ($this->supplier_price) {
+            $sub_amount = $this->supplier_price->buying_price * $this->entry;
+        }
+
+        return $this->isWithEmballage ? -$sub_amount : $sub_amount;
+    }
+
     private static function  defaultSelect()
     {
         return [
@@ -49,8 +75,8 @@ class Stock extends Model
                 "stocks.date as date",
                 DB::raw("SUM(stocks.entry) AS sum_entry"),
                 "sales.sum_out",
-                DB::raw("SUM(stocks.out) as sum_stock_out"),
-                // "sales.isWithEmballage"
+                // DB::raw("SUM(stocks.out) as sum_stock_out"),
+                "sales.isWithEmballage",
                 DB::raw("COALESCE(sales.isWithEmballage,0) as isWithEmballage")
             ]
         ];
@@ -110,12 +136,9 @@ class Stock extends Model
             })->groupBy("sales.article_reference", "sales.isWithEmballage");
         // dd($sales->get());
         $stocks = DB::table("stocks")
-            // ->leftJoin("inventories", "stocks.inventory_id", "inventories.id")
+        ->where("is_pending",false)
             ->where(fn ($query) => Filter::queryBetween($query, $between, "stocks.date"))
-            ->select([
-                ...self::defaultSelect()["stock"],
-                // "inventories.out as stock_out", "inventories.id as inventory_id"
-            ])
+            ->select(self::defaultSelect()["stock"])
             ->leftJoinSub($sales, "sales", function ($join) {
                 $join->on("stocks.article_reference", "sales.article_ref");
             })
@@ -126,7 +149,7 @@ class Stock extends Model
         $stocks = $stocks->map(fn ($stock) => $this->mapStock($stock))
             ->filter(fn ($stock) => isset($stock->type) && isset($stock));
 
-            return $stocks;
+        return $stocks;
     }
 
     public function scopefilterBetween($query, $between = null)
@@ -165,7 +188,14 @@ class Stock extends Model
             }
             $stock->designation = $article->designation;
         }
+        // $stock->final = $stock->sum_entry - $stock->sum_out - $stock->sum_stock_out;
         $stock->final = $stock->sum_entry - $stock->sum_out;
+
+        if (isset($stock->type) && $stock->type == "deconsignation") {
+            // $stock->sum_stock_out =0;
+            // $stock->final = null;
+        }
+
         return $stock;
     }
 }

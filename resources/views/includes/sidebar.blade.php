@@ -118,6 +118,31 @@
                 </ul>
             </li>
 
+            <li class=" nav-item">
+                <a href="#">
+                    <i class="material-icons">content_paste</i>
+                    <span class="menu-title">Bon De Commande</span>
+                </a>
+                <ul class="menu-content">
+                    <li class="nav-item">
+                        <a href="{{route('admin.achat-fournisseurs.index')}}">
+                            <span class="menu-title">bon d'entrée</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#">
+                            <span class="menu-title">Simple Sortie</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="menu-item" href="#">
+                            <i class="material-icons"></i>
+                            <span>Retour Fournisseur</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <li class="nav-item">
                 <a href="{{ route('admin.ventes.index') }}">
                     <span class="material-icons">

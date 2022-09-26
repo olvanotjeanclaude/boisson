@@ -4,7 +4,6 @@ namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
 use App\helper\Invoice;
-use App\Http\Controllers\admin\supplier\SupplierController;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Models\DocumentAchat;
