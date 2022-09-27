@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\admin\impression;
 
-use App\Models\Sale;
 use App\helper\Invoice;
 use Illuminate\Http\Request;
 use App\Models\DocumentAchat;

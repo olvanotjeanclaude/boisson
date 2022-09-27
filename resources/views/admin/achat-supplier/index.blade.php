@@ -42,22 +42,61 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title">Bon D'Entrée</h4>
+                        <h4 class="card-title">Bon D'Entrées</h4>
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
-                            <table class="table datatable  text-nowrap  material-table">
+                            <table class="table datatable table-striped table-hover text-nowrap  material-table">
                                 <thead>
                                     <tr>
-                                        <th>Status</th>
-                                        <th>désignation</th>
-                                        <th>Prix D'Achat</th>
-                                        <th>Quantité</th>
+                                        <th>Fournisseur</th>
+                                        <th>Facture</th>
+                                        <th>Reference Facture</th>
+                                        <th>Nombre D'article</th>
                                         <th>Date</th>
+                                        <th>Date Système</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                  
+                                    @foreach ($entries as $entry)
+                                        <tr>
+                                            <td>{{ $entry->supplier ? $entry->supplier->identification : 'Introuvable' }}</td>
+                                            <td>{{ $entry->invoice_number }}</td>
+                                            <td>{{ Str::upper($entry->reference_facture) }}</td>
+                                            <td>{{ $entry->sum_article }}</td>
+                                            <td>{{ format_date($entry->date) }}</td>
+                                            <td>{{ format_date_time($entry->created_at) }}</td>
+                                            <td>
+                                                <span class="dropdown">
+                                                    <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="true"
+                                                        class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
+                                                            class="ft-settings"></i></button>
+                                                    <span aria-labelledby="btnSearchDrop2"
+                                                        class="dropdown-menu mt-1 dropdown-menu-right">
+                                                        <a href="{{ route('admin.achat-fournisseurs.show', $entry->invoice_number) }}"
+                                                            class="dropdown-item"><i class="la la-eye"></i>Facture</a>
+                                                        <a target="_blank"
+                                                            href="{{ route('admin.achat-fournisseurs.print', $entry->invoice_number) }}"
+                                                            class="dropdown-item"><i class="la la-print"></i>
+                                                            Imprimer</a>
+                                                        <form
+                                                            action="{{ route('admin.achat-fournisseurs.cancel', $entry->invoice_number) }}"
+                                                            method="POST">
+                                                            @method('delete')
+                                                            @csrf
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="la la-trash"></i>
+                                                                Anuller
+                                                            </button>
+                                                        </form>
+
+                                                    </span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -65,7 +104,7 @@
                 </div>
             </div>
         </div>
-    </section>  
+    </section>
 @endsection
 
 @section('page-js')

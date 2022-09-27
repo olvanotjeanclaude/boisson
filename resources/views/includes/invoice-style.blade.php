@@ -4,16 +4,11 @@
     * {
         padding: 0;
         margin: 0;
+        font-family: Arial, Helvetica, sans-serif
     }
 
-    #invoiceTable h1,
-    #invoiceTable h2,
-    #invoiceTable h3,
-    #invoiceTable h4,
-    #invoiceTable h5,
-    #invoiceTable h6{
-        font-family: 'arial';
-        font-weight: 100!important;
+    .invoice-title{
+        font-size: 1.3rem;
     }
 
     #invoice-container {
@@ -22,6 +17,8 @@
         border-collapse: collapse;
         margin-left: 7px;
         text-transform: uppercase;
+        /* background: #000; */
+        /* background: red; */
     }
 
     #invoiceTable * {
@@ -58,8 +55,6 @@
 
     #invoiceTable th {
         text-align: left;
-        /* background-color: #424242;
-        color: white; */
     }
 
     tfoot h6 {
@@ -79,7 +74,7 @@
     .title {
         text-align: center;
         margin-top: 35px;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
     .invoice-title{
         text-align: center;
@@ -87,10 +82,14 @@
     }
 
     .caption {
-        margin: 5px auto;
-        font-size: 1.2rem;
+        margin: 10px auto;
+        font-size: 1rem;
         font-family: 'arial';
         text-transform: uppercase;
+    }
+
+    p{
+        font-size: 1rem;
     }
 
     .print-text {

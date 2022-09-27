@@ -1,117 +1,15 @@
 <style>
-    html,
-    * {
-        font-family: 'Courier New', sans-serif, Courier, monospace;
+    #invoiceTableTemplateContainer * {
+       font-family: Arial, Helvetica, sans-serif;
+       color: rgb(55, 52, 52);
     }
 
-    @media print {
-        .page-break {
-            display: block;
-            page-break-before: always;
-        }
+    #invoiceTableTemplate td{
+        border-bottom: 1px dashed rgb(222, 222, 222);
     }
-
-    @page {
-        margin: 2mm;
+    #invoiceTableTemplate th{
+        border-bottom: 1px solid rgb(201, 195, 195);
     }
-
-    #invoice-POS {
-        margin-left: 0;
-        width: 78mm;
-        background: #FFF;
-    }
-
-    #invoice-POS ::selection {
-        background: #f31544;
-        color: #FFF;
-    }
-
-    #invoice-POS ::moz-selection {
-        background: #f31544;
-        color: #FFF;
-    }
-
-    #invoice-POS h1 {
-        font-size: 1.5em;
-        color: #222;
-    }
-
-    #invoice-POS h2 {
-        font-size: 1.5em;
-    }
-
-    #invoice-POS h3 {
-        font-size: 1.2em;
-        font-weight: 300;
-        line-height: 2em;
-    }
-
-    #invoice-POS p {
-        font-size: .9em;
-        line-height: 1.2em;
-    }
-
-    #invoice-POS #top,
-    #invoice-POS #mid,
-    #invoice-POS #bot {
-        /* Targets all id with 'col-' */
-        border-bottom: 1px solid #EEE;
-    }
-
-    #invoice-POS #mid {
-        min-height: 10px;
-    }
-
-    #invoice-POS #bot {
-        min-height: 50px;
-    }
-
-    #invoice-POS .info {
-        display: block;
-        margin-left: 0;
-    }
-
-
-    #invoice-POS .title p {
-        text-align: right;
-        padding: 0;
-    }
-
-    #invoice-POS table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    #invoice-POS .tabletitle {
-        font-size: .5em;
-        background: #EEE;
-        text-align: right;
-    }
-
-    #invoice-POS .service {
-        border-bottom: 1px solid #EEE;
-    }
-
-    #invoice-POS .itemtext {
-        font-size: .68em;
-        padding: 2px;
-        margin: 0!important;
-        text-transform: capitalize;
-    }
-
-    #invoice-POS #legalcopy {
-        margin-top: 5mm;
-    }
-
-    .pricing {
-        text-align: right;
-        min-width: 110px;
-        color: #222;
-        padding-right: 5px;
-    }
-
-    .designation {
-        text-align: start;
-    }
+    
 </style>
 

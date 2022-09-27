@@ -121,7 +121,7 @@
             <li class=" nav-item">
                 <a href="#">
                     <i class="material-icons">content_paste</i>
-                    <span class="menu-title">Bon De Commande</span>
+                    <span class="menu-title">Approvisionnement </span>
                 </a>
                 <ul class="menu-content">
                     <li class="nav-item">

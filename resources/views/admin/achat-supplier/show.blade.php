@@ -1,122 +1,79 @@
 @extends('layouts.app')
 
 @section('title')
-    {{ $supplier->name }}
+    Facture | {{ $entry->invoice_number }}
+@endsection
+
+@section('page-css')
+    @include('includes.invoice-css')
 @endsection
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Fournisseurs',
+        'page' => 'Factures',
         'breadcrumbs' => [
-            ['text' => 'Fournisseurs', 'link' => route('admin.fournisseurs.index')],
-            ['text' => 'Detail', 'link' => route('admin.index')],
+            ['text' => 'Facture', 'link' => route('admin.achat-fournisseurs.index')],
+            ['text' => 'voir', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
+            'text' => "Nouveau Bon D'Entrée",
+            'link' => route('admin.achat-fournisseurs.create'),
+            'icon' => '<span class="material-icons">add</span>',
             'show' => true,
-            'icon' => '<span class="material-icons">edit</span>',
-            'text' => 'Editer',
-            "link" =>route('admin.fournisseurs.edit',$supplier->id)
         ],
     ])
 @endsection
 
 @section('content')
     <div class="row">
-        <div class="col-sm-7">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Nom</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->name }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Identification</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->identification }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Code</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->code }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Téléphone</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->phone }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">E-mail</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->email ?? '-' }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Adresse</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->address ?? '-' }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-12">
+            @include('includes.error')
+            @include('includes.success')
         </div>
-        <div class="col-sm-5">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Note</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->note ?? '-' }}</p>
-                        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <div>
+                <div class="row">
+                    <div class="col-12 d-flex">
+
+                        <a target="_blank" href="{{ route('admin.achat-fournisseurs.print', $entry->invoice_number) }}"
+                            class="btn btn-info btn-lg  mb-2">
+                            Imprimer
+                        </a>
+
+                        @can('cancel-doc-vente')
+                            <form method="POST" action="{{ route('admin.achat-fournisseurs.cancel', $entry->invoice_number) }}">
+                                @method('delete')
+                                @csrf
+                                <button class="ml-2 btn btn-danger btn-lg  mb-2">
+                                    Annuler
+                                </button>
+                                </a>
+                            @endcan
                     </div>
                 </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Créateur</h6>
+
+                <div class="d-flex justify-content-md-start justify-content-center">
+                    @if ($entry)
+                        @include('admin.achat-supplier.invoice', [
+                            'datas' => $entries,
+                            'entry' => $entry,
+                            'amount' => $amount,
+                            'supplier' => $supplier,
+                        ])
+                    @else
+                        <div class="card">
+                            <div class="card-body text-danger">
+                                Pas de document a afficher!
+                            </div>
                         </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->user ? $supplier->user->full_name : '-' }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Date De Création</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->created_at ?? '-' }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6 class="card-title text-bold-600">Date De Modification</h6>
-                        </div>
-                        <div class="col-sm">
-                            <p> {{ $supplier->updated_at ?? '-' }}</p>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
+
+            <!--End Invoice-->
         </div>
     </div>
 @endsection

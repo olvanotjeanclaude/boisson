@@ -12,6 +12,7 @@ class Access
         // "directeur" => 3,
         "caisse" => 3,
         "facturation" => 4,
+        "responsable stock"
     ];
 
     const PERMISSIONS = [

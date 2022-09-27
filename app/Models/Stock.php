@@ -30,30 +30,35 @@ class Stock extends Model
     ];
 
     const ACTION_TYPES = [
-        "new_stock" =>1,
-        "sample_out" =>2,
-        "out_to_supplier" =>3,
+        "new_stock" => 1,
+        "sample_out" => 2,
+        "out_to_supplier" => 3,
     ];
+
+    const STATUS = [
+        "pending" => 1,
+        "accepted" => 2,
+        "canceled" => 3
+    ];
+    
+    public function supplier(){
+        return $this->belongsTo(Supplier::class);
+    }
 
     public function scopePreInvoices($q)
     {
-        return $q->where("is_pending",true)->where("user_id",auth()->id())->get();
-    }
-
-    public function supplier_price()
-    {
-        return $this->belongsTo(PricingSuplier::class, "pricing_id");
+        return $q->where("status", self::STATUS["pending"])->where("user_id", auth()->id())->get();
     }
 
     public function getSubAmountAttribute()
     {
         $sub_amount = 0;
 
-        if ($this->supplier_price) {
-            $sub_amount = $this->supplier_price->buying_price * $this->entry;
+        if ($this->stockable) {
+            $sub_amount = $this->stockable->buying_price * $this->entry;
         }
 
-        return $this->isWithEmballage ? -$sub_amount : $sub_amount;
+        return $sub_amount;
     }
 
     private static function  defaultSelect()
@@ -136,7 +141,7 @@ class Stock extends Model
             })->groupBy("sales.article_reference", "sales.isWithEmballage");
         // dd($sales->get());
         $stocks = DB::table("stocks")
-        ->where("is_pending",false)
+            ->where("stocks.status", self::STATUS["accepted"])
             ->where(fn ($query) => Filter::queryBetween($query, $between, "stocks.date"))
             ->select(self::defaultSelect()["stock"])
             ->leftJoinSub($sales, "sales", function ($join) {
@@ -197,5 +202,33 @@ class Stock extends Model
         }
 
         return $stock;
+    }
+
+    public function scopeEntries($query)
+    {
+        $entries = $query
+            ->select([
+                "*",
+                DB::raw("COUNT(*) as sum_article"),
+            ])
+            ->where("status", self::STATUS["accepted"])
+            ->whereNotNull("invoice_number")
+            ->where("action_type", self::ACTION_TYPES["new_stock"])
+            ->groupBy("invoice_number", "date")
+            ->orderBy("id","desc")
+            ->get();
+
+        return $entries;
+    }
+
+    public function scopeEntryByInvoiceNumber($query,$invoiceNumber)
+    {
+        $entries = $query
+            ->where("invoice_number", $invoiceNumber)
+            ->where("status", self::STATUS["accepted"])
+            ->whereNotNull("invoice_number")
+            ->where("action_type", self::ACTION_TYPES["new_stock"])
+            ->get();
+        return $entries;
     }
 }

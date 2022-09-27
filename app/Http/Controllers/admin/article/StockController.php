@@ -24,7 +24,7 @@ class StockController extends Controller
         // $emballages = [];
         // dd($between);
         $stocks = $this->getData();
-        // dd($stocks);
+       
         $collumns = [
             ["data" => "article_ref"],
             ["data" => "type"],

@@ -50,7 +50,7 @@
                             </a>
                         @endif
 
-                        @can('cancel-doc-vente',$invoice)
+                        @can('cancel-doc-vente', $invoice)
                             <a href="{{ route('admin.print.sale.cancel', $invoice->number) }}"
                                 class="ml-2 btn btn-danger btn-lg  mb-2">
                                 Annuler
@@ -60,12 +60,20 @@
                 </div>
 
                 <div class="d-flex justify-content-md-start justify-content-center">
-                    @include('admin.vente.includes.invoice-table', [
-                        'invoice' => $invoice,
-                        'sales' => $invoice->sales,
-                        'reste' => $rest,
-                        'paid' => $paid,
-                    ])
+                    @if ($invoice)
+                        @include('admin.vente.includes.invoice-table', [
+                            'invoice' => $invoice,
+                            'sales' => $invoice->sales,
+                            'reste' => $rest,
+                            'paid' => $paid,
+                        ])
+                    @else
+                        <div class="card">
+                            <div class="card-body text-danger">
+                                Pas de document a afficher!
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 

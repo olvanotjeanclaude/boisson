@@ -110,11 +110,6 @@
 
             </tfoot>
         </table>
-        @section('footer')
-            <p style="margin-top: 15px">Merci beaucoup !</p>
-            <br>
-            <h6 class="print-text">Imprimé le {{ format_date_time(now()->toDateTimeString()) }}</h6>
-        @endsection
     </div>
 @else
     <div class="card">

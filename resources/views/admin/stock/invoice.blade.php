@@ -46,12 +46,6 @@
                 </tbody>
             </table>
             <h4 class="caption">Total : {{ $sum_quantity }} </h4>
-
-            @section('footer')
-                <h5>Merci beaucoup !</h5>
-                <br>
-                <h6 class="print-text">Imprimé le {{ format_date_time(now()->toDateTimeString()) }}</h6>
-            @endsection
         </div>
     @else
         <div class="card">
