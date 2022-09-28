@@ -20,8 +20,8 @@
             <tr class="service">
                 <td>{{ $sale->saleable->designation }} </td>
                 <td>{{ $sale->quantity }}</td>
-                <td>{{ formatPrice($sale->pricing) }}</td>
-                <td>{{ formatPrice($sale->sub_amount) }}</td>
+                <td>{{ round($sale->pricing) }}</td>
+                <td class="text-right">{{ round($sale->sub_amount) }}</td>
             </tr>
         @endisset
     @empty

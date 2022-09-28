@@ -10,7 +10,7 @@ use App\Models\Emballage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
-use App\Articles\FormatRequest;
+use App\Articles\StockRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 
@@ -23,8 +23,8 @@ class StockController extends Controller
         $emballages = Emballage::orderBy("designation")->get();
         // $emballages = [];
         // dd($between);
-        $stocks = $this->getData();
-       
+        $stocks = $this->getData()["stocks"];
+        // dd($stocks);
         $collumns = [
             ["data" => "article_ref"],
             ["data" => "type"],
@@ -48,13 +48,13 @@ class StockController extends Controller
     public function getData()
     {
         $between = Stock::getDefaultBetween();
-        $startDate = request()->get("start_date") ?? date("Y-m-d");
-        $endDate = request()->get("end_date") ?? date("Y-m-d");
+        $startDate = request()->get("start_date") ?? $between[0];
+        $endDate = request()->get("end_date") ?? $between[1];
         $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
         $between = [$startDate, $endDate];
         $keyword = strtolower(request()->get("chercher"));
 
-        $stocks =  Stock::between($between);
+        $stocks = Stock::entriesOuts($between);
 
         if ($filterType != "tout") {
             $stocks = $stocks->filter(function ($stock) use ($filterType) {
@@ -65,11 +65,14 @@ class StockController extends Controller
         if ($keyword) {
             $stocks = $stocks->filter(function ($stock) use ($keyword) {
                 $designation = strtolower($stock->designation);
-                return $stock->article_ref == $keyword ||  Str::contains($designation, $keyword);
+                return $stock->reference == $keyword ||  Str::contains($designation, $keyword);
             });
         }
 
-        return $stocks;
+        return [
+            "stocks" => $stocks,
+            "between" => $between,
+        ];
     }
 
     public function printReport()
@@ -82,27 +85,9 @@ class StockController extends Controller
 
     private function getDocumentData()
     {
-        $between = Stock::getDefaultBetween();
-        $startDate = request()->get("start_date") ?? date("Y-m-d");
-        $endDate = request()->get("end_date") ?? date("Y-m-d");
-        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
-        $between = [$startDate, $endDate];
-        $keyword = strtolower(request()->get("chercher"));
-
-        $stocks =  Stock::between($between);
-
-        if ($filterType != "tout") {
-            $stocks = $stocks->filter(function ($stock) use ($filterType) {
-                return $stock->type == $filterType;
-            });
-        }
-
-        if ($keyword) {
-            $stocks = $stocks->filter(function ($stock) use ($keyword) {
-                $designation = strtolower($stock->designation);
-                return $stock->article_ref == $keyword ||  Str::contains($designation, $keyword);
-            });
-        }
+        $data = $this->getData();
+        $stocks = $data["stocks"];
+        $between = $data["between"];
 
         return [
             "stocks" => $stocks,
@@ -120,40 +105,15 @@ class StockController extends Controller
     }
 
 
-    public function store(Request $request, FormatRequest $formatRequest)
+    public function store(Request $request)
     {
-        $article = Stock::getArticleByReference($request->article_reference);
-        if ($article) {
-            // dd($formatRequest);
-            if (get_class($article) == "App\Models\Emballage") {
-                $datas[] =  [
-                    "article_reference" => $article->reference,
-                    "stockable_id" => $article->id,
-                    "stockable_type" => get_class($article),
-                    "date" => now()->toDateString(),
-                    "entry" => $request->quantity,
-                    "user_id" => auth()->user()->id
-                ];
-            } else {
-                $datas = array_map(function ($article) {
-                    // dd($article);
-                    return [
-                        "article_reference" => $article["article_reference"],
-                        "stockable_id" => $article["saleable_id"],
-                        "stockable_type" => $article["saleable_type"],
-                        "date" => now()->toDateString(),
-                        "entry" => $article["quantity"],
-                        "user_id" => auth()->user()->id
-                    ];
-                }, $formatRequest->getArticleAndConsignation($article->reference, $request->quantity));
+        $datas = StockRequest::All();
+       
+        if (count($datas)) {
+            foreach ($datas as $data) {
+                Stock::create($data);
             }
-
-            if (count($datas)) {
-                foreach ($datas as $data) {
-                    Stock::create($data);
-                }
-                return back()->with("success", CustomMessage::Success("Stock"));
-            }
+            return back()->with("success", CustomMessage::Success("Stock"));
         }
 
         return back()->with("error", "Erreur inattendue. Peut être que l'article a été supprimé.");

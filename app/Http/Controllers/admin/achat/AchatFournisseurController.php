@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Emballage;
 use Illuminate\Http\Request;
+use App\Articles\StockRequest;
 use App\Message\CustomMessage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
@@ -60,16 +61,14 @@ class AchatFournisseurController extends Controller
             return back()->with("error", CustomMessage::DEFAULT_ERROR);
         }
 
-        $data = $this->getArticleData(
-            $request->article_reference,
-            $request->quantity,
-            $request
-        );
+        $stockRequest = StockRequest::All();
 
-        // dd($data, $request->all());
+        // dd($stockRequest, $request->all());
 
-        if (count($data)) {
-            Stock::create($data);
+        if (count($stockRequest)) {
+            foreach ($stockRequest as $data) {
+                Stock::create($data);
+            }
         }
 
         return back();
@@ -98,28 +97,6 @@ class AchatFournisseurController extends Controller
         }
 
         return false;
-    }
-
-    private function getArticleData($articleRef, $quantity, $request): array
-    {
-        $data = [];
-        $article = Stock::getArticleByReference($articleRef);
-
-        if ($article) {
-            $data = [
-                "status" => Stock::STATUS["pending"],
-                "article_reference" => strtoupper($article->reference),
-                "stockable_id" => $article->id,
-                "stockable_type" => get_class($article),
-                "supplier_id" => $request->supplier_id,
-                "entry" => $quantity ?? 0,
-                "user_id" => auth()->user()->id,
-                "action_type" => Stock::ACTION_TYPES["new_stock"],
-                "date" => now()->toDateString(),
-            ];
-        }
-
-        return $data;
     }
 
     public function show($invoiceNumber)

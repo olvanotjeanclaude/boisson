@@ -15,7 +15,7 @@
         </span>
         <br>
         <span>
-            <b>Caissier :</b> {{ Str::upper(auth()->user()->full_name) }}
+            <b>Caissier :</b> {{ Str::upper($entry->user ? $entry->user->full_name : 'Inconnu') }}
         </span>
         <br>
         <span>
@@ -45,7 +45,7 @@
     <table id="invoiceTable">
         <thead>
             <tr>
-                <th style="min-width: 120px">Désignation</th>
+                <th style="min-width: 100px">Désignation</th>
                 <th style="min-width: 30px">Qté</th>
                 <th>PA</th>
                 <th style="text-align: right">Total</th>

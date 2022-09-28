@@ -66,51 +66,6 @@
                                 </div>
                             </div>
 
-                            {{-- <div class="form-group row mx-auto">
-                                <label class="col-md-3 label-control" for="">Contenant</label>
-                                <div class="col-md-9">
-                                    <div class="input-group">
-                                        <div class="d-inline-block custom-control custom-radio mr-1">
-                                            <input type="radio" value="1" checked name="simpleOrGroup"
-                                                class="simpleOrGroup custom-control-input" id="simple">
-                                            <label class="custom-control-label" for="simple">Simple</label>
-                                        </div>
-                                        <div class="d-inline-block custom-control custom-radio">
-                                            <input type="radio" value="2" name="simpleOrGroup"
-                                                class="simpleOrGroup custom-control-input" id="group">
-                                            <label class="custom-control-label" for="group">Groupe (Emballage)</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> --}}
-
-                            {{-- <div class="form-group row mx-auto d-none" id="content_id_containter">
-                                <label class="col-md-3 label-control" for="content_id">Articles</label>
-                                <div class="col-md-9">
-                                    <select  class="form-control"  name="content_id" id="content_id">
-                                        <option value="">Choisir</option>
-                                        @forelse ($emballages as $emballage)
-                                        <option value="{{$emballage->id}}">{{ $emballage->designation }}</option>
-                                        @empty
-                                            
-                                        @endforelse
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Selectionneez l'article
-                                    </div>
-                                </div>
-                            </div> --}}
-                            {{-- <div class="form-group row mx-auto d-none" id="quantityContainer">
-                                <label class="col-md-3 label-control" for="quantity">Nombre</label>
-                                <div class="col-md-9">
-                                    <input type="number" id="quantity" required class="form-control"
-                                        placeholder="Nombre" name="quantity">
-                                    <div class="invalid-feedback">
-                                        Entrer le nombre
-                                    </div>
-                                </div>
-                            </div> --}}
-
                             <div class="form-group row mx-auto">
                                 <label class="col-md-3 label-control" for="price">Prix unitaire de vente</label>
                                 <div class="col-md-9">
@@ -118,6 +73,17 @@
                                         placeholder="Prix de vente" name="price">
                                     <div class="invalid-feedback">
                                         Entrer le prix de vente
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row mx-auto">
+                                <label class="col-md-3 label-control" for="buying_price">Prix D'achat</label>
+                                <div class="col-md-9">
+                                    <input type="number" id="buying_price" step="0.001" required class="form-control"
+                                        placeholder="Prix d'achat" name="buying_price">
+                                    <div class="invalid-feedback">
+                                        Entrer le prix d'achat
                                     </div>
                                 </div>
                             </div>

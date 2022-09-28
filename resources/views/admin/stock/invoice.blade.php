@@ -45,7 +45,7 @@
                     @endforelse
                 </tbody>
             </table>
-            <h4 class="caption">Total : {{ $sum_quantity }} </h4>
+            <h4 class="caption">Total : {{ count($stocks) }} </h4>
         </div>
     @else
         <div class="card">

@@ -99,7 +99,7 @@ class ProductController extends Controller
         ]);
 
         if ($article) {
-            return back()->with("success", CustomMessage::Success("L'article"));
+            return redirect("/admin/produits/articles")->with("success", CustomMessage::Success("L'article"));
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);

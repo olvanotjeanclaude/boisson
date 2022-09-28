@@ -69,7 +69,7 @@
                                     class="select2 form-control">
                                     @forelse ($stocks as $stock)
                                         @isset($stock->designation)
-                                            <option value="{{ $stock->article_ref }}">
+                                            <option value="{{ $stock->reference }}">
                                                 {{ Str::upper($stock->designation) }}
                                             </option>
                                         @endisset
@@ -116,7 +116,7 @@
                 </form>
 
                 <div class="card-body">
-                    <div class="bg-dark" style="">
+                    <div class="bg-dark d-none" style="">
                         <form id="filterInventory" action="{{ route('admin.stocks.index') }}" style="padding: 2px"
                             method="GET">
                             <div class="row">

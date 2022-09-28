@@ -21,11 +21,6 @@ use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
-    public function __construct()
-    {
-        // $this->authorizeResource(Sale::class, "vente");
-    }
-
     public function index()
     {
         $docSales = DocumentVente::has("customer")
@@ -91,7 +86,7 @@ class SaleController extends Controller
         }
 
         $datas = $this->generateInvoiceNumberTo([...$articles, ...$deconsignations]);
-
+        // dd($datas);
         if (count($datas)) {
             $products = $this->getProductRequest($datas);
             $errorStocks = $this->getErrorStocks($products);
@@ -148,34 +143,9 @@ class SaleController extends Controller
                 // dd($data);
                 Sale::create($data);
             }
-            $this->updateStock($datas);
         }
 
         return back();
-    }
-
-    private function updateStock(array $datas)
-    {
-        $deconsignations = array_filter($datas, function ($data) {
-            return ($data["saleable_type"] == "App\Models\Emballage" &&
-                isset($data["isWithEmballage"]) &&
-                $data["isWithEmballage"] == true);
-        });
-
-        // dd($deconsignations);
-        foreach ($deconsignations as $key => $deco) {
-            $stock = Stock::where("article_reference", $deco["article_reference"])->first();
-            if (is_null($stock)) {
-                Stock::create([
-                    "article_reference" => $deco["article_reference"],
-                    "stockable_id" => $deco["saleable_id"],
-                    "stockable_type" => $deco["saleable_type"],
-                    "date" => now()->toDateString(),
-                    "entry" => 0,
-                    "user_id" => auth()->user()->id
-                ]);
-            }
-        }
     }
 
     private function getProductRequest(array $articles)
@@ -216,11 +186,10 @@ class SaleController extends Controller
         $article = Stock::getArticleByReference($articleRef);
 
         if ($article && $quantity > 0) {
-            $stock = Stock::between();
-            $filter = $stock->where("article_ref", $article->reference)->first();
-
+            $stock = Stock::EntriesOuts();
+            $filter = $stock->where("reference", $article->reference)->first();
+          
             if ($filter) {
-                // dd($filter,$filter->final ,$rest,$quantity);
                 if ($quantity > $filter->final) {
                     $errors = "Article $article->designation insuffisant!";
                 }

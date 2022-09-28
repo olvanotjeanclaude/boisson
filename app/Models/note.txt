@@ -1,0 +1,2 @@
+table article and emballage => new col (buying_price)
+stock many cols

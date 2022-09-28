@@ -75,25 +75,20 @@
                         class="btn  btn-info btn-sm text-capitalize">
                         Minimum Date
                     </button>
-                    {{-- @can('viewAny', \App\Models\SupplierOrders::class)
-                        <a href="{{ route('admin.achat-produits.index') }}"
-                            class="btn btn-secondary btn-sm text-capitalize">
-                            Achat Produits
-                        </a>
-                    @endcan --}}
+
+                    <a href="{{ route('admin.achat-fournisseurs.create') }}" class="btn btn-primary btn-sm text-capitalize">
+                        Nouveau Bon d'entrée
+                    </a>
+
                     <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
                         Ventes
                     </a>
-                    <button type="button" data-toggle="modal" data-target="#modalStock"
-                        class="btn float-right btn-sm ml-1 btn-primary">
-                        <span class="material-icons">add</span>
-                        Nouveau Stock
-                    </button>
                 </div>
             </div>
 
             <div class="card-content collapse show">
                 <div class="card-body mt-2">
+                    <h5>Total Trouvé: {{ count($stocks) }}</h5>
                     <div class="bg-dark p-1">
                         <form action="{{ route('admin.stocks.index') }}" method="GET">
                             <div class="row">
@@ -107,11 +102,12 @@
                                 </div>
                                 <div class="col-6 col-sm">
                                     <select name="filter_type" class="bg-white form-control h-100" id="filterArticle">
-                                        @foreach (\App\helper\Filter::TYPES as $value)
-                                            <option @if ($value == request()->get('filter_type')) selected @endif
-                                                value="{{ $value }}">
-                                                {{ Str::title($value) }}</option>
-                                        @endforeach
+                                        <option @if (request('filter_type') == 'tout') selected @endif value="tout">Tout
+                                        </option>
+                                        <option @if (request('filter_type') == 'article') selected @endif value="article">Article
+                                        </option>
+                                        <option @if (request('filter_type') == 'emballage') selected @endif value="emballage">
+                                            Emballage</option>
                                     </select>
                                 </div>
                                 <div class="col-6 col-sm-4">
@@ -145,10 +141,7 @@
                                     <th>Type</th>
                                     <th>Designation</th>
                                     <th>Entrées</th>
-                                    {{-- <th>Sorti</th> --}}
-                                    <th>Vendu</th>
-                                    {{-- <th>Emballage?</th> --}}
-                                    {{-- <th>Montant</th> --}}
+                                    <th>Sorti</th>
                                     <th>En Stock</th>
                                 </tr>
                             </thead>
@@ -156,13 +149,12 @@
                                 @foreach ($stocks as $stock)
                                     @isset($stock->designation)
                                         <tr>
-                                            <td>{{ $stock->article_ref }}</td>
+                                            <td>{{ $stock->reference }}</td>
                                             <td>
                                                 {{ Str::upper($stock->type) }}
                                             </td>
                                             <td>{{ Str::upper($stock->designation) }}</td>
                                             <td>{{ $stock->sum_entry }}</td>
-                                            {{-- <td>{{ $stock->sum_stock_out }}</td> --}}
                                             <td>{{ $stock->sum_out }}</td>
                                             <td>{{ $stock->final }}</td>
                                         </tr>
@@ -200,8 +192,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn grey btn-outline-secondary"
-                            data-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn  btn-outline-dark">Valider</button>
                     </div>
                 </div>

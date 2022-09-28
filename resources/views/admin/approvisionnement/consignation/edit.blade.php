@@ -77,6 +77,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group row mx-auto">
+                                <label class="col-md-3 label-control" for="buying_price">Prix D'Achat</label>
+                                <div class="col-md-9">
+                                    <input type="number" id="buying_price" value="{{ $consignation->buying_price }}" step="0.001"
+                                        required class="form-control" placeholder="Prix de vente" name="buying_price">
+                                    <div class="invalid-feedback">
+                                        Entrer le prix de vente
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="form-group row mx-auto last">
                                 <label class="col-md-3 label-control" for="note">Note</label>

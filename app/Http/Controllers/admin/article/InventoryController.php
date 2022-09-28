@@ -18,7 +18,7 @@ class InventoryController extends Controller
 {
     public function index(Request $request)
     {
-        $stocks = Stock::between();
+        $stocks = Stock::EntriesOuts();
         $between = Stock::getDefaultBetween();
         $articles = Product::orderBy("designation")->get();
         $emballages = Emballage::orderBy("designation")->get();
@@ -113,17 +113,16 @@ class InventoryController extends Controller
             $request->article_reference,
             $request->real_quantity
         );
-
+        // dd($stockDiff);
         $stock = $stockDiff["stock"] ?? null;
         $article = $stockDiff["article"] ?? null;
 
         if ($stock && $article) {
-            $saved = Inventory::updateOrcreate([
+            $saved = Inventory::create([
                 "article_reference" => $article->reference,
                 "article_id" => $article->id,
                 "article_type" => get_class($article),
                 "date" => $stock->date,
-            ], [
                 "unique_id" => generateInteger(8),
                 "real_quantity" => $stock->real_quantity,
                 "difference" => $stock->difference,
@@ -141,7 +140,6 @@ class InventoryController extends Controller
 
     public function adjustStock(Inventory $inventory, Request $request)
     {
-        // dd($inventory);
         abort_if(is_null($inventory->article), 404);
         $updated = false;
 
@@ -149,20 +147,26 @@ class InventoryController extends Controller
             case Inventory::STATUS["accepted"]:
                 $article = $inventory->article;
                 $between = [Stock::MinDate($inventory->date), $inventory->date];
-                $stock = Stock::between($between)->where("article_ref", $article->reference)->first();
+                $stock = Stock::EntriesOuts($between);
+                $stock = $stock->where("reference", $article->reference)->first();
 
-                // dd($stock,$inventory);
-                // dd($supplierOrders, $inventory,$absGap);
+                // dd($stock, $inventory);
 
                 if ($stock) {
+                    $entry = $inventory->difference > 0 ? $inventory->difference : 0;
+                    $out = $inventory->difference < 0 ? abs($inventory->difference) : 0;
+                   
                     $updated =  Stock::create([
+                        "inventory_id" => $inventory->id,
+                        "status" => Stock::STATUS["accepted"],
                         "article_reference" => $article->reference,
                         "stockable_id" => $article->id,
                         "stockable_type" => get_class($article),
-                        "date" => now()->toDateString(),
-                        "entry" => $inventory->difference,
-                        "user_id" => auth()->user()->id,
-                        "inventory_id" => $inventory->id
+                        "entry" => $entry,
+                        "out" => $out,
+                        "user_id" => $inventory->user_id,
+                        "action_type" => Stock::ACTION_TYPES["new_stock"],
+                        "date" => $inventory->date,
                     ]);
 
                     if ($updated) {
@@ -204,7 +208,7 @@ class InventoryController extends Controller
 
             if ($stock->difference != 0) {
                 $date = '<input type="hidden" value="' . $stock->date . '"  name="date"/>';
-                $article_ref = '<input type="hidden" value="' . $stock->article_ref . '"
+                $article_ref = '<input type="hidden" value="' . $stock->reference . '"
                   name="article_reference"/>';
                 $realQtt = '<input type="hidden" id="real_quantity"  
                   value="' . $stock->real_quantity . '" 
@@ -232,19 +236,16 @@ class InventoryController extends Controller
             $date = date("Y-m-d");
         }
         if ($article) {
-            $stock = Stock::between([Stock::MinDate($date), $date])
-                // ->filter(function ($stock) {
-                //     return $stock->article_type != "App\Models\Emballage";
-                // })
-                ->where("article_ref", $article->reference)
-                ->first();
+            $between = [Stock::MinDate($date), $date];
+            $stock = Stock::EntriesOuts($between);
+            $stock = $stock->where("reference", $article->reference)->first();
             // dd($stock);
 
             if ($stock) {
                 $stock->date = $date;
                 $stock->real_quantity = $realQtt;
                 $stock->difference = $stock->real_quantity - $stock->final;
-                $difference = $stock->difference < 0 ? -1 * $stock->difference : $stock->difference;
+                $difference = abs($stock->difference);
 
                 if ($stock->difference < 0) {
                     $message = strtoupper($article->designation) . " manque <span class='font-weight-bold text-danger'>$difference</span>";

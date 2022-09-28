@@ -15,32 +15,33 @@
                     </thead>
                     <tbody>
                         @foreach ($preInvoices as $preInvoice)
-                            <tr>
-                                <td class="pl-1 py-0 text-capitalize">
-                                    {{ $preInvoice->saleable->designation }}
-                                </td>
-                                <td class="pl-1 py-0">
-                                    {{ $preInvoice->pricing }}
-                                    Ar
-                                </td>
-                                <td class="pl-1 py-0">{{ $preInvoice->quantity }} </td>
-                                <td class="pl-1 py-0">
-                                    {{ formatPrice($preInvoice->sub_amount) }}
-                                </td>
-                                <td class="pl-1 py-0">
-                                    <form method="POST"
-                                        action="{{ route('admin.ventes.destroy', $preInvoice->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button type="submit"
-                                            class="btn btn-outline-accent-1 remove-article">
-                                            <span class="material-icons text-danger">
-                                                remove_circle
-                                            </span>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                            @if ($preInvoice->saleable)
+                                <tr>
+                                    <td class="pl-1 py-0 text-capitalize">
+                                        {{ $preInvoice->saleable->designation }}
+                                    </td>
+                                    <td class="pl-1 py-0">
+                                        {{ $preInvoice->pricing }}
+                                        Ar
+                                    </td>
+                                    <td class="pl-1 py-0">{{ $preInvoice->quantity }} </td>
+                                    <td class="pl-1 py-0">
+                                        {{ formatPrice($preInvoice->sub_amount) }}
+                                    </td>
+                                    <td class="pl-1 py-0">
+                                        <form method="POST"
+                                            action="{{ route('admin.ventes.destroy', $preInvoice->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-outline-accent-1 remove-article">
+                                                <span class="material-icons text-danger">
+                                                    remove_circle
+                                                </span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

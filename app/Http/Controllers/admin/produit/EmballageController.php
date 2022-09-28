@@ -41,6 +41,7 @@ class EmballageController extends Controller
         return [
             "designation" => ["required", "string", Rule::unique("emballages", "designation")->ignore($emballage_id)],
             "price" => "required|numeric",
+            "buying_price" => "required|numeric",
             // "category_id" => "required"
         ];
     }
@@ -65,7 +66,7 @@ class EmballageController extends Controller
         ]);
 
         if ($emballage) {
-            return back()->with("success", CustomMessage::Success("Deconsignation d'article"));
+            return redirect("/admin/produits/emballages")->with("success", CustomMessage::Success("Deconsignation d'article"));
         }
 
         return back()->with("error", CustomMessage::DEFAULT_ERROR);

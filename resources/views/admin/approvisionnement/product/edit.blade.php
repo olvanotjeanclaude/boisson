@@ -63,7 +63,7 @@
                                         </div>
                                         <div class="col-sm-6 col-lg-4">
                                             <label class="label-control" for="category_id">Famille</label>
-                                            <select name="category_id" class="form-control" required id="category_id">
+                                            <select name="category_id" class="form-control select2" required id="category_id">
                                                 <option value="">Choisir</option>
                                                 @foreach ($catArticles as $catArticle)
                                                     <option @if ($catArticle->id == $product->category_id) selected @endif
@@ -156,7 +156,15 @@
                                                 Entrer le prix de vente
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-6 col-md-12 col-lg-6">
+                                            <label class="label-control" for="buying_price">Prix D'Achat</label>
+                                            <input type="number" value="{{ $product->buying_price }}" required id="buying_price"
+                                                class="form-control" placeholder="Prix d'achat" name="buying_price">
+                                            <div class="invalid-feedback">
+                                                Entrer le prix d'achat
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-12 col-lg-6">
                                             <label class="label-control" for="condition">Conditionnement</label>
                                             <input type="number" value="{{ $product->condition }}" id="condition"
                                                 class="form-control" placeholder="Conditionnement" name="condition">
@@ -175,7 +183,7 @@
                                 <div class="form-body">
                                     <div class="col-12">
                                         <label class="label" for="simple_package_id">Consignation Simple</label>
-                                        <select name="simple_package_id" class="form-control" id="simple_package_id">
+                                        <select name="simple_package_id" class="form-control select2" id="simple_package_id">
                                             <option value="">Choisir</option>
                                             @foreach ($emballages as $emballage)
                                                 <option @if ($emballage->id == $product->simple_package_id) selected @endif
@@ -187,7 +195,7 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="label-control" for="big_package_id">Consignation De Gros</label>
-                                        <select name="big_package_id" class="form-control" id="big_package_id">
+                                        <select name="big_package_id" class="form-control select2" id="big_package_id">
                                             <option value="">Choisir</option>
                                             @foreach ($emballages as $emballage)
                                                 <option @if ($emballage->id == $product->big_package_id) selected @endif

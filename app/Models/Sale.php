@@ -20,8 +20,9 @@ class Sale extends Model
         return $this->morphTo();
     }
 
-    public function invoice(){
-        return $this->belongsTo(DocumentVente::class,"number","invoie_number");
+    public function invoice()
+    {
+        return $this->belongsTo(DocumentVente::class, "number", "invoie_number");
     }
 
     public function getArticleTypeAttribute()
@@ -77,7 +78,7 @@ class Sale extends Model
 
     public function getSubAmountAttribute()
     {
-        $sub_amount = $this->saleable->price * $this->quantity;
+        $sub_amount = $this->saleable ? $this->saleable->price * $this->quantity : 0;
 
         if ($this->saleable_type == "App\Models\Product") {
             $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
@@ -151,7 +152,7 @@ class Sale extends Model
     public function scopeBottles($query, $type)
     {
         $bottles =  $query->whereHasMorph('saleable', [Emballage::class])->get();
-        
+
         switch ($type) {
             case 'consignation':
                 $bottles = $bottles->where("isWithEmballage", false);

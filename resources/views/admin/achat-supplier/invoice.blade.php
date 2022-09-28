@@ -1,7 +1,7 @@
 @extends('layouts.invoice_table_template')
 
 @section('prix-title')
-    Prix D'Achat
+    PA
 @endsection
 @section('invoice-title')
     Bon D'Entrée
@@ -12,7 +12,7 @@
             <b>Facture N<sup>0</sup></b> {{ $entry->invoice_number }}
         </span>
         <span>
-            <b>Caissier :</b> {{ Str::upper(auth()->user()->full_name) }}
+            <b>Magasinier :</b> {{ Str::upper($entry->user ? $entry->user->full_name : 'Inconnu') }}
         </span>
         <span>
             <b>Reference Facture :</b> {{ $entry->reference_facture }}
@@ -42,10 +42,10 @@
                     {{ $data->entry }}
                 </td>
                 <td>
-                    {{ formatPrice($data->stockable->buying_price) }}
+                    {{ round($data->stockable->buying_price) }}
                 </td>
                 <td style="text-align: right">
-                    {{ formatPrice($data->sub_amount) }}
+                    {{ round($data->sub_amount) }}
                 </td>
             </tr>
         @endif
@@ -54,5 +54,5 @@
 
 @section('footer')
     <p class="m-0"><b>Total : </b>{{ formatPrice(abs($amount), 'Ariary') }}</p>
-    <p class="m-0"><b>Nombre d'article :</b>  {{ count($datas) }}</p>
+    <p class="m-0"><b>Nombre d'article :</b> {{ count($datas) }}</p>
 @endsection

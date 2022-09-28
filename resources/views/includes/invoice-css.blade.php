@@ -1,5 +1,8 @@
 <style>
-    #invoiceTableTemplateContainer * {
+   #invoiceTableTemplateContainer{
+    overflow: auto;
+   }
+   #invoiceTableTemplateContainer * {
        font-family: Arial, Helvetica, sans-serif;
        color: rgb(55, 52, 52);
     }
