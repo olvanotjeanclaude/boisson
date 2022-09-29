@@ -17,12 +17,6 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Route::get("/link-storage", function () {
-    // dd($symLn);
-    File::link(storage_path('app/public'), public_path('storage'));
-    return "Symbolik link created";
-});
-
 Route::get('clear_cache', function () {
 
     Artisan::call('optimize');
@@ -44,7 +38,6 @@ Route::redirect("/", "/admin");
 Auth::routes();
 
 Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], function () {
-
     Route::group(["middleware" => ["can:view all"]], function () {
         Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
         Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
@@ -54,7 +47,6 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
     // Dashboard
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
-    // Route::get("{filter_type}/articles",[\App\Http\Controllers\admin\filter\FilterController::class, "filterArticle"]);
     Route::group(["middleware" => "can:view dashboard"], function () {
         Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");
         Route::get("dashboard/facture/telecharger", [\App\Http\Controllers\admin\AdminController::class, "download"])->name("dashboard.download");
@@ -89,14 +81,11 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
         Route::get("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "getAdjustStockForm"])->name("getAdjustStockForm");
         Route::post("/demmande-ajustement-de-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStockRequest"])->name("adjustStockRequest");
         Route::post("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStock"])->name("adjustStock")->can("valid inventory");
-        
-        Route::post("store-out",[\App\Http\Controllers\admin\article\StockOutController::class,"storeOut"])->name("storeOut");
-        Route::get("/sortie/{inventory}", [\App\Http\Controllers\admin\article\StockOutController::class, "getValidOutForm"])->name("getValidOutForm");
-        Route::post("/sortie/{inventory}", [\App\Http\Controllers\admin\article\StockOutController::class, "validStockOut"])->name("validStockOut");
     });
 
     Route::post("settings", [\App\Http\Controllers\admin\settings\SettingController::class, "update"])->name("settings.update");
 
+    // Impression
     Route::group(["prefix" => "impression", "as" => "print."], function () {
         Route::get("vente/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "printSale"])->name("sale");
         Route::get("vente/{invoice_number}/preview", [\App\Http\Controllers\admin\impression\ImpressionController::class, "previewSale"])->name("sale.preview");
@@ -113,23 +102,27 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::get("{type}/detail/{invoice_number}", [\App\Http\Controllers\admin\impression\ImpressionController::class, "show"])->name("document.show");
     Route::get("{type}/detail/{invoice_number}/print", [\App\Http\Controllers\admin\impression\ImpressionController::class, "print"])->name("document.print");
 
+    // Ventes
     Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
     Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm")->middleware("can:make payment");
     Route::post("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentStore"])->name("sale.paymentStore");
-    Route::get("achat-produits/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "achatPaymentForm"])->name("achat.paymentForm");
-    Route::post("achat-produits/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "achatPaymentStore"])->name("achat.paymentStore");
 
-    Route::get("etat-commerciale", [\App\Http\Controllers\admin\commercial_state\CommercialStateController::class, "index"])->name("commercialState.index");
-    Route::get("etat-commerciale/detail", [\App\Http\Controllers\admin\commercial_state\CommercialStateController::class, "show"])->name("commercialState.show");
-
-    Route::post("pre-save-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveVente"])->name("ventes.preSaveVente");
-    Route::post("pre-save-invoice-ventes", [\App\Http\Controllers\admin\sale\SaleController::class, "preSaveInvoiceVente"])->name("ventes.preSaveInvoiceVente");
-
-    Route::resource("factures", \App\Http\Controllers\admin\invoice\InvoiceController::class);
-
+    // Client
     Route::resource("clients", \App\Http\Controllers\admin\customer\CustomerController::class);
     Route::post("get-customers", [\App\Http\Controllers\admin\customer\CustomerController::class, "getData"])->name("customer.getData");
 
+    // Sortie de stock
+    Route::resource("sorti-stocks", App\Http\Controllers\admin\article\StockOutController::class);
+    Route::get("sorti-stocks/{invoice_number}/imprimer", [App\Http\Controllers\admin\article\StockOutController::class, "print"])
+        ->name("sorti-stocks.print");
+    Route::get("sorti-stocks/{invoice_number}/telecharger", [App\Http\Controllers\admin\article\StockOutController::class, "download"])
+        ->name("sorti-stocks.download");
+    Route::post("sorti-stocks/{invoice_number}/valid", [App\Http\Controllers\admin\article\StockOutController::class, "validStockOut"])
+        ->name("sorti-stocks.validStockOut");
+    Route::post("sorti-stocks/{invoice_number}/annuler", [App\Http\Controllers\admin\article\StockOutController::class, "cancel"])
+        ->name("sorti-stocks.cancel");
+
+    // Mot de passe
     Route::get("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "index"])->name("password.index");
     Route::post("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "update"])->name("password.update");
 });

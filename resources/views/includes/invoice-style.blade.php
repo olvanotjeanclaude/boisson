@@ -12,7 +12,7 @@
     }
 
     #invoice-container {
-        font-size: 1.5rem;
+        font-size: 1rem;
         max-width: 80mm;
         border-collapse: collapse;
         margin-left: 7px;

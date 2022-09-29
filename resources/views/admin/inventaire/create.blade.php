@@ -19,6 +19,7 @@
 
 @section('content')
     <section>
+        @include('includes.messages')
         <div class="row">
             <div class="col-12">
                 @if (session('success'))
@@ -111,7 +112,7 @@
                     </div>
                 </div>
             </div>
-            
+
             @can('valid inventory')
                 <div class="col-sm-5">
                     <div class="card">
@@ -125,7 +126,8 @@
                                         <option value="">Choisir</option>
                                         @forelse (\App\Models\Inventory::STATUS_TEXT as $key => $status)
                                             <option value="{{ \App\Models\Inventory::STATUS[$key] }}"
-                                                @if ($inventory->status == \App\Models\Inventory::STATUS[$key]) selected @endif>
+                                                @if ($inventory->status == \App\Models\Inventory::STATUS[$key]) selected @endif
+                                                @if ($key == 'accepted' && $inventory->status == \App\Models\Inventory::STATUS['accepted']) disabled @endif>
                                                 {{ $status }}
                                             </option>
                                         @empty

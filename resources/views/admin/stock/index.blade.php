@@ -153,7 +153,8 @@
                                             <td>
                                                 {{ Str::upper($stock->type) }}
                                             </td>
-                                            <td>{{ Str::upper($stock->designation) }}</td>
+                                            <td>
+                                                {{ Str::upper($stock->designation) }}</td>
                                             <td>{{ $stock->sum_entry }}</td>
                                             <td>{{ $stock->sum_out }}</td>
                                             <td>{{ $stock->final }}</td>

@@ -143,57 +143,61 @@ class InventoryController extends Controller
         abort_if(is_null($inventory->article), 404);
         $updated = false;
 
-        switch ($request->status) {
-            case Inventory::STATUS["accepted"]:
-                $article = $inventory->article;
-                $between = [Stock::MinDate($inventory->date), $inventory->date];
-                $stock = Stock::EntriesOuts($between);
-                $stock = $stock->where("reference", $article->reference)->first();
-
-                // dd($stock, $inventory);
-
-                if ($stock) {
-                    $entry = $inventory->difference > 0 ? $inventory->difference : 0;
-                    $out = $inventory->difference < 0 ? abs($inventory->difference) : 0;
-                   
-                    $updated =  Stock::create([
-                        "inventory_id" => $inventory->id,
-                        "status" => Stock::STATUS["accepted"],
-                        "article_reference" => $article->reference,
-                        "stockable_id" => $article->id,
-                        "stockable_type" => get_class($article),
-                        "entry" => $entry,
-                        "out" => $out,
-                        "user_id" => $inventory->user_id,
-                        "action_type" => Stock::ACTION_TYPES["new_stock"],
-                        "date" => $inventory->date,
-                    ]);
-
-                    if ($updated) {
-                        $inventory->update(["status" => Inventory::STATUS["accepted"]]);
-                        return redirect("/admin/inventaires")->with("success", "Stock a ete ajuste avec success!");
+        if (isset($request->status)) {
+            switch ($request->status) {
+                case Inventory::STATUS["accepted"]:
+                    $article = $inventory->article;
+                    $between = [Stock::MinDate($inventory->date), $inventory->date];
+                    $stock = Stock::EntriesOuts($between);
+                    $stock = $stock->where("reference", $article->reference)->first();
+    
+                    // dd($stock, $inventory);
+    
+                    if ($stock) {
+                        $entry = $inventory->difference > 0 ? $inventory->difference : 0;
+                        $out = $inventory->difference < 0 ? abs($inventory->difference) : 0;
+                       
+                        $updated =  Stock::create([
+                            "inventory_id" => $inventory->id,
+                            "status" => Stock::STATUS["accepted"],
+                            "article_reference" => $article->reference,
+                            "stockable_id" => $article->id,
+                            "stockable_type" => get_class($article),
+                            "entry" => $entry,
+                            "out" => $out,
+                            "user_id" => $inventory->user_id,
+                            "action_type" => Stock::ACTION_TYPES["new_stock"],
+                            "date" => $inventory->date,
+                        ]);
+    
+                        if ($updated) {
+                            $inventory->update(["status" => Inventory::STATUS["accepted"]]);
+                            return redirect("/admin/inventaires")->with("success", "Stock a ete ajuste avec success!");
+                        }
                     }
-                }
-
-                return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
-                break;
-            case Inventory::STATUS["pending"]:
-                $inventory->stock()->delete();
-                $updated = $inventory->update(["status" => Inventory::STATUS["pending"]]);
-                break;
-            case Inventory::STATUS["canceled"]:
-                $inventory->stock()->delete();
-                $updated = $inventory->update(["status" => Inventory::STATUS["canceled"]]);
-                break;
-            default:
-                break;
+    
+                    return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
+                    break;
+                case Inventory::STATUS["pending"]:
+                    $inventory->stock()->delete();
+                    $updated = $inventory->update(["status" => Inventory::STATUS["pending"]]);
+                    break;
+                case Inventory::STATUS["canceled"]:
+                    $inventory->stock()->delete();
+                    $updated = $inventory->update(["status" => Inventory::STATUS["canceled"]]);
+                    break;
+                default:
+                    break;
+            }
+    
+            if ($updated) {
+                return redirect("/admin/inventaires")->with("success", "Inventaire a ete modifie avec success");
+            }
+    
+            return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
         }
-
-        if ($updated) {
-            return redirect("/admin/inventaires")->with("success", "Inventaire a ete modifie avec success");
-        }
-
-        return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
+        
+        return back()->withErrors(["errors" => "La demande est déjà acceptée!"]);
     }
 
     private function getStockInfoHtml($stock): array

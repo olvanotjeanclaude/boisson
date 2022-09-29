@@ -85,7 +85,13 @@
                                                             <a target="_blank"
                                                                 href="{{ route('admin.achat-fournisseurs.print', $entry->invoice_number) }}"
                                                                 class="dropdown-item"><i class="la la-print"></i>
-                                                                Imprimer</a>
+                                                                Imprimer
+                                                            </a>
+                                                            <a href="{{ route('admin.achat-fournisseurs.download', $entry->invoice_number) }}"
+                                                                class="dropdown-item">
+                                                                <i class="la la-download"></i>
+                                                                Telecharger
+                                                            </a>
                                                             <form
                                                                 action="{{ route('admin.achat-fournisseurs.cancel', $entry->invoice_number) }}"
                                                                 method="POST">
@@ -93,7 +99,7 @@
                                                                 @csrf
                                                                 <button type="submit" class="dropdown-item">
                                                                     <i class="la la-trash"></i>
-                                                                    Anuller
+                                                                    Supprimer
                                                                 </button>
                                                             </form>
     

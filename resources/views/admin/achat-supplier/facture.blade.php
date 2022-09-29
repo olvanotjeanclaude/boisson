@@ -11,19 +11,19 @@
 @section('header')
     <div class="header-info">
         <span>
+            <b>Date :</b> {{ format_date($entry->date) }}
+        </span>
+        <br>
+        <span>
+            <b>Magasinier :</b> {{ Str::upper($entry->user ? $entry->user->full_name : 'Inconnu') }}
+        </span>
+        <br>
+        <span>
             <b>Facture N<sup>0</sup></b> {{ $entry->invoice_number }}
         </span>
         <br>
         <span>
-            <b>Caissier :</b> {{ Str::upper($entry->user ? $entry->user->full_name : 'Inconnu') }}
-        </span>
-        <br>
-        <span>
             <b>Reference Facture :</b> {{ $entry->reference_facture }}
-        </span>
-        <br>
-        <span>
-            <b>Date :</b> {{ format_date($entry->date) }}
         </span>
         <br>
         <span>

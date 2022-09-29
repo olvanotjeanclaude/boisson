@@ -3,34 +3,65 @@
 namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
-use App\Models\Inventory;
+use App\Models\Product;
+use App\Models\Emballage;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
+use App\Printing\StockOut;
 
 class StockOutController extends Controller
 {
-    public function getValidOutForm(Inventory $inventory, Request $request)
+    public function index()
     {
-
-        $article = $inventory->article;
-
-        abort_if(is_null($article), 404);
-
-        return view("admin.inventaire.valid-out-form", compact("article", "inventory"));
+        $stockOuts = Stock::outs();
+        return view("admin.stock-out.index", [
+            "stockOuts" => $stockOuts
+        ]);
     }
-    
-    public function storeOut(Request $request)
-    {
-        $request->validate(["article_reference", "quantity", "motif", "numeric"]);
 
-        $stocks = Stock::between();
-        $stock = $stocks->where("article_ref", $request->article_reference)->first();
+    public function create()
+    {
+        $articles = Product::orderBy("designation")->get();
+        $emballages = Emballage::orderBy("designation")->get();
+
+        return view("admin.stock-out.create", compact("articles", "emballages"));
+    }
+
+    public function show($invoiceNumber)
+    {
+        $stocks = Stock::whereInvoiceNumber($invoiceNumber)->get();
+        $stock = $stocks->first();
+
+        return view("admin.stock-out.show", compact("stocks", "stock"));
+    }
+
+    public function print($invoiceNumber,StockOut $document)
+    {
+        return $document->print($invoiceNumber);
+    }
+
+    public function download($invoiceNumber, StockOut $document)
+    {
+       return $document->download($invoiceNumber);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            "article_reference" => "required",
+            "date" => "required",
+            "out" => "required|numeric",
+            "comment" => "required"
+        ]);
+
+        $stocks = Stock::EntriesOuts();
+        $stock = $stocks->where("reference", $request->article_reference)->first();
         $article = Stock::getArticleByReference($request->article_reference);
 
         if ($article) {
             if ($stock) {
-                if ($request->quantity > $stock->final) {
+                if ($request->out > $stock->final) {
                     $errors = "Article $article->designation insuffisant!";
                 }
             } else {
@@ -38,86 +69,39 @@ class StockOutController extends Controller
             }
 
             if (isset($errors)) {
-                return back()->withErrors(["errors" => $errors]);
+                return back()->withErrors(["errors" => $errors])->withInput();
             }
 
-            $saved = $this->storeInventory($article, $stock);
+            $data = [
+                "invoice_number" => generateInteger(7),
+                "status" => Stock::STATUS["pending"],
+                "article_reference" => $article->reference,
+                "stockable_id" => $article->id,
+                "stockable_type" => get_class($article),
+                "out" => $request->out,
+                "user_id" => auth()->user()->id,
+                "action_type" => Stock::ACTION_TYPES["sample_out"],
+                "date" => $request->date,
+                "comment" => $request->comment
+            ];
+
+            $saved = Stock::create($data);
 
             if ($saved) {
-                return back()->with("success", CustomMessage::Success("Stock"));
+                return redirect("/admin/sorti-stocks")->with("success", CustomMessage::Success("Sorti de stock"));
             }
         }
 
         return back()->with("error", "Erreur inattendue. Peut être que l'article a été supprimé.");
     }
 
-    private function storeInventory($article, $stock)
+    public function validStockOut($invoiceNumber, StockOut $document)
     {
-        $request = request();
-
-        return   Inventory::updateOrcreate([
-            "article_reference" => $article->reference,
-            "article_id" => $article->id,
-            "article_type" => get_class($article),
-            "date" => now()->toDateString(),
-        ], [
-            "unique_id" => generateInteger(8),
-            "out" => $request->quantity,
-            "real_quantity" => 0,
-            "difference" => 0,
-            "motif" => $request->motif,
-            "user_id" => auth()->user()->id,
-            "status" => Inventory::STATUS["pending"]
-        ]);
+        return $document->valid($invoiceNumber);
     }
 
-    public function validStockOut(Inventory $inventory, Request $request)
+    public function cancel($invoiceNumber,StockOut $document)
     {
-        abort_if(is_null($inventory->article), 404);
-        $updated = false;
-
-        switch ($request->status) {
-            case Inventory::STATUS["accepted"]:
-                $article = $inventory->article;
-                $between = [Stock::MinDate($inventory->date), $inventory->date];
-                $stock = Stock::between($between)->where("article_ref", $article->reference)->first();
-
-                if ($stock) {
-                    $updated =  Stock::create([
-                        "article_reference" => $article->reference,
-                        "stockable_id" => $article->id,
-                        "stockable_type" => get_class($article),
-                        "date" => now()->toDateString(),
-                        "entry" => 0,
-                        "out" =>$inventory->out,
-                        "user_id" => auth()->user()->id,
-                        "inventory_id" => $inventory->id
-                    ]);
-
-                    if ($updated) {
-                        $inventory->update(["status" => Inventory::STATUS["accepted"]]);
-                        return redirect("/admin/inventaires")->with("success", "Stock a ete ajuste avec success!");
-                    }
-                }
-
-                return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
-                break;
-            case Inventory::STATUS["pending"]:
-                $inventory->stock()->delete();
-                $updated = $inventory->update(["status" => Inventory::STATUS["pending"]]);
-                break;
-            case Inventory::STATUS["canceled"]:
-                $inventory->stock()->delete();
-                $updated = $inventory->update(["status" => Inventory::STATUS["canceled"]]);
-                break;
-            default:
-                break;
-        }
-
-        if ($updated) {
-            return redirect("/admin/inventaires")->with("success", "Inventaire a ete modifie avec success");
-        }
-
-        return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
+        return $document->cancel($invoiceNumber);
     }
 }

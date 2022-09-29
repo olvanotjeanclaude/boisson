@@ -10,8 +10,9 @@
                 <tr>
                     <th style="width: 150px">Désignation</th>
                     <th style="width: 40px">Qté</th>
-                    <th style="min-width: 40px">@yield('prix-title')</th>
-                    <th style="text-align: right">Total</th>
+                    <th style="width: 40px">@yield('prix-title')</th>
+                    <th style="text-align: right">Montant</th>
+                    @yield('extraTH')
                 </tr>
             </thead>
             <tbody>

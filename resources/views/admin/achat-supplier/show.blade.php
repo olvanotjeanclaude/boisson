@@ -12,8 +12,8 @@
     @include('includes.content-header', [
         'page' => 'Factures',
         'breadcrumbs' => [
-            ['text' => 'Facture', 'link' => route('admin.achat-fournisseurs.index')],
-            ['text' => 'voir', 'link' => route('admin.index')],
+            ['text' => "Bon D'Entrée", 'link' => route('admin.achat-fournisseurs.index')],
+            ['text' => 'Liste', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => "Nouveau Bon D'Entrée",
@@ -40,6 +40,7 @@
 
                         <a target="_blank" href="{{ route('admin.achat-fournisseurs.print', $entry->invoice_number) }}"
                             class="btn btn-info btn-lg  mb-2">
+                            <i class="la la-print"></i>
                             Imprimer
                         </a>
 
@@ -48,7 +49,8 @@
                                 @method('delete')
                                 @csrf
                                 <button class="ml-2 btn btn-danger btn-lg  mb-2">
-                                    Annuler
+                                    <i class="la la-trash"></i>
+                                    Supprimer
                                 </button>
                                 </a>
                             @endcan

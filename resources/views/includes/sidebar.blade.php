@@ -126,18 +126,13 @@
                 <ul class="menu-content">
                     <li class="nav-item">
                         <a href="{{route('admin.achat-fournisseurs.index')}}">
-                            <span class="menu-title">bon d'entrée</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#">
-                            <span class="menu-title">Simple Sortie</span>
+                            <span class="menu-title">bon d'entrées</span>
                         </a>
                     </li>
                     <li>
-                        <a class="menu-item" href="#">
+                        <a class="menu-item" href="{{route('admin.sorti-stocks.index')}}">
                             <i class="material-icons"></i>
-                            <span>Retour Fournisseur</span>
+                            <span>Sorti Stocks</span>
                         </a>
                     </li>
                 </ul>

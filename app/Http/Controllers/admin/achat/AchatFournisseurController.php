@@ -12,6 +12,7 @@ use App\Message\CustomMessage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AchatSupplierValidation;
+use App\Printing\StockIn;
 
 class AchatFournisseurController extends Controller
 {
@@ -99,34 +100,19 @@ class AchatFournisseurController extends Controller
         return false;
     }
 
-    public function show($invoiceNumber)
+    public function show($invoiceNumber, StockIn $document)
     {
-        return view("admin.achat-supplier.show", $this->docSupplierData($invoiceNumber));
+        return view("admin.achat-supplier.show", $document->getDocData($invoiceNumber));
     }
 
-    public function print($invoiceNumber)
+    public function print($invoiceNumber, StockIn $document)
     {
-        $data = $this->docSupplierData($invoiceNumber);
-
-        $pdf = Pdf::loadView('admin.achat-supplier.facture', $data);
-        return $pdf->stream();
-        // return view("admin.achat-supplier.facture",$data);
+        return $document->print($invoiceNumber);
     }
 
-    private function docSupplierData($invoiceNumber): array
+    public function download($invoiceNumber, StockIn $document)
     {
-        $entries = Stock::entryByInvoiceNumber($invoiceNumber);
-        $entry = $entries->first();
-
-        abort_if(is_null($entry), 404);
-
-        return [
-            "entries" => $entries,
-            "datas" => $entries,
-            "entry" => $entries->first(),
-            "amount" => $entries->sum("sub_amount"),
-            "supplier" => $entries->first() ? $entries->first()->supplier : null,
-        ];
+       return $document->download($invoiceNumber);
     }
 
     public function destroy($id)
@@ -138,10 +124,8 @@ class AchatFournisseurController extends Controller
         return back();
     }
 
-    public function cancel($invoiceNumber)
+    public function cancel($invoiceNumber, StockIn $document)
     {
-        Stock::where("invoice_number", $invoiceNumber)->delete();
-
-        return redirect("/admin/achat-fournisseurs")->with("success","Document supprimé avec succès");
+        return $document->cancel($invoiceNumber);
     }
 }
