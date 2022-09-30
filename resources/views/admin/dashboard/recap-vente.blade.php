@@ -1,5 +1,5 @@
 <div class="row mt-2">
-    <div class="col-6 col-md">
+    <div class="col-sm-6 col-md">
         <div class="card">
             <div class="card-body bg-success">
                 <h4 class="text-white">En Caisse</h4>
@@ -9,7 +9,7 @@
             </div>
         </div>
     </div>
-    <div class="col-6 col-md">
+    <div class="col-sm-6 col-md">
         <div class="card">
             <div class="card-body bg-secondary">
                 <h4 class="text-white">Reçu</h4>
@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    <div class="col-6 col-md">
+    <div class="col-sm-6 col-md">
         <div class="card">
             <div class="card-body bg-danger">
                 <h4 class="text-white">Sortie De Caisse</h4>
@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    <div class="col-6 col-md">
+    <div class="col-sm-6 col-md">
         <div class="card">
             <div class="card-body bg-warning">
                 <h4 class="text-white">Credit</h4>
