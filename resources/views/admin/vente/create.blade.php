@@ -5,7 +5,7 @@
 @endsection
 
 @section('page-css')
-    @include('includes.invoice-style')
+    @include('includes.invoice-css')
 @endsection
 
 @section('content-header')
@@ -82,8 +82,33 @@
         </div>
 
         <div class="col-md-5">
-           
-            @include('admin.vente.includes.ticket')
+            @if (count($preInvoices))
+                <div class="card">
+                    <div class="card-body">
+                        @include('admin.vente.includes.ticket')
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="float-right">
+                            <button type="button" id="cancelBtn" class="btn btn-warning d-none mr-1">
+                                <i class="ft-x"></i> Anuller
+                            </button>
+                            <button type="button" id="validFacture" class="btn btn-primary">
+                                <i class="la la-check-square-o"></i> Enregister
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette
+                            zone.
+                        </p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 @endsection

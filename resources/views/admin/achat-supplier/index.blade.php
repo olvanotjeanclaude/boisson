@@ -47,7 +47,7 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table datatable table-striped table-hover text-nowrap  material-table">
+                                <table class="table datatable  table-striped table-hover text-nowrap  material-table">
                                     <thead>
                                         <tr>
                                             <th>Fournisseur</th>
@@ -56,7 +56,6 @@
                                             <th>Magasinier</th>
                                             <th>Total</th>
                                             <th>Date</th>
-                                            <th>Date Système</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -71,7 +70,6 @@
                                                 </td>
                                                 <td>{{ $entry->sum_article }}</td>
                                                 <td>{{ format_date($entry->date) }}</td>
-                                                <td>{{ format_date_time($entry->created_at) }}</td>
                                                 <td>
                                                     <span class="dropdown">
                                                         <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
@@ -81,7 +79,7 @@
                                                         <span aria-labelledby="btnSearchDrop2"
                                                             class="dropdown-menu mt-1 dropdown-menu-right">
                                                             <a href="{{ route('admin.achat-fournisseurs.show', $entry->invoice_number) }}"
-                                                                class="dropdown-item"><i class="la la-eye"></i>Facture</a>
+                                                                class="dropdown-item"><i class="la la-eye"></i>Voir</a>
                                                             <a target="_blank"
                                                                 href="{{ route('admin.achat-fournisseurs.print', $entry->invoice_number) }}"
                                                                 class="dropdown-item"><i class="la la-print"></i>

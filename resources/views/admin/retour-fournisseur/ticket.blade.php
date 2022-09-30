@@ -5,7 +5,7 @@
 @endsection
 
 @section('invoice-title')
-    Bon D'Entrée
+    Retour Fournisseur
 @endsection
 
 @section('extraTH')
@@ -19,7 +19,7 @@
                 <td class="text-capitalize" style="width: 200px">
                     {{ $data->stockable->designation }}
                 </td>
-                <td>{{ $data->entry }}</td>
+                <td>{{ $data->out }}</td>
                 <td style="width: 50px">
                     {{ round($data->stockable->buying_price) }}
                 </td>

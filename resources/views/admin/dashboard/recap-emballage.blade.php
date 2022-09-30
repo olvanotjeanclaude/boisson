@@ -1,6 +1,38 @@
 <div class="card">
-    <div class="card-header bg-secondary">
-        <h3 class="text-white">Recapulatif D'Emballages</h3>
+    <div class="card-header bg-secondary d-flex justify-content-between">
+        <h3 class="text-white">Recapulatifs</h3>
+        <div class="btn-group mt-1 mt-sm-0">
+            <a href="{{ route('admin.dashboard.detail', [
+                'start_date' => $between[0],
+                'end_date' => $between[1],
+            ]) }}"
+                class="btn btn-light">
+                <i class="la la-eye"></i>
+                Voir
+            </a>
+            <a target="_blink"
+                href="{{ route('admin.dashboard.printReport', [
+                    'start_date' => $between[0],
+                    'end_date' => $between[1],
+                    'filter_type' => request()->get('filter_type'),
+                    'chercher' => request()->get('chercher'),
+                ]) }}"
+                class="btn btn-light">
+                <i class="la la-print"></i>
+                Imprimer
+            </a>
+            <a 
+                href="{{ route('admin.dashboard.download', [
+                    'start_date' => $between[0],
+                    'end_date' => $between[1],
+                    'filter_type' => request()->get('filter_type'),
+                    'chercher' => request()->get('chercher'),
+                ]) }}"
+                class="btn btn-light">
+                <i class="la la-download"></i>
+                Telecharger
+            </a>
+        </div>
     </div>
     <div class="d-flex flex-wrap justify-content-center">
         @foreach ($recaps as $recap => $total)

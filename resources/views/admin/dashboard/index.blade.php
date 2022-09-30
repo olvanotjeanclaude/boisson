@@ -40,7 +40,7 @@
             'text' => 'Nouveau Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => currentUser()->can("make sale"),
+            'show' => currentUser()->can('make sale'),
         ],
     ])
 @endsection
@@ -61,12 +61,8 @@
             @include('admin.dashboard.filter-component')
         </div>
         <br>
-        <div class="col-md-4">
+        <div class="col-12">
             @include('admin.dashboard.recap-vente')
-        </div>
-
-        <div class="col-md">
-            @include('admin.dashboard.sale')
         </div>
     </div>
     <div class="row">
@@ -74,9 +70,23 @@
             @include('admin.dashboard.payment-methode')
         </div>
         <div class="col-md-6">
+            <div class="card bg-primary">
+                <div class="card-body">
+                    <h4 class="text-white">Total</h4>
+                    <div class="badge badge-pill badge-white  badge-square">
+                        <h3 class="text-white">{{ formatPrice($solds->sum("sub_amount")) }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
             @include('admin.dashboard.recap-emballage')
         </div>
     </div>
+    {{-- <div class="row">
+        <div class="col-md">
+            @include('admin.dashboard.sale')
+        </div>
+    </div> --}}
 @endsection
 
 @section('page-js')

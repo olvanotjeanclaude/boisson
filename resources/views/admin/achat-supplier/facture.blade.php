@@ -75,6 +75,7 @@
 @endsection
 
 @section('footer')
-    <p class="mt-1"><b>Total:</b>{{ formatPrice(abs($amount), 'Ariary') }}</p>
-    <p class="mt-1"><b>Nombre d'article :</b>  {{ count($datas) }}</p>
+<p class="m-0"><b>Total : </b>{{ formatPrice(abs($amount), 'Ariary') }}</p>
+<p class="m-0"><b>Total en Fmg : </b>{{ formatPrice(abs($amount*5), 'Fmg') }}</p>
+<p class="m-0"><b>Nombre d'article :</b> {{ count($datas) }}</p>
 @endsection

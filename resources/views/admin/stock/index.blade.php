@@ -146,7 +146,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($stocks as $stock)
+                                @forelse ($stocks as $stock)
                                     @isset($stock->designation)
                                         <tr>
                                             <td>{{ $stock->reference }}</td>
@@ -160,7 +160,13 @@
                                             <td>{{ $stock->final }}</td>
                                         </tr>
                                     @endisset
-                                @endforeach
+                                    @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            Aucun résultat à afficher!
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

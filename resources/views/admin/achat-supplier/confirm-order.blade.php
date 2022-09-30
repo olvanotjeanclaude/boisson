@@ -18,7 +18,7 @@
                         le fournisseur ne peut pas être vide
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-sm-6">
                     <div class="form-group">
                         <label class="text-bold-400 text-dark" for="reference_facture">
                             Reference De Facture
@@ -30,7 +30,7 @@
                             </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-sm-6">
                     <div class="form-group">
                         <label class="text-bold-400 text-dark" for="date">
                             Date

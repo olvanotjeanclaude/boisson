@@ -47,6 +47,8 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
     // Dashboard
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
+    Route::get("/dashboard/detail", [\App\Http\Controllers\admin\AdminController::class, "detail"])->name("dashboard.detail");
+        
     Route::group(["middleware" => "can:view dashboard"], function () {
         Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");
         Route::get("dashboard/facture/telecharger", [\App\Http\Controllers\admin\AdminController::class, "download"])->name("dashboard.download");
@@ -112,15 +114,23 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::post("get-customers", [\App\Http\Controllers\admin\customer\CustomerController::class, "getData"])->name("customer.getData");
 
     // Sortie de stock
+    // sample out stock
     Route::resource("sorti-stocks", App\Http\Controllers\admin\article\StockOutController::class);
-    Route::get("sorti-stocks/{invoice_number}/imprimer", [App\Http\Controllers\admin\article\StockOutController::class, "print"])
-        ->name("sorti-stocks.print");
-    Route::get("sorti-stocks/{invoice_number}/telecharger", [App\Http\Controllers\admin\article\StockOutController::class, "download"])
-        ->name("sorti-stocks.download");
-    Route::post("sorti-stocks/{invoice_number}/valid", [App\Http\Controllers\admin\article\StockOutController::class, "validStockOut"])
-        ->name("sorti-stocks.validStockOut");
-    Route::post("sorti-stocks/{invoice_number}/annuler", [App\Http\Controllers\admin\article\StockOutController::class, "cancel"])
-        ->name("sorti-stocks.cancel");
+    Route::group(["prefix" => "sorti-stocks/{invoice_number}", "as" => "sorti-stocks."], function () {
+        Route::get("/imprimer", [App\Http\Controllers\admin\article\StockOutController::class, "print"])->name("print");
+        Route::get("/telecharger", [App\Http\Controllers\admin\article\StockOutController::class, "download"])->name("download");
+        Route::post("/valid", [App\Http\Controllers\admin\article\StockOutController::class, "validStockOut"])->name("validStockOut");
+        Route::post("/annuler", [App\Http\Controllers\admin\article\StockOutController::class, "cancel"])->name("cancel");
+    });
+
+    // Back To Supplier
+    // Route::resource("retour-fournisseurs", App\Http\Controllers\admin\article\BackToSupplierController::class);
+    // Route::group(["prefix" => "retour-fournisseurs/{invoice_number}", "as" => "retour-fournisseurs."], function () {
+    //     Route::get("/imprimer", [App\Http\Controllers\admin\article\BackToSupplierController::class, "print"])->name("print");
+    //     Route::get("/telecharger", [App\Http\Controllers\admin\article\BackToSupplierController::class, "download"])->name("download");
+    //     Route::post("/valid", [App\Http\Controllers\admin\article\BackToSupplierController::class, "validStockOut"])->name("validStockOut");
+    //     Route::post("/annuler", [App\Http\Controllers\admin\article\BackToSupplierController::class, "cancel"])->name("cancel");
+    // });
 
     // Mot de passe
     Route::get("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "index"])->name("password.index");

@@ -1,26 +1,30 @@
-<div class="card">
+<div class="card d-non">
     <div class="card-header bg-dark">
         <form action="{{ route('admin.index') }}" method="GET">
-            <input type="hidden" value="{{ $between[0] }}" class="form-control" name="start_date">
-            <input type="hidden" value="{{ $between[1] }}" class="form-control" name="end_date">
             <div class="row">
-                <div class="col-6">
+                <div class="col-6  col-xl-2">
+                    <input type="date" value="{{ $between[0] }}" class="form-control h-100 bg-white" name="start_date">
+                </div>
+                <div class="col-6  col-xl-2">
+                    <input type="date" value="{{ $between[1] }}" class="form-control h-100 bg-white" name="end_date">
+                </div>
+                <div class="mt-1 mt-lg-0 col-sm-7 col-md-4 col-xl-3">
                     <input type="text" value="{{ request()->get('chercher') }}" name="chercher"
                         placeholder="Reference Ou Designation..." style="" class="bg-white form-control">
                 </div>
-                <div class="col">
-                    <select name="filter_type" class="bg-white form-control" id="filterArticle">
+                <div class="mt-1 mt-lg-0 col-sm-5 col-md-4  col-xl-2">
+                    <select name="filter_type" class="bg-white form-control h-100" id="filterArticle">
                         @foreach (\App\helper\Filter::TYPES as $value)
-                        @if ($value=="sorti")
-                            @continue
-                        @endif
+                            @if ($value == 'sorti')
+                                @continue
+                            @endif
                             <option @if ($value == request()->get('filter_type')) selected @endif value="{{ $value }}">
                                 {{ Str::title($value) }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col">
-                    <div class="d-flex mt-1 mt-sm-0">
+                <div class="mt-1 mt-lg-0 col-12 col-md-4  col-xl-3">
+                    <div class="d-flex justify-content-end mt-1 mt-sm-0">
                         <button type="submit" class="btn btn-secondary">Filtrer</button>
                         <a target="_blink"
                             href="{{ route('admin.dashboard.printReport', [
@@ -39,7 +43,7 @@
     </div>
     <div class="card-body">
         @if (count($solds))
-            <div class=" overflow-auto" style="max-height: 270px">
+            <div class=" overflow-auto" style="max-height: 530px">
                 <div class="table-responsive">
                     <table class="table table-striped small">
                         <thead>

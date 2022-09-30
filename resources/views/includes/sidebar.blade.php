@@ -132,9 +132,15 @@
                     <li>
                         <a class="menu-item" href="{{route('admin.sorti-stocks.index')}}">
                             <i class="material-icons"></i>
-                            <span>Sorti Stocks</span>
+                            <span>Sortie Stocks</span>
                         </a>
                     </li>
+                    {{-- <li>
+                        <a class="menu-item" href="{{route('admin.retour-fournisseurs.index')}}">
+                            <i class="material-icons"></i>
+                            <span>Retour Fournisseurs</span>
+                        </a>
+                    </li> --}}
                 </ul>
             </li>
 

@@ -9,7 +9,6 @@ use App\Models\Emballage;
 use Illuminate\Http\Request;
 use App\Articles\StockRequest;
 use App\Message\CustomMessage;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AchatSupplierValidation;
 use App\Printing\StockIn;

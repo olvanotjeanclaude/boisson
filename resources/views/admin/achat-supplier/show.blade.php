@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Facture | {{ $entry->invoice_number }}
+Bon D'Entrée | {{ $entry->invoice_number }}
 @endsection
 
 @section('page-css')
@@ -43,17 +43,24 @@
                             <i class="la la-print"></i>
                             Imprimer
                         </a>
+                       
+                        <a href="{{ route('admin.achat-fournisseurs.download', $entry->invoice_number) }}"
+                            class="btn btn-dark btn-lg ml-1 mb-2">
+                            <i class="la la-download"></i>
+                            Telecharger
+                        </a>
 
-                        @can('cancel-doc-vente')
-                            <form method="POST" action="{{ route('admin.achat-fournisseurs.cancel', $entry->invoice_number) }}">
-                                @method('delete')
-                                @csrf
-                                <button class="ml-2 btn btn-danger btn-lg  mb-2">
-                                    <i class="la la-trash"></i>
-                                    Supprimer
-                                </button>
-                                </a>
-                            @endcan
+                        <form method="POST"
+                            action="{{ route('admin.achat-fournisseurs.cancel', $entry->invoice_number) }}">
+                            @method('delete')
+                            @csrf
+                            <button class="ml-1 btn btn-danger btn-lg  mb-2">
+                                <i class="la la-trash"></i>
+                                Supprimer
+                            </button>
+                            </a>
+                        </form>
+
                     </div>
                 </div>
 

@@ -62,6 +62,14 @@ class Stock extends Model
     {
         return $q->where("status", self::STATUS["pending"])
             ->where("action_type", self::ACTION_TYPES["new_stock"])
+
+            ->where("user_id", auth()->id())->get();
+    }
+
+    public function scopeBackSupplierPreInvoices($q)
+    {
+        return $q->where("status", self::STATUS["pending"])
+            ->where("action_type", self::ACTION_TYPES["out_to_supplier"])
             ->where("user_id", auth()->id())->get();
     }
 
@@ -83,7 +91,7 @@ class Stock extends Model
         } else {
             $quantity = 0;
         }
-        
+
         if ($this->stockable) {
             $sub_amount = $price * $quantity;
         }
@@ -180,7 +188,7 @@ class Stock extends Model
                 $article = null;
 
                 if ($first) {
-                    $article = Stock::getArticleByReference($first->article_reference);
+                    $article = self::getArticleByReference($first->article_reference);
                     if ($article) {
                         $response = (object)[
                             "reference" =>  $article->reference,
@@ -240,5 +248,33 @@ class Stock extends Model
             ->where("action_type", self::ACTION_TYPES["new_stock"])
             ->get();
         return $entries;
+    }
+
+    public static function CheckStock($articleRef, $quantity)
+    {
+        $errors = null;
+
+        $article = self::getArticleByReference($articleRef);
+
+        if ($article && $quantity > 0) {
+            $stock = self::EntriesOuts();
+            $filter = $stock->where("reference", $article->reference)->first();
+
+            if ($filter) {
+                if ($quantity > $filter->final) {
+                    $errors = "Article $article->designation insuffisant!";
+                }
+            } else {
+                $errors = ucfirst($article->designation) . " n'existe pas dans le stock";
+            }
+        } else {
+            $errors = "L'article n'existe pas";
+        }
+
+        return [
+            "errors" => $errors,
+            "quantity" => $quantity,
+            "final" => ($filter->final ?? 0) - $quantity
+        ];
     }
 }

@@ -41,10 +41,16 @@ class AdminController extends Controller
 
     public function printReport(Dashboard $dashboard)
     {
-        // return view('admin.dashboard.invoice',  $this->getDocumentData($dashboard));
         $pdf = Pdf::loadView('admin.dashboard.invoice',  $this->getDocumentData($dashboard));
 
         return $pdf->stream();
+    }
+
+    public function download(Dashboard $dashboard)
+    {
+        $pdf = Pdf::loadView('admin.dashboard.invoice',  $this->getDocumentData($dashboard));
+
+        return $pdf->download("dashboard.pdf");
     }
 
     private function getDocumentData(Dashboard $dashboard)
@@ -68,5 +74,13 @@ class AdminController extends Controller
             "between" => $between,
             "recaps" => $recaps,
         ];
+    }
+
+    public function detail(Dashboard $dashboard){
+        $data = $this->getDocumentData($dashboard);
+     
+        return view("admin.dashboard.detail",[
+            ...$this->getDocumentData($dashboard)
+        ]);
     }
 }

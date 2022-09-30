@@ -5,7 +5,7 @@
         <br>
         @yield('header')
         <br>
-        <table id="invoiceTableTemplate">
+        <table id="invoiceTableTemplate"  class="mx-auto">
             <thead>
                 <tr>
                     <th style="width: 150px">Désignation</th>
