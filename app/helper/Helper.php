@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -116,4 +117,21 @@ function currentUser()
     }
 
     return null;
+}
+
+function validDate($date)
+{
+    $dateSeparator = str_replace(["/", ".", ":", " "], "-", $date);
+    $date = explode("-", $dateSeparator);
+
+    $valideDate = null;
+    $day = $date[0] ?? null;
+    $month = $date[1] ?? null;
+    $year = $date[2] ?? null;
+
+    if (is_numeric($day) && is_numeric($month) && is_numeric($year)) {
+        $valideDate = "$year-$month-$day";
+    }
+
+    return is_null($valideDate) ? null : $valideDate;
 }

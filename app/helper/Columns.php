@@ -52,4 +52,12 @@ class Columns
         $columns[] = $newCol;
         return $columns;
     }
+
+    public static function setButton($label, $url, $icon): string
+    {
+        return "<a href='$url' class='dropdown-item'>
+                    <i class='la la-$icon'></i>
+                    $label
+                </a>";
+    }
 }

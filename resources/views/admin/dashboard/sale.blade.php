@@ -1,12 +1,13 @@
 <div class="card d-non">
     <div class="card-header bg-dark">
-        <form action="{{ route('admin.index') }}" method="GET">
+        <form action="{{ route('admin.dashboard.detail') }}" method="GET">
             <div class="row">
                 <div class="col-6  col-xl-2">
                     <input type="date" value="{{ $between[0] }}" class="form-control h-100 bg-white" name="start_date">
                 </div>
                 <div class="col-6  col-xl-2">
-                    <input type="date" value="{{ $between[1] }}" class="form-control h-100 bg-white" name="end_date">
+                    <input type="date" value="{{ $between[1] }}" class="form-control h-100 bg-white"
+                        name="end_date">
                 </div>
                 <div class="mt-1 mt-lg-0 col-sm-7 col-md-4 col-xl-3">
                     <input type="text" value="{{ request()->get('chercher') }}" name="chercher"
@@ -43,15 +44,15 @@
     </div>
     <div class="card-body">
         @if (count($solds))
-            <div class=" overflow-auto" style="max-height: 530px">
+            <div class=" overflow-auto" style="max-height: 475px">
                 <div class="table-responsive">
                     <table class="table table-striped small">
                         <thead>
                             <tr>
                                 <th>Désignation</th>
-                                <th>Qté</th>
-                                <th>PU</th>
-                                <th>Total</th>
+                                <th>Quantité</th>
+                                <th>Prix Unitaire</th>
+                                <th>Montant</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,7 +65,7 @@
                                         {{ $data->quantity }}
                                     </td>
                                     <td>
-                                        {{ round($data->pricing) }}
+                                        {{ formatPrice($data->pricing) }}
                                     </td>
                                     <td>
                                         {{ formatPrice($data->sub_amount) }}
@@ -73,36 +74,12 @@
                             @empty
                             @endforelse
                         </tbody>
-                        @if (count($solds))
-                            <tfoot>
-                                <tr>
-                                    <td colspan="1">
-                                        <h5 style="margin-top: 8px" class="text-right">Total:</h5>
-                                    </td>
-                                    <td colspan="3">
-                                        <h5 style="margin-top: 8px">{{ formatPrice($recettes['sum_amount']) }}</h5>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        @endif
                     </table>
                 </div>
-                {{-- @if (count($solds) == 'ok')
-                @include('layouts.invoice_table', [
-                    'invoices' => [
-                        'datas' => $solds,
-                        'type' => 'saleable',
-                    ],
-                    'amount' => $recettes['sum_amount'],
-                    'rest' => $recettes['sum_rest'],
-                    'checkout' => $recettes['sum_checkout'],
-                    'paid' => $recettes['sum_paid'],
-                    'caisse' => $recettes['sum_caisse'],
-                ])
-            @else
-                Aucune donnée à afficher
-            @endif --}}
             </div>
+            <h5 style="margin-top: 8px" class="text-right">Total: {{ formatPrice($recettes['sum_amount']) }}</h5>
+            <h5 style="margin-top: 8px" class="text-right">Total En Fmg: {{ formatPrice($recettes['sum_amount'] * 5,"Fmg") }}
+            </h5>
         @else
             Aucune donnée à afficher
         @endif

@@ -145,7 +145,7 @@
                 const datatable = table.DataTable({
                     serverSide: true,
                     processing: true,
-                    deferRender: true,
+                    // deferRender: true,
                     lengthMenu: [
                         [10, 25, 50, -1],
                         [10, 25, 50, "Tout"]
@@ -155,6 +155,7 @@
                         type: method,
                         data: function(params) {
                             params._token = "{{ csrf_token() }}";
+                            params.searchInput = $("input[type='search']").val();
                         }
                     },
                     columns: columns,
@@ -199,7 +200,7 @@
                         "sEmptyTable": "Aucune donnée disponible dans le tableau",
                         "sInfo": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
                         "sInfoEmpty": "Aucun enregistrement",
-                        "sInfoFiltered": "(_MAX_ trouvé)",
+                        "sInfoFiltered": "",
                         "sInfoPostFix": "",
                         "sInfoThousands": ".",
                         "sLengthMenu": "Afficher _MENU_ entrées",
@@ -227,10 +228,7 @@
                     },
                 });
 
-                $("input#search").keyup(function() {
-                    input = $(this).val();
-                    console.log(input);
-                });
+                return datatable;
             }
         }
     </script>

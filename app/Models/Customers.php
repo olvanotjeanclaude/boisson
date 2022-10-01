@@ -45,4 +45,8 @@ class Customers extends Model
     public function getIdentificationAttribute($value){
         return strtoupper($value);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

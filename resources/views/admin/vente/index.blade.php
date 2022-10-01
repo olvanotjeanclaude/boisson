@@ -22,7 +22,7 @@
             'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => currentUser()->can("make sale"),
+            'show' => currentUser()->can('make sale'),
         ],
     ])
 @endsection
@@ -63,28 +63,16 @@
                                 </span>
                                 toutes les factures
                             </a> --}}
-                            <div class="d-none">
-                                <span class="dropdown">
-                                    <button id="btnSearchDrop1" type="button" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="true"
-                                        class="btn btn-warning btn-sm dropdown-toggle dropdown-menu-right"><i
-                                            class="ft-download-cloud white"></i></button>
-                                    <span aria-labelledby="btnSearchDrop1" class="dropdown-menu mt-1 dropdown-menu-right">
-                                        <a href="#" class="dropdown-item"><i class="la la-calendar"></i> Due Date</a>
-                                        <a href="#" class="dropdown-item"><i class="la la-random"></i> Priority </a>
-                                        <a href="#" class="dropdown-item"><i class="la la-bar-chart"></i> Balance
-                                            Due</a>
-                                        <a href="#" class="dropdown-item"><i class="la la-user"></i> Assign to</a>
-                                    </span>
-                                </span>
-                                <button class="btn btn-success btn-sm"><i class="ft-settings white"></i></button>
-                            </div>
                         </div>
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <!-- Invoices List table -->
-                             <div class="table-responsive">
+                            <div id="filterInfo"></div>
+                            @include('includes.datatable.table', [
+                                'dataUrl' => route('admin.ventes.ajaxPostData'),
+                            ])
+                            <div class="table-responsive d-none">
                                 <table
                                     class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
                                     <thead class="bg-light">
@@ -98,61 +86,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($docSales as $sale)
-                                            <tr id="row_{{ $sale->number }}">
-                                                <td>{!! $sale->status_html !!}</td>
-                                                <td>{{ $sale->number }}</td>
-                                                <td>{{ Str::upper($sale->customer->identification) }}</td>
-                                                <td>{{ $sale->customer->cl_code }}</td>
-                                                <td>{{ format_date_time($sale->received_at) }}</td>
 
-                                                <td>
-                                                    <span class="dropdown">
-                                                        <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="true"
-                                                            class="btn btn-primary dropdown-toggle dropdown-menu-right"><i
-                                                                class="ft-settings"></i></button>
-                                                        <span aria-labelledby="btnSearchDrop2"
-                                                            class="dropdown-menu mt-1 dropdown-menu-right">
-                                                            {{-- <a href="{{ route('admin.achat-produits.show', $invoice['id']) }}"
-                                                            class="dropdown-item"><i
-                                                                class="la la-eye"></i>Voir</a> --}}
-                                                            {{-- <a href="{{ route('admin.achat-produits.edit', $sale['id']) }}"
-                                                            class="dropdown-item"><i class="la la-pencil"></i>
-                                                            Editer</a> --}}
-                                                            <a href="{{ route('admin.print.sale.download', $sale->number) }}"
-                                                                class="dropdown-item">
-                                                                <i class="la la-download"></i>
-                                                                Telecharger
-                                                            </a>
-                                                            <a href="{{ route('admin.print.sale', $sale->number) }}"
-                                                                class="dropdown-item">
-                                                                <i class="la la-print"></i>
-                                                                Factures
-                                                            </a>
-                                                            @can('make payment')
-                                                                <a href="{{ route('admin.sale.paymentForm', $sale->number) }}"
-                                                                    class="dropdown-item">
-                                                                    <i class="la la-credit-card"></i>
-                                                                    Payment
-                                                                </a>
-                                                            @endcan
-
-                                                            {{-- @can('delete', $sale)
-                                                                <a data-id="{{ $sale['number'] }}"
-                                                                    data-url="{{ route('admin.ventes.destroy', ['vente' => $sale['number'], 'invoice' => true]) }}"
-                                                                    class="dropdown-item delete-btn"><i class="la la-trash"></i>
-                                                                    Supprimer
-                                                                </a>
-                                                            @endcan --}}
-
-                                                        </span>
-                                                    </span>
-                                                </td>
-
-                                            </tr>
-                                        @empty
-                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -172,6 +106,8 @@
 
 @section('script')
     <script>
-        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
+        $(document).ready(function() {
+            const datatable = loadDatatableAjax();
+        })
     </script>
 @endsection

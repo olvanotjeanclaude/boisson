@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\admin\sale;
 
+use DateTime;
 use App\Models\Sale;
 use App\Models\Stock;
+use App\helper\Columns;
 use App\helper\Invoice;
 use App\Models\Product;
 use App\Models\Articles;
@@ -17,26 +19,104 @@ use App\Message\CustomMessage;
 use App\Articles\FormatRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VenteValidation;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Yajra\DataTables\Facades\DataTables;
 
 class SaleController extends Controller
 {
     public function index()
     {
-        $docSales = DocumentVente::has("customer")
-            ->has("sales")
-            ->when(getUserPermission() == "facturation", function ($q) {
-                return $q->where("user_id", auth()->user()->id);
-            })
-            ->groupBy("number")
-            ->orderBy("id", "desc")->get();
+        $columns = json_encode($this->getFormatedCols());
 
-        return view("admin.vente.index", compact("docSales"));
+        return view("admin.vente.index", compact("columns"));
+    }
+    public function ajaxPostData(Request $request)
+    {
+        $keyword = strtolower($request->searchInput);
+        $keyword = trim($keyword);
+        $valideDate = validDate($keyword);
+
+        $docSales = DocumentVente::with("customer")
+            ->has("customer")
+            ->whereHas("customer", function ($query) use ($keyword) {
+                // $isCustomerCode = substr($keyword, 0, 2) == "cl";
+                // $customerCode = substr($keyword, 2);
+                // if ($isCustomerCode) {
+                //     return $query->where("code", $customerCode);
+                // }
+            });
+        // dd($valideDate);
+        if ($valideDate) {
+            $docSales= $docSales->whereDate("received_at", $valideDate);
+        }
+
+        $docSales = $docSales->when(getUserPermission() == "facturation", function ($q) {
+            return $q->where("user_id", auth()->user()->id);
+        })
+            // ->groupBy("number")
+            ->orderBy("id", "desc");
+        // ->get();
+
+        if ($request->ajax()) {
+            return DataTables::of($docSales)
+                ->setRowId(fn ($doc) => "row_$doc->id")
+                ->addColumn("status", fn ($doc) => $doc->status_html)
+                ->addColumn("numero", fn ($doc) => $doc->number)
+                ->addColumn("client", fn ($doc) => $doc->customer ? strtoupper($doc->customer->identification) : '-')
+                ->addColumn("code_du_client", fn ($doc) => $doc->customer ? strtoupper($doc->customer->cl_code) : '-')
+                ->addColumn("date", fn ($doc) =>   format_date_time($doc->received_at))
+                ->addColumn('action', function ($doc) {
+                    $actionBtn = '<span class="dropdown">
+                                    <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="true"
+                                        class="btn btn-primary dropdown-toggle dropdown-menu-right">
+                                        <i class="ft-settings"></i>
+                                    </button>
+                                    <span aria-labelledby="btnSearchDrop2" class="dropdown-menu mt-1 dropdown-menu-right">
+                    ';
+                    $downloadRoute =  route('admin.print.sale.download', $doc->number);
+                    $printRoute = route('admin.print.sale', $doc->number);
+                    $paymentRoute = route('admin.sale.paymentForm', $doc->number);
+                    $actionBtn .= Columns::setButton("Telecharger", $downloadRoute, "download");
+                    $actionBtn .= Columns::setButton("Voir", $printRoute, "eye");
+
+                    if (currentUser()->can("make payment")) {
+                        $actionBtn .= Columns::setButton("Payment", $paymentRoute, "credit-card");
+                    }
+                    $actionBtn .= "</span>
+                                </span>";
+
+                    return $actionBtn;
+                })
+                ->rawColumns(["status", "action"])
+                ->make(true);
+        }
+    }
+
+
+
+    private function getFormatedCols(): array
+    {
+        return [
+            ["data" => "status", "name" => "status"],
+            ["data" => "numero", "name" => "number"],
+            ["data" => "client", "name" => "customer.identification"],
+            ["data" => "code_du_client", "name" => "customer.code"],
+            ["data" => "date", "name" => "date"],
+            ["data" => "action", "name" => "action"],
+        ];
+
+        $columns = Columns::format_columns($this->getColumns());
+        $actionBtn = Columns::sampleAction();
+
+        $columns[] = $actionBtn;
+
+        return $columns;
     }
 
     public function create()
     {
-        abort_if(!currentUser()->can("make sale"),403);
+        abort_if(!currentUser()->can("make sale"), 403);
         $customers = Customers::orderBy("identification", "asc")->get();
 
         $articles = Product::orderBy("designation")->get();
@@ -188,7 +268,7 @@ class SaleController extends Controller
         if ($article && $quantity > 0) {
             $stock = Stock::EntriesOuts();
             $filter = $stock->where("reference", $article->reference)->first();
-          
+
             if ($filter) {
                 if ($quantity > $filter->final) {
                     $errors = "Article $article->designation insuffisant!";
