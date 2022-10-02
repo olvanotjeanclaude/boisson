@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Facture | @yield('title') </title>
     @include('includes.invoice-style')
+    @yield('css')
     <script>
         if (document.location.search.match(/type=embed/gi)) {
             window.parent.postMessage("resize", "*");

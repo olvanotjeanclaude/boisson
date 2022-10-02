@@ -43,7 +43,7 @@
     <section id="material-datatables">
         <div class="card mb-0">
             <div class="card-header">
-                <h3 class="card-title">Sorti De Stocks</h3>
+                <h3 class="card-title">Bon de sortie</h3>
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
                     <button type="button" id="deleteIcheckBtn" data-target="#deleteAllModal" data-toggle="modal"
@@ -72,7 +72,7 @@
             <div class="card-content collapse show">
                 <div class="card-body mt-2">
                     <div class="table-responsive">
-                        <table style="width: 100%" class="table table-hover table-sm table-striped">
+                        <table style="width: 100%" class="table datatable table-hover table-sm table-striped">
                             <thead class="bg-light">
                                 <tr>
                                     <th>Status</th>

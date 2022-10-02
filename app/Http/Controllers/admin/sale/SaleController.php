@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\admin\sale;
 
-use DateTime;
 use App\Models\Sale;
 use App\Models\Stock;
 use App\helper\Columns;
@@ -32,32 +31,24 @@ class SaleController extends Controller
     }
     public function ajaxPostData(Request $request)
     {
-        $keyword = strtolower($request->searchInput);
-        $keyword = trim($keyword);
-        $valideDate = validDate($keyword);
-
-        $docSales = DocumentVente::with("customer")
-            ->has("customer")
-            ->whereHas("customer", function ($query) use ($keyword) {
-                // $isCustomerCode = substr($keyword, 0, 2) == "cl";
-                // $customerCode = substr($keyword, 2);
-                // if ($isCustomerCode) {
-                //     return $query->where("code", $customerCode);
-                // }
-            });
-        // dd($valideDate);
-        if ($valideDate) {
-            $docSales= $docSales->whereDate("received_at", $valideDate);
-        }
-
-        $docSales = $docSales->when(getUserPermission() == "facturation", function ($q) {
-            return $q->where("user_id", auth()->user()->id);
-        })
-            // ->groupBy("number")
-            ->orderBy("id", "desc");
-        // ->get();
-
         if ($request->ajax()) {
+            $keyword = strtolower($request->searchInput);
+            $keyword = trim($keyword);
+            $valideDate = validDate($keyword);
+
+            $docSales = DocumentVente::with("customer")
+                ->has("customer");
+
+            if ($valideDate) {
+                $docSales = $docSales->whereDate("received_at", $valideDate);
+            }
+
+            $docSales = $docSales->when(getUserPermission() == "facturation", function ($q) {
+                return $q->where("user_id", auth()->user()->id);
+            })
+                // ->groupBy("number")
+                ->orderBy("id", "desc");
+            // ->get();
             return DataTables::of($docSales)
                 ->setRowId(fn ($doc) => "row_$doc->id")
                 ->addColumn("status", fn ($doc) => $doc->status_html)
@@ -75,10 +66,11 @@ class SaleController extends Controller
                                     <span aria-labelledby="btnSearchDrop2" class="dropdown-menu mt-1 dropdown-menu-right">
                     ';
                     $downloadRoute =  route('admin.print.sale.download', $doc->number);
-                    $printRoute = route('admin.print.sale', $doc->number);
+                    $printRoute = route('admin.print.sale.preview', $doc->number);
                     $paymentRoute = route('admin.sale.paymentForm', $doc->number);
+
                     $actionBtn .= Columns::setButton("Telecharger", $downloadRoute, "download");
-                    $actionBtn .= Columns::setButton("Voir", $printRoute, "eye");
+                    $actionBtn .= Columns::setButton("Imprimer", $printRoute, "print");
 
                     if (currentUser()->can("make payment")) {
                         $actionBtn .= Columns::setButton("Payment", $paymentRoute, "credit-card");
@@ -105,13 +97,6 @@ class SaleController extends Controller
             ["data" => "date", "name" => "date"],
             ["data" => "action", "name" => "action"],
         ];
-
-        $columns = Columns::format_columns($this->getColumns());
-        $actionBtn = Columns::sampleAction();
-
-        $columns[] = $actionBtn;
-
-        return $columns;
     }
 
     public function create()

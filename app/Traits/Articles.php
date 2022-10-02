@@ -7,6 +7,7 @@ use App\Models\Package;
 use App\Models\Product;
 use App\Models\Emballage;
 use App\Models\Stock;
+use App\Models\User;
 
 trait Articles
 {
@@ -98,5 +99,9 @@ trait Articles
                 ->orWhere("reference","LIKE","%$keyword%");
             }
         );
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

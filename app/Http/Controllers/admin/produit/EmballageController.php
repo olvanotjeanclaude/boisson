@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin\produit;
 
 use App\Models\Stock;
+use App\helper\Columns;
 use App\Models\Category;
 use App\Models\Emballage;
 use App\Models\Consignation;
@@ -11,6 +12,7 @@ use App\Message\CustomMessage;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Traits\ArticlesAuthorizable;
+use Yajra\DataTables\Facades\DataTables;
 
 class EmballageController extends Controller
 {
@@ -19,7 +21,56 @@ class EmballageController extends Controller
     public function index()
     {
         $consignations = Emballage::orderBy("id", "desc")->get();
-        return view("admin.approvisionnement.consignation.index", compact("consignations"));
+        $columns = json_encode($this->getColumns());
+        // return redirect()->route("admin.approvisionnement.emballages.ajaxGetData");
+        return view("admin.approvisionnement.consignation.index", compact(
+            "consignations",
+            "columns"
+        ));
+    }
+
+    public function ajaxPostData(Request $request)
+    {
+        // if ($request->ajax()) {
+        $emballages = Emballage::orderBy("id", "desc");
+
+        return DataTables::of($emballages)
+            ->setRowId(fn ($emballage) => "row_$emballage->id")
+            ->addColumn("price", fn ($emballage) => formatPrice($emballage->price))
+            ->addColumn("buying_price", fn ($emballage) => formatPrice($emballage->buying_price))
+            ->addColumn('action', function ($emballage) {
+                $actionBtns = [];
+                if (currentUser()->can("update article")) {
+                    $editRoute =  route('admin.approvisionnement.emballages.edit', $emballage->id);
+                    $deleteRoute =  route('admin.approvisionnement.emballages.destroy', $emballage->id);
+
+                    return currentUser()->can("update article") ?
+                        '<a href="' . $editRoute . '" class="btn btn-info">
+                                Editer
+                            </a>
+                           <button class="btn btn-danger delete-btn"
+                              data-url="' . $deleteRoute . '"
+                              data-id="' . $emballage->id . '">
+                              Supprimer
+                            </button>' : "";
+                }
+
+                return Columns::getActionButtons($actionBtns);
+            })
+            ->rawColumns(["action"])
+            ->make(true);
+        // }
+    }
+
+    private function getColumns(): array
+    {
+        return [
+            ["data" => "reference", "name" => "reference"],
+            ["data" => "designation", "name" => "designation"],
+            ["data" => "price", "name" => "price", "title" => "Prix"],
+            ["data" => "buying_price", "name" => "buying_price", "title" => "prix d'achat"],
+            ["data" => "action", "name" => "action", "visible" => currentUser()->can("update article")],
+        ];
     }
 
     public function create()
@@ -92,7 +143,7 @@ class EmballageController extends Controller
     public function destroy(Emballage $emballage)
     {
         $result = [];
-
+      
         if ($emballage->delete()) {
             $result["success"] = CustomMessage::Delete("L'article");
             $result["type"] = "success";

@@ -10,9 +10,9 @@
 
 @section('content-header')
     @include('includes.content-header', [
-        'page' => 'Sorti De Stock',
+        'page' => 'Bon de sortie',
         'breadcrumbs' => [
-            ['text' => 'Sorti De Stock', 'link' => route('admin.sorti-stocks.index')],
+            ['text' => 'Bon de sortie', 'link' => route('admin.sorti-stocks.index')],
             ['text' => 'Validation De Sortie', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
@@ -34,8 +34,7 @@
         <div class="col-md-10">
             <div>
                 <div class="row">
-                    <div class="col-12 d-flex">
-
+                    <div class="col-12 d-flex flex-wrap">
                         <a target="_blank" href="{{ route('admin.sorti-stocks.print', $stock->invoice_number) }}"
                             class="btn btn-info btn-lg  mb-2">
                             <i class="la la-print"></i>

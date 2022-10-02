@@ -15,7 +15,7 @@
         font-size: 1rem;
         max-width: 80mm;
         border-collapse: collapse;
-        margin-left: 7px;
+        margin-left: 15px;
         text-transform: uppercase;
         /* background: #000; */
         /* background: red; */

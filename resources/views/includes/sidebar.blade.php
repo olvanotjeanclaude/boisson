@@ -81,7 +81,7 @@
             <li class=" nav-item">
                 <a href="#">
                     <i class="material-icons">content_paste</i>
-                    <span class="menu-title">Catalogue</span>
+                    <span class="menu-title">Structure</span>
                 </a>
                 <ul class="menu-content">
                     <li class="nav-item">
@@ -121,18 +121,18 @@
             <li class=" nav-item">
                 <a href="#">
                     <i class="material-icons">content_paste</i>
-                    <span class="menu-title">Approvisionnement </span>
+                    <span class="menu-title">Documents interne </span>
                 </a>
                 <ul class="menu-content">
                     <li class="nav-item">
                         <a href="{{route('admin.achat-fournisseurs.index')}}">
-                            <span class="menu-title">bon d'entrées</span>
+                            <span class="menu-title">bon d'entrée</span>
                         </a>
                     </li>
                     <li>
                         <a class="menu-item" href="{{route('admin.sorti-stocks.index')}}">
                             <i class="material-icons"></i>
-                            <span>Sortie Stocks</span>
+                            <span>Bon de sortie</span>
                         </a>
                     </li>
                     {{-- <li>

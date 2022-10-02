@@ -8,7 +8,7 @@
 
 
 @section('title')
-    Liste De ventes
+    Liste De vente
 @endsection
 
 @section('content-header')
@@ -45,7 +45,7 @@
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h4 class="card-title"> Liste De ventes</h4>
+                        <h4 class="card-title"> Liste De vente</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <button type="button" id="deleteIcheckBtn" data-target="#deleteAllModal" data-toggle="modal"
@@ -72,24 +72,6 @@
                             @include('includes.datatable.table', [
                                 'dataUrl' => route('admin.ventes.ajaxPostData'),
                             ])
-                            <div class="table-responsive d-none">
-                                <table
-                                    class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Numero</th>
-                                            <th>Client</th>
-                                            <th>Code du Client</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-                            </div>
                             <!--/ Invoices table -->
                         </div>
                     </div>

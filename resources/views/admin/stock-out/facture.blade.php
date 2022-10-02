@@ -1,11 +1,11 @@
 @extends('layouts.invoice')
 
 @section('title')
-    Bon De Sorti No {{ $stock->invoice_number }}
+   Bon de sortie No {{ $stock->invoice_number }}
 @endsection
 
 @section('invoice-title')
-    Bon De Sorti
+   Bon de sortie
 @endsection
 
 @section('header')

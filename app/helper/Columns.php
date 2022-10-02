@@ -53,11 +53,50 @@ class Columns
         return $columns;
     }
 
-    public static function setButton($label, $url, $icon): string
+    public static function setButton($label, $url, $icon, $data = null): string
     {
-        return "<a href='$url' class='dropdown-item'>
-                    <i class='la la-$icon'></i>
-                    $label
-                </a>";
+        $html = "";
+        $attributes = $icon == "print" ? "target='_blank'" : "";
+
+        if ($label == "defaultDelete" && $data) {
+            $html = '
+            <button class="dropdown-item" data-id="' . $data["id"] . '" data-url="' . $url . '"
+                     class="btn ml-1 btn-sm  delete-btn">
+                     <i class="la la-' . $icon . '"></i>
+                     Supprimer
+                 </button>
+            ';
+        } else {
+            $html = "<a $attributes href='$url' class='dropdown-item'>
+                        <i class='la la-$icon'></i>
+                        $label
+                    </a>";
+        }
+
+        return $html;
+    }
+
+    public static function getActionButtons(array $buttons)
+    {
+        $actionBtn = "";
+        if (count($buttons)) {
+            $actionBtn = '<span class="dropdown">
+            <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="true"
+                class="btn btn-primary dropdown-toggle dropdown-menu-right">
+                <i class="ft-settings"></i>
+            </button>
+            <span aria-labelledby="btnSearchDrop2" class="dropdown-menu mt-1 dropdown-menu-right">
+    ';
+
+            foreach ($buttons as $button) {
+                $actionBtn .= $button;
+            }
+
+            $actionBtn .= "</span>
+        </span>";
+        }
+
+        return $actionBtn;
     }
 }

@@ -24,7 +24,7 @@
             <div class="card-body bg-danger">
                 <h4 class="text-white">Sortie De Caisse</h4>
                 <div class="badge badge-pill badge-white  badge-square">
-                    <h3 class="text-white">{{ formatPrice($solds->sum("sub_amount")) }}
+                    <h3 class="text-white">{{ formatPrice($solds->sum("sum_checkout")) }}
                     </h3>
                 </div>
             </div>

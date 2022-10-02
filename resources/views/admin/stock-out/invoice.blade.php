@@ -4,7 +4,7 @@
     Prix
 @endsection
 @section('invoice-title')
-    Bon De Sorti
+    Bon de sortie
 @endsection
 @section('header')
     <div class="d-flex flex-column">
@@ -45,5 +45,5 @@
 
 @section('footer')
     <p class="m-0"><b>Total : </b>{{ formatPrice(abs($amount), 'Ariary') }}</p>
-    <p class="m-0"><b>Total En Fmg: </b>{{ formatPrice(abs($amount*5), 'Fmg') }}</p>
+    <p class="m-0"><b>Total En Fmg: </b>{{ formatPrice(abs($amount * 5), 'Fmg') }}</p>
 @endsection

@@ -16,7 +16,7 @@
             ['text' => 'Liste', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Nouveau Achat Fournisseur',
+            'text' => 'Nouveau Achat',
             'link' => route('admin.achat-fournisseurs.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,
@@ -123,6 +123,6 @@
 
 @section('script')
     <script>
-        loadDatatable();
+         loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
     </script>
 @endsection

@@ -65,49 +65,9 @@
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
-                            <!-- Invoices List table -->
-                            <div class="table-responsive">
-                                <table
-                                    class="table datatable table-striped table-hover table-white-space table-bordered  no-wrap icheck table-middle">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            {{-- <th><input type="checkbox" class="input-chk-all"></th> --}}
-                                            <th>Ref</th>
-                                            <th>Designation</th>
-                                            <th>Prix</th>
-                                            @can('update', $consignations->first())
-                                                <th>Action</th>
-                                            @endcan
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($consignations as $consignation)
-                                            <tr id="row_{{ $consignation->id }}">
-                                                {{-- <td>
-                                                    <input type="checkbox" data-id="{{ $consignation['id'] }}"
-                                                        class="input-chk">
-                                                </td> --}}
-                                                <td>{{ $consignation->reference }}</td>
-                                                <td>{{ $consignation->designation }}</td>
-                                                <td>{{ formatPrice($consignation->price) }}</td>
-                                                @can('update', $consignation)
-                                                    <td>
-                                                        <a href="{{ route('admin.approvisionnement.emballages.edit', $consignation->id) }}"
-                                                            class="btn btn-info">
-                                                            Editer
-                                                        </a>
-                                                        <button class="btn btn-danger delete-btn"
-                                                            data-url="{{ route('admin.approvisionnement.emballages.destroy', $consignation->id) }}"
-                                                            data-id="{{ $consignation->id }}">Supprimer</button>
-                                                    </td>
-                                                @endcan
-                                            </tr>
-                                        @empty
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!--/ Invoices table -->
+                            @include('includes.datatable.table', [
+                                'dataUrl' => route('admin.approvisionnement.emballages.ajaxPostData'),
+                            ])
                         </div>
                     </div>
                 </div>
@@ -123,6 +83,8 @@
 
 @section('script')
     <script>
-        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
+        $(document).ready(function() {
+            loadDatatableAjax();
+        })
     </script>
 @endsection

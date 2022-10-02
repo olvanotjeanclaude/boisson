@@ -5,12 +5,17 @@
 </div>
 <div class="table-responsive">
     <table style="width: 100%" data-columns="{{ $columns }}" data-url="{{ $dataUrl }}"
-        class="table table-hover table-sm  ajax-datatable table-striped" @isset($tableId) id="{{$tableId}}" @endisset>
+        class="table table-hover table-sm  ajax-datatable table-striped"
+        @isset($tableId) id="{{ $tableId }}" @endisset>
         <thead class="bg-light">
             <tr>
                 @foreach (json_decode($columns, true) as $column)
                     <td>
-                        {{ str_replace("_"," ",Str::title($column['data']) )}}
+                        @if (isset($column['title']))
+                            {{ Str::title($column['title']) }}
+                        @else
+                            {{ str_replace('_', ' ', Str::title($column['data'])) }}
+                        @endif
                     </td>
                 @endforeach
             </tr>
