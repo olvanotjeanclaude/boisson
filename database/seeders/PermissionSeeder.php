@@ -29,14 +29,14 @@ class PermissionSeeder extends Seeder
         }
 
         $roleAdmin = Role::where("name", "admin")->first();
-        // $roleDirector = Role::where("name","directeur")->first();
-        $roleCaisse = Role::where("name", "caisse")->first();
         $roleFacturation = Role::where("name", "facturation")->first();
+        $roleCaisse = Role::where("name", "caisse")->first();
+        $roleMagasinier = Role::where("name","responsable stock")->first();
 
         $roleAdmin->syncPermissions($permissions);
-        // $roleDirector->syncPermissions($permissions);
-        $roleFacturation->syncPermissions([]);
+        $roleFacturation->syncPermissions(Access::FACTURATION);
         $roleCaisse->syncPermissions(Access::CAISSE);
+        $roleMagasinier->syncPermissions(Access::STOCKER);
 
         foreach (User::all() as $key => $user) {
             $role =  Access::ROLES[$user->permission_access]??Access::ROLES["facturation"];

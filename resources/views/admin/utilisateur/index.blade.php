@@ -50,6 +50,7 @@
                                 <span class="badge badge-pill badge-success">Actif</span>
                             @endif
                         </div>
+                        <p class="mt-2">{{ $user->email }}</p>
                     </div>
                     <div class="card-actions d-flex mt-2 justify-content-center">
                         {{-- <a class="btn btn-primary" href="{{ route('admin.utilisateurs.show', $user->id) }}">Voir</a> --}}

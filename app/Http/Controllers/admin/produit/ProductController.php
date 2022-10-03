@@ -32,18 +32,18 @@ class ProductController extends Controller
     public function ajaxPostData(Request $request)
     {
         if ($request->ajax()) {
-            $products = Product::has("category")->orderBy("id","desc");
+            $products = Product::has("category")->orderBy("id", "desc");
 
             return DataTables::of($products)
                 ->setRowId(fn ($product) => "row_$product->id")
-                ->addColumn("price",fn ($product) => formatPrice($product->price))
-                ->addColumn("wholesale_price",fn ($product) => formatPrice($product->wholesale_price))
+                ->addColumn("price", fn ($product) => formatPrice($product->price))
+                ->addColumn("wholesale_price", fn ($product) => formatPrice($product->wholesale_price))
                 ->addColumn("cont_or_condition", fn ($product) => $product->contenance ?? $product->condition ?? null)
                 ->addColumn("category", fn ($product) =>  $product->category->name)
                 ->addColumn('action', function ($product) {
                     $editUrl = route('admin.approvisionnement.articles.edit', $product->id);
                     $deleteUrl = route('admin.approvisionnement.articles.destroy', $product->id);
-                    $actionBtn = Columns::actionColumns($product,$editUrl,$deleteUrl);
+                    $actionBtn = Columns::actionColumns($product, $editUrl, $deleteUrl);
                     return $actionBtn;
                 })
                 ->rawColumns(["action"])
@@ -61,7 +61,7 @@ class ProductController extends Controller
         }
 
         $columns[] = $actionBtn;
-        
+
         return $columns;
     }
 
@@ -146,6 +146,6 @@ class ProductController extends Controller
 
     private function getColumns()
     {
-        return ["reference", "designation", "price", "wholesale_price", "cont_or_condition", "category"];
+        return ["reference", "designation", "price", "wholesale_price", "buying_price", "cont_or_condition", "category"];
     }
 }

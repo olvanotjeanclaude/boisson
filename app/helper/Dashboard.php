@@ -6,7 +6,6 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Emballage;
 use App\Models\DocumentVente;
-use Illuminate\Support\Facades\DB;
 
 class Dashboard
 {

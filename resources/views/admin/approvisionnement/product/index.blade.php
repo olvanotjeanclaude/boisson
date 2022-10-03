@@ -82,9 +82,10 @@
                                     <thead>
                                         <tr>
                                             <th>Ref</th>
-                                            <th>Designation</th>
+                                            <th style="min-width: 150px">Designation</th>
                                             <th style="min-width:80px">Prix</th>
-                                            <th>Prix De Gros</th>
+                                            <th>Prix Gros</th>
+                                            <th>PA</th>
                                             <th>Cont./Cond</th>
                                             <th>Fam</th>
                                             @can('update article')

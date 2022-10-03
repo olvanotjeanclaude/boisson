@@ -54,18 +54,24 @@
                         </span>
                         Supprimer
                     </button>
-                    <button type="button" data-target="#settingModal" data-toggle="modal"
-                        class="btn  btn-info btn-sm text-capitalize">
-                        Minimum Date
-                    </button>
+                    @can('view all')
+                        <button type="button" data-target="#settingModal" data-toggle="modal"
+                            class="btn  btn-info btn-sm text-capitalize">
+                            Minimum Date
+                        </button>
+                    @endcan
 
-                    <a href="{{ route('admin.achat-fournisseurs.create') }}" class="btn btn-primary btn-sm text-capitalize">
-                        Nouveau Bon d'entrée
-                    </a>
+                    @can('enter_stock')
+                        <a href="{{ route('admin.achat-fournisseurs.create') }}" class="btn btn-primary btn-sm text-capitalize">
+                            Nouveau Bon d'entrée
+                        </a>
+                    @endcan
 
-                    <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
-                        Ventes
-                    </a>
+                    @can('make sale')
+                        <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
+                            Ventes
+                        </a>
+                    @endcan
                 </div>
             </div>
 

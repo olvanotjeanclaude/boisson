@@ -55,13 +55,15 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     });
 
     //Articles & Emballages
-    Route::resource("articles", \App\Http\Controllers\admin\article\ArticleController::class);
-    Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class)->except("show");
-    Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
-        Route::resource("articles", \App\Http\Controllers\admin\produit\ProductController::class)->except("show");
-        Route::post("get-articles", [\App\Http\Controllers\admin\produit\ProductController::class, "getData"])->name("articles.getData");
-        Route::resource("emballages", \App\Http\Controllers\admin\produit\EmballageController::class)->except("show");
-        // Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
+    Route::group(["middleware" =>"can:view article"],function(){
+        Route::resource("articles", \App\Http\Controllers\admin\article\ArticleController::class);
+        Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class)->except("show");
+        Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
+            Route::resource("articles", \App\Http\Controllers\admin\produit\ProductController::class)->except("show");
+            Route::post("get-articles", [\App\Http\Controllers\admin\produit\ProductController::class, "getData"])->name("articles.getData");
+            Route::resource("emballages", \App\Http\Controllers\admin\produit\EmballageController::class)->except("show");
+            // Route::resource("packages", \App\Http\Controllers\admin\produit\PackageController::class);
+        });
     });
 
     //ventes
@@ -105,9 +107,11 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::get("{type}/detail/{invoice_number}/print", [\App\Http\Controllers\admin\impression\ImpressionController::class, "print"])->name("document.print");
 
     // Ventes
-    Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
-    Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm")->middleware("can:make payment");
-    Route::post("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentStore"])->name("sale.paymentStore");
+    Route::group(["middleware" =>"can:make sale"],function(){
+        Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
+        Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm")->middleware("can:make payment");
+        Route::post("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentStore"])->name("sale.paymentStore");
+    });
 
     // Client
     Route::resource("clients", \App\Http\Controllers\admin\customer\CustomerController::class);
@@ -115,12 +119,14 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
     // Sortie de stock
     // sample out stock
-    Route::resource("sorti-stocks", App\Http\Controllers\admin\article\StockOutController::class);
-    Route::group(["prefix" => "sorti-stocks/{invoice_number}", "as" => "sorti-stocks."], function () {
-        Route::get("/imprimer", [App\Http\Controllers\admin\article\StockOutController::class, "print"])->name("print");
-        Route::get("/telecharger", [App\Http\Controllers\admin\article\StockOutController::class, "download"])->name("download");
-        Route::post("/valid", [App\Http\Controllers\admin\article\StockOutController::class, "validStockOut"])->name("validStockOut");
-        Route::post("/annuler", [App\Http\Controllers\admin\article\StockOutController::class, "cancel"])->name("cancel");
+    Route::group(["middleware" =>"can:view_intern_doc"],function(){
+        Route::resource("sorti-stocks", App\Http\Controllers\admin\article\StockOutController::class);
+        Route::group(["prefix" => "sorti-stocks/{invoice_number}", "as" => "sorti-stocks."], function () {
+            Route::get("/imprimer", [App\Http\Controllers\admin\article\StockOutController::class, "print"])->name("print");
+            Route::get("/telecharger", [App\Http\Controllers\admin\article\StockOutController::class, "download"])->name("download");
+            Route::post("/valid", [App\Http\Controllers\admin\article\StockOutController::class, "validStockOut"])->name("validStockOut");
+            Route::post("/annuler", [App\Http\Controllers\admin\article\StockOutController::class, "cancel"])->name("cancel");
+        });
     });
 
     // Back To Supplier

@@ -20,6 +20,7 @@ class CustomerController extends Controller
     public function index()
     {
         // dd(Route::currentRouteName());
+        abort_if(currentUser()->cannot("view_customer"),403);
         $columns = Columns::format_columns($this->getColumns());
         $columns[] = ["data" => "action", "name" => "action"];
 

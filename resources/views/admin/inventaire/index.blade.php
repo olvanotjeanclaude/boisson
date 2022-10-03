@@ -19,7 +19,7 @@
             'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => true,
+            'show' => false,
         ],
     ])
 @endsection
@@ -46,17 +46,15 @@
                 <div class="heading-elements">
                     @can('view stock')
                         <a href="{{ route('admin.stocks.index') }}" class="btn btn-secondary btn-sm text-capitalize">
-                           Stock
+                            Stock
                         </a>
                     @endcan
-                    <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
-                        Ventes
-                    </a>
-                    {{-- <a href="javascript:void(0)" data-toggle="modal" data-target="#stockOutForm"
-                        class="btn btn-primary btn-sm text-capitalize">
-                        <span class="material-icons">add</span>
-                        Nouveau Bon De Sorti
-                    </a> --}}
+
+                    @can('make sale')
+                        <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
+                            Ventes
+                        </a>
+                    @endcan
                 </div>
             </div>
             <div class="card-content collapse show">

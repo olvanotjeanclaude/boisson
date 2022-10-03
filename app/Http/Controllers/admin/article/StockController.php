@@ -5,7 +5,6 @@ namespace App\Http\Controllers\admin\article;
 use App\Models\Stock;
 use App\helper\Filter;
 use App\Models\Product;
-
 use App\Models\Emballage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -98,6 +97,7 @@ class StockController extends Controller
 
     public function create()
     {
+        abort(404);
         $articles = Product::orderBy("designation")->get();
         $emballages = Emballage::orderBy("designation")->get();
 
@@ -107,6 +107,7 @@ class StockController extends Controller
 
     public function store(Request $request)
     {
+        abort(404);
         $datas = StockRequest::All();
        
         if (count($datas)) {

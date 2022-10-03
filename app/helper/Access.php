@@ -9,13 +9,13 @@ class Access
     const ROLES = [
         "super admin" => 1,
         "admin" => 2,
-        // "directeur" => 3,
         "caisse" => 3,
         "facturation" => 4,
-        "responsable stock"
+        "responsable stock" =>5
     ];
 
     const PERMISSIONS = [
+        "view_customer","create_customer","update_customer",
         "view all",
         "create user",
         "create emballage",
@@ -39,22 +39,42 @@ class Access
         "make payment",
         "print sale",
         "view dashboard",
-        "create emballage"
+        "create emballage",
+
+        "enter_stock",
+        "out_stock",
+        "valid_stock",
+        "print_stock",
+        "view_intern_doc"
     ];
 
     const CAISSE = [
+        "view_customer","create_customer","update_customer",
         "make payment",
         "print sale",
         "view dashboard",
         "view article",
         "view stock",
+        "make sale",
     ];
 
     const FACTURATION = [
+        "view_customer","create_customer","update_customer",
         "view article",
         "make sale",
         "view stock",
+        "make sale",
+    ];
+
+    const STOCKER = [
+        "view article",
+        "enter_stock",
+        "out_stock",
+        "print_stock",
+        "view stock",
+        "view_intern_doc",
         "view inventory",
+        "make inventory",
     ];
 
     public static function syncRolePermission($user, $role = null)
@@ -75,6 +95,9 @@ class Access
                     break;
                 case Access::ROLES["facturation"]:
                     $user->syncPermissions(Access::FACTURATION);
+                    break;
+                case Access::ROLES["responsable stock"]:
+                    $user->syncPermissions(Access::STOCKER);
                     break;
                 default:
                     # code...

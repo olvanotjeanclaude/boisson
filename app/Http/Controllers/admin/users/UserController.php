@@ -7,9 +7,9 @@ use App\Models\User;
 use App\helper\UploadFile;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -32,14 +32,14 @@ class UserController extends Controller
         return view("admin.utilisateur.create");
     }
 
-    private function rules($update = false)
+    private function rules($update = false, $id = null)
     {
         return [
             "name" => "required",
             "surname" => "required",
             "identity_number" => "required",
             "birth_date" => "required",
-            "email" => "required",
+            "email" => ["required", Rule::unique("users")->ignore($id)],
             "phone" => "required",
             "password" => $update ? '' : "required"
         ];
@@ -48,7 +48,8 @@ class UserController extends Controller
     private function message()
     {
         return [
-            "required" => "Le champ :attribute est obligatoire!"
+            "required" => "Le champ :attribute est obligatoire!",
+            "email.unique" =>"L'email existe déjà. Veuillez saisir un nouvel e-mail"
         ];
     }
 
@@ -61,7 +62,7 @@ class UserController extends Controller
         $data = $request->except("_token");
 
         if ($request->file("image")) {
-            $data["image"] =  UploadFile::save(rand(1111,9999),"users",$request->file("image"));
+            $data["image"] =  UploadFile::save(rand(1111, 9999), "users", $request->file("image"));
         }
 
         $data["password"] = Hash::make($request->password);
@@ -78,13 +79,13 @@ class UserController extends Controller
 
     public function update(User $user, Request $request)
     {
-        $request->validate($this->rules(true), $this->message());
+        $request->validate($this->rules(true,$user->id), $this->message());
 
         //dd($request->all());
         $data = $request->except("_token");
 
         if ($request->file("image")) {
-            $data["image"] =  UploadFile::save(rand(1111,9999),"users",$request->file("image"));
+            $data["image"] =  UploadFile::save(rand(1111, 9999), "users", $request->file("image"));
         }
         Access::syncRolePermission($user);
         $saved = $user->update($data);

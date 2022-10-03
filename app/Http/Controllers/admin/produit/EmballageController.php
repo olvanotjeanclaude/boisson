@@ -68,7 +68,7 @@ class EmballageController extends Controller
             ["data" => "reference", "name" => "reference"],
             ["data" => "designation", "name" => "designation"],
             ["data" => "price", "name" => "price", "title" => "Prix"],
-            ["data" => "buying_price", "name" => "buying_price", "title" => "prix d'achat"],
+            ["data" => "buying_price", "name" => "buying_price", "title" => "Prix D'Achat"],
             ["data" => "action", "name" => "action", "visible" => currentUser()->can("update article")],
         ];
     }

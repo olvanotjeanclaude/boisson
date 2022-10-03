@@ -62,12 +62,14 @@
                 </li>
             @endcan
 
-            <li class="nav-item">
-                <a href="{{ route('admin.clients.index') }}">
-                    <span class="material-icons">groups</span>
-                    <span class="menu-title">Clients</span>
-                </a>
-            </li>
+            @can('view_customer')
+                <li class="nav-item">
+                    <a href="{{ route('admin.clients.index') }}">
+                        <span class="material-icons">groups</span>
+                        <span class="menu-title">Clients</span>
+                    </a>
+                </li>
+            @endcan
 
             @can('view all')
                 <li class="nav-item">
@@ -78,80 +80,86 @@
                 </li>
             @endcan
 
-            <li class=" nav-item">
-                <a href="#">
-                    <i class="material-icons">content_paste</i>
-                    <span class="menu-title">Structure</span>
-                </a>
-                <ul class="menu-content">
-                    <li class="nav-item">
-                        <a href="{{ route('admin.category-articles.index') }}">
-                            <span class="menu-title">Famille D'Articles</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="menu-item" href="{{ route('admin.approvisionnement.articles.index') }}">
-                            <i class="material-icons"></i>
-                            <span>Article</span>
-                        </a>
-                    </li>
-                    {{-- <li>
+            @can('view article')
+                <li class=" nav-item">
+                    <a href="#">
+                        <i class="material-icons">content_paste</i>
+                        <span class="menu-title">Structure</span>
+                    </a>
+                    <ul class="menu-content">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.category-articles.index') }}">
+                                <span class="menu-title">Famille D'Articles</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="menu-item" href="{{ route('admin.approvisionnement.articles.index') }}">
+                                <i class="material-icons"></i>
+                                <span>Article</span>
+                            </a>
+                        </li>
+                        {{-- <li>
                         <a class="menu-item" href="{{ route('admin.approvisionnement.packages.index') }}">
                             <i class="material-icons"></i>
                             <span>Article En Gros</span>
                         </a>
                     </li> --}}
-                    @can('view all')
+                        @can('view all')
+                            <li>
+                                <a class="menu-item" href="{{ route('admin.tarif-fournisseurs.index') }}">
+                                    <i class="material-icons"></i>
+                                    <span>Tarif Fournisseurs</span>
+                                </a>
+                            </li>
+                        @endcan
                         <li>
-                            <a class="menu-item" href="{{ route('admin.tarif-fournisseurs.index') }}">
+                            <a class="menu-item" href="{{ route('admin.approvisionnement.emballages.index') }}">
                                 <i class="material-icons"></i>
-                                <span>Tarif Fournisseurs</span>
+                                <span>Emballage </span>
                             </a>
                         </li>
-                    @endcan
-                    <li>
-                        <a class="menu-item" href="{{ route('admin.approvisionnement.emballages.index') }}">
-                            <i class="material-icons"></i>
-                            <span>Emballage </span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+                    </ul>
+                </li>
+            @endcan
 
-            <li class=" nav-item">
-                <a href="#">
-                    <i class="material-icons">content_paste</i>
-                    <span class="menu-title">Documents interne </span>
-                </a>
-                <ul class="menu-content">
-                    <li class="nav-item">
-                        <a href="{{route('admin.achat-fournisseurs.index')}}">
-                            <span class="menu-title">bon d'entrée</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="menu-item" href="{{route('admin.sorti-stocks.index')}}">
-                            <i class="material-icons"></i>
-                            <span>Bon de sortie</span>
-                        </a>
-                    </li>
-                    {{-- <li>
+            @can('view_intern_doc')
+                <li class=" nav-item">
+                    <a href="#">
+                        <i class="material-icons">content_paste</i>
+                        <span class="menu-title">Documents interne </span>
+                    </a>
+                    <ul class="menu-content">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.achat-fournisseurs.index') }}">
+                                <span class="menu-title">bon d'entrée</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="menu-item" href="{{ route('admin.sorti-stocks.index') }}">
+                                <i class="material-icons"></i>
+                                <span>Bon de sortie</span>
+                            </a>
+                        </li>
+                        {{-- <li>
                         <a class="menu-item" href="{{route('admin.retour-fournisseurs.index')}}">
                             <i class="material-icons"></i>
                             <span>Retour Fournisseurs</span>
                         </a>
                     </li> --}}
-                </ul>
-            </li>
+                    </ul>
+                </li>
+            @endcan
 
-            <li class="nav-item">
-                <a href="{{ route('admin.ventes.index') }}">
-                    <span class="material-icons">
-                        shopping_basket
-                    </span>
-                    <span class="menu-title">Ventes</span>
-                </a>
-            </li>
+            @can('make sale')
+                <li class="nav-item">
+                    <a href="{{ route('admin.ventes.index') }}">
+                        <span class="material-icons">
+                            shopping_basket
+                        </span>
+                        <span class="menu-title">Ventes</span>
+                    </a>
+                </li>
+            @endcan
 
             @can('view stock')
                 <li class="nav-item">

@@ -13,7 +13,7 @@ class AdminController extends Controller
     public function index(Dashboard $dashboard)
     {
         if (!currentUser()->can("view dashboard")) {
-            return  redirect("/admin/ventes");
+            return  redirect("/admin/stocks");
         }
 
         $paymentTypes  = [];

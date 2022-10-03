@@ -33,10 +33,10 @@
             ['text' => 'Liste', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Nouveau Stock',
-            'link' => route('admin.stocks.create'),
+            'text' => 'Nouveau Achat',
+            'link' =>  route('admin.achat-fournisseurs.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => false,
+            'show' => currentUser()->can("enter_stock"),
             // "type" =>"modalBtn",
             // "modalTarget" =>"modalStock"
         ],
@@ -71,18 +71,25 @@
                         </span>
                         Supprimer
                     </button>
-                    <button type="button" data-target="#settingModal" data-toggle="modal"
-                        class="btn  btn-info btn-sm text-capitalize">
-                        Minimum Date
-                    </button>
 
-                    <a href="{{ route('admin.achat-fournisseurs.create') }}" class="btn btn-primary btn-sm text-capitalize">
-                        Nouveau Bon d'entrée
-                    </a>
+                    @can('view all')
+                        <button type="button" data-target="#settingModal" data-toggle="modal"
+                            class="btn  btn-info btn-sm text-capitalize">
+                            Minimum Date
+                        </button>
+                    @endcan
 
-                    <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
-                        Ventes
-                    </a>
+                    {{-- @can('enter_stock')
+                        <a href="{{ route('admin.achat-fournisseurs.create') }}" class="btn btn-primary btn-sm text-capitalize">
+                            Nouveau Bon d'entrée
+                        </a>
+                    @endcan --}}
+
+                    @can('make sale')
+                        <a href="{{ route('admin.ventes.index') }}" class="btn btn-secondary btn-sm text-capitalize">
+                            Ventes
+                        </a>
+                    @endcan
                 </div>
             </div>
 
@@ -160,7 +167,7 @@
                                             <td>{{ $stock->final }}</td>
                                         </tr>
                                     @endisset
-                                    @empty
+                                @empty
                                     <tr>
                                         <td colspan="6" class="text-center">
                                             Aucun résultat à afficher!

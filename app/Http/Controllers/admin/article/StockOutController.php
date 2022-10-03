@@ -12,6 +12,10 @@ use App\Printing\StockOut;
 
 class StockOutController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(["can:out_stock"]);
+    }
     public function index()
     {
         $stockOuts = Stock::outs();
