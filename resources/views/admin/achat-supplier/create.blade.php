@@ -35,92 +35,69 @@
             </ul>
         </div>
     @endif
+
     <div class="row">
-        <div class="col-md-7">
-            <form novalidate class="needs-validation" action="{{ route('admin.achat-fournisseurs.store') }}" method="POST">
-                @csrf
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-8 mt-1 col-article">
-                                <label class="text-bold-400 text-dark" for="article_reference">Articles</label>
-                                <select name="article_reference" required class="select2 form-control articleBySupplier"
-                                    id="article_reference">
-                                    <option value=''>Choisir</option>
-                                    @foreach ($articles as $article)
-                                        <option value='{{ $article->reference }}'
-                                            @if ($article->reference == old('article_reference')) selected @endif>{{ $article->designation }}
-                                        </option>
-                                    @endforeach
-                                    @foreach ($emballages as $emballage)
-                                        <option value='{{ $emballage->reference }}'
-                                            @if ($article->reference == old('article_reference')) selected @endif>{{ $emballage->designation }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback">
-                                    Selectionnez l'article
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4 mt-1">
-                                <label class="text-bold-400 text-dark" for="quantity">
-                                    Quantité
-                                </label>
-                                <input type="number" placeholder="0" class="form-control" required id="quantity"
-                                    name="quantity" value="{{ old('quantity') }}">
-                                <div class="invalid-feedback">
-                                    Entrer le nombre de bouteille
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <button type="submit" id="addArticle" class="btn float-right my-1 btn-primary">
-                                    <span class="material-icons">add</span>
-                                    Ajouter
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
-            @include('admin.achat-supplier.confirm-order')
+        <div class="col-12">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link active" id="base-pill1" data-toggle="pill" href="#pill1" aria-expanded="true">Manuel</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="base-pill2" data-toggle="pill" href="#pill2"
+                        aria-expanded="false">Automatique</a>
+                </li>
+            </ul>
         </div>
-
-        <div class="col-md-5">
-            @if (count($preInvoices))
-                <div class="card">
-                    <div class="card-body">
-                        @include('admin.achat-supplier.ticket', [
-                            'preInvoices' => $preInvoices,
-                            'amount' => $amount,
-                        ])
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="float-right">
-                            <button type="button" id="cancelBtn" class="btn btn-warning d-none mr-1">
-                                <i class="ft-x"></i> Anuller
-                            </button>
-                            <button type="button" id="validFacture" class="btn btn-primary">
-                                <i class="la la-check-square-o"></i> Enregister
-                            </button>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="tab-content px-1 pt-1">
+                <div role="tabpanel" class="tab-pane active" id="pill1" aria-expanded="true" aria-labelledby="base-pill1">
+                    <div class="row">
+                        <div class="col-md-7">
+                            @include('admin.achat-supplier.include.manual')
+                            @include('admin.achat-supplier.confirm-order')
+                        </div>
+                        <div class="col-md-5">
+                            @if (count($preInvoices))
+                                <div class="card">
+                                    <div class="card-body">
+                                        @include('admin.achat-supplier.ticket', [
+                                            'preInvoices' => $preInvoices,
+                                            'amount' => $amount,
+                                        ])
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="float-right">
+                                            <button type="button" id="cancelBtn" class="btn btn-warning d-none mr-1">
+                                                <i class="ft-x"></i> Anuller
+                                            </button>
+                                            <button type="button" id="validFacture" class="btn btn-primary">
+                                                <i class="la la-check-square-o"></i> Enregister
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans
+                                            cette
+                                            zone.
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
-            @else
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-text">La désignation, nombre de bouteille et le total se trouve dans cette
-                            zone.
-                        </p>
-                    </div>
+                <div class="tab-pane" id="pill2"
+                    aria-labelledby="base-pill2">
+                  @include('admin.achat-supplier.include.auto')
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 @endsection

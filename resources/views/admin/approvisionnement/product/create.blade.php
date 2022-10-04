@@ -164,7 +164,7 @@
                                         </div>
                                         <div class="col-6 col-md-12 col-lg-6">
                                             <label class="label-control" for="buying_price">Prix D'Achat</label>
-                                            <input type="number" value="{{ old('buying_price') }}" required id="buying_price"
+                                            <input type="number" step="0.01" value="{{ old('buying_price') }}" required id="buying_price"
                                                 class="form-control" placeholder="Prix d'achat" name="buying_price">
                                             <div class="invalid-feedback">
                                                 Entrer le prix d'achat
