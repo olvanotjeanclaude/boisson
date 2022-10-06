@@ -168,6 +168,12 @@
                         <span class="menu-title">Stocks</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.etat-emballages.index') }}">
+                        <span class="material-icons">liquor</span>
+                        <span class="menu-title">Etat d'Emballage</span>
+                    </a>
+                </li>
             @endcan
 
             @can('view inventory')

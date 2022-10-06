@@ -73,7 +73,7 @@
                             {{ $data->quantity }}
                         </td>
                         <td>
-                            {{ round($data->saleable->buying_price) }}
+                            {{ round($data->pricing) }}
                         </td>
                         <td style="text-align: right">
                             {{ round($data->sub_amount) }}

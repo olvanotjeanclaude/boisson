@@ -211,6 +211,89 @@ class Stock extends Model
         return $entriesOuts;
     }
 
+    public static function Emballages($between = [])
+    {
+        if (empty($between)) {
+            $between = self::getDefaultBetween();
+        }
+
+        $sales = DB::table('sales')
+            ->select([
+                "article_reference", "saleable_type as article_type",
+                DB::raw("CASE WHEN isWithEmballage=1 
+            THEN (SELECT quantity) ELSE 0 END AS deconsignation"),
+                DB::raw("CASE WHEN isWithEmballage=0
+            THEN (SELECT quantity) ELSE 0 END AS consignation"),
+            ])
+            ->where("saleable_type", "App\Models\Emballage")
+            ->where(function ($query) use ($between) {
+                $query->where(fn ($query) => Filter::queryBetween($query, $between));
+            })
+            ->selectRaw("0 as 'entry'")
+            ->selectRaw("0 as 'out'");
+
+        // dd($sales->get());
+
+        $stocks = DB::table("stocks")
+            ->select([
+                "article_reference",
+                "stockable_type as article_type",
+                DB::raw("CASE WHEN action_type=" . self::ACTION_TYPES["new_stock"] . " 
+                THEN (SELECT entry) ELSE 0 END AS 'entry'"),
+                DB::raw("CASE WHEN action_type=" . self::ACTION_TYPES["sample_out"] . " 
+                THEN (SELECT `out`) ELSE 0 END AS 'out'"),
+            ])
+            ->selectRaw("0 as consignation")
+            ->selectRaw("0 as deconsignation")
+            ->where("stockable_type", "App\Models\Emballage")
+            ->where("status", self::STATUS["accepted"])
+            ->where(function ($query) use ($between) {
+                $query->where(fn ($query) => Filter::queryBetween($query, $between, "date"));
+            });
+
+        $sales = $sales->get();
+        $stocks = $stocks->get();
+
+        $entriesOuts = $sales->merge($stocks)
+            ->groupBy("article_reference");
+
+        $entriesOuts =  $entriesOuts->map(function ($data) {
+            $response = [];
+            $first = $data->first();
+            $article = null;
+
+            if ($first) {
+                $sumEntry = $data->sum("entry");
+                $sumOut = $data->sum("out");
+                $sumConsignation = $data->sum("consignation");
+                $sumDeconsignation = $data->sum("deconsignation");
+                $final =  ($sumEntry + $sumDeconsignation) - ($sumOut + $sumConsignation);
+
+                $article = self::getArticleByReference($first->article_reference);
+
+                if ($article) {
+                    $response = (object)[
+                        "reference" =>  $article->reference,
+                        "designation" => $article->designation,
+                        "article_reference" => $article->reference,
+                        "article_type" => get_class($article),
+                        "sum_entry" => $sumEntry,
+                        "sum_out" => $sumOut,
+                        "sum_consignation" => $sumConsignation,
+                        "sum_deconsignation" => $sumDeconsignation,
+                        "final" => $final
+                    ];
+                }
+            }
+
+            return $response;
+        })
+            ->sortByDesc("final")
+            ->filter(fn ($article) => isset($article->designation));
+
+        return $entriesOuts;
+    }
+
     public function scopeEntries($query)
     {
         $entries = $query

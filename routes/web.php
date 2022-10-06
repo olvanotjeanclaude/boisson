@@ -75,6 +75,11 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
         Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
         Route::get("get-stock-data", [\App\Http\Controllers\admin\article\StockController::class, "getData"])->name("stocks.getData");
         Route::get("print-report-stock", [\App\Http\Controllers\admin\article\StockController::class, "printReport"])->name("stocks.printReport");
+        
+        Route::group(["prefix" => "etat-emballages","as" =>"etat-emballages."],function(){
+            Route::get("/", [\App\Http\Controllers\admin\article\EtatEmballageController::class, "index"])->name("index");
+            Route::get("imprimer", [\App\Http\Controllers\admin\article\EtatEmballageController::class, "printReport"])->name("printReport");
+        });
     });
 
     // Inventaire

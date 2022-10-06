@@ -128,8 +128,6 @@
     <script src="{{ asset('app-assets/js/custom/index.js') }}"></script>
     @yield('script')
     <script>
-        $(document).ready(function() {})
-
         function loadDatatableAjax(tableElement = ".ajax-datatable", method = "post") {
             const url = $(tableElement).data("url");
             const table = $(tableElement);

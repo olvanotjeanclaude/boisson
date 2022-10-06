@@ -8,9 +8,6 @@
                     vous
                     avez entré sera affecté.
                 </p>
-                {{-- <p>
-                    Si l'article n'a pas de prix d'achat, le champ prix d'achat sera obligatoire.
-                </p> --}}
             </div>
 
             <form novalidate action="{{ route('admin.achat-fournisseurs.saveAutoStock') }}" method="POST"
@@ -18,10 +15,10 @@
                 @csrf
                 <div class="form-body">
                     <div class="form-group row mx-auto">
-                        <label class="col-md-3 label-control" for="article_reference">Articles</label>
+                        <label class="col-md-3 label-control" for="article_reference2">Articles</label>
                         <div class="col-md-9">
                             <select name="article_references[]" multiple class="select2 form-control"
-                                id="article_reference">
+                                id="article_reference2">
                                 <option value=''>Choisir</option>
                                 @foreach ($articles as $article)
                                     <option value='{{ $article->reference }}'

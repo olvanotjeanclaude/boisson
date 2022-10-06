@@ -77,10 +77,6 @@ class AdminController extends Controller
     }
 
     public function detail(Dashboard $dashboard){
-        $data = $this->getDocumentData($dashboard);
-     
-        return view("admin.dashboard.detail",[
-            ...$this->getDocumentData($dashboard)
-        ]);
+        return view("admin.dashboard.detail",$this->getDocumentData($dashboard));
     }
 }
