@@ -30,10 +30,10 @@
             <b>Date :</b> {{ format_date($invoice->received_at) }}
         </span>
         <br>
-        <span>
+        {{-- <span>
             <b>Caisse :</b> {{ Str::upper($invoice->user ? $invoice->user->full_name : '') }}
         </span>
-        <br>
+        <br> --}}
         @php
             $customer = $invoice->customer;
         @endphp

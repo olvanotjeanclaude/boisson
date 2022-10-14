@@ -12,6 +12,7 @@
         Client : {{ Str::ucfirst($invoice->customer->identification) }}<br>
         Adresse : {{ $invoice->customer->address }}<br>
         Téléphone : {{ $invoice->customer->phone }}<br>
+        Caisse : {{ Str::upper($invoice->user ? $invoice->user->full_name : '') }}
     </p>
 @endsection
 @section('tbody')
@@ -20,8 +21,8 @@
             <tr class="service">
                 <td style="width: 200px">{{ $sale->saleable->designation }} </td>
                 <td class="">{{ $sale->quantity }}</td>
-                <td>{{ ($sale->pricing) }}</td>
-                <td class="text-right">{{ ($sale->sub_amount) }}</td>
+                <td>{{ $sale->pricing }}</td>
+                <td class="text-right">{{ $sale->sub_amount }}</td>
             </tr>
         @endisset
     @empty
