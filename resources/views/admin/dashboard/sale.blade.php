@@ -13,7 +13,7 @@
                     <input type="text" value="{{ request()->get('chercher') }}" name="chercher"
                         placeholder="Reference Ou Designation..." style="" class="bg-white form-control">
                 </div>
-                <div class="mt-1 mt-lg-0 col-sm-5 col-md-4  col-xl-2">
+                <div class="mt-1 mt-lg-0 col-sm-5 col-md-4  col-xl">
                     <select name="filter_type" class="bg-white form-control h-100" id="filterArticle">
                         @foreach (\App\helper\Filter::TYPES as $value)
                             @if ($value == 'sorti')
@@ -24,8 +24,8 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="mt-1 mt-lg-0 col-12 col-md-4  col-xl-3">
-                    <div class="d-flex justify-content-end mt-1 mt-sm-0">
+                <div class="mt-1 mt-lg-0 col-12 col-md-4  col-xl">
+                    <div class="btn-group" role="group" >
                         <button type="submit" class="btn btn-secondary">Filtrer</button>
                         <a target="_blink"
                             href="{{ route('admin.dashboard.printReport', [
@@ -36,6 +36,16 @@
                             ]) }}"
                             class="btn btn-light">
                             Imprimer
+                        </a>
+                        <a target="_blink"
+                            href="{{ route('admin.dashboard.exportExcel', [
+                                'start_date' => $between[0],
+                                'end_date' => $between[1],
+                                'filter_type' => request()->get('filter_type'),
+                                'chercher' => request()->get('chercher'),
+                            ]) }}"
+                            class="btn btn-success">
+                            Telecharger
                         </a>
                     </div>
                 </div>

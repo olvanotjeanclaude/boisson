@@ -18,10 +18,10 @@
     @forelse ($invoice->sales as $sale)
         @isset($sale->saleable)
             <tr class="service">
-                <td>{{ $sale->saleable->designation }} </td>
-                <td>{{ $sale->quantity }}</td>
-                <td>{{ round($sale->pricing) }}</td>
-                <td class="text-right">{{ round($sale->sub_amount) }}</td>
+                <td style="width: 200px">{{ $sale->saleable->designation }} </td>
+                <td class="">{{ $sale->quantity }}</td>
+                <td>{{ ($sale->pricing) }}</td>
+                <td class="text-right">{{ ($sale->sub_amount) }}</td>
             </tr>
         @endisset
     @empty

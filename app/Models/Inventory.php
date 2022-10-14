@@ -24,9 +24,9 @@ class Inventory extends Model
     ];
 
     const ACTION_TYPES = [
-       "inventaire",
-       "sortie",
-       "retour fournisseur"
+        "inventaire",
+        "sortie",
+        "retour fournisseur"
     ];
 
     public function article()
@@ -47,6 +47,11 @@ class Inventory extends Model
     public function getProductAttribute()
     {
         return Articles::getArticleByReference($this->article_reference);
+    }
+
+    public function getRealQuantityAttribute($value)
+    {
+        return getNumberDecimal($value);
     }
 
     public function getStatusHtmlAttribute()

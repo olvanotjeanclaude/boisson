@@ -21,7 +21,7 @@
                 </td>
                 <td>{{ $data->entry }}</td>
                 <td style="width: 50px">
-                    {{ round($data->stockable->buying_price) }}
+                    {{ $data->stockable->buying_price }}
                 </td>
                 <td class="text-right">
                     {{ $data->sub_amount }}

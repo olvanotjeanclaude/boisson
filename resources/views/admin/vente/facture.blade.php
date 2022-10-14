@@ -45,9 +45,9 @@
             <b>Adresse :</b> {{ $customer ? $customer->address : '' }}
         </span>
         <br>
-        <span>
+        {{-- <span>
             <b>Téléphone :</b> {{ $customer ? $customer->phone : '' }}
-        </span>
+        </span> --}}
     </div>
 @endsection
 
@@ -56,7 +56,7 @@
     <table id="invoiceTable">
         <thead>
             <tr>
-                <th style="min-width: 100px">Désignation</th>
+                <th style="width: 150px">Désignation</th>
                 <th style="min-width: 30px">Qté</th>
                 <th>PU</th>
                 <th style="text-align: right">Montant</th>
@@ -73,10 +73,10 @@
                             {{ $data->quantity }}
                         </td>
                         <td>
-                            {{ round($data->pricing) }}
+                            {{ ($data->pricing) }}
                         </td>
                         <td style="text-align: right">
-                            {{ round($data->sub_amount) }}
+                            {{ ($data->sub_amount) }}
                         </td>
                     </tr>
                 @endif

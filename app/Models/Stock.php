@@ -189,12 +189,20 @@ class Stock extends Model
 
                 if ($first) {
                     $article = self::getArticleByReference($first->article_reference);
+
                     if ($article) {
+                        $type =  get_class($article) == "App\Models\Product" ? "article" : "emballage";
+                        if ($type == "article") {
+                            $url = route("admin.approvisionnement.articles.edit", $article->id);
+                        } else {
+                            $url = route("admin.approvisionnement.emballages.edit", $article->id);
+                        }
                         $response = (object)[
                             "reference" =>  $article->reference,
                             "designation" => $article->designation,
                             "article_reference" => $article->reference,
-                            "type" => get_class($article) == "App\Models\Product" ? "article" : "emballage",
+                            "url" => $url,
+                            "type" => $type,
                             "article_type" => get_class($article),
                             "sum_entry" => $data->sum("entry"),
                             "sum_out" => $data->sum("out"),

@@ -28,6 +28,13 @@ class ImpressionController extends Controller
         $paid = DocumentVente::Paid($invoiceNumber);
         $rest = DocumentVente::Rest($invoiceNumber);
 
+        // return view('admin.vente.facture', [
+        //     "invoice" =>$invoice,
+        //     "amount" =>$amount,
+        //     "reste" =>$rest,
+        //     "paid" =>$paid,
+        // ]);
+        
         $pdf = Pdf::loadView('admin.vente.facture', [
             "invoice" =>$invoice,
             "amount" =>$amount,

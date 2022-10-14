@@ -21,7 +21,7 @@
                 </td>
                 <td>{{ $preInvoice->quantity }} </td>
                 <td style="width: 50px">
-                    {{ round($preInvoice->pricing) }}
+                    {{ $preInvoice->pricing }}
                 </td>
                 <td style="width: auto" class="text-right">
                     {{ ($preInvoice->sub_amount) }}

@@ -19,6 +19,7 @@ use App\Articles\FormatRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VenteValidation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class SaleController extends Controller
@@ -29,33 +30,44 @@ class SaleController extends Controller
 
         return view("admin.vente.index", compact("columns"));
     }
+
     public function ajaxPostData(Request $request)
     {
         if ($request->ajax()) {
             $keyword = strtolower($request->searchInput);
             $keyword = trim($keyword);
-            $valideDate = validDate($keyword);
 
-            $docSales = DocumentVente::with("customer")
-                ->has("customer");
-
-            if ($valideDate) {
-                $docSales = $docSales->whereDate("received_at", $valideDate);
-            }
+            $docSales = DB::table('document_ventes')
+                ->select([
+                    "document_ventes.id as doc_id",
+                    "document_ventes.status as doc_status",
+                    "document_ventes.number as doc_number",
+                    "customers.identification as customer_name",
+                    "customers.code as customer_code",
+                    "document_ventes.received_at as doc_date",
+                    DB::raw("SUM(document_ventes.paid) as sum_paid"),
+                    DB::raw("SUM(document_ventes.checkout) as sum_checkout"),
+                    DB::raw("COUNT(sales.invoice_number) as count_sale"),
+                ])
+                ->join("customers", "customers.id", "document_ventes.customer_id")
+                ->join("sales", "sales.invoice_number", "document_ventes.number");
 
             $docSales = $docSales->when(getUserPermission() == "facturation", function ($q) {
-                return $q->where("user_id", auth()->user()->id);
+                return $q->where("document_ventes.user_id", auth()->user()->id)
+                    ->where("sales.user_id", auth()->user()->id);
             })
-                // ->groupBy("number")
-                ->orderBy("id", "desc");
-            // ->get();
+                ->groupBy("sales.invoice_number")
+                ->orderBy("document_ventes.id", "desc");
+
             return DataTables::of($docSales)
-                ->setRowId(fn ($doc) => "row_$doc->id")
-                ->addColumn("status", fn ($doc) => $doc->status_html)
-                ->addColumn("numero", fn ($doc) => $doc->number)
-                ->addColumn("client", fn ($doc) => $doc->customer ? strtoupper($doc->customer->identification) : '-')
-                ->addColumn("code_du_client", fn ($doc) => $doc->customer ? strtoupper($doc->customer->cl_code) : '-')
-                ->addColumn("date", fn ($doc) =>   format_date_time($doc->received_at))
+                ->setRowId(fn ($doc) => "row_$doc->doc_id")
+                ->addColumn("status", fn ($doc) => Sale::getStatusHtml($doc->doc_status))
+                ->addColumn("numero", fn ($doc) => $doc->doc_number)
+                ->addColumn("sum_paid", fn ($doc) => formatPrice($doc->sum_paid))
+                ->addColumn("sum_checkout", fn ($doc) => formatPrice($doc->sum_checkout))
+                ->addColumn("client", fn ($doc) => strtoupper($doc->customer_name ?? "-"))
+                ->addColumn("code_du_client", fn ($doc) => strtoupper("CL" . $doc->customer_code ?? "-"))
+                ->addColumn("date", fn ($doc) =>   format_date($doc->doc_date))
                 ->addColumn('action', function ($doc) {
                     $actionBtn = '<span class="dropdown">
                                     <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
@@ -65,9 +77,9 @@ class SaleController extends Controller
                                     </button>
                                     <span aria-labelledby="btnSearchDrop2" class="dropdown-menu mt-1 dropdown-menu-right">
                     ';
-                    $downloadRoute =  route('admin.print.sale.download', $doc->number);
-                    $printRoute = route('admin.print.sale.preview', $doc->number);
-                    $paymentRoute = route('admin.sale.paymentForm', $doc->number);
+                    $downloadRoute =  route('admin.print.sale.download', $doc->doc_number);
+                    $printRoute = route('admin.print.sale.preview', $doc->doc_number);
+                    $paymentRoute = route('admin.sale.paymentForm', $doc->doc_number);
 
                     $actionBtn .= Columns::setButton("Telecharger", $downloadRoute, "download");
                     $actionBtn .= Columns::setButton("Imprimer", $printRoute, "print");
@@ -80,22 +92,53 @@ class SaleController extends Controller
 
                     return $actionBtn;
                 })
+                ->filter(function ($query) use ($keyword) {
+                    $clCode = substr($keyword, 2);
+                    $valideDate = validDate($keyword);
+
+                    $query =  $query->orWhere("document_ventes.number", "LIKE", "%$keyword%");
+
+                    if ($valideDate) {
+                        $query = $query->whereDate("document_ventes.received_at", $valideDate);
+                    }
+
+                    $query = $query->orWhere("customers.code", "LIKE", "%$clCode%");
+                    return $query->orWhere("customers.identification", "LIKE", "%$keyword%");
+                })
                 ->rawColumns(["status", "action"])
                 ->make(true);
         }
     }
 
-
-
     private function getFormatedCols(): array
     {
         return [
-            ["data" => "status", "name" => "status"],
+            ["data" => "status", "name" => "status", "searchable" => false],
             ["data" => "numero", "name" => "number"],
-            ["data" => "client", "name" => "customer.identification"],
-            ["data" => "code_du_client", "name" => "customer.code"],
-            ["data" => "date", "name" => "date"],
-            ["data" => "action", "name" => "action"],
+            ["data" => "client", "name" => "client", "title" => "Client"],
+            ["data" => "code_du_client", "name" => "code_du_client", "title" => "CL code"],
+            ["data" => "date", "name" => "date", "style" => "width:150px"],
+            // [
+            //     "data" => "count_sale",
+            //     "name" => "count_sale",
+            //     "title" => "Article",
+            //     "searchable" => false
+            // ],
+            [
+                "data" => "sum_paid",
+                "name" => "sum_paid",
+                "title" => "Payé",
+                "searchable" => false,
+                "style" => "min-width:100px"
+            ],
+            [
+                "data" => "sum_checkout",
+                "name" => "sum_checkout",
+                "title" => "Sortie",
+                "searchable" => false,
+                "style" => "min-width:100px",
+            ],
+            ["data" => "action", "name" => "action", "searchable" => false],
         ];
     }
 
@@ -155,6 +198,11 @@ class SaleController extends Controller
         if (count($datas)) {
             $products = $this->getProductRequest($datas);
             $errorStocks = $this->getErrorStocks($products);
+            $errorPackages = $this->getErrorPackages($products);
+
+            if (count($errorPackages)) {
+                return back()->withErrors($errorPackages)->withInput();
+            }
 
             if (count($errorStocks)) {
                 return back()->withErrors($errorStocks)->withInput();
@@ -231,7 +279,6 @@ class SaleController extends Controller
     private function getErrorStocks($products)
     {
         $errorStocks = [];
-
         foreach ($products as  $product) {
             $errorStocks[] = $this->checkStock(
                 $product["article_reference"],
@@ -242,6 +289,25 @@ class SaleController extends Controller
         return array_filter($errorStocks, function ($error) {
             return !is_null($error);
         });
+    }
+
+    private function getErrorPackages($products)
+    {
+        $errors = [];
+
+        foreach ($products as  $product) {
+            $article = Stock::getArticleByReference($product["article_reference"]);
+
+            if ($article) {
+                $unity = Articles::PACKAGE_TYPES[$article->unity] ?? null;
+
+                if ($unity != "fut" && is_decimal($product["sum_quantity"])) {
+                    $errors[] = "L'article non liquide ne peut pas être décimal";
+                }
+            }
+        }
+
+        return $errors;
     }
 
     private function checkStock($articleRef, $quantity)

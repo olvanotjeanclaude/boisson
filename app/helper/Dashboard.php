@@ -71,7 +71,7 @@ class Dashboard
                         break;
                 }
             })
-            ->orderBy("saleable_type")
+            ->orderBy("received_at","desc")
             ->get();
 
         return in_array($articleType, Filter::TYPES) ? $sales : collect([]);

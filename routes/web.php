@@ -48,6 +48,8 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     // Dashboard
     Route::get("/", [\App\Http\Controllers\admin\AdminController::class, "index"])->name("index");
     Route::get("/dashboard/detail", [\App\Http\Controllers\admin\AdminController::class, "detail"])->name("dashboard.detail");
+    Route::get("/dashboard/export-detail-excel", [\App\Http\Controllers\admin\AdminController::class, "exportExcel"])->name("dashboard.exportExcel");
+    Route::get("/dashboard/detail-data", [\App\Http\Controllers\admin\AdminController::class, "detailData"])->name("dashboard.detailData");
         
     Route::group(["middleware" => "can:view dashboard"], function () {
         Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");

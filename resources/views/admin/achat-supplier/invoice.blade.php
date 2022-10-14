@@ -42,10 +42,10 @@
                     {{ $data->entry }}
                 </td>
                 <td>
-                    {{ round($data->stockable->buying_price) }}
+                    {{ ($data->stockable->buying_price) }}
                 </td>
                 <td style="text-align: right">
-                    {{ round($data->sub_amount) }}
+                    {{ ($data->sub_amount) }}
                 </td>
             </tr>
         @endif

@@ -57,7 +57,11 @@ trait Articles
 
     public function getStatusHtmlAttribute()
     {
-        switch ($this->status) {
+        return self::getStatusHtml($this->status);
+    }
+
+    public static function getStatusHtml($status){
+        switch ($status) {
             case Invoice::STATUS["paid"]:
                 $html = '<span class="badge badge-success">Payé</span>';
                 break;

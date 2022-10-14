@@ -33,10 +33,10 @@
                     {{ $data->out }}
                 </td>
                 <td>
-                    {{ round($data->stockable->price) }}
+                    {{ ($data->stockable->price) }}
                 </td>
                 <td style="text-align: right">
-                    {{ round($data->sub_amount) }}
+                    {{ ($data->sub_amount) }}
                 </td>
             </tr>
         @endif

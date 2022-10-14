@@ -34,9 +34,9 @@
         ],
         'actionBtn' => [
             'text' => 'Nouveau Achat',
-            'link' =>  route('admin.achat-fournisseurs.create'),
+            'link' => route('admin.achat-fournisseurs.create'),
             'icon' => '<span class="material-icons">add</span>',
-            'show' => currentUser()->can("enter_stock"),
+            'show' => currentUser()->can('enter_stock'),
             // "type" =>"modalBtn",
             // "modalTarget" =>"modalStock"
         ],
@@ -161,7 +161,10 @@
                                                 {{ Str::upper($stock->type) }}
                                             </td>
                                             <td>
-                                                {{ Str::upper($stock->designation) }}</td>
+                                                <a href="{{ $stock->url }}">
+                                                    {{ Str::upper($stock->designation) }}
+                                                </a>
+                                            </td>
                                             <td>{{ $stock->sum_entry }}</td>
                                             <td>{{ $stock->sum_out }}</td>
                                             <td>{{ $stock->final }}</td>

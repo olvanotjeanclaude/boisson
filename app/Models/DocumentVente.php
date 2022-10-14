@@ -69,9 +69,11 @@ class DocumentVente extends Model
         return $query->get()->sum("checkout");
     }
 
-    public function scopeRest($query, $number = null)
+    public static function Rest($number = null)
     {
-        return self::totalAmount($number) - self::paid($number);
+        $rest= self::totalAmount($number) - self::paid($number);
+
+        return round($rest,2);
     }
 
     public function scopeTotalAmount($query, $number = null)

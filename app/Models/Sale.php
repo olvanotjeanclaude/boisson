@@ -87,7 +87,9 @@ class Sale extends Model
             }
         }
 
-        return $this->isWithEmballage ? -$sub_amount : $sub_amount;
+        $sub_amount= $this->isWithEmballage ? -$sub_amount : $sub_amount;
+
+        return getNumberDecimal($sub_amount);
     }
 
     public function getPricingAttribute()
@@ -101,7 +103,12 @@ class Sale extends Model
             }
         }
 
-        return $price;
+        return getNumberDecimal($price);
+    }
+
+    public function getQuantityAttribute($value)
+    {
+        return getNumberDecimal($value);
     }
 
     public function scopePreArticlesSum($q)

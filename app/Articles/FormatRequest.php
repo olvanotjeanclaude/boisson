@@ -6,7 +6,6 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Articles;
 use App\Models\Emballage;
-use Illuminate\Support\Collection;
 
 class FormatRequest
 {
@@ -27,7 +26,7 @@ class FormatRequest
         return [];
     }
 
-    public function getArticleAndConsignation($articleRef, int $quantity)
+    public function getArticleAndConsignation($articleRef,  $quantity)
     {
         $datas = [];
 

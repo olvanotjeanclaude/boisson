@@ -10,13 +10,13 @@
         <thead class="bg-light">
             <tr>
                 @foreach (json_decode($columns, true) as $column)
-                    <td>
+                    <th @isset($column['style']) style="{{ $column['style'] }}" @endif>
                         @if (isset($column['title']))
                             {{ Str::title($column['title']) }}
                         @else
                             {{ str_replace('_', ' ', Str::title($column['data'])) }}
                         @endif
-                    </td>
+                        </th>
                 @endforeach
             </tr>
         </thead>

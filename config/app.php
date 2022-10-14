@@ -191,6 +191,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        \Maatwebsite\Excel\ExcelServiceProvider::class
     ],
 
     /*
@@ -248,6 +249,7 @@ return [
 
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

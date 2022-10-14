@@ -7,42 +7,41 @@
         font-family: Arial, Helvetica, sans-serif
     }
 
-    .invoice-title{
-        font-size: 1.3rem;
+    .invoice-title {
+        font-size: 1rem;
     }
 
     #invoice-container {
-        font-size: 1rem;
         max-width: 80mm;
         border-collapse: collapse;
         margin-left: 10px;
         text-transform: uppercase;
-        /* background: #000; */
+        font-size: 0.8rem;
         /* background: red; */
     }
 
-    #invoiceTable * {
-        font-size: 1rem;
-    }
 
     table {
+        width: 100%;
         border-collapse: collapse;
     }
 
-    #invoiceTable td,
     #invoiceTable th {
-        border-bottom: 1px dashed rgb(201, 195, 195);
         padding: 3px;
         margin: 2px;
     }
 
     #invoiceTable th {
-        border-bottom: 1px solid rgb(201, 195, 195);
-        font-size: 1rem;
+        border-bottom: 1pt solid black;
     }
 
+    #invoiceTable tr {
+        border-bottom: .3pt solid black;
+    }
+
+    #invoiceTable th,
     #invoiceTable td {
-        font-size: 1rem;
+        font-size: .8rem;
     }
 
     #invoiceTable tr:nth-child(even) {
@@ -58,7 +57,6 @@
     }
 
     tfoot h6 {
-        font-size: .9rem!important;
         margin: 0;
         font-family: 'arial';
     }
@@ -73,27 +71,29 @@
 
     .title {
         text-align: center;
-        margin-top: 35px;
-        font-size: 1.5rem;
+        margin-top: 15px;
     }
-    .invoice-title{
+
+    .invoice-title {
         text-align: center;
-        margin: 10px auto;
+        margin-bottom: 10px;
+        /* margin: 10px auto; */
     }
 
     .caption {
         margin: 10px auto;
-        font-size: 1rem;
+        font-size: .9rem;
         font-family: 'arial';
         text-transform: uppercase;
     }
 
-    p{
-        font-size: 1rem;
+    .thank-text {
+        margin-top: 15px;
+        font-size: .8rem;
     }
 
     .print-text {
         font-style: italic;
-        font-size: .77rem
+        font-size: .6rem;
     }
 </style>

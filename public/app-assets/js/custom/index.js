@@ -10,6 +10,8 @@ $(document).ready(function() {
     if ($("table.icheck input").length) {
         icheckConfig();
     }
+
+    $("input[type='number']").attr("step","0.01");
     
     $(".select2").select2();
 });

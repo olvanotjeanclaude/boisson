@@ -30,8 +30,10 @@
                 @empty
                 @endforelse
             </tbody>
-            <br>
-            <tfoot>
+        </table>
+        <br>
+        <table>
+            <tbody>
                 @isset($amount)
                     <tr>
                         <td colspan="1">
@@ -107,8 +109,7 @@
                         </tr>
                     @endforeach
                 @endisset
-
-            </tfoot>
+            </tbody>
         </table>
     </div>
 @else
