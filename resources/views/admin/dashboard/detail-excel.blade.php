@@ -12,13 +12,13 @@
 
 @if (count($solds))
     <table>
-        <thead>
+        <thead style="text-transform: uppercase">
             <tr>
-                <th>Désignation</th>
-                <th>Quantité</th>
-                <th>Prix Unitaire</th>
-                <th>Montant</th>
-                <th>Date</th>
+                <th style="font-weight: bold">Désignation</th>
+                <th style="font-weight: bold">Quantité</th>
+                <th style="font-weight: bold">Prix Unitaire</th>
+                <th style="font-weight: bold">Montant</th>
+                <th style="font-weight: bold">Date</th>
             </tr>
         </thead>
         <tbody>

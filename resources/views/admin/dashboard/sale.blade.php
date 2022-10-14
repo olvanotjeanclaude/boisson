@@ -62,6 +62,7 @@
                                 <th>Désignation</th>
                                 <th>Quantité</th>
                                 <th>Prix Unitaire</th>
+                                <th>Date</th>
                                 <th>Montant</th>
                             </tr>
                         </thead>
@@ -76,6 +77,9 @@
                                     </td>
                                     <td>
                                         {{ formatPrice($data->pricing) }}
+                                    </td>
+                                    <td>
+                                        {{ format_date($data->received_at) }}
                                     </td>
                                     <td>
                                         {{ formatPrice($data->sub_amount) }}

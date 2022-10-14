@@ -31,12 +31,15 @@
         margin: 2px;
     }
 
-    #invoiceTable th {
-        border-bottom: 1pt solid black;
+    #invoiceTable th,
+    #invoiceTable td {
+        padding: 15px 5px;
+        text-align: start;
     }
 
-    #invoiceTable tr {
-        border-bottom: .3pt solid black;
+    #invoiceTable th,
+    #invoiceTable td {
+        border: 1px solid black;
     }
 
     #invoiceTable th,

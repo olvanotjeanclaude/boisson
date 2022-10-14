@@ -80,7 +80,9 @@ class SaleController extends Controller
                     $downloadRoute =  route('admin.print.sale.download', $doc->doc_number);
                     $printRoute = route('admin.print.sale.preview', $doc->doc_number);
                     $paymentRoute = route('admin.sale.paymentForm', $doc->doc_number);
+                    $detailRoute = route('admin.print.sale', $doc->doc_number);
 
+                    $actionBtn .= Columns::setButton("Voir", $detailRoute, "eye");
                     $actionBtn .= Columns::setButton("Telecharger", $downloadRoute, "download");
                     $actionBtn .= Columns::setButton("Imprimer", $printRoute, "print");
 

@@ -41,10 +41,10 @@
             <b>Client : </b> {{ $customer ? $customer->identification : '' }}
         </span>
         <br>
-        <span>
+        {{-- <span>
             <b>Adresse :</b> {{ $customer ? $customer->address : '' }}
-        </span>
-        <br>
+        </span> --}}
+       
         {{-- <span>
             <b>Téléphone :</b> {{ $customer ? $customer->phone : '' }}
         </span> --}}

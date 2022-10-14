@@ -79,7 +79,13 @@ function get_user_name()
 
 function  formatPrice($price, $devise = "Ar")
 {
-    return  getNumberDecimal($price) . " $devise";
+    $price = number_format($price, 2, ",", " ");
+
+    $arrayPrice = explode(",", $price);
+
+    $price = isset($arrayPrice[1]) && $arrayPrice[1] > 0 ? $price : $arrayPrice[0];
+
+    return "$price $devise";
 }
 
 function generateInteger($n = 6): string
@@ -138,16 +144,16 @@ function validDate($date)
 
 function getNumberDecimal($number)
 {
-    if(!$number){
+    if (!$number) {
         return 0;
     }
-    
+
     $array = explode(".", $number);
 
     return isset($array[1]) && $array[1] > 0 ? $number : $array[0];
 }
 
-function is_decimal( $val )
+function is_decimal($val)
 {
-    return is_numeric( $val ) && floor( $val ) != $val;
+    return is_numeric($val) && floor($val) != $val;
 }

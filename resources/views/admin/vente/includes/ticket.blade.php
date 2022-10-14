@@ -24,7 +24,7 @@
                     {{ $preInvoice->pricing }}
                 </td>
                 <td style="width: auto" class="text-right">
-                    {{ ($preInvoice->sub_amount) }}
+                    {{ $preInvoice->sub_amount }}
                 </td>
                 <td style="width: 50px">
                     <form method="POST" action="{{ route('admin.ventes.destroy', $preInvoice->id) }}">
@@ -38,26 +38,29 @@
             </tr>
         @endif
     @endforeach
-    <tr>
-        <td style="border: none" colspan="2" class="text-right">
-            <b>Total : </b>
-        </td>
-        <td style="border: none" class="text-right" colspan="3">
-            {{ formatPrice(abs($amount), 'Ariary') }}
-        </td>
-    </tr>
-    <tr>
-        <td style="border: none" colspan="2" class="text-right">
-            <b>Total En Fmg: </b>
-        </td>
-        <td style="border: none" class="text-right" colspan="3">
-            {{ formatPrice(abs($amount * 5), 'Fmg') }}
-        </td>
-    </tr>
 @endsection
 
 @section('footer')
+    <table style="width: 100%">
+        <tbody style="">
+            <tr>
+                <td style="border: none; width:60%;"  class="text-right">
+                    <b>Total : </b>
+                </td>
+                <td style="border: none" class="text-right">
+                    {{ formatPrice(abs($amount), 'Ariary') }}
+                </td>
+            </tr>
+            <tr>
+                <td style="border: none; width:60%;"  class="text-right">
+                    <b>Total En Fmg: </b>
+                </td>
+                <td style="border: none" class="text-right">
+                    {{ formatPrice(abs($amount * 5), 'Fmg') }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
     {{-- <p class="m-0"><b>Total : </b>{{ formatPrice(abs($amount), 'Ariary') }}</p>
     <p class="m-0"><b>Total En Fmg : </b>{{ formatPrice(abs($amount * 5), 'Ariary') }}</p> --}}
 @endsection
-

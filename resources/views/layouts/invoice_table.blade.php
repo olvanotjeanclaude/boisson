@@ -16,7 +16,7 @@
                             <td>
                                 {{ Str::title($data->saleable->designation) }}
                             </td>
-                            <td style="text-align: :center">
+                            <td style="text-align:center">
                                 {{ $data->quantity }}
                             </td>
                             <td>

@@ -2,16 +2,16 @@
    #invoiceTableTemplateContainer{
     overflow: auto;
    }
+
    #invoiceTableTemplateContainer * {
        font-family: Arial, Helvetica, sans-serif;
-       color: rgb(55, 52, 52);
+       color: black;
     }
 
-    #invoiceTableTemplate td{
-        border-bottom: 1px dashed rgb(222, 222, 222);
-    }
+    #invoiceTableTemplate td,
     #invoiceTableTemplate th{
-        border-bottom: 1px solid rgb(201, 195, 195);
+        border: .5px solid black;
+        padding: 3px;
     }
     
 </style>
