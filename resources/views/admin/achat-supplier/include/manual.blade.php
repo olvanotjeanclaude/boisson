@@ -28,7 +28,7 @@
                     <label class="text-bold-400 text-dark" for="quantity">
                         Quantité
                     </label>
-                    <input type="number" placeholder="0" class="form-control" required id="quantity"
+                    <input type="number" step="0.01" placeholder="0" class="form-control" required id="quantity"
                         name="quantity" value="{{ old('quantity') }}">
                     <div class="invalid-feedback">
                         Entrer le nombre de bouteille

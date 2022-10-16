@@ -150,7 +150,7 @@
                 </li>
             @endcan
 
-            @can('make sale')
+            @can('view sale')
                 <li class="nav-item">
                     <a href="{{ route('admin.ventes.index') }}">
                         <span class="material-icons">

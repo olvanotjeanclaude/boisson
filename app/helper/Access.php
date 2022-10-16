@@ -11,15 +11,15 @@ class Access
         "admin" => 2,
         "caisse" => 3,
         "facturation" => 4,
-        "responsable stock" =>5
+        "responsable stock" => 5
     ];
 
     const PERMISSIONS = [
-        "view_customer","create_customer","update_customer",
+        "view_customer", "create_customer", "update_customer",
         "view all",
         "create user",
         "create emballage",
-        "view article","create article","edit article","update article","delete article",
+        "view article", "create article", "edit article", "update article", "delete article",
         "edit articles",
         "edit selling price",
         "edit sales",
@@ -45,25 +45,27 @@ class Access
         "out_stock",
         "valid_stock",
         "print_stock",
-        "view_intern_doc"
+        "view_intern_doc",
+
+        "make sale", "view sale",
     ];
 
     const CAISSE = [
-        "view_customer","create_customer","update_customer",
+        "view_customer", "create_customer", "update_customer",
         "make payment",
         "print sale",
         "view dashboard",
         "view article",
         "view stock",
-        "make sale",
+        "view sale",
     ];
 
     const FACTURATION = [
-        "view_customer","create_customer","update_customer",
+        "view_customer", "create_customer", "update_customer",
         "view article",
         "make sale",
         "view stock",
-        "make sale",
+        "make sale", "view sale",
     ];
 
     const STOCKER = [
@@ -84,8 +86,8 @@ class Access
                 $role = self::getRoleRequest();
             }
 
-            $role = request()->permission_access??$role;
-           
+            $role = request()->permission_access ?? $role;
+
             switch ($role) {
                 case Access::ROLES["admin"]:
                     $user->syncPermissions(Access::PERMISSIONS);
@@ -105,7 +107,7 @@ class Access
             }
 
             DB::table("model_has_roles")->where("model_type", "App\Models\User")
-            ->where("model_id", $user->id)->delete();
+                ->where("model_id", $user->id)->delete();
             $user->assignRole($role);
         }
     }

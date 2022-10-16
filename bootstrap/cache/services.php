@@ -42,6 +42,7 @@
     38 => 'Barryvdh\\DomPDF\\ServiceProvider',
     39 => 'Yajra\\Datatables\\DatatablesServiceProvider',
     40 => 'Spatie\\Permission\\PermissionServiceProvider',
+    41 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
   ),
   'eager' => 
   array (
@@ -72,6 +73,7 @@
     24 => 'Barryvdh\\DomPDF\\ServiceProvider',
     25 => 'Yajra\\Datatables\\DatatablesServiceProvider',
     26 => 'Spatie\\Permission\\PermissionServiceProvider',
+    27 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
   ),
   'deferred' => 
   array (

@@ -146,7 +146,7 @@ class SaleController extends Controller
 
     public function create()
     {
-        abort_if(!currentUser()->can("make sale"), 403);
+        abort_if(currentUser()->cannot("make sale"), 403);
         $customers = Customers::orderBy("identification", "asc")->get();
 
         $articles = Product::orderBy("designation")->get();
@@ -169,6 +169,7 @@ class SaleController extends Controller
     public function store(VenteValidation $request, FormatRequest $formatRequest)
     {
         // dd($request->all());
+        abort_if(currentUser()->cannot("make payment"), 403);
         $articles = $deconsignations = $errorStocks = [];
 
         switch ($request->article_type) {
@@ -299,11 +300,11 @@ class SaleController extends Controller
 
         foreach ($products as  $product) {
             $article = Stock::getArticleByReference($product["article_reference"]);
-
+            
             if ($article) {
-                $unity = Articles::PACKAGE_TYPES[$article->unity] ?? null;
-
-                if ($unity != "fut" && is_decimal($product["sum_quantity"])) {
+                $package_type = Articles::PACKAGE_TYPES[$article->package_type] ?? null;
+                // dd($package_type);
+                if ($package_type != "fut" && is_decimal($product["sum_quantity"])) {
                     $errors[] = "L'article non liquide ne peut pas être décimal";
                 }
             }

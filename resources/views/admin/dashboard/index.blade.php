@@ -37,7 +37,7 @@
         'page' => 'Dashboard',
         'breadcrumbs' => [['text' => 'Recapilatif', 'link' => '#']],
         'actionBtn' => [
-            'text' => 'Nouveau Vente',
+            'text' => 'Nouvelle Vente',
             'link' => route('admin.ventes.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => currentUser()->can('make sale'),

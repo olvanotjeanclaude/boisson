@@ -3,7 +3,7 @@
             class="float-md-left d-block d-md-inline-block">Copyright &copy; {{ date('Y') }} <a
                 class="text-bold-800 grey darken-2" href="#"
                 target="_blank">{{ getAppName() }}</a></span><span class="float-md-right d-none d-lg-block">
-                    <a href="mailto:jonths@outlook.com">Jonathan & Olvanot</a>
+                    <a target="_blank" href="https://forms.office.com/r/0NykmQH7Y4">Jonathan & Olvanot</a>
             <i class="ft-heart pink"></i>
             <span id="scroll-top"></span></span></p>
 </footer>

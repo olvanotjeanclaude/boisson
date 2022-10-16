@@ -50,14 +50,14 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::get("/dashboard/detail", [\App\Http\Controllers\admin\AdminController::class, "detail"])->name("dashboard.detail");
     Route::get("/dashboard/export-detail-excel", [\App\Http\Controllers\admin\AdminController::class, "exportExcel"])->name("dashboard.exportExcel");
     Route::get("/dashboard/detail-data", [\App\Http\Controllers\admin\AdminController::class, "detailData"])->name("dashboard.detailData");
-        
+
     Route::group(["middleware" => "can:view dashboard"], function () {
         Route::get("dashboard/facture/impression", [\App\Http\Controllers\admin\AdminController::class, "printReport"])->name("dashboard.printReport");
         Route::get("dashboard/facture/telecharger", [\App\Http\Controllers\admin\AdminController::class, "download"])->name("dashboard.download");
     });
 
     //Articles & Emballages
-    Route::group(["middleware" =>"can:view article"],function(){
+    Route::group(["middleware" => "can:view article"], function () {
         Route::resource("articles", \App\Http\Controllers\admin\article\ArticleController::class);
         Route::resource("category-articles", \App\Http\Controllers\admin\article\CategoryArticleController::class)->except("show");
         Route::group(["prefix" => "produits", "as" => "approvisionnement."], function () {
@@ -77,8 +77,8 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
         Route::resource("stocks", \App\Http\Controllers\admin\article\StockController::class);
         Route::get("get-stock-data", [\App\Http\Controllers\admin\article\StockController::class, "getData"])->name("stocks.getData");
         Route::get("print-report-stock", [\App\Http\Controllers\admin\article\StockController::class, "printReport"])->name("stocks.printReport");
-        
-        Route::group(["prefix" => "etat-emballages","as" =>"etat-emballages."],function(){
+
+        Route::group(["prefix" => "etat-emballages", "as" => "etat-emballages."], function () {
             Route::get("/", [\App\Http\Controllers\admin\article\EtatEmballageController::class, "index"])->name("index");
             Route::get("imprimer", [\App\Http\Controllers\admin\article\EtatEmballageController::class, "printReport"])->name("printReport");
         });
@@ -114,11 +114,9 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     Route::get("{type}/detail/{invoice_number}/print", [\App\Http\Controllers\admin\impression\ImpressionController::class, "print"])->name("document.print");
 
     // Ventes
-    Route::group(["middleware" =>"can:make sale"],function(){
-        Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
-        Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm")->middleware("can:make payment");
-        Route::post("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentStore"])->name("sale.paymentStore");
-    });
+    Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
+    Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm")->middleware("can:make payment");
+    Route::post("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentStore"])->name("sale.paymentStore")->middleware("can:make payment");
 
     // Client
     Route::resource("clients", \App\Http\Controllers\admin\customer\CustomerController::class);
@@ -126,7 +124,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
     // Sortie de stock
     // sample out stock
-    Route::group(["middleware" =>"can:view_intern_doc"],function(){
+    Route::group(["middleware" => "can:view_intern_doc"], function () {
         Route::resource("sorti-stocks", App\Http\Controllers\admin\article\StockOutController::class);
         Route::group(["prefix" => "sorti-stocks/{invoice_number}", "as" => "sorti-stocks."], function () {
             Route::get("/imprimer", [App\Http\Controllers\admin\article\StockOutController::class, "print"])->name("print");
