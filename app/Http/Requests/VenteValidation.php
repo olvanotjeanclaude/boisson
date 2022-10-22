@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Sale;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class VenteValidation extends FormRequest
@@ -17,80 +15,21 @@ class VenteValidation extends FormRequest
         ];
 
         $article = [
-            "article_type" => ["required", Rule::in(array_keys(Sale::ACTION_TYPES))],
-
-            "article_reference" => "required_if:article_type,avec-consignation",
-            "quantity" => "required_if:article_type,avec-consignation",
-            // "tab1Deco.row_1.reference" => [
-            //     request()->article_type == "avec-consignation" && request()->withBottle == "on" ? "required" : "",
-            //     "required_with:tab1Deco.row_1.quantity"
-            // ],
-            // "tab1Deco.row_2.reference" => "required_with:tab1Deco.row_2.quantity",
-            // "tab1Deco.row_1.quantity" => "required_with:tab1Deco.row_1.reference",
-            // "tab1Deco.row_2.quantity" => "required_with:tab1Deco.row_2.reference",
-
-            // "tab2Deco.row_1.reference" => "required_if:article_type,deconsignation",
-            // "tab2Deco.row_1.reference" => "required_with:tab2Deco.row_1.quantity",
-            // "tab2Deco.row_2.reference" => "required_with:tab2Deco.row_2.quantity",
-            // "tab2Deco.row_1.quantity" => "required_with:tab2Deco.row_1.reference",
-            // "tab2Deco.row_2.quantity" => "required_with:tab2Deco.row_2.reference",
+            "article_reference" => "required|numeric",
+            "quantity" => "required|numeric",
         ];
-
-        $article = array_merge($article,$this->validDeconsignation());
-        // dd($article);
 
         return isset(request()->saveData) ? $withCustomer : $article;
     }
 
 
-    private  function validDeconsignation()
-    {
-        $rules = [];
-
-        $articleType = request()->article_type;
-        // dd($articleType);
-
-        switch ($articleType) {
-            case 'avec-consignation':
-                if (request()->withBottle == "on") {
-                    $rules = [
-                        "tab1Deco.row_1.reference" => [
-                            "required_without:tab1Deco.row_2.reference",
-                            "required_with:tab1Deco.row_1.quantity"
-                        ],
-                        "tab1Deco.row_2.reference" => [
-                            "required_with:tab1Deco.row_2.quantity"
-                        ],
-                        "tab1Deco.row_1.quantity" => "required_with:tab1Deco.row_1.reference",
-                        "tab1Deco.row_2.quantity" => "required_with:tab1Deco.row_2.reference",
-                    ];
-                }
-                break;
-            case 'deconsignation':
-                $rules = [
-                    "tab2Deco.row_1.reference" => [
-                        "required_without:tab2Deco.row_2.reference",
-                        "required_with:tab2Deco.row_1.quantity"
-                    ],
-                    "tab2Deco.row_2.reference" => [
-                        "required_with:tab2Deco.row_2.quantity"
-                    ],
-                    "tab2Deco.row_1.quantity" => "required_with:tab2Deco.row_1.reference",
-                    "tab2Deco.row_2.quantity" => "required_with:tab2Deco.row_2.reference",
-                ];
-                break;
-
-            default:
-                // ....
-                break;
-        }
-        // dd($rules,$articleType);
-        return $rules;
-    }
-
     public  function messages()
     {
         return [
+            "article_reference.required" =>"Veuillez selectionner l'article",
+            "quantity.required" =>"Entrer le nombre de bouteille",
+            "quantity.numeric" =>"a quantité doit être un nombre",
+
             "article_type.required" => "Type d'article incorrect",
             "customer_id.required_if" => "Selectionner le client",
             "customer_identification.required_if" => "Enter l'identification du client",

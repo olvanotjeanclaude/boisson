@@ -12,7 +12,7 @@
     @include('includes.content-header', [
         'page' => 'Vente',
         'breadcrumbs' => [
-            ['text' => 'Facture', 'link' => route('admin.ventes.index')],
+            ['text' => 'Ventes', 'link' => route('admin.ventes.index')],
             ['text' => 'Payment', 'link' => '#'],
         ],
         'actionBtn' => [
@@ -61,19 +61,7 @@
                                     </div>
                                 </div>
 
-                                @if ($actionType == 'deconsignation')
-                                    <div class="col-sm mt-1">
-                                        <div class="form-group">
-                                            <label class="text-bold-400 text-dark" for="checkout">
-                                                Sortie De Caisse
-                                            </label>
-                                            <input type="number" step="0.001" id="checkout" value="{{ abs($rest) }}"
-                                                name="checkout" class="form-control" placeholder="0 Ariary">
-                                        </div>
-                                    </div>
-                                @endif
-
-                                @if ($actionType == 'avec-consignation')
+                                @if ($rest > 0)
                                     <div class="col-sm mt-1">
                                         <div class="form-group">
                                             <label class="text-bold-400 text-dark" for="paid">
@@ -86,6 +74,16 @@
                                             </div>
                                         </div>
                                     </div>
+                                @else
+                                    <div class="col-sm mt-1">
+                                        <div class="form-group">
+                                            <label class="text-bold-400 text-dark" for="checkout">
+                                                Sortie De Caisse
+                                            </label>
+                                            <input type="number" step="0.001" id="checkout" value="{{ abs($rest) }}"
+                                                name="checkout" class="form-control" placeholder="0 Ariary">
+                                        </div>
+                                    </div>
                                 @endif
 
                                 <div class="col-md-8 mt-1">
@@ -96,7 +94,7 @@
                                         <textarea name="comment" id="comment" class="form-control" rows="3">{{ $invoice->comment }}</textarea>
                                     </div>
                                 </div>
-                               
+
                                 @if ($rest != 0)
                                     <div class="col-12">
                                         <button type="submit"

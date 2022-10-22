@@ -19,16 +19,12 @@ class PaymentController extends Controller
         $paid = DocumentVente::Paid($invoiceNumber);
         $rest = DocumentVente::Rest($invoiceNumber);
         $amount = DocumentVente::TotalAmount($invoiceNumber);
-
-        $firstSold = $invoice->sales()->firstOrFail();
-        $actionType = array_search($firstSold->action_type, Sale::ACTION_TYPES);
-
+       
         return view("admin.vente.payment", compact(
             "invoice",
             "paid",
             "rest",
             "amount",
-            "actionType"
         ));
     }
 

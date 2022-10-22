@@ -27,8 +27,34 @@ class SaleController extends Controller
     public function index()
     {
         $columns = json_encode($this->getFormatedCols());
-
+        $docSales = $this->docSales();
+        // dd($docSales);
         return view("admin.vente.index", compact("columns"));
+    }
+
+    private function docSales()
+    {
+        $docSales = DB::table('document_ventes')
+            ->select([
+                "status as doc_status",
+                "number as doc_number",
+                DB::raw("(SELECT CONCAT(code,'',identification) FROM customers 
+                        WHERE customer_id = customers.id) as customer"),
+                DB::raw("(SELECT COUNT(*) FROM sales 
+                        WHERE sales.invoice_number = document_ventes.number) as count_sale"),
+                "received_at as doc_date",
+                DB::raw("SUM(paid) as sum_paid"),
+                DB::raw("SUM(checkout) as sum_checkout"),
+                DB::raw("(SELECT CONCAT(name,'-',surname) FROM users
+                        WHERE users.id=document_ventes.user_id
+                ) as user")
+            ])
+            ->whereNotNull("received_at");
+        // ->orderByDesc("id")
+        // ->groupBy("number");
+        // ->get()
+
+        return $docSales;
     }
 
     public function ajaxPostData(Request $request)
@@ -36,37 +62,49 @@ class SaleController extends Controller
         if ($request->ajax()) {
             $keyword = strtolower($request->searchInput);
             $keyword = trim($keyword);
+            $clCode = substr($keyword, 2);
+            $valideDate = validDate($keyword);
 
             $docSales = DB::table('document_ventes')
                 ->select([
-                    "document_ventes.id as doc_id",
-                    "document_ventes.status as doc_status",
-                    "document_ventes.number as doc_number",
-                    "customers.identification as customer_name",
-                    "customers.code as customer_code",
-                    "document_ventes.received_at as doc_date",
-                    DB::raw("SUM(document_ventes.paid) as sum_paid"),
-                    DB::raw("SUM(document_ventes.checkout) as sum_checkout"),
-                    DB::raw("COUNT(sales.invoice_number) as count_sale"),
+                    "id as doc_id",
+                    "status as doc_status",
+                    "number as doc_number",
+                    DB::raw("(SELECT code FROM customers 
+                        WHERE customer_id = customers.id) as customer_code"),
+                    DB::raw("(SELECT identification FROM customers 
+                        WHERE customer_id = customers.id) as customer_name"),
+                    DB::raw("(SELECT COUNT(*) FROM sales 
+                        WHERE sales.invoice_number = document_ventes.number) as count_sale"),
+                    "received_at as doc_date",
+                    DB::raw("SUM(paid) as sum_paid"),
+                    DB::raw("SUM(checkout) as sum_checkout"),
+                    DB::raw("(SELECT CONCAT(name,' ',surname) FROM users
+                        WHERE users.id=document_ventes.user_id
+                ) as user")
                 ])
-                ->join("customers", "customers.id", "document_ventes.customer_id")
-                ->join("sales", "sales.invoice_number", "document_ventes.number");
+                ->whereNotNull("received_at");
 
-            $docSales = $docSales->when(getUserPermission() == "facturation", function ($q) {
-                return $q->where("document_ventes.user_id", auth()->user()->id)
-                    ->where("sales.user_id", auth()->user()->id);
-            })
-                ->groupBy("sales.invoice_number")
-                ->orderBy("document_ventes.id", "desc");
+            // $docSales = $docSales->when(getUserPermission() == "facturation", function ($q) {
+            //     return $q->where("user_id", auth()->user()->id)
+            //         ->where("sales.user_id", auth()->user()->id);
+            // })
+
+            $docSales = $docSales->whereNotNull("received_at")
+                ->orderByDesc("id")
+                ->groupBy("number")
+                // ->get();
+            ;
+            // dd($docSales);
 
             return DataTables::of($docSales)
                 ->setRowId(fn ($doc) => "row_$doc->doc_id")
                 ->addColumn("status", fn ($doc) => Sale::getStatusHtml($doc->doc_status))
                 ->addColumn("numero", fn ($doc) => $doc->doc_number)
-                ->addColumn("sum_paid", fn ($doc) => formatPrice($doc->sum_paid))
-                ->addColumn("sum_checkout", fn ($doc) => formatPrice($doc->sum_checkout))
+                ->addColumn("sum_paid", fn ($doc) => formatPrice($doc->sum_paid ?? 0))
+                ->addColumn("sum_checkout", fn ($doc) => formatPrice($doc->sum_checkout ?? 0))
                 ->addColumn("client", fn ($doc) => strtoupper($doc->customer_name ?? "-"))
-                ->addColumn("code_du_client", fn ($doc) => strtoupper("CL" . $doc->customer_code ?? "-"))
+                ->addColumn("code_du_client", fn ($doc) => "CL$doc->customer_code")
                 ->addColumn("date", fn ($doc) =>   format_date($doc->doc_date))
                 ->addColumn('action', function ($doc) {
                     $actionBtn = '<span class="dropdown">
@@ -94,19 +132,19 @@ class SaleController extends Controller
 
                     return $actionBtn;
                 })
-                ->filter(function ($query) use ($keyword) {
-                    $clCode = substr($keyword, 2);
-                    $valideDate = validDate($keyword);
+                // ->filter(function ($query) use ($keyword) {
+                //     $clCode = substr($keyword, 2);
+                //     $valideDate = validDate($keyword);
 
-                    $query =  $query->orWhere("document_ventes.number", "LIKE", "%$keyword%");
+                //     if ($valideDate) {
+                //         $query = $query->whereDate("received_at", $valideDate);
+                //     }
 
-                    if ($valideDate) {
-                        $query = $query->whereDate("document_ventes.received_at", $valideDate);
-                    }
+                //     return $query;
 
-                    $query = $query->orWhere("customers.code", "LIKE", "%$clCode%");
-                    return $query->orWhere("customers.identification", "LIKE", "%$keyword%");
-                })
+                //     // return $query;
+                //     // return $query->orWhere("customers.identification", "LIKE", "%$keyword%");
+                // })
                 ->rawColumns(["status", "action"])
                 ->make(true);
         }
@@ -116,6 +154,7 @@ class SaleController extends Controller
     {
         return [
             ["data" => "status", "name" => "status", "searchable" => false],
+            // ["data" => "count_sale", "name" => "count_sale", "title" => "article", "searchable" => false],
             ["data" => "numero", "name" => "number"],
             ["data" => "client", "name" => "client", "title" => "Client"],
             ["data" => "code_du_client", "name" => "code_du_client", "title" => "CL code"],
@@ -168,36 +207,34 @@ class SaleController extends Controller
 
     public function store(VenteValidation $request, FormatRequest $formatRequest)
     {
-        // dd($request->all());
         abort_if(currentUser()->cannot("make payment"), 403);
-        $articles = $deconsignations = $errorStocks = [];
 
-        switch ($request->article_type) {
-            case 'avec-consignation':
-                $articles = $formatRequest->getArticleAndConsignation(
-                    $request->article_reference,
-                    $request->quantity
-                );
-
-                if (isset($request->withBottle) && $request->withBottle == "on") {
-                    $deconsignations = $formatRequest->getAllDeconsignations($request->tab1Deco);
-                }
-                break;
-
-            case "deconsignation":
-                $deconsignations = $formatRequest->getAllDeconsignations($request->tab2Deco);
-                // dd($deconsignations);
-                break;
-            default:
-                break;
-        }
+        $articles = $deconsignation = $errorStocks = [];
+        $article = Stock::getArticleByReference($request->article_reference);
+        $articleType = $article ? get_class($article) : null;
 
         if (isset($request->saveData)) {
             return $this->saveSaleCustomer($request);
         }
 
-        $datas = $this->generateInvoiceNumberTo([...$articles, ...$deconsignations]);
-        // dd($datas);
+        switch ($articleType) {
+            case 'App\Models\Product':
+                $articles = $formatRequest->getArticleAndConsignation(
+                    $request->article_reference,
+                    $request->quantity
+                );
+                break;
+            case 'App\Models\Emballage':
+                $deconsignation = $formatRequest->getDeconsignation();
+                break;
+
+            default:
+                return back()->withErrors(["Article n'existe pas!"]);
+                break;
+        }
+
+        $datas = $this->generateInvoiceNumberTo([...$articles, ...$deconsignation]);
+
         if (count($datas)) {
             $products = $this->getProductRequest($datas);
             $errorStocks = $this->getErrorStocks($products);
@@ -300,7 +337,7 @@ class SaleController extends Controller
 
         foreach ($products as  $product) {
             $article = Stock::getArticleByReference($product["article_reference"]);
-            
+
             if ($article) {
                 $package_type = Articles::PACKAGE_TYPES[$article->package_type] ?? null;
                 // dd($package_type);

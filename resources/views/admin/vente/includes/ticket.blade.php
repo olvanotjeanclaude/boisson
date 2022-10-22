@@ -48,7 +48,7 @@
                     <b>Total : </b>
                 </td>
                 <td style="border: none" class="text-right">
-                    {{ formatPrice(abs($amount), 'Ariary') }}
+                    {{ formatPrice($amount, 'Ariary') }}
                 </td>
             </tr>
             <tr>
@@ -56,11 +56,9 @@
                     <b>Total En Fmg: </b>
                 </td>
                 <td style="border: none" class="text-right">
-                    {{ formatPrice(abs($amount * 5), 'Fmg') }}
+                    {{ formatPrice($amount * 5, 'Fmg') }}
                 </td>
             </tr>
         </tbody>
     </table>
-    {{-- <p class="m-0"><b>Total : </b>{{ formatPrice(abs($amount), 'Ariary') }}</p>
-    <p class="m-0"><b>Total En Fmg : </b>{{ formatPrice(abs($amount * 5), 'Ariary') }}</p> --}}
 @endsection

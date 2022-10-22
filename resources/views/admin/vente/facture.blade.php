@@ -10,13 +10,18 @@
 
 @section('css')
     <style>
-        td{
+        td {
             padding: 3px;
         }
+
         .label {
             font-weight: bold;
             text-align: right;
             width: 100px;
+        }
+        .price{
+            font-weight: bold;
+            font-size: 1.2rem
         }
     </style>
 @endsection
@@ -30,10 +35,6 @@
             <b>Date :</b> {{ format_date($invoice->received_at) }}
         </span>
         <br>
-        {{-- <span>
-            <b>Caisse :</b> {{ Str::upper($invoice->user ? $invoice->user->full_name : '') }}
-        </span>
-        <br> --}}
         @php
             $customer = $invoice->customer;
         @endphp
@@ -41,13 +42,6 @@
             <b>Client : </b> {{ $customer ? $customer->identification : '' }}
         </span>
         <br>
-        {{-- <span>
-            <b>Adresse :</b> {{ $customer ? $customer->address : '' }}
-        </span> --}}
-       
-        {{-- <span>
-            <b>Téléphone :</b> {{ $customer ? $customer->phone : '' }}
-        </span> --}}
     </div>
 @endsection
 
@@ -73,10 +67,10 @@
                             {{ $data->quantity }}
                         </td>
                         <td>
-                            {{ ($data->pricing) }}
+                            {{ $data->pricing }}
                         </td>
                         <td style="text-align: right">
-                            {{ ($data->sub_amount) }}
+                            {{ $data->sub_amount }}
                         </td>
                     </tr>
                 @endif
@@ -89,19 +83,22 @@
     <table>
         <tr>
             <td class="label">Total :</td>
-            <td>{{  formatPrice(abs($amount), 'Ariary') }}</td>
+            <td class="price">{{ formatPrice($amount, 'Ar') }}</td>
         </tr>
         <tr>
             <td class="label">Ou :</td>
-            <td>{{  formatPrice(abs($amount*5), 'Fmg') }}</td>
+            <td class="price">{{ formatPrice($amount * 5, 'Fmg') }}</td>
         </tr>
         <tr>
-            <td class="label">Payé :</td>
-            <td>{{  formatPrice(abs($paid), 'Ariary') }}</td>
+            <td class="label">{{ $paid > 0 ? 'Payé' : 'Avoir' }} :</td>
+            <td class="price">{{ formatPrice($paid, 'Ar') }}</td>
         </tr>
-        <tr>
-            <td class="label">Credit :</td>
-            <td>{{  formatPrice(abs($reste), 'Ariary') }}</td>
-        </tr>
+
+        @if ($reste > 0)
+            <tr>
+                <td class="label">Credit :</td>
+                <td class="price">{{ formatPrice($reste, 'Ar') }}</td>
+            </tr>
+        @endif
     </table>
 @endsection

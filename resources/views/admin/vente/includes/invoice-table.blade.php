@@ -32,6 +32,8 @@
 @section('footer')
     <p class="m-0">Total: {{ formatPrice($amount) }}</p>
     <p class="m-0">Total En Fmg: {{ formatPrice($amount * 5, 'Fmg') }}</p>
-    <p class="m-0">Payé: {{ formatPrice($paid) }}</p>
-    <p class="m-0">Credit: {{ formatPrice($reste) }}</p>
+    <p class="m-0">{{ $paid > 0 ? 'Payé' : 'Avoir' }}: {{ formatPrice($paid) }}</p>
+    @if ($reste > 0)
+        <p class="m-0">Credit: {{ formatPrice($reste) }}</p>
+    @endif
 @endsection

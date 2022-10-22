@@ -45,20 +45,9 @@ class DocumentVente extends Model
             $query = $query->where("number", $number);
         }
 
-        $all = $query->get()->map(function ($doc) {
-            $firstSale = $doc->sales()->first();
-            if($firstSale){
-                $actionType = array_search($firstSale->action_type, Sale::ACTION_TYPES);
-                if ($actionType == "avec-consignation") {
-                    $doc->payment = $doc->paid;
-                } else {
-                    $doc->payment = -$doc->checkout;
-                }
-            }
-            return $doc;
-        });
+        $all = $query->get();
 
-        return $all->sum("payment");
+        return $all->sum("paid") - $all->sum("checkout");
     }
 
     public function scopeCheckout($query, $number = null)
@@ -71,9 +60,9 @@ class DocumentVente extends Model
 
     public static function Rest($number = null)
     {
-        $rest= self::totalAmount($number) - self::paid($number);
+        $rest = self::totalAmount($number) - self::paid($number);
 
-        return round($rest,2);
+        return round($rest, 2);
     }
 
     public function scopeTotalAmount($query, $number = null)
@@ -90,13 +79,14 @@ class DocumentVente extends Model
         return $sale->get()->sum("sub_amount");
     }
 
-    public function getStatusAttribute($value){
-        $rest= self::Rest($this->number);
-       
-        if($rest>0 && $value== Invoice::STATUS["paid"]){
-           $value = Invoice::STATUS["incomplete"];
+    public function getStatusAttribute($value)
+    {
+        $rest = self::Rest($this->number);
+
+        if ($rest > 0 && $value == Invoice::STATUS["paid"]) {
+            $value = Invoice::STATUS["incomplete"];
         }
-        
+
         return $value;
     }
 

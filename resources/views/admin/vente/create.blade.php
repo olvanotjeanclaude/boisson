@@ -41,30 +41,35 @@
                 <div class="card-content">
                     <form novalidate class="needs-validation" action="{{ route('admin.ventes.store') }}" method="POST">
                         @csrf
-                        <input type="hidden" id="actionType" value="{{ old('article_type') ?? 'avec-consignation' }}"
-                            name="article_type">
                         <div class="card-body">
-                            <ul class="nav nav-pills">
-                                <li class="nav-item">
-                                    <a class="nav-link action {{ old('article_type') == 'avec-consignation' ? 'active' : '' }}"
-                                        id="base-pill1" data-action="avec-consignation" data-toggle="pill" href="#pill1"
-                                        aria-expanded="true">Article Avec Consignation</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link action {{ old('article_type') == 'deconsignation' ? 'active' : '' }}"
-                                        id="base-pill2" data-toggle="pill" data-action="deconsignation" href="#pill2"
-                                        aria-expanded="false">Deconsignation</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content px-1 pt-1">
-                                <div role="tabpanel"
-                                    class="tab-pane {{ old('article_type') == 'avec-consignation' ? 'active' : '' }}"
-                                    id="pill1" aria-expanded="true" aria-labelledby="base-pill1">
-                                    @include('admin.vente.includes.consignation-form')
+                            <div class="row">
+                                <div class="col-sm-8 mt-1 col-article">
+                                    <label class="text-bold-400 label-control text-dark" for="article_reference">Articles</label>
+                                    <select name="article_reference" required class="form-control select2" id="article_reference">
+                                        <option value=''>Choisir</option>
+                                        @foreach ($articles as $article)
+                                            <option @if ($article->reference == old('article_reference')) selected @endif value="{{ $article->reference }}">
+                                                {{ $article->designation }}</option>
+                                        @endforeach
+                                        @foreach ($consignations as $article)
+                                            <option @if ($article->reference == old('article_reference')) selected @endif value="{{ $article->reference }}">
+                                                {{ $article->designation }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Selectionnez l'article
+                                    </div>
                                 </div>
-                                <div class="tab-pane {{ old('article_type') == 'deconsignation' ? 'active' : '' }}"
-                                    id="pill2" aria-labelledby="base-pill2">
-                                    @include('admin.vente.includes.deconsignation-form')
+                    
+                                <div class="col-sm-4 mt-1">
+                                    <label class="text-bold-400 text-dark" for="quantity">
+                                        Quantité
+                                    </label>
+                                    <input type="number" step="0.01" required placeholder="0" min="1" value="{{ old('quantity') }}" class="form-control"
+                                        id="quantity" name="quantity">
+                                    <div class="invalid-feedback">
+                                        Entrer le nombre de bouteille
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -19,7 +19,7 @@ class FormatRequest
                 "saleable_type" => get_class($article),
                 "quantity" => $quantity,
                 "user_id" => auth()->user()->id,
-                "received_at" =>now()->toDateString()
+                "received_at" => now()->toDateString()
             ];
         }
 
@@ -31,10 +31,10 @@ class FormatRequest
         $datas = [];
 
         $article = Product::whereReference($articleRef)->first();
-        $actionType = Sale::ACTION_TYPES[request()->article_type]??null;
-        $sampleConsignation = $article->simple_package??null;
-        $packConsignation = $article->big_package??null;
-        $unity = Articles::UNITS[$article->unity]??null;
+        $actionType = Sale::ACTION_TYPES["avec-consignation"];
+        $sampleConsignation = $article->simple_package ?? null;
+        $packConsignation = $article->big_package ?? null;
+        $unity = Articles::UNITS[$article->unity] ?? null;
         // $quantity = 100;
         // $divider =20;
 
@@ -55,7 +55,7 @@ class FormatRequest
                     $quantityPack = intval($quantity / $divider);
                     // dd($quantity, $rest,$quantityPack,$sampleConsignation,$packConsignation);
 
-                    if ($rest > 0) { 
+                    if ($rest > 0) {
                         $datas[] = $this->format_article($actionType, $article, $rest);
 
                         if ($sampleConsignation) {
@@ -78,7 +78,7 @@ class FormatRequest
             }
         }
 
-       return $datas;
+        return $datas;
     }
 
     public function getAllDeconsignations(array $emballages)
@@ -111,16 +111,33 @@ class FormatRequest
         return $datas;
     }
 
-    public function getEmballage($articleRef, int $quantity)
+    public function getEmballage($articleRef,  $quantity)
     {
         $data = null;
         $emballage = Emballage::where("reference", $articleRef)->first();
-        $actionType = Sale::ACTION_TYPES[request()->article_type];
+        $actionType = Sale::ACTION_TYPES["deconsignation"];
 
         if ($emballage && $quantity > 0) {
             $data = $this->format_article($actionType, $emballage, $quantity);
+            $data["isWithEmballage"] = true;
         }
 
         return $data;
+    }
+
+    public function getDeconsignation()
+    {
+        $request = request()->all();
+
+        $emballage = [];
+
+        if (isset($request["article_reference"]) && isset($request["quantity"])) {
+            $emballage = $this->getEmballage(
+                $request["article_reference"],
+                $request["quantity"]
+            );
+        }
+
+        return [$emballage];
     }
 }
