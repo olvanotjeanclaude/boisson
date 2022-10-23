@@ -32,6 +32,7 @@ class AdminController extends Controller
         $paymentTypes = $dashboard->getPaymentTypes($payments);
         // dd($paymentTypes);
         $recettes = $dashboard->getRecettes($solds, $docVente, $between);
+        // dd($recettes["sum_checkout"]);
         $recaps = $dashboard->getRecaps($between, $filterType);
 
         return view("admin.dashboard.index", [

@@ -78,32 +78,13 @@ class Sale extends Model
 
     public function getSubAmountAttribute()
     {
-        $sub_amount = $this->saleable ? $this->saleable->price * $this->quantity : 0;
-
-        if ($this->saleable_type == "App\Models\Product") {
-            $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
-            if ($this->quantity >= $divider) {
-                $sub_amount = $this->saleable->wholesale_price * $this->quantity;
-            }
-        }
-
-        $sub_amount= $this->isWithEmballage ? -$sub_amount : $sub_amount;
-
-        return getNumberDecimal($sub_amount);
+        return getNumberDecimal($this->pricing * $this->quantity);
     }
 
     public function getPricingAttribute()
     {
-        $price = $this->saleable->price;
 
-        if ($this->saleable_type == "App\Models\Product") {
-            $divider = $this->saleable->contenance ?? $this->saleable->condition ?? null;
-            if ($this->quantity >= $divider) {
-                $price = $this->saleable->wholesale_price;
-            }
-        }
-
-        return getNumberDecimal($price);
+        return getNumberDecimal($this->price);
     }
 
     public function getQuantityAttribute($value)
@@ -154,63 +135,5 @@ class Sale extends Model
             ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at')
             ->groupBy("article_reference")
             ->get();
-    }
-
-    public function scopeBottles($query, $type)
-    {
-        $bottles =  $query->whereHasMorph('saleable', [Emballage::class])->get();
-
-        switch ($type) {
-            case 'consignation':
-                $bottles = $bottles->where("isWithEmballage", false);
-                break;
-            case 'deconsignation':
-                $bottles = $bottles->where("isWithEmballage", true);
-                break;
-            default:
-                # code...
-                break;
-        }
-
-        return $bottles;
-    }
-
-    public  function scopeFilterBy($query, $type, $criteria = [])
-    {
-        $sales = self::whereNotNull("invoice_number")
-            ->whereNotNull("received_at");
-
-        switch ($type) {
-            case 'jour':
-                $date = $criteria["date"];
-                $sales = $sales->where("received_at", $date);
-                break;
-            case 'hebdomadaire':
-                $between = $criteria["between"];
-                $sales = $sales->whereBetween("received_at", $between);
-                break;
-            case 'mois':
-                $monthYear = $criteria["monthYear"];
-                $sales = $sales->whereMonth("received_at", $monthYear[0])
-                    ->whereYear("received_at", $monthYear[1]);
-                break;
-            case 'annuel':
-                $year = $criteria["year"];
-                $sales =  $sales->whereYear("received_at", $year);
-                break;
-            default:
-                $sales = $sales->where("received_at", date("Y-m-d"));
-                break;
-        }
-
-        return $sales->selectRaw('SUM(quantity) as sum_sale,invoice_number,article_reference,saleable_id,saleable_type, received_at, isWithEmballage')
-            ->groupBy("saleable_type", "saleable_id", "received_at", "isWithEmballage")
-            ->get()
-            ->map(function ($state) {
-                $state->amount = $state->sum_sale * $state->saleable->price;
-                $state->amount = $state->isWithEmballage ? -$state->amount : $state->amount;
-                $state->amount = $state->isWithEmballage ? -$state->amount : $state->amount;
-                return $state;
-            });
     }
 }

@@ -19,7 +19,8 @@ class FormatRequest
                 "saleable_type" => get_class($article),
                 "quantity" => $quantity,
                 "user_id" => auth()->user()->id,
-                "received_at" => now()->toDateString()
+                "received_at" => now()->toDateString(),
+                "price" => Pricing::getPrice($article, $quantity)
             ];
         }
 
@@ -116,10 +117,11 @@ class FormatRequest
         $data = null;
         $emballage = Emballage::where("reference", $articleRef)->first();
         $actionType = Sale::ACTION_TYPES["deconsignation"];
-
+        
         if ($emballage && $quantity > 0) {
             $data = $this->format_article($actionType, $emballage, $quantity);
             $data["isWithEmballage"] = true;
+            $data["price"] = -Pricing::getPrice($emballage, $quantity);
         }
 
         return $data;

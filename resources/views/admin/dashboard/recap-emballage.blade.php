@@ -26,12 +26,12 @@
                         Imprimer
                     </a>
                     <a 
-                        href="{{ route('admin.dashboard.download', [
-                            'start_date' => $between[0],
-                            'end_date' => $between[1],
-                            'filter_type' => request()->get('filter_type'),
-                            'chercher' => request()->get('chercher'),
-                        ]) }}"
+                    href="{{ route('admin.dashboard.exportExcel', [
+                        'start_date' => $between[0],
+                        'end_date' => $between[1],
+                        'filter_type' => request()->get('filter_type'),
+                        'chercher' => request()->get('chercher'),
+                    ]) }}"
                         class="btn btn-light">
                         <i class="la la-download"></i>
                         Telecharger

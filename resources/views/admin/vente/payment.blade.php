@@ -78,7 +78,7 @@
                                     <div class="col-sm mt-1">
                                         <div class="form-group">
                                             <label class="text-bold-400 text-dark" for="checkout">
-                                                Sortie De Caisse
+                                                Avoir
                                             </label>
                                             <input type="number" step="0.001" id="checkout" value="{{ abs($rest) }}"
                                                 name="checkout" class="form-control" placeholder="0 Ariary">

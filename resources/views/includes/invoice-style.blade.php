@@ -8,6 +8,7 @@
     }
 
     .invoice-title {
+        margin-top: 10px;
         font-size: 1rem;
     }
 

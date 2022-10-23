@@ -22,9 +22,9 @@
     <div class="col-sm-6 col-md">
         <div class="card">
             <div class="card-body bg-danger">
-                <h4 class="text-white">Sortie De Caisse</h4>
+                <h4 class="text-white">Avoir</h4>
                 <div class="badge badge-pill badge-white  badge-square">
-                    <h3 class="text-white">{{ formatPrice($solds->sum("sum_checkout")) }}
+                    <h3 class="text-white">{{ formatPrice($recettes["sum_checkout"]) }}
                     </h3>
                 </div>
             </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin\sale;
 
 use App\Models\Sale;
 use App\Models\Stock;
+use App\helper\Filter;
 use App\helper\Columns;
 use App\helper\Invoice;
 use App\Models\Product;
@@ -12,14 +13,17 @@ use App\Models\Category;
 use App\Models\Supplier;
 use App\Models\Customers;
 use App\Models\Emballage;
+use App\helper\Downloader;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\DocumentVente;
 use App\Message\CustomMessage;
 use App\Articles\FormatRequest;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\VenteValidation;
-use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Requests\VenteValidation;
 use Yajra\DataTables\Facades\DataTables;
 
 class SaleController extends Controller
@@ -28,8 +32,91 @@ class SaleController extends Controller
     {
         $columns = json_encode($this->getFormatedCols());
         $docSales = $this->docSales();
-        // dd($docSales);
-        return view("admin.vente.index", compact("columns"));
+        $between = Stock::getDefaultBetween();
+
+        return view("admin.vente.index", compact("columns", "between"));
+    }
+
+    public function ajaxGetData()
+    {
+        return response()->json($this->dataSales());
+    }
+
+    private function dataSales()
+    {
+        $params = request()->all();
+        $search = strtolower($params["search"] ?? "");
+        $between = $params["between"] ?? [date("Y-m-d"), date("Y-m-d")];
+
+        if (isset($params["start_date"]) && isset($params["end_date"])) {
+            $between = [$params["start_date"], $params["end_date"]];
+        }
+
+        $docSales = $this->docSales($params)
+            ->where(function ($query) use ($between) {
+                $query->where(fn ($query) => Filter::queryBetween($query, $between));
+            })
+            ->when(is_numeric($search) && strlen($search) == 7, function ($query) use ($search) {
+                return $query->where("number", "LIKE", $search);
+            })
+            ->orderByDesc("id")
+            ->groupBy("number")
+            ->get()
+            ->map(function ($docSale) {
+                $rest = $docSale->sum_amount - $docSale->sum_paid;
+                $status = $docSale->doc_status;
+                $customer = explode("-", $docSale->customer);
+                $docSale->status =  Sale::getStatusHtml($status);
+                $docSale->action = $this->getActionButtons($docSale);
+                $docSale->date = format_date($docSale->doc_date);
+                $docSale->cl_code = "CL" . $customer[0] ?? "";
+                $docSale->cl_name = strtolower($customer[1] ?? "");
+                $docSale->paid = formatPrice($docSale->sum_paid ?? 0);
+                $docSale->checkout = formatPrice($docSale->sum_checkout ?? 0);
+                $docSale->amount = formatPrice($docSale->sum_amount ?? 0);
+                return $docSale;
+            });
+
+        if (!is_numeric($search) && $search) {
+            $docSales = $docSales->filter(function ($sale) use ($search) {
+                return Str::startsWith($sale->cl_name, $search);
+            });
+        }
+
+        $sumAmount =  $docSales->sum("sum_amount");
+        $sumPaid =  $docSales->sum("sum_paid");
+        $sumCheckout =  $docSales->sum("sum_checkout");
+
+        return [
+            "all" => [...$docSales],
+            "between" => $between,
+            "columns" => $this->getFormatedCols(),
+            "amount" => $sumAmount,
+            "paid" => $sumPaid,
+            "checkout" => $sumCheckout,
+            "reste" => $sumAmount - $sumPaid + $sumCheckout
+        ];
+    }
+
+    public function print()
+    {
+        // return  view("admin.vente.includes.all-invoice", [
+        //     "datas" => $this->dataSales()
+        // ]);
+        $pdf = Pdf::loadView('admin.vente.includes.all-invoice', [
+            "datas" => $this->dataSales()
+        ]);
+
+        return $pdf->stream();
+    }
+
+    public function download()
+    {
+        $exports = new Downloader("admin.vente.includes.all-invoice", [
+            "datas" => $this->dataSales()
+        ]);
+
+        return Excel::download($exports, "historique-de-ventes.xlsx");
     }
 
     private function docSales()
@@ -38,10 +125,10 @@ class SaleController extends Controller
             ->select([
                 "status as doc_status",
                 "number as doc_number",
-                DB::raw("(SELECT CONCAT(code,'',identification) FROM customers 
+                DB::raw("(SELECT CONCAT(code,'-',identification) FROM customers 
                         WHERE customer_id = customers.id) as customer"),
-                DB::raw("(SELECT COUNT(*) FROM sales 
-                        WHERE sales.invoice_number = document_ventes.number) as count_sale"),
+                DB::raw("(SELECT SUM(quantity*price) FROM sales 
+                        WHERE sales.invoice_number = document_ventes.number) as sum_amount"),
                 "received_at as doc_date",
                 DB::raw("SUM(paid) as sum_paid"),
                 DB::raw("SUM(checkout) as sum_checkout"),
@@ -50,137 +137,59 @@ class SaleController extends Controller
                 ) as user")
             ])
             ->whereNotNull("received_at");
-        // ->orderByDesc("id")
-        // ->groupBy("number");
-        // ->get()
 
         return $docSales;
-    }
-
-    public function ajaxPostData(Request $request)
-    {
-        if ($request->ajax()) {
-            $keyword = strtolower($request->searchInput);
-            $keyword = trim($keyword);
-            $clCode = substr($keyword, 2);
-            $valideDate = validDate($keyword);
-
-            $docSales = DB::table('document_ventes')
-                ->select([
-                    "id as doc_id",
-                    "status as doc_status",
-                    "number as doc_number",
-                    DB::raw("(SELECT code FROM customers 
-                        WHERE customer_id = customers.id) as customer_code"),
-                    DB::raw("(SELECT identification FROM customers 
-                        WHERE customer_id = customers.id) as customer_name"),
-                    DB::raw("(SELECT COUNT(*) FROM sales 
-                        WHERE sales.invoice_number = document_ventes.number) as count_sale"),
-                    "received_at as doc_date",
-                    DB::raw("SUM(paid) as sum_paid"),
-                    DB::raw("SUM(checkout) as sum_checkout"),
-                    DB::raw("(SELECT CONCAT(name,' ',surname) FROM users
-                        WHERE users.id=document_ventes.user_id
-                ) as user")
-                ])
-                ->whereNotNull("received_at");
-
-            // $docSales = $docSales->when(getUserPermission() == "facturation", function ($q) {
-            //     return $q->where("user_id", auth()->user()->id)
-            //         ->where("sales.user_id", auth()->user()->id);
-            // })
-
-            $docSales = $docSales->whereNotNull("received_at")
-                ->orderByDesc("id")
-                ->groupBy("number")
-                // ->get();
-            ;
-            // dd($docSales);
-
-            return DataTables::of($docSales)
-                ->setRowId(fn ($doc) => "row_$doc->doc_id")
-                ->addColumn("status", fn ($doc) => Sale::getStatusHtml($doc->doc_status))
-                ->addColumn("numero", fn ($doc) => $doc->doc_number)
-                ->addColumn("sum_paid", fn ($doc) => formatPrice($doc->sum_paid ?? 0))
-                ->addColumn("sum_checkout", fn ($doc) => formatPrice($doc->sum_checkout ?? 0))
-                ->addColumn("client", fn ($doc) => strtoupper($doc->customer_name ?? "-"))
-                ->addColumn("code_du_client", fn ($doc) => "CL$doc->customer_code")
-                ->addColumn("date", fn ($doc) =>   format_date($doc->doc_date))
-                ->addColumn('action', function ($doc) {
-                    $actionBtn = '<span class="dropdown">
-                                    <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="true"
-                                        class="btn btn-primary dropdown-toggle dropdown-menu-right">
-                                        <i class="ft-settings"></i>
-                                    </button>
-                                    <span aria-labelledby="btnSearchDrop2" class="dropdown-menu mt-1 dropdown-menu-right">
-                    ';
-                    $downloadRoute =  route('admin.print.sale.download', $doc->doc_number);
-                    $printRoute = route('admin.print.sale.preview', $doc->doc_number);
-                    $paymentRoute = route('admin.sale.paymentForm', $doc->doc_number);
-                    $detailRoute = route('admin.print.sale', $doc->doc_number);
-
-                    $actionBtn .= Columns::setButton("Voir", $detailRoute, "eye");
-                    $actionBtn .= Columns::setButton("Telecharger", $downloadRoute, "download");
-                    $actionBtn .= Columns::setButton("Imprimer", $printRoute, "print");
-
-                    if (currentUser()->can("make payment")) {
-                        $actionBtn .= Columns::setButton("Payment", $paymentRoute, "credit-card");
-                    }
-                    $actionBtn .= "</span>
-                                </span>";
-
-                    return $actionBtn;
-                })
-                // ->filter(function ($query) use ($keyword) {
-                //     $clCode = substr($keyword, 2);
-                //     $valideDate = validDate($keyword);
-
-                //     if ($valideDate) {
-                //         $query = $query->whereDate("received_at", $valideDate);
-                //     }
-
-                //     return $query;
-
-                //     // return $query;
-                //     // return $query->orWhere("customers.identification", "LIKE", "%$keyword%");
-                // })
-                ->rawColumns(["status", "action"])
-                ->make(true);
-        }
     }
 
     private function getFormatedCols(): array
     {
         return [
             ["data" => "status", "name" => "status", "searchable" => false],
-            // ["data" => "count_sale", "name" => "count_sale", "title" => "article", "searchable" => false],
-            ["data" => "numero", "name" => "number"],
-            ["data" => "client", "name" => "client", "title" => "Client"],
-            ["data" => "code_du_client", "name" => "code_du_client", "title" => "CL code"],
-            ["data" => "date", "name" => "date", "style" => "width:150px"],
-            // [
-            //     "data" => "count_sale",
-            //     "name" => "count_sale",
-            //     "title" => "Article",
-            //     "searchable" => false
-            // ],
+            ["data" => "doc_number", "name" => "number", "title" => "Numero"],
+            ["data" => "cl_name", "name" => "client", "title" => "Client"],
+            ["data" => "cl_code", "name" => "code_du_client", "title" => "CL code"],
+            ["data" => "date", "name" => "date", "style" => "width:90px"],
             [
-                "data" => "sum_paid",
-                "name" => "sum_paid",
+                "data" => "paid",
+                "name" => "paid",
                 "title" => "Payé",
-                "searchable" => false,
-                "style" => "min-width:100px"
+                "searchable" => false
             ],
             [
-                "data" => "sum_checkout",
-                "name" => "sum_checkout",
+                "data" => "checkout",
+                "name" => "checkout",
                 "title" => "Sortie",
                 "searchable" => false,
-                "style" => "min-width:100px",
             ],
             ["data" => "action", "name" => "action", "searchable" => false],
         ];
+    }
+
+    private function getActionButtons($doc)
+    {
+        $actionBtn = '<span class="dropdown">
+        <button id="btnSearchDrop2" type="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="true"
+            class="btn btn-primary dropdown-toggle dropdown-menu-right">
+            <i class="ft-settings"></i>
+        </button>
+        <span aria-labelledby="btnSearchDrop2" class="dropdown-menu mt-1 dropdown-menu-right">';
+        $downloadRoute =  route('admin.print.sale.download', $doc->doc_number);
+        $printRoute = route('admin.print.sale.preview', $doc->doc_number);
+        $paymentRoute = route('admin.sale.paymentForm', $doc->doc_number);
+        $detailRoute = route('admin.print.sale', $doc->doc_number);
+
+        $actionBtn .= Columns::setButton("Voir", $detailRoute, "eye");
+        $actionBtn .= Columns::setButton("Telecharger", $downloadRoute, "download");
+        $actionBtn .= Columns::setButton("Imprimer", $printRoute, "print");
+
+        if (currentUser()->can("make payment")) {
+            $actionBtn .= Columns::setButton("Payment", $paymentRoute, "credit-card");
+        }
+        $actionBtn .= "</span>
+        </span>";
+
+        return $actionBtn;
     }
 
     public function create()
@@ -284,16 +293,15 @@ class SaleController extends Controller
         if (count($datas)) {
             $invoiceNumber = collect($datas)->first()["invoice_number"];
 
-            DocumentVente::firstOrCreate([
-                "number" => $invoiceNumber,
-            ], [
-                "status" => Invoice::STATUS["no_printed"],
-                "customer_id" =>  0,
-                "user_id" => auth()->user()->id
-            ]);
+            // DocumentVente::firstOrCreate([
+            //     "number" => $invoiceNumber,
+            // ], [
+            //     "status" => Invoice::STATUS["no_printed"],
+            //     "customer_id" =>  0,
+            //     "user_id" => auth()->user()->id
+            // ]);
 
             foreach ($datas as  $data) {
-                // dd($data);
                 Sale::create($data);
             }
         }

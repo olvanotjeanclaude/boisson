@@ -21,7 +21,7 @@ class Dashboard
         return  [
             "Article" => $articles->sum("quantity"),
             "Consignation" => $consignations->sum("quantity"),
-            "Deconsignation" => $deconsignations->sum("quantity"),
+            "Avoir" => $deconsignations->sum("quantity"),
         ];
     }
 

@@ -152,9 +152,34 @@
                         </form>
                     </div>
 
-                    @include('includes.datatable.table', [
+        
+                    <div class="card">
+                        <div class="card-body">
+                            <table style="width: 100%" data-columns="{{ $columns }}" 
+                            class="table table-hover table-sm   table-striped"
+                            @isset($tableId) id="{{ $tableId }}" @endisset>
+                            <thead class="bg-light">
+                                <tr>
+                                    @foreach (json_decode($columns, true) as $column)
+                                        <th @isset($column['style']) style="{{ $column['style'] }}" @endif>
+                                            @if (isset($column['title']))
+                                                {{ Str::title($column['title']) }}
+                                            @else
+                                                {{ str_replace('_', ' ', Str::title($column['data'])) }}
+                                            @endif
+                                            </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody id="fetchData">
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                      {{-- @include('includes.datatable.table', [
                         'dataUrl' => route('admin.inventaires.ajaxPostData'),
-                    ])
+                    ]) --}}
                 </div>
             </div>
         </div>
@@ -241,6 +266,7 @@
                 const filter_type = $("#filterInventory select").val();
                 console.log(start_date, end_date, filter_type);
             })
+            
         })
     </script>
 @endsection

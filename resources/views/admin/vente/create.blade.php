@@ -88,7 +88,7 @@
 
         <div class="col-md-5">
             @if (count($preInvoices))
-                <div class="card">
+                <div class="card overflow-auto pb-2" style="max-height: 530px">
                     <div class="card-body">
                         @include('admin.vente.includes.ticket')
                     </div>

@@ -82,11 +82,6 @@
             @include('admin.dashboard.recap-emballage')
         </div>
     </div>
-    {{-- <div class="row">
-        <div class="col-md">
-            @include('admin.dashboard.sale')
-        </div>
-    </div> --}}
 @endsection
 
 @section('page-js')

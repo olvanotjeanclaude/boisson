@@ -30,7 +30,10 @@ Route::get('clear_cache', function () {
     Artisan::call('config:cache');
     echo "Config cleared<br>";
 
-    dd("Cache is cleared");
+    Artisan::call('cache:forget spatie.permission.cache');
+    echo "Config spatie cleared<br>";
+
+    echo "All cache cleared";
 });
 
 Route::redirect("/", "/admin");
@@ -115,6 +118,8 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
 
     // Ventes
     Route::resource("ventes", \App\Http\Controllers\admin\sale\SaleController::class);
+    Route::get("impression-vente", [\App\Http\Controllers\admin\sale\SaleController::class, "print"])->name("sale.print");
+    Route::get("download-vente", [\App\Http\Controllers\admin\sale\SaleController::class, "download"])->name("sale.download");
     Route::get("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentForm"])->name("sale.paymentForm")->middleware("can:make payment");
     Route::post("ventes/payment/{invoice_number}", [\App\Http\Controllers\admin\payment\PaymentController::class, "paymentStore"])->name("sale.paymentStore")->middleware("can:make payment");
 
