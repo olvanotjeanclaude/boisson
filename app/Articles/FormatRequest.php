@@ -12,6 +12,8 @@ class FormatRequest
     private function format_article($actionType, $article, $quantity): array
     {
         if ($article) {
+            $price =  Pricing::getPrice($article, $quantity);
+            $amount = $quantity * $price;
             return [
                 "action_type" => $actionType,
                 "article_reference" => $article->reference,
@@ -20,7 +22,8 @@ class FormatRequest
                 "quantity" => $quantity,
                 "user_id" => auth()->user()->id,
                 "received_at" => now()->toDateString(),
-                "price" => Pricing::getPrice($article, $quantity)
+                "price" =>$price,
+                "amount" =>$amount,
             ];
         }
 
@@ -121,7 +124,7 @@ class FormatRequest
         if ($emballage && $quantity > 0) {
             $data = $this->format_article($actionType, $emballage, $quantity);
             $data["isWithEmballage"] = true;
-            $data["price"] = -Pricing::getPrice($emballage, $quantity);
+            $data["amount"] = -$data["amount"];
         }
 
         return $data;

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSubAmountColToSale extends Migration
+class AddCustomerIdToSale extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddSubAmountColToSale extends Migration
     public function up()
     {
         Schema::table('sales', function (Blueprint $table) {
-            $table->decimal("price",20)->after("quantity");
-            $table->decimal("amount",20)->after("price");
+            $table->unsignedBigInteger("customer_id")->after("status");
         });
     }
 
@@ -27,8 +26,7 @@ class AddSubAmountColToSale extends Migration
     public function down()
     {
         Schema::table('sales', function (Blueprint $table) {
-            $table->dropColumn("price");
-            $table->dropColumn("amount");
+            $table->dropColumn("customer_id");
         });
     }
 }

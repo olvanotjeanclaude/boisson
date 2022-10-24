@@ -78,7 +78,7 @@ class Sale extends Model
 
     public function getSubAmountAttribute()
     {
-        return getNumberDecimal($this->pricing * $this->quantity);
+        return getNumberDecimal($this->amount);
     }
 
     public function getPricingAttribute()

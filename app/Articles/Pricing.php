@@ -2,9 +2,6 @@
 
 namespace App\Articles;
 
-use App\Models\Articles;
-use Illuminate\Support\Collection;
-
 class Pricing
 {
     public function formatPrice()

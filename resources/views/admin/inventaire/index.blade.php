@@ -114,70 +114,13 @@
                 </form>
 
                 <div class="card-body">
-                    <div class="bg-dark d-none" style="">
-                        <form id="filterInventory" action="{{ route('admin.stocks.index') }}" style="padding: 2px"
-                            method="GET">
-                            <div class="row">
-                                <div class="col-6 col-sm">
-                                    <input type="date" value="{{ $between[0] }}" class="form-control h-100 bg-white"
-                                        name="start_date">
-                                </div>
-                                <div class="col-6 col-sm">
-                                    <input type="date" value="{{ $between[1] }}" class="form-control h-100 bg-white"
-                                        name="end_date">
-                                </div>
-                                <div class="col-sm">
-                                    <select name="filter_type" class="bg-white form-control" id="filterArticle">
-                                        <option value="tout">Tout</option>
-                                        <option value="article">Article</option>
-                                        <option value="bouteille">bouteille</option>
-                                        <option value="sortie">Sortie</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm">
-                                    <div class="d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-secondary">Filtrer</button>
-                                        <a {{-- target="_blink"
-                                            href="{{ route('admin.stocks.printReport', [
-                                                'start_date' => $between[0],
-                                                'end_date' => $between[1],
-                                                'filter_type' => request()->get('filter_type'),
-                                                'chercher' => request()->get('chercher'),
-                                            ]) }}" --}} class="btn btn-light">
-                                            Imprimer
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-        
-                    <div class="card">
-                        <div class="card-body">
-                            <table style="width: 100%" data-columns="{{ $columns }}" 
-                            class="table table-hover table-sm   table-striped"
-                            @isset($tableId) id="{{ $tableId }}" @endisset>
-                            <thead class="bg-light">
-                                <tr>
-                                    @foreach (json_decode($columns, true) as $column)
-                                        <th @isset($column['style']) style="{{ $column['style'] }}" @endif>
-                                            @if (isset($column['title']))
-                                                {{ Str::title($column['title']) }}
-                                            @else
-                                                {{ str_replace('_', ' ', Str::title($column['data'])) }}
-                                            @endif
-                                            </th>
-                                    @endforeach
-                                </tr>
-                            </thead>
-                            <tbody id="fetchData">
-                            </tbody>
-                        </table>
-                        </div>
-                    </div>
-
-                      {{-- @include('includes.datatable.table', [
+                    @include('includes.ajax-table.table', [
+                        'dataSrc' => route('admin.inventaires.ajaxGetData'),
+                        'inputPlaceholder' => 'Reference Ou Designation',
+                        'printUrl' => route('admin.inventaires.print'),
+                        'downloadUrl' =>route('admin.inventaires.download'),
+                    ])
+                    {{-- @include('includes.datatable.table', [
                         'dataUrl' => route('admin.inventaires.ajaxPostData'),
                     ]) --}}
                 </div>
@@ -185,37 +128,9 @@
         </div>
     </section>
 
-    <div class="modal fade text-left" id="stockModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel10"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <form action="{{ route('admin.inventaires.adjustStockRequest') }}" class="needs-validation" novalidate
-                method="POST">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header bg-secondary white">
-                        <h4 class="modal-title white" id="myModalLabel10">Messages</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn grey btn-outline-secondary"
-                            data-dismiss="modal">D'Accord</button>
-                        <span id="adjustStock"></span>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+   @include('admin.inventaire.check-stock-modal')
 @endsection
 
-{{-- @include('admin.inventaire.out-form', [
-    'articles' => $articles,
-    'emballages' => $emballages,
-]) --}}
 
 @section('page-js')
     @include('includes.datatable.js')
@@ -227,8 +142,6 @@
             loadDatatableAjax();
 
             $("#checkStock").submit(function(e) {
-                // $("input").val("");
-                $("")
                 e.preventDefault();
 
                 const url = $(this).attr("action");
@@ -258,15 +171,6 @@
                         })
                 }
             })
-
-            $("#filterInventory").submit(function(e) {
-                e.preventDefault();
-                const start_date = $("#filterInventory input[name='start_date']").val();
-                const end_date = $("#filterInventory input[name='end_date']").val();
-                const filter_type = $("#filterInventory select").val();
-                console.log(start_date, end_date, filter_type);
-            })
-            
         })
     </script>
 @endsection

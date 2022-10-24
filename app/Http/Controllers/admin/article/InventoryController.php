@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\admin\article;
 
 use App\Models\Stock;
-use App\helper\Columns;
+use App\helper\Filter;
 use App\Models\Product;
 use App\Traits\Articles;
 use App\Models\Emballage;
 use App\Models\Inventory;
+use App\helper\Downloader;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InventoryController extends Controller
 {
@@ -22,8 +24,7 @@ class InventoryController extends Controller
         $between = Stock::getDefaultBetween();
         $articles = Product::orderBy("designation")->get();
         $emballages = Emballage::orderBy("designation")->get();
-        $columns = Columns::format_columns($this->getColumns());
-        $columns = json_encode($columns);
+        $columns = json_encode($this->getColumns());
 
         return view("admin.inventaire.index", compact(
             "stocks",
@@ -34,49 +35,82 @@ class InventoryController extends Controller
         ));
     }
 
-    public function ajaxPostData(Request $request)
+    public function ajaxGetData()
     {
-        $keyword = $request->search["value"];
+        return response()->json($this->dataInventory());
+    }
 
-        $inventories = Inventory::orWhere(function ($query) use ($keyword) {
-            return \App\Traits\Articles::search($query, "article", $keyword);
+    public function print()
+    {
+        $pdf = Pdf::loadView('admin.inventaire.facture', [
+            "datas" => $this->dataInventory()
+        ]);
+
+        return $pdf->stream();
+    }
+
+    public function download()
+    {
+        $exports = new Downloader("admin.inventaire.facture", [
+            "datas" => $this->dataInventory()
+        ]);
+
+        return Excel::download($exports, "journal-inventaire.xlsx");
+    }
+
+    private function dataInventory()
+    {
+        $params = request()->all();
+        $keyword = strtolower($params["search"] ?? "");
+        $between = $params["between"] ?? [date("Y-m-d"), date("Y-m-d")];
+
+        if (isset($params["start_date"]) && isset($params["end_date"])) {
+            $between = [$params["start_date"], $params["end_date"]];
+        }
+
+        $inventories = Inventory::where(function ($query) use ($between) {
+            $query->where(fn ($query) => Filter::queryBetween($query, $between, "date"));
         })
-            ->orderBy("date", "desc")
-            ->orderBy("id", "desc");
-
-
-        // if ($request->ajax()) {
-        return DataTables::of($inventories)
-            ->setRowId(fn ($inventory) => "row_$inventory->id")
-            ->addColumn("status", fn ($inventory) => $inventory->status_html)
-            ->addColumn("sortie", fn ($inventory) => $inventory->out)
-            ->addColumn("ecart", fn ($inventory) => $inventory->difference)
-            ->addColumn("date", fn ($inventory) => format_date($inventory->date))
-            ->addColumn("designation", fn ($inventory) => Str::upper($inventory->article->designation))
-            ->addColumn('action', function ($inventory) {
-                if ($inventory->out > 0) {
-                    $route = route('admin.inventaires.getValidOutForm', $inventory->id);
-                } else {
-                    $route = route('admin.inventaires.getAdjustStockForm', $inventory->id);
-                }
-
-                $show = '<a class="btn btn-info" href="' . $route . '">
-                            <i class="la la-eye"></i>
-                            Voir
-                        </a>';
-
-                return $show;
+            ->where(function ($query) use ($keyword) {
+                return \App\Traits\Articles::search($query, "article", $keyword);
             })
-            // ->orderColumn('status', 'status $1')
-            ->rawColumns(["status", "action"])
-            ->make(true);
-        // }
+            ->orderBy("date", "desc")
+            ->orderBy("id", "desc")
+            ->get()
+            ->map(function ($inventory) {
+                $inventory->date = format_date($inventory->date);
+                $inventory->status =  $inventory->status_html;
+                $inventory->designation = Str::upper($inventory->article->designation);
+                $inventory->action =  $this->getActionButtons($inventory);
+                $inventory->difference = getNumberDecimal($inventory->difference);
+                return $inventory;
+            });
+
+        return [
+            "all" => $inventories,
+            "between" => $between,
+            "columns" => $this->getColumns(),
+        ];
+    }
+
+    private function getActionButtons($inventory)
+    {
+        if ($inventory->out > 0) {
+            $route = route('admin.inventaires.getValidOutForm', $inventory->id);
+        } else {
+            $route = route('admin.inventaires.getAdjustStockForm', $inventory->id);
+        }
+
+        $show = '<a class="btn btn-info" href="' . $route . '">
+                    <i class="la la-eye"></i>
+                    Voir
+                </a>';
+
+        return $show;
     }
 
     public function checkStock(Request $request)
     {
-        // return response()->json($request->all());
-
         $stockDiff = $this->getStockDifference(
             $request->date,
             $request->article_reference,
@@ -150,13 +184,13 @@ class InventoryController extends Controller
                     $between = [Stock::MinDate($inventory->date), $inventory->date];
                     $stock = Stock::EntriesOuts($between);
                     $stock = $stock->where("reference", $article->reference)->first();
-    
+
                     // dd($stock, $inventory);
-    
+
                     if ($stock) {
                         $entry = $inventory->difference > 0 ? $inventory->difference : 0;
                         $out = $inventory->difference < 0 ? abs($inventory->difference) : 0;
-                       
+
                         $updated =  Stock::create([
                             "inventory_id" => $inventory->id,
                             "status" => Stock::STATUS["accepted"],
@@ -169,13 +203,13 @@ class InventoryController extends Controller
                             "action_type" => Stock::ACTION_TYPES["new_stock"],
                             "date" => $inventory->date,
                         ]);
-    
+
                         if ($updated) {
                             $inventory->update(["status" => Inventory::STATUS["accepted"]]);
                             return redirect("/admin/inventaires")->with("success", "Stock a ete ajuste avec success!");
                         }
                     }
-    
+
                     return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
                     break;
                 case Inventory::STATUS["pending"]:
@@ -189,14 +223,14 @@ class InventoryController extends Controller
                 default:
                     break;
             }
-    
+
             if ($updated) {
                 return redirect("/admin/inventaires")->with("success", "Inventaire a ete modifie avec success");
             }
-    
+
             return back()->withErrors(["errors" => "Veuillez faire un bon de commande!"]);
         }
-        
+
         return back()->withErrors(["errors" => "La demande est déjà acceptée!"]);
     }
 
@@ -277,6 +311,12 @@ class InventoryController extends Controller
 
     private function getColumns()
     {
-        return ["status", "date", "designation",  "ecart", "action"];
+        return [
+            ["data" => "status", "name" => "status", "searchable" => false],
+            ["data" => "date", "name" => "date"],
+            ["data" => "designation", "name" => "designation"],
+            ["data" => "difference", "name" => "difference", "title" => "Ecart"],
+            ["data" => "action", "name" => "action", "searchable" => false],
+        ];
     }
 }

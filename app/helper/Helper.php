@@ -79,6 +79,7 @@ function get_user_name()
 
 function  formatPrice($price, $devise = "Ar")
 {
+    $price = $price && is_numeric($price) ? $price : 0;
     $price = number_format($price, 2, ",", " ");
 
     $arrayPrice = explode(",", $price);

@@ -11,20 +11,18 @@
             </div>
             <div class="col-12 col-sm-4">
                 <input type="text" value="{{ request()->get('chercher') ?? old('chercher') }}" name="chercher"
-                    placeholder="No ticket ou client..." style="" id="search" class="bg-white form-control">
+                    placeholder="{{$inputPlaceholder}}" style="" id="search" class="bg-white form-control">
             </div>
             <div class="col-sm">
                 <div class="btn-group float-right" role="group">
-                    <button type="submit" id="filter" class="btn btn-secondary">
+                    <button type="submit" id="submitFilter" class="btn btn-secondary">
                         <i class="la la-filter"></i>
                         Filtrer
                     </button>
-                    <button id="print" data-url="{{ route('admin.sale.print') }}"
-                        class="search-action btn btn-light">
+                    <button id="print" data-url="{{ $printUrl }}" class="search-action btn btn-light">
                         <i class="la la-print"></i>
                     </button>
-                    <button id="download" data-url="{{ route('admin.sale.download') }}"
-                        class="search-action btn btn-success">
+                    <button id="download" data-url="{{ $downloadUrl }}" class="search-action btn btn-success">
                         <i class="la la-download"></i>
                     </button>
                 </div>

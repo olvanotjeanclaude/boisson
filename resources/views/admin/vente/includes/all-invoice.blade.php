@@ -1,11 +1,11 @@
 @extends('layouts.invoice')
 
 @section('title')
-    Historique De Ventes
+   JOURNAL DE CAISSE
 @endsection
 
 @section('invoice-title')
-    Historique De Ventes
+   JOURNAL DE CAISSE
 @endsection
 
 @section('css')
@@ -57,7 +57,9 @@
                 <th>Status</th>
                 <th>Client</th>
                 <th>Payé</th>
-                <th>Sortie</th>
+                <th>Avoir</th>
+                {{-- <th>Montant</th> --}}
+                {{-- <th>Reste</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -68,6 +70,7 @@
                     <td>{{ $data->cl_name }}</td>
                     <td>{{ getNumberDecimal($data->sum_paid) }}</td>
                     <td>{{ getNumberDecimal($data->sum_checkout) }}</td>
+                    {{-- <td>{{ getNumberDecimal($data->rest) }}</td> --}}
                 </tr>
             @endforeach
         </tbody>
@@ -92,9 +95,6 @@
             <td class="label">Avoir :</td>
             <td class="price">{{ formatPrice($datas['checkout'], 'Ar') }}</td>
         </tr>
-
-        @if ($datas['reste'] > 0)
-        @endif
         <tr>
             <td class="label">Credit :</td>
             <td class="price">{{ formatPrice($datas['reste'], 'Ar') }}</td>

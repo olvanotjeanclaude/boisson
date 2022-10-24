@@ -90,7 +90,9 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], fu
     // Inventaire
     Route::group(["prefix" => "inventaires", "as" => "inventaires.", "middleware" => "can:view inventory"], function () {
         Route::get("/", [\App\Http\Controllers\admin\article\InventoryController::class, "index"])->name("index");
-        Route::post("get-data", [\App\Http\Controllers\admin\article\InventoryController::class, "ajaxPostData"])->name("ajaxPostData");
+        Route::get("get-data", [\App\Http\Controllers\admin\article\InventoryController::class, "ajaxGetData"])->name("ajaxGetData");
+        Route::get("imprimer", [\App\Http\Controllers\admin\article\InventoryController::class, "print"])->name("print");
+        Route::get("telecharger", [\App\Http\Controllers\admin\article\InventoryController::class, "download"])->name("download");
         Route::post("/check-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "checkStock"])->name("checkStock");
         Route::get("/ajustement-de-stock/{inventory}", [\App\Http\Controllers\admin\article\InventoryController::class, "getAdjustStockForm"])->name("getAdjustStockForm");
         Route::post("/demmande-ajustement-de-stock", [\App\Http\Controllers\admin\article\InventoryController::class, "adjustStockRequest"])->name("adjustStockRequest");

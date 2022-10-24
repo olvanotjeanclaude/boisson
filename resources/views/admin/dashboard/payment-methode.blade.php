@@ -12,7 +12,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="base-checkout" data-toggle="tab" aria-controls="checkout"
-                            href="#checkout" aria-expanded="false">Sortie De Caisse</a>
+                            href="#checkout" aria-expanded="false">Avoir</a>
                     </li>
                     <li class="nav-item">
                 </ul>

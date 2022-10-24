@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\VenteValidation;
-use Yajra\DataTables\Facades\DataTables;
 
 class SaleController extends Controller
 {
@@ -63,7 +62,6 @@ class SaleController extends Controller
             ->groupBy("number")
             ->get()
             ->map(function ($docSale) {
-                $rest = $docSale->sum_amount - $docSale->sum_paid;
                 $status = $docSale->doc_status;
                 $customer = explode("-", $docSale->customer);
                 $docSale->status =  Sale::getStatusHtml($status);
@@ -74,6 +72,7 @@ class SaleController extends Controller
                 $docSale->paid = formatPrice($docSale->sum_paid ?? 0);
                 $docSale->checkout = formatPrice($docSale->sum_checkout ?? 0);
                 $docSale->amount = formatPrice($docSale->sum_amount ?? 0);
+                // $docSale->rest = $docSale->sum_amount-$docSale->sum_paid;
                 return $docSale;
             });
 
@@ -86,7 +85,7 @@ class SaleController extends Controller
         $sumAmount =  $docSales->sum("sum_amount");
         $sumPaid =  $docSales->sum("sum_paid");
         $sumCheckout =  $docSales->sum("sum_checkout");
-
+     
         return [
             "all" => [...$docSales],
             "between" => $between,
@@ -100,9 +99,6 @@ class SaleController extends Controller
 
     public function print()
     {
-        // return  view("admin.vente.includes.all-invoice", [
-        //     "datas" => $this->dataSales()
-        // ]);
         $pdf = Pdf::loadView('admin.vente.includes.all-invoice', [
             "datas" => $this->dataSales()
         ]);
@@ -116,7 +112,7 @@ class SaleController extends Controller
             "datas" => $this->dataSales()
         ]);
 
-        return Excel::download($exports, "historique-de-ventes.xlsx");
+        return Excel::download($exports, "journal-de-caisse.xlsx");
     }
 
     private function docSales()
@@ -127,7 +123,7 @@ class SaleController extends Controller
                 "number as doc_number",
                 DB::raw("(SELECT CONCAT(code,'-',identification) FROM customers 
                         WHERE customer_id = customers.id) as customer"),
-                DB::raw("(SELECT SUM(quantity*price) FROM sales 
+                DB::raw("(SELECT SUM(amount) FROM sales 
                         WHERE sales.invoice_number = document_ventes.number) as sum_amount"),
                 "received_at as doc_date",
                 DB::raw("SUM(paid) as sum_paid"),
@@ -158,7 +154,7 @@ class SaleController extends Controller
             [
                 "data" => "checkout",
                 "name" => "checkout",
-                "title" => "Sortie",
+                "title" => "Avoir",
                 "searchable" => false,
             ],
             ["data" => "action", "name" => "action", "searchable" => false],
@@ -291,16 +287,6 @@ class SaleController extends Controller
     private function saveSale($datas)
     {
         if (count($datas)) {
-            $invoiceNumber = collect($datas)->first()["invoice_number"];
-
-            // DocumentVente::firstOrCreate([
-            //     "number" => $invoiceNumber,
-            // ], [
-            //     "status" => Invoice::STATUS["no_printed"],
-            //     "customer_id" =>  0,
-            //     "user_id" => auth()->user()->id
-            // ]);
-
             foreach ($datas as  $data) {
                 Sale::create($data);
             }
@@ -428,7 +414,11 @@ class SaleController extends Controller
                 "customer_id" =>  $customer->id,
             ]);
 
-            Sale::preInvoices()->update(["received_at" => $date, "status" => true]);
+            Sale::preInvoices()->update([
+                "received_at" => $date, 
+                "status" => true,
+                "customer_id" =>  $customer->id,
+            ]);
 
             return $invoice;
         }
