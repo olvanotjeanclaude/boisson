@@ -90,11 +90,3 @@
 @section('page-js')
     @include('includes.datatable.js')
 @endsection
-
-@section('script')
-    <script>
-        $(document).ready(function() {
-            loadDatatableAjax();
-        })
-    </script>
-@endsection

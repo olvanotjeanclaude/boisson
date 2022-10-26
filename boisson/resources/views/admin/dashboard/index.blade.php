@@ -83,24 +83,3 @@
         </div>
     </div>
 @endsection
-
-@section('page-js')
-    @include('includes.datatable.js')
-@endsection
-
-@section('script')
-    <script>
-        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
-        $(document).ready(function() {
-            $("#filterInvoice").change(function() {
-                const startDate = $(".start_date").val();
-                const endDate = $(".end_date").val();
-
-                if (startDate && endDate) {
-                    $("#filterArticleForm").submit();
-                }
-
-            })
-        })
-    </script>
-@endsection

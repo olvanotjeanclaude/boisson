@@ -87,7 +87,10 @@
                                 </div>
                                 <div class="col-sm">
                                     <div class="d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-secondary">Filtrer</button>
+                                        <button type="submit" class="btn btn-secondary">
+                                            <i class="la la-filter"></i>
+                                            Filtrer
+                                        </button>
                                         <a target="_blink"
                                             href="{{ route('admin.etat-emballages.printReport', [
                                                 'start_date' => request('start_date') ?? $between[0],
@@ -96,7 +99,7 @@
                                                 'chercher' => request()->get('chercher'),
                                             ]) }}"
                                             class="btn btn-light">
-                                            Imprimer
+                                            <i class="la la-print"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -145,10 +148,4 @@
 
 @section('page-js')
     @include('includes.datatable.js')
-@endsection
-
-@section('script')
-    <script>
-        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
-    </script>
 @endsection

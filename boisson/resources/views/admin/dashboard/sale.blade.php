@@ -25,7 +25,7 @@
                     </select>
                 </div>
                 <div class="mt-1 mt-lg-0 col-12 col-md-4  col-xl">
-                    <div class="btn-group" role="group" >
+                    <div class="btn-group float-right" role="group" >
                         <button type="submit" class="btn btn-secondary">Filtrer</button>
                         <a target="_blink"
                             href="{{ route('admin.dashboard.printReport', [
@@ -35,7 +35,7 @@
                                 'chercher' => request()->get('chercher'),
                             ]) }}"
                             class="btn btn-light">
-                            Imprimer
+                            <i class="la la-print"></i>
                         </a>
                         <a target="_blink"
                             href="{{ route('admin.dashboard.exportExcel', [
@@ -45,7 +45,7 @@
                                 'chercher' => request()->get('chercher'),
                             ]) }}"
                             class="btn btn-success">
-                            Telecharger
+                            <i class="la la-download"></i>
                         </a>
                     </div>
                 </div>

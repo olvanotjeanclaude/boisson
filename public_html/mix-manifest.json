@@ -1,0 +1,7 @@
+{
+    "/public/js/app.js": "/public/js/app.js",
+    "/public/css/app.css": "/public/css/app.css",
+    "/app-assets/css/combined-style.css": "/app-assets/css/combined-style.css",
+    "/mix/js/combined/combined-vendors.js": "/mix/js/combined/combined-vendors.js",
+    "/mix/js/combined/combined-datatable.js": "/mix/js/combined/combined-datatable.js"
+}

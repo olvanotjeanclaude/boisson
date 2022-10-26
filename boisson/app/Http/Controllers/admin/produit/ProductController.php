@@ -5,9 +5,7 @@ namespace App\Http\Controllers\admin\produit;
 use App\Models\Stock;
 use App\helper\Columns;
 use App\Models\Product;
-use App\Models\Articles;
 use App\Models\Category;
-use App\Models\Supplier;
 use App\Models\Emballage;
 use Illuminate\Http\Request;
 use App\Message\CustomMessage;
@@ -15,7 +13,6 @@ use App\Http\Controllers\Controller;
 use App\Traits\ArticlesAuthorizable;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreProductRequest;
-use Illuminate\Support\Facades\Route;
 
 class ProductController extends Controller
 {

@@ -14,10 +14,10 @@
     <title>@yield('title')</title>
     <link rel="apple-touch-icon" href="{{ asset('app-assets/images/ico/apple-icon-120.png') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('app-assets/images/ico/favicon.ico') }}">
-    {{-- <link
+    <link
         href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700"
-        rel="stylesheet"> --}}
-    {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/material-icon/material_icon.css') }}">
@@ -93,220 +93,16 @@
     <div class="sidenav-overlay"></div>
     <div class="drag-target"></div>
 
-
-    <!-- BEGIN: Footer-->
     @include('includes.footer')
-    <!-- END: Footer-->
 
+    <script src="{{ asset('mix/js/combined/combined-vendors.js') }}"></script>
 
-    <!-- BEGIN: Vendor JS-->
-    <script src="{{ asset('app-assets/vendors/js/material-vendors.min.js') }}"></script>
-    <!-- BEGIN Vendor JS-->
-
-    <!-- BEGIN: Page Vendor JS-->
-    <!-- END: Page Vendor JS-->
-
-    <!-- BEGIN: Theme JS-->
-    <script src="{{ asset('app-assets/js/core/app-menu.js') }}"></script>
-    <script src="{{ asset('app-assets/js/core/app.js') }}"></script>
-    <script src="{{ asset('app-assets/vendors/js/forms/select/select2.min.js') }}"></script>
-
-    <!-- END: Theme JS-->
-
-    <!-- BEGIN: Page JS-->
-    <script src="{{ asset('app-assets/js/scripts/pages/material-app.js') }}"></script>
-    <script src="{{ asset('app-assets/js/scripts/pages/snackbar.js') }}"></script>
     @yield('page-js')
-    <!-- END: Page JS-->
 
-    {{-- Axios link --}}
-    <script src="{{ asset('app-assets/js/axios/axios.min.js') }}"></script>
-
-    {{-- Custom js --}}
-    <script src="{{ asset('app-assets/js/custom/validation.js') }}"></script>
-    <script src="{{ asset('app-assets/js/custom/dataController.js') }}"></script>
-    <script src="{{ asset('app-assets/js/custom/index.js') }}"></script>
     @yield('script')
-    <script>
-        function loadDatatableAjax(tableElement = ".ajax-datatable", method = "post") {
-            const url = $(tableElement).data("url");
-            const table = $(tableElement);
-            const columns = $(tableElement).data("columns");
 
-            if (table.length && url && columns) {
-                // console.log(columns)
-                // return;
-                let exportColumns = columns[columns.length - 1].name == "action" ? columns.slice(0, columns.length - 1) :
-                    columns;
-                exportColumns = exportColumns.map((col, index) => index);
-
-                const datatable = table.DataTable({
-                    serverSide: true,
-                    processing: true,
-                    // deferRender: true,
-                    lengthMenu: [
-                        [10, 25, 50, -1],
-                        [10, 25, 50, "Tout"]
-                    ],
-                    ajax: {
-                        url: url,
-                        type: method,
-                        data: function(params) {
-                            params._token = "{{ csrf_token() }}";
-                            params.searchInput = $("input[type='search']").val();
-                        }
-                    },
-                    columns: columns,
-                    ordering: false,
-                    dom: 'lBfrtip',
-                    buttons: [{
-                        extend: 'collection',
-                        text: 'Exporter',
-                        buttons: [{
-                                extend: 'copyHtml5',
-                                exportOptions: {
-                                    columns: exportColumns
-                                }
-                            },
-                            {
-                                extend: 'excelHtml5',
-                                exportOptions: {
-                                    columns: exportColumns
-                                }
-                            },
-                            {
-                                extend: 'pdfHtml5',
-                                exportOptions: {
-                                    columns: exportColumns
-                                }
-                            },
-                            {
-                                extend: 'csvHtml5',
-                                exportOptions: {
-                                    columns: exportColumns
-                                }
-                            },
-                            // 'copy',
-                            // 'excel',
-                            // 'csv',
-                            // 'pdf',
-                            // 'print'
-                        ]
-                    }],
-                    language: {
-                        "sDecimal": ",",
-                        "sEmptyTable": "Aucune donnée disponible dans le tableau",
-                        "sInfo": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-                        "sInfoEmpty": "Aucun enregistrement",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix": "",
-                        "sInfoThousands": ".",
-                        "sLengthMenu": "Afficher _MENU_ entrées",
-                        "sLoadingRecords": "chargement...",
-                        "sProcessing": "En cours de traitement...",
-                        "sSearch": "Chercher:",
-                        "sZeroRecords": "Aucun enregistrements correspondants trouvés",
-                        "oPaginate": {
-                            "sFirst": "Première",
-                            "sLast": "Fin",
-                            "sNext": "Prochain",
-                            "sPrevious": "Avant"
-                        },
-                        "oAria": {
-                            "sSortAscending": ": Activer le tri croissant des colonnes",
-                            "sSortDescending": ": Activer le tri par colonne décroissante"
-                        },
-                        "select": {
-                            "rows": {
-                                "_": "%d enregistrement sélectionné",
-                                "0": "",
-                                "1": "1 enregistrement sélectionné"
-                            }
-                        }
-                    },
-                });
-
-                return datatable;
-            }
-        }
-    </script>
-    <script>
-        $(document).ready(function() {
-            const src = $(".ajaxTable").data("src");
-            let start_date = $("#start_date").val();
-            let end_date = $("#end_date").val();
-            let search = $("#search").val();
-
-            if($("#filterForm").length){
-                getData(src);
-            }
-
-            $("#filterForm").submit(async function(e) {
-                e.preventDefault();
-                start_date = $("#start_date").val();
-                end_date = $("#end_date").val();
-                search = $("#search").val();
-
-                if (src) {
-                    await getData(src, {
-                        between: [start_date, end_date],
-                        search
-                    });
-                }
-            })
-
-            $(".search-action").click(function() {
-                let url = $(this).data("url");
-
-                if (url) {
-                    url = new URL(url);
-                    url.searchParams.set("start_date", start_date);
-                    url.searchParams.set("end_date", end_date);
-                    url.searchParams.set("search", search);
-
-                    $(this).attr("href", url);
-
-                    window.open(url);
-                }
-            })
-        })
-
-        function getData(url, params) {
-            axios.get(url, {
-                    params
-                })
-                .then((response) => {
-                    const datas = response.data;
-                    const all = datas?.all?.data ?? datas?.all ?? [];
-
-                    const columns = datas.columns;
-                    let tbody = "";
-
-                    if (all.length > 0) {
-                        for (const data of all) {
-                            let row = "<tr>";
-                            columns.forEach(col => {
-                                row += `<td>${data[col["data"]]??''}</td>`;
-                            });
-                            row += "</tr>";
-
-                            tbody += row;
-                        }
-                        $("#table-container").attr("style", "height:490px");
-                    } else {
-                        $("#table-container").removeAttr("style");
-                        tbody = `<tr>
-                             <td  colspan="${columns.length}">Aucune donnée disponible</td>
-                            </tr>`;
-                    }
-
-                    $("#fetchRow").html(tbody);
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        }
-    </script>
+    <script src="{{asset('mix/js/main.js')}}" type="module"></script>
+   
 </body>
 <!-- END: Body-->
 

@@ -1,19 +1,4 @@
-function loadDatatable(element = ".datatable", buttons = []) {
-    if ($(element).length) {
-        const configs = {
-            ordering: false,
-        };
-
-        if (buttons.length > 0) {
-            configs.dom= 'Bfrtip';
-            configs.buttons = buttons;
-        }
-      
-        $(element).DataTable(configs);
-    }
-}
-
-function deleteItem() {
+export function deleteItem() {
     const url = $(this).data("url");
     const id = $(this).data("id");
 
@@ -24,7 +9,7 @@ function deleteItem() {
     }
 }
 
-function confirmeDeleteItem() {
+export function confirmeDeleteItem() {
     $(this).html(`<i class="la la-refresh spinner"></i>`);
     const url = $(this).attr("data-url");
     const rowId = $(this).attr("row-id");
@@ -50,7 +35,7 @@ function confirmeDeleteItem() {
     }
 }
 
-async function deleteAllItem() {
+export async function deleteAllItem() {
     const checkedIds = $('table.icheck input:checkbox:checked').map(function () {
         return $(this).data("id");
     }).get();
@@ -74,12 +59,12 @@ async function deleteAllItem() {
     $("#deleteAllModal").modal("hide");
 }
 
-function alertSnackbar(message) {
+export function alertSnackbar(message) {
     $(".snackbar-body").text(message);
     $(".snackbar-toggler").trigger("click")
 }
 
-function icheckConfig() {
+export function icheckConfig() {
     // Checkbox & Radio 1
     $('.icheck input').iCheck({
         checkboxClass: 'icheckbox_square-blue',
@@ -116,7 +101,7 @@ function icheckConfig() {
     })
 }
 
-function toggleCheckbox(statusOk) {
+export function toggleCheckbox(statusOk) {
     if (statusOk) {
         $("#deleteIcheckBtn").removeClass("d-none");
     } else {

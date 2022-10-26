@@ -80,3 +80,7 @@
 @section('page-js')
     @include('includes.datatable.js')
 @endsection
+
+@section('script')
+    <script src="{{asset('mix/js/App/custom-ajax-table.js')}}" type="module"></script>
+@endsection

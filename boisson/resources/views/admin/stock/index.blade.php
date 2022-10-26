@@ -225,9 +225,3 @@
 @section('page-js')
     @include('includes.datatable.js')
 @endsection
-
-@section('script')
-    <script>
-        loadDatatable(".datatable", ['copy', 'csv', 'excel', 'pdf']);
-    </script>
-@endsection

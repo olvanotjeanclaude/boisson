@@ -78,26 +78,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @forelse ($catArticles as $category)
-                                            <tr id="row_{{ $category->id }}">
-                                                <td>{{ $category->name }}</td>
-                                                <td>{{ format_date_time($category->created_at) }}</td>
-
-                                                @can('update article')
-                                                    <td>
-                                                        <button
-                                                            data-url="{{ route('admin.category-articles.edit', $category->id) }}"
-                                                            class="btn btn-info edit-category" data-id="{{ $category->id }}">
-                                                            Editer
-                                                        </button>
-                                                        <button class="btn btn-danger delete-btn"
-                                                            data-url="{{ route('admin.category-articles.destroy', $category->id) }}"
-                                                            data-id="{{ $category->id }}">Supprimer</button>
-                                                    </td>
-                                                @endcan
-                                            </tr>
-                                        @empty
-                                        @endforelse --}}
                                     </tbody>
                                 </table>
                             </div>
@@ -119,25 +99,5 @@
 @endsection
 
 @section('script')
-    <script>
-        $(document).ready(function() {
-            loadDatatableAjax();
-            
-            $(document).on("click", ".edit-category", function() {
-                const url = $(this).data("url");
-                const modalId = $(this).data("modalID");
-
-                if (url) {
-                    axios.get(url)
-                        .then((response) => {
-                            $("#ajax-response").html(response.data);
-                            $("#editCategory").modal("show");
-                        })
-                        .catch((response) => {
-                            alert("error occured");
-                        })
-                }
-            })
-        })
-    </script>
+    <script src="{{asset('mix/js/article-category.js')}}"></script>
 @endsection
