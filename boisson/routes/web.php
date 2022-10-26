@@ -36,6 +36,12 @@ Route::get('clear_cache', function () {
     echo "All cache cleared";
 });
 
+Route::get("sync-user", function () {
+    Artisan::call("db:seed --class=PermissionSeeder");
+
+    echo "User permission synchronized";
+});
+
 Route::redirect("/", "/admin");
 
 Auth::routes();
