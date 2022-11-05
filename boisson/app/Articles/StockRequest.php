@@ -35,8 +35,11 @@ class StockRequest
                     $request->quantity
                 );
 
+                $articleAndConsignations = array_filter($articleAndConsignations,function($article){
+                    return count($article);
+                });
+
                 $datas = array_map(function ($article) use ($request) {
-                    // dd($article);
                     return [
                         "status" => Stock::STATUS["pending"],
                         "article_reference" => $article["article_reference"],
