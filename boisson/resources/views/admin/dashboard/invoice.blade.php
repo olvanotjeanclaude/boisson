@@ -9,7 +9,7 @@
     <h4 class="invoice-title"> Historique de vente</h4>
     <h5>Date : {{ format_date($between[0]) }}-{{ format_date($between[1]) }}</h5>
     @if (request()->get('filter_type'))
-        <h5>Type : {{ request()->get('filter_type') }} </h5>
+        <h5>Type : {{App\helper\Filter::TYPES[request()->get('filter_type')]?? "" }} </h5>
     @endif
     @if (request()->get('chercher'))
         <h5>Mot Clé : {{ request()->get('chercher') }}</h5>

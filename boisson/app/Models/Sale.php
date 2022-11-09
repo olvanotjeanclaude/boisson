@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Articles as ModelsArticles;
+use App\helper\Filter;
 use App\Traits\Articles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Articles as ModelsArticles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Sale extends Model
@@ -134,5 +135,42 @@ class Sale extends Model
             ->selectRaw('SUM(quantity) as sum_sale,article_reference,saleable_id,saleable_type, received_at')
             ->groupBy("article_reference")
             ->get();
+    }
+
+    public  function scopeGetSolds($query, $between, $articleType = "all")
+    {
+        $sales = $query->whereHasMorph(
+            'saleable',
+            [Product::class, Emballage::class],
+            function ($query) {
+                $search = strtolower(request()->get("chercher"));
+                $query->where('designation', 'like', "%$search%")
+                    ->orWhere('reference', 'like', "%$search%");
+            }
+        )
+            ->where(fn ($query) => Filter::queryBetween($query, $between))
+            ->orderBy("received_at", "desc")
+            ->get();
+
+        $sales = Filter::querySales($sales, $articleType);
+
+        return $sales;
+    }
+
+    public static function getDetailOrWholesale($sales, $type)
+    {
+        return $sales->where("saleable_type", "App\Models\Product")
+            ->filter(function ($sale) use ($type) {
+                $article = $sale->saleable;
+                $divider = $article?->contenance ?? $article?->condition;
+
+                if ($type == "detail") {
+                    return $article && $sale->quantity < $divider;
+                } else if ($type == "wholesale") {
+                    return $article && $sale->quantity >= $divider;
+                }
+
+                return $sale;
+            });
     }
 }

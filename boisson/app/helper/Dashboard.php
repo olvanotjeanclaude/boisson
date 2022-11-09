@@ -6,41 +6,36 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Emballage;
 use App\Models\DocumentVente;
-use App\Models\Stock;
-use Illuminate\Support\Facades\DB;
 
 class Dashboard
 {
     public function getRecaps($between, $filterType = "all")
     {
         $solds =  $this->getSolds($between, $filterType);
-        $articles = $solds->where("saleable_type", "App\Models\Product");
-        $consignations = $solds->where("saleable_type", "App\Models\Emballage")
-            ->where("isWithEmballage", false);
-        $deconsignations = $solds->where("saleable_type", "App\Models\Emballage")
-            ->where("isWithEmballage", true);
-
-        // dd($solds);
-        if($filterType=="wholesale"){
-        }
-        else if($filterType=="detail"){
-        }
-
-        $wholesale= $solds->sum("quantity");
-        $wholesaleOrDetail = $solds->sum("quantity");
+        $articles = Filter::querySales($solds,"article");
+        $consignations = Filter::querySales($solds,"consignation");
+        $deconsignations = Filter::querySales($solds,"deconsignation");
+        $wholesale = $this->getSolds($between, "wholesale");
+        $details = $this->getSolds($between, "detail");
 
         return  [
             "Article" => $articles->sum("quantity"),
             "Consignation" => $consignations->sum("quantity"),
             "Avoir" => $deconsignations->sum("quantity"),
-            // "En Gros" => $wholesale->sum("quantity"),
-            // "En Detail" => $details->sum("quantity"),
+            "En Gros" => $wholesale->sum("quantity"),
+            "En Detail" => $details->sum("quantity"),
         ];
     }
 
-    public function getPaymentTypes($payments)
+    public function getPaymentTypes(): array
     {
-        $paymentTypes = [];
+        $startDate = request()->get("start_date") ?? date("Y-m-d");
+        $endDate = request()->get("end_date") ?? date("Y-m-d");
+        $between = [$startDate, $endDate];
+
+        $docVente = $this->getDocVente($between);
+        $payments = $docVente->get()->groupBy("payment_type");
+
         foreach (DocumentVente::PAYMENT_TYPES as $key => $name) {
             if (isset($payments[$key])) {
                 $payment = $payments[$key];
@@ -56,63 +51,56 @@ class Dashboard
 
     public function getSolds($between, $articleType = "all")
     {
-        $sales = Sale::whereHasMorph(
-            'saleable',
-            [Product::class, Emballage::class],
-            function ($query) {
-                $search = strtolower(request()->get("chercher"));
-                $query->where('designation', 'like', "%$search%")
-                    ->orWhere('reference', 'like', "%$search%");
-            }
-        )
-            ->where(fn ($query) => Filter::queryBetween($query, $between))
-            ->where(function ($query) use ($articleType) {
-                switch ($articleType) {
-                    case 'article':
-                        $query = $query->where("saleable_type", "App\Models\Product");
-                        break;
-                    case 'consignation':
-                        $query = $query->where("saleable_type", "App\Models\Emballage")
-                            ->where("isWithEmballage", false);
-                        break;
-                    case 'deconsignation':
-                        $query = $query->where("saleable_type", "App\Models\Emballage")
-                            ->where("isWithEmballage", true);
-                        break;
-                    default:
-                        # code...
-                        break;
-                }
-            })
-            ->orderBy("received_at", "desc")
-            ->get();
+        $responses = [];
 
-        switch ($articleType) {
-            case 'wholesale':
-                $sales = $this->getWholesale($sales);
-                break;
-            case 'detail':
-                $sales = $this->getDetailSale($sales);
-                break;
-        }
-        // DD($sales);
+        $sales = Sale::GetSolds($between,$articleType);
         $sales = $sales->groupBy("article_reference");
-
+     
         $sales = $sales->map(function ($sale) {
+            $datas = [];
             $article = $sale[0]->saleable;
+            $articles = Filter::querySales($sale, "article");
+            $consis = Filter::querySales($sale, "consignation");
+            $decos = Filter::querySales($sale, "deconsignation");
 
-            return (object)[
-                "designation" => $article->designation,
-                "pricing" => $sale[0]->pricing,
-                "received_at" => $sale[0]->received_at,
-                "quantity" => $sale->sum("quantity"),
-                "sub_amount" => $sale->sum("amount"),
-                "saleable" => (object)$article->toArray(),
-                "saleable_type" => get_class($article)
-            ];
+            if (count($articles)) {
+                $datas[] = $this->formatSale($article, $articles);
+            }
+
+            if (count($consis)) {
+                $datas[] = $this->formatSale($article, $consis);
+            }
+
+            if (count($decos)) {
+                $datas[] = $this->formatSale($article, $decos);
+            }
+
+            return $datas;
         });
+      
+        foreach ($sales as  $values) {
+            foreach ($values as  $sale) {
+                $responses[] = (object)$sale;
+            }
+        }
 
-        return in_array($articleType, array_keys(Filter::TYPES)) ? $sales : collect([]);
+        return in_array($articleType, array_keys(Filter::TYPES)) ? collect($responses) : collect([]);
+    }
+
+    private function formatSale($article, $sales)
+    {
+        $sale = $sales->first();
+
+        return [
+            "designation" => $article->designation,
+            "pricing" => $sale->pricing,
+            "received_at" => $sale->received_at,
+            "quantity" => $sales->sum("quantity"),
+            "sub_amount" => $sales->sum("amount"),
+            "saleable" => (object)$article->toArray(),
+            "saleable_type" => get_class($article),
+            "isWithEmballage" => $sale->isWithEmballage
+        ];
     }
 
     public function getRecettes($solds, $docVente, $between = [])
@@ -139,27 +127,5 @@ class Dashboard
     public function getDocVente($between)
     {
         return DocumentVente::where(fn ($query) => Filter::queryBetween($query, $between));
-    }
-
-    private function getWholesale($sales)
-    {
-        return $sales->where("saleable_type", "App\Models\Product")
-            ->filter(function ($sale) {
-                $article = $sale->saleable;
-                $divider = $article?->contenance ?? $article?->condition;
-                // dd($divider,$sale);
-                return $article && $sale->quantity >= $divider;
-            });
-    }
-
-    private function getDetailSale($sales)
-    {
-        return $sales->where("saleable_type", "App\Models\Product")
-            ->filter(function ($sale) {
-                $article = $sale->saleable;
-                $divider = $article?->contenance ?? $article?->condition;
-
-                return $article && $sale->quantity < $divider;
-            });
     }
 }
