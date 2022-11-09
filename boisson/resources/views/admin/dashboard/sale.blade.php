@@ -15,17 +15,15 @@
                 </div>
                 <div class="mt-1 mt-lg-0 col-sm-5 col-md-4  col-xl">
                     <select name="filter_type" class="bg-white form-control h-100" id="filterArticle">
-                        @foreach (\App\helper\Filter::TYPES as $value)
-                            @if ($value == 'sorti')
-                                @continue
-                            @endif
-                            <option @if ($value == request()->get('filter_type')) selected @endif value="{{ $value }}">
-                                {{ Str::title($value) }}</option>
+                        @foreach (\App\helper\Filter::TYPES as $key => $value)
+                            <option @if ($key == request()->get('filter_type')) selected @endif value="{{ $key }}">
+                                {{ Str::title($value) }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
                 <div class="mt-1 mt-lg-0 col-12 col-md-4  col-xl">
-                    <div class="btn-group float-right" role="group" >
+                    <div class="btn-group float-right" role="group">
                         <button type="submit" class="btn btn-secondary">Filtrer</button>
                         <a target="_blink"
                             href="{{ route('admin.dashboard.printReport', [
@@ -70,7 +68,7 @@
                             @forelse ($solds as $data)
                                 <tr>
                                     <td>
-                                        {{ $data->saleable->designation }}
+                                        {{ $data->designation }}
                                     </td>
                                     <td>
                                         {{ $data->quantity }}
@@ -92,7 +90,8 @@
                 </div>
             </div>
             <h5 style="margin-top: 8px" class="text-right">Total: {{ formatPrice($recettes['sum_amount']) }}</h5>
-            <h5 style="margin-top: 8px" class="text-right">Total En Fmg: {{ formatPrice($recettes['sum_amount'] * 5,"Fmg") }}
+            <h5 style="margin-top: 8px" class="text-right">Total En Fmg:
+                {{ formatPrice($recettes['sum_amount'] * 5, 'Fmg') }}
             </h5>
         @else
             Aucune donnée à afficher

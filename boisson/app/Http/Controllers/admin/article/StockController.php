@@ -49,7 +49,7 @@ class StockController extends Controller
         $between = Stock::getDefaultBetween();
         $startDate = request()->get("start_date") ?? $between[0];
         $endDate = request()->get("end_date") ?? $between[1];
-        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
+        $filterType = request()->get("filter_type") ?? Filter::TYPES["tout"];
         $between = [$startDate, $endDate];
         $keyword = strtolower(request()->get("chercher"));
 

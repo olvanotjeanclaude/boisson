@@ -23,7 +23,7 @@ class AdminController extends Controller
         $paymentTypes  = [];
         $startDate = request()->get("start_date") ?? date("Y-m-d");
         $endDate = request()->get("end_date") ?? date("Y-m-d");
-        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
+        $filterType = request()->get("filter_type") ?? Filter::TYPES["tout"];
         $between = [$startDate, $endDate];
 
         $solds = $dashboard->getSolds($between, $filterType);
@@ -63,7 +63,7 @@ class AdminController extends Controller
         $startDate = request()->get("start_date") ?? date("Y-m-d");
         $endDate = request()->get("end_date") ?? date("Y-m-d");
         $between = [$startDate, $endDate];
-        $filterType = request()->get("filter_type") ?? Filter::TYPES[0];
+        $filterType = request()->get("filter_type") ?? Filter::TYPES["tout"];
         $solds = $dashboard->getSolds($between, $filterType);
         $docVente = $dashboard->getDocVente($between);
         $recettes = $dashboard->getRecettes($solds, $docVente, $between);

@@ -4,7 +4,14 @@ namespace App\helper;
 
 class Filter
 {
-    const TYPES = ["tout", "article", "consignation", "deconsignation"];
+    const TYPES = [
+        "tout" => "tout",
+        "article" =>  "article",
+        "consignation" => "consignation",
+        "deconsignation" => "deconsignation",
+        "wholesale" => "en gros",
+        "detail" => "en detail"
+    ];
 
     public static function queryBetween($query, $between, $dateColumn = "received_at")
     {

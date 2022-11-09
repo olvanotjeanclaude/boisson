@@ -6,6 +6,8 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Emballage;
 use App\Models\DocumentVente;
+use App\Models\Stock;
+use Illuminate\Support\Facades\DB;
 
 class Dashboard
 {
@@ -14,14 +16,25 @@ class Dashboard
         $solds =  $this->getSolds($between, $filterType);
         $articles = $solds->where("saleable_type", "App\Models\Product");
         $consignations = $solds->where("saleable_type", "App\Models\Emballage")
-            ->where("isWithEmballage", false);;
+            ->where("isWithEmballage", false);
         $deconsignations = $solds->where("saleable_type", "App\Models\Emballage")
             ->where("isWithEmballage", true);
-        //    dd($consignations->toArray(),$deconsignations->toArray());
+
+        // dd($solds);
+        if($filterType=="wholesale"){
+        }
+        else if($filterType=="detail"){
+        }
+
+        $wholesale= $solds->sum("quantity");
+        $wholesaleOrDetail = $solds->sum("quantity");
+
         return  [
             "Article" => $articles->sum("quantity"),
             "Consignation" => $consignations->sum("quantity"),
             "Avoir" => $deconsignations->sum("quantity"),
+            // "En Gros" => $wholesale->sum("quantity"),
+            // "En Detail" => $details->sum("quantity"),
         ];
     }
 
@@ -71,10 +84,35 @@ class Dashboard
                         break;
                 }
             })
-            ->orderBy("received_at","desc")
+            ->orderBy("received_at", "desc")
             ->get();
 
-        return in_array($articleType, Filter::TYPES) ? $sales : collect([]);
+        switch ($articleType) {
+            case 'wholesale':
+                $sales = $this->getWholesale($sales);
+                break;
+            case 'detail':
+                $sales = $this->getDetailSale($sales);
+                break;
+        }
+        // DD($sales);
+        $sales = $sales->groupBy("article_reference");
+
+        $sales = $sales->map(function ($sale) {
+            $article = $sale[0]->saleable;
+
+            return (object)[
+                "designation" => $article->designation,
+                "pricing" => $sale[0]->pricing,
+                "received_at" => $sale[0]->received_at,
+                "quantity" => $sale->sum("quantity"),
+                "sub_amount" => $sale->sum("amount"),
+                "saleable" => (object)$article->toArray(),
+                "saleable_type" => get_class($article)
+            ];
+        });
+
+        return in_array($articleType, array_keys(Filter::TYPES)) ? $sales : collect([]);
     }
 
     public function getRecettes($solds, $docVente, $between = [])
@@ -101,5 +139,27 @@ class Dashboard
     public function getDocVente($between)
     {
         return DocumentVente::where(fn ($query) => Filter::queryBetween($query, $between));
+    }
+
+    private function getWholesale($sales)
+    {
+        return $sales->where("saleable_type", "App\Models\Product")
+            ->filter(function ($sale) {
+                $article = $sale->saleable;
+                $divider = $article?->contenance ?? $article?->condition;
+                // dd($divider,$sale);
+                return $article && $sale->quantity >= $divider;
+            });
+    }
+
+    private function getDetailSale($sales)
+    {
+        return $sales->where("saleable_type", "App\Models\Product")
+            ->filter(function ($sale) {
+                $article = $sale->saleable;
+                $divider = $article?->contenance ?? $article?->condition;
+
+                return $article && $sale->quantity < $divider;
+            });
     }
 }

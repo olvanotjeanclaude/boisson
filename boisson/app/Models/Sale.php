@@ -83,7 +83,6 @@ class Sale extends Model
 
     public function getPricingAttribute()
     {
-
         return getNumberDecimal($this->price);
     }
 
