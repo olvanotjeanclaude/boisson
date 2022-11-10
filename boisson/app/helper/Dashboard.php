@@ -32,10 +32,12 @@ class Dashboard
         $startDate = request()->get("start_date") ?? date("Y-m-d");
         $endDate = request()->get("end_date") ?? date("Y-m-d");
         $between = [$startDate, $endDate];
+        $paymentTypes = [];
 
         $docVente = $this->getDocVente($between);
         $payments = $docVente->get()->groupBy("payment_type");
 
+        
         foreach (DocumentVente::PAYMENT_TYPES as $key => $name) {
             if (isset($payments[$key])) {
                 $payment = $payments[$key];
@@ -45,7 +47,7 @@ class Dashboard
                 ];
             }
         }
-
+        
         return $paymentTypes;
     }
 
