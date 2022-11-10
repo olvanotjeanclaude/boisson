@@ -73,4 +73,26 @@ class Articles extends Model
     {
         return self::PACKAGE_TYPES;
     }
+
+    public static function productsOrEmballages($type = "all")
+    {
+        $datas = [];
+        $products = Product::orderBy("designation")->get();
+        $emballages = Emballage::orderBy("designation")->get();
+        
+        switch ($type) {
+            case 'product':
+                $datas = $products;
+                break;
+            case 'emballage':
+                $datas = $emballages;
+                break;
+
+            default:
+                $datas = $products->merge($emballages);
+                break;
+        }
+
+        return $datas;
+    }
 }

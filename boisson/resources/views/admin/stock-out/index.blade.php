@@ -84,8 +84,6 @@
                                     <th>Status</th>
                                     <th>Magasinier</th>
                                     <th>Numero</th>
-                                    <th>Designation</th>
-                                    <th>Qte</th>
                                     <th>Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -98,8 +96,6 @@
                                             <td>{{ $out->user ? Str::title($out->user->full_name) : 'Introuvable' }}
                                             </td>
                                             <td>{{ $out->invoice_number }}</td>
-                                            <td>{{ $out->stockable->designation }}</td>
-                                            <td>{{ $out->out }}</td>
                                             <td>{{ format_date($out->date) }}</td>
                                             <td>
                                                 <span class="dropdown">

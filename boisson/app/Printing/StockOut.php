@@ -46,12 +46,13 @@ class StockOut implements Invoice
     }
 
     private function updateStatus($invoiceNumber,$status){
+        $stocks = Stock::whereInvoiceNumber($invoiceNumber);
         $stock = Stock::whereInvoiceNumber($invoiceNumber)->first();
         $article = $stock->stockable;
       
         abort_if(is_null($article), 404);
 
-        $updated = $stock->update(["status" => $status]);
+        $updated = $stocks->update(["status" => $status]);
      
         if ($updated) {
             return redirect("/admin/sorti-stocks")->with("success", CustomMessage::Success("Sorti de stock"));

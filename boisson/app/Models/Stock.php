@@ -39,7 +39,8 @@ class Stock extends Model
     const STATUS = [
         "pending" => 1,
         "accepted" => 2,
-        "canceled" => 3
+        "canceled" => 3,
+        "pending_validation" => 4
     ];
 
     const STATUS_TEXT = [
@@ -62,7 +63,6 @@ class Stock extends Model
     {
         return $q->where("status", self::STATUS["pending"])
             ->where("action_type", self::ACTION_TYPES["new_stock"])
-
             ->where("user_id", auth()->id())->get();
     }
 
@@ -120,6 +120,9 @@ class Stock extends Model
                 break;
             case self::STATUS["canceled"]:
                 $html = '<span class="badge badge-danger">Annulé</span>';
+                break;
+            case self::STATUS["pending_validation"]:
+                $html = '<span class="badge badge-primary">En attente</span>';
                 break;
             default:
                 $html = '<span class="badge badge-dark">Inconnu</span>';
@@ -322,6 +325,7 @@ class Stock extends Model
     public function scopeOuts($query)
     {
         $entries = $query->whereNotNull("invoice_number")
+            ->where("status", "!=", self::STATUS["pending"])
             ->where("action_type", self::ACTION_TYPES["sample_out"])
             ->groupBy("invoice_number", "date")
             ->orderBy("id", "desc")

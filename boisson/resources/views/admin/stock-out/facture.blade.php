@@ -1,11 +1,11 @@
 @extends('layouts.invoice')
 
 @section('title')
-   Bon de sortie No {{ $stock->invoice_number }}
+    Bon de sortie No {{ $stock->invoice_number }}
 @endsection
 
 @section('invoice-title')
-   Bon de sortie
+    Bon de sortie
 @endsection
 
 @section('header')
@@ -48,13 +48,13 @@
                             {{ Str::title($data->stockable->designation) }}
                         </td>
                         <td>
-                            {{ $data->out }}
+                            {{ getNumberDecimal($data->out) }}
                         </td>
                         <td>
-                            {{ round($data->stockable->price) }}
+                            {{ getNumberDecimal($data->stockable->price) }}
                         </td>
                         <td style="text-align: right">
-                            {{ round($data->sub_amount) }}
+                            {{ getNumberDecimal($data->sub_amount) }}
                         </td>
                     </tr>
                 @endif
@@ -65,5 +65,5 @@
 
 @section('footer')
     <p class="mt-1"><b>Total : </b>{{ formatPrice($stocks->sum('sub_amount'), 'Ariary') }}</p>
-    <p class="mt-1"><b>Total En Fmg: </b>{{ formatPrice($stocks->sum('sub_amount')*5, 'Ariary') }}</p>
+    <p class="mt-1"><b>Total En Fmg: </b>{{ formatPrice($stocks->sum('sub_amount') * 5, 'Ariary') }}</p>
 @endsection

@@ -30,13 +30,13 @@
                     {{ Str::title($data->stockable->designation) }}
                 </td>
                 <td>
-                    {{ $data->out }}
+                    {{ getNumberDecimal($data->out) }}
                 </td>
                 <td>
-                    {{ ($data->stockable->price) }}
+                    {{ getNumberDecimal($data->stockable->price) }}
                 </td>
                 <td style="text-align: right">
-                    {{ ($data->sub_amount) }}
+                    {{ $data->sub_amount }}
                 </td>
             </tr>
         @endif
