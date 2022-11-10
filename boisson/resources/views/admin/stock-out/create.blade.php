@@ -16,7 +16,7 @@
             ['text' => 'List', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Nouveu Stock',
+            'text' => 'Nouveau Stock',
             'link' => route('admin.stocks.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,

@@ -10,7 +10,7 @@ class Filter
         "tout" => "tout",
         "article" =>  "article",
         "consignation" => "consignation",
-        "deconsignation" => "Avoir",
+        "deconsignation" => "avoir",
         "wholesale" => "en gros",
         "detail" => "en detail"
     ];

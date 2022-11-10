@@ -16,7 +16,7 @@
             ['text' => 'Liste', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
-            'text' => 'Nouveau Sorti',
+            'text' => 'Nouvelle Sortie',
             'link' => route('admin.sorti-stocks.create'),
             'icon' => '<span class="material-icons">add</span>',
             'show' => true,

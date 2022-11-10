@@ -1,4 +1,4 @@
-<div class="card d-non">
+<div class="card">
     <div class="card-header bg-dark">
         <form action="{{ route('admin.dashboard.detail') }}" method="GET">
             <div class="row">

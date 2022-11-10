@@ -12,19 +12,33 @@ class Dashboard
     public function getRecaps($between, $filterType = "all")
     {
         $solds =  $this->getSolds($between, $filterType);
-        $articles = Filter::querySales($solds,"article");
-        $consignations = Filter::querySales($solds,"consignation");
-        $deconsignations = Filter::querySales($solds,"deconsignation");
+        $articles = Filter::querySales($solds, "article");
+        $consignations = Filter::querySales($solds, "consignation");
+        $deconsignations = Filter::querySales($solds, "deconsignation");
         $wholesale = $this->getSolds($between, "wholesale");
         $details = $this->getSolds($between, "detail");
+        $reqFilterType = request()->get("filter_type");
 
-        return  [
-            "Article" => $articles->sum("quantity"),
-            "Consignation" => $consignations->sum("quantity"),
-            "Avoir" => $deconsignations->sum("quantity"),
-            "En Gros" => $wholesale->sum("quantity"),
-            "En Detail" => $details->sum("quantity"),
+        $datas =  [
+            "article" => $articles->sum("quantity"),
+            "consignation" => $consignations->sum("quantity"),
+            "avoir" => $deconsignations->sum("quantity"),
+            "en gros" => $wholesale->sum("quantity"),
+            "detail" => $details->sum("quantity"),
         ];
+
+        if ($reqFilterType == "wholesale") {
+            return ["en gros" => $datas["en gros"]];
+        }
+        else if($reqFilterType=="deconsignation"){
+            return ["avoir" => $datas["avoir"]];
+        }
+
+        if (in_array($reqFilterType, array_keys(Filter::TYPES))) {
+            $datas =  $datas[$reqFilterType];
+        }
+
+        return $datas;
     }
 
     public function getPaymentTypes(): array
@@ -37,7 +51,7 @@ class Dashboard
         $docVente = $this->getDocVente($between);
         $payments = $docVente->get()->groupBy("payment_type");
 
-        
+
         foreach (DocumentVente::PAYMENT_TYPES as $key => $name) {
             if (isset($payments[$key])) {
                 $payment = $payments[$key];
@@ -47,7 +61,7 @@ class Dashboard
                 ];
             }
         }
-        
+
         return $paymentTypes;
     }
 
@@ -55,9 +69,9 @@ class Dashboard
     {
         $responses = [];
 
-        $sales = Sale::GetSolds($between,$articleType);
+        $sales = Sale::GetSolds($between, $articleType);
         $sales = $sales->groupBy("article_reference");
-     
+
         $sales = $sales->map(function ($sale) {
             $datas = [];
             $article = $sale[0]->saleable;
@@ -79,7 +93,7 @@ class Dashboard
 
             return $datas;
         });
-      
+
         foreach ($sales as  $values) {
             foreach ($values as  $sale) {
                 $responses[] = (object)$sale;
