@@ -24,18 +24,27 @@ class Dashboard
             "consignation" => $consignations->sum("quantity"),
             "avoir" => $deconsignations->sum("quantity"),
             "en gros" => $wholesale->sum("quantity"),
-            "detail" => $details->sum("quantity"),
+            "en detail" => $details->sum("quantity"),
         ];
-
-        if ($reqFilterType == "wholesale") {
-            return ["en gros" => $datas["en gros"]];
-        }
-        else if($reqFilterType=="deconsignation"){
-            return ["avoir" => $datas["avoir"]];
-        }
-
+        
         if (in_array($reqFilterType, array_keys(Filter::TYPES))) {
-            $datas =  $datas[$reqFilterType];
+            switch ($reqFilterType) {
+                case 'article':
+                    $datas =  ["article" => $datas["article"]];
+                    break;
+                case 'consignation':
+                    $datas =  ["consignation" => $datas["consignation"]];
+                    break;
+                case 'deconsignation':
+                    $datas =  ["avoir" => $datas["avoir"]];
+                    break;
+                case 'wholesale':
+                    $datas =  ["en gros" => $datas["en gros"]];
+                    break;
+                case 'detail':
+                    $datas =  ["en detail" => $datas["en detail"]];
+                    break;
+            }
         }
 
         return $datas;
@@ -50,7 +59,6 @@ class Dashboard
 
         $docVente = $this->getDocVente($between);
         $payments = $docVente->get()->groupBy("payment_type");
-
 
         foreach (DocumentVente::PAYMENT_TYPES as $key => $name) {
             if (isset($payments[$key])) {
