@@ -5,7 +5,7 @@
 </div>
 <div class="table-responsive">
     <table style="width: 100%" data-columns="{{ $columns }}" data-url="{{ $dataUrl }}"
-        class="table table-hover table-sm  ajax-datatable table-striped"
+        class="table table-hover text-nowrap table-sm  ajax-datatable table-striped"
         @isset($tableId) id="{{ $tableId }}" @endisset>
         <thead class="bg-light">
             <tr>

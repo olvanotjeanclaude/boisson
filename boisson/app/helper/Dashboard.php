@@ -20,29 +20,29 @@ class Dashboard
         $reqFilterType = request()->get("filter_type");
 
         $datas =  [
-            "article" => $articles->sum("quantity"),
-            "consignation" => $consignations->sum("quantity"),
-            "avoir" => $deconsignations->sum("quantity"),
-            "en gros" => $wholesale->sum("quantity"),
-            "en detail" => $details->sum("quantity"),
+            Filter::TYPES["article"] => $articles->sum("quantity"),
+            Filter::TYPES["consignation"] => $consignations->sum("quantity"),
+            Filter::TYPES["deconsignation"] => $deconsignations->sum("quantity"),
+            Filter::TYPES["wholesale"] => $wholesale->sum("quantity"),
+            Filter::TYPES["detail"] => $details->sum("quantity"),
         ];
-        
+
         if (in_array($reqFilterType, array_keys(Filter::TYPES))) {
             switch ($reqFilterType) {
                 case 'article':
-                    $datas =  ["article" => $datas["article"]];
+                    $datas =  ["article" => $datas[Filter::TYPES["article"]]];
                     break;
                 case 'consignation':
-                    $datas =  ["consignation" => $datas["consignation"]];
+                    $datas =  ["consignation" => $datas[Filter::TYPES["consignation"]]];
                     break;
                 case 'deconsignation':
-                    $datas =  ["avoir" => $datas["avoir"]];
+                    $datas =  ["avoir" => $datas[Filter::TYPES["deconsignation"]]];
                     break;
                 case 'wholesale':
-                    $datas =  ["en gros" => $datas["en gros"]];
+                    $datas =  ["en gros" => $datas[Filter::TYPES["wholesale"]]];
                     break;
                 case 'detail':
-                    $datas =  ["en detail" => $datas["en detail"]];
+                    $datas =  ["en detail" => $datas[Filter::TYPES["detail"]]];
                     break;
             }
         }

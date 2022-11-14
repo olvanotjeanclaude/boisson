@@ -11,8 +11,8 @@ class Filter
         "article" =>  "article",
         "consignation" => "consignation",
         "deconsignation" => "avoir",
-        "wholesale" => "en gros",
-        "detail" => "en detail"
+        "wholesale" => " vente en gros",
+        "detail" => "vente en détail"
     ];
 
     public static function queryBetween($query, $between, $dateColumn = "received_at")

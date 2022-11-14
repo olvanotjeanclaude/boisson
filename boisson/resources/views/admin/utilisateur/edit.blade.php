@@ -158,8 +158,7 @@
                             <div class="form-group col-12 mb-2">
                                 <label for="address">Adresse</label>
                                 <div class="position-relative has-icon-left">
-                                    <textarea id="address" rows="2" required class="form-control" name="address"
-                                        placeholder="notes">{{ $user->address }}</textarea>
+                                    <textarea id="address" rows="2" required class="form-control" name="address" placeholder="notes">{{ $user->address }}</textarea>
                                     <div class="form-control-position">
                                         <i class=" ft-map-pin"></i>
                                     </div>
@@ -183,10 +182,23 @@
                                 <div class="form-group col-12 mb-2">
                                     <label>Photo De Profile</label>
                                     <label id="projectinput8" class="file center-block">
-                                        <input type="file" id="file" name="image" class="form-control form-control-file">
+                                        <input type="file" id="file" name="image"
+                                            class="form-control form-control-file">
                                         <span class="file-custom"></span>
                                     </label>
                                 </div>
+                                @role('super admin')
+                                    <div class="form-group col-12 mb-2">
+                                        <label for="expiration_date" class="text-capitalize">date d'expiration</label>
+                                        <input class="form-control border-primary"
+                                            value="{{ $user->expiration_date ?? old('expiration_date') }}" required
+                                            type="datetime-local" name="expiration_date" placeholder="date d'expiration"
+                                            id="expiration_date">
+                                        <div class="invalid-feedback">
+                                            Entrer la date d'expiration
+                                        </div>
+                                    </div>
+                                @endrole
                             </div>
                         </div>
                     </div>

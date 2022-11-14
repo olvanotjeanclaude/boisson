@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DisableAccountController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -42,11 +43,13 @@ Route::get("sync-user", function () {
     echo "User permission synchronized";
 });
 
+Route::resource("desactivate-account", DisableAccountController::class)->only(["index", "store"]);
+
 Route::redirect("/", "/admin");
 
 Auth::routes();
 
-Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => "auth"], function () {
+Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => ["auth", "CheckUserValidityMiddleware"]], function () {
     Route::group(["middleware" => ["can:view all"]], function () {
         Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
         Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);

@@ -155,11 +155,11 @@
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-12 col-lg-6">
-                                            <label class="label-control" for="price">Prix Unitaire</label>
+                                            <label class="label-control" for="price">Prix Détail</label>
                                             <input step="0.01" type="number" value="{{ old('price') }}" id="price"
-                                                required class="form-control" placeholder="Prix de vente" name="price">
+                                                required class="form-control" placeholder="Prix Détail" name="price">
                                             <div class="invalid-feedback">
-                                                Entrer le prix de vente
+                                                Entrer le prix détail
                                             </div>
                                         </div>
                                         <div class="col-6 col-md-12 col-lg-6">
