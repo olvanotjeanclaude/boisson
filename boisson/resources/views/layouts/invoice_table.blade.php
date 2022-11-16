@@ -37,10 +37,10 @@
                 @isset($amount)
                     <tr>
                         <td colspan="1">
-                            <p style="text-align: right">Total :</p>
+                            <p style="text-align: right">Total facture :</p>
                         </td>
                         <td colspan="3">
-                            <p> &nbsp; {{ formatPrice(abs($amount)) }}</p>
+                            <p> &nbsp; {{ formatPrice(($amount)) }}</p>
                         </td>
                     </tr>
                 @endisset
@@ -55,7 +55,7 @@
                     @isset($paid)
                         <tr>
                             <td colspan="1">
-                                <p style="text-align: right">Paye :</p>
+                                <p style="text-align: right">Total De Vente :</p>
                             </td>
                             <td colspan="3">
                                 <p> &nbsp; {{ formatPrice($paid) }}</p>
@@ -68,30 +68,30 @@
                                 <p style="text-align: right">credit :</p>
                             </td>
                             <td colspan="3">
-                                <p> &nbsp; {{ formatPrice(abs($rest)) }}</p>
+                                <p> &nbsp; {{ formatPrice($rest) }}</p>
                             </td>
                         </tr>
                     @endisset
                 @endif
 
-                @if (request()->get('filter_type') == 'tout')
+                @if (request()->get('filter_type') == 'tout' || request()->get('filter_type') == null)
                     @isset($checkout)
                         <tr>
                             <td colspan="1">
-                                <p style="text-align: right">Sortie De Caisse :</p>
+                                <p style="text-align: right">Avoir :</p>
                             </td>
                             <td colspan="3">
-                                <p> &nbsp; {{ formatPrice(abs($checkout)) }}</p>
+                                <p> &nbsp; {{ formatPrice($checkout) }}</p>
                             </td>
                         </tr>
                     @endisset
                     @isset($caisse)
                         <tr>
                             <td colspan="1">
-                                <p style="text-align: right">Caisse :</p>
+                                <p style="text-align: right">Solde En Caisse :</p>
                             </td>
                             <td colspan="3">
-                                <p> &nbsp; {{ formatPrice(abs($caisse)) }}</p>
+                                <p> &nbsp; {{ formatPrice(($caisse)) }}</p>
                             </td>
                         </tr>
                     @endisset
