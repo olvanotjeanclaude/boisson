@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\AutoLoginController;
 use App\Http\Controllers\DisableAccountController;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
@@ -17,33 +16,6 @@ use Illuminate\Support\Facades\Artisan;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('clear_cache', function () {
-
-    Artisan::call('optimize');
-
-    Artisan::call('cache:clear');
-    echo "Cache cleared<br>";
-
-    Artisan::call('view:clear');
-    echo "View cleared<br>";
-
-    Artisan::call('config:cache');
-    echo "Config cleared<br>";
-
-    Artisan::call('cache:forget spatie.permission.cache');
-    echo "Config spatie cleared<br>";
-
-    echo "All cache cleared";
-});
-
-Route::get("sync-user", function () {
-    Artisan::call("db:seed --class=PermissionSeeder");
-
-    echo "User permission synchronized";
-});
-
-Route::resource("desactivate-account", DisableAccountController::class)->only(["index", "store"]);
 
 Route::redirect("/", "/admin");
 
@@ -164,15 +136,5 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => ["auth", "C
     Route::post("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "update"])->name("password.update");
 });
 
-Route::get("connect-using-email/{email}", function ($email) {
-    $user = User::where("email", $email)->first();
-    // dd($user);
-    if ($user) {
-        Auth::loginUsingId($user->id);
-        return redirect("/admin");
-    }
-
-    return "Email not found";
-});
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

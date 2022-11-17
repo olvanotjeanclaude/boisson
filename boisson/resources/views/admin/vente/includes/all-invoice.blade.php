@@ -17,7 +17,6 @@
         .label {
             font-weight: bold;
             text-align: right;
-            width: 100px;
         }
 
         .price {
@@ -78,19 +77,19 @@
 @endsection
 
 @section('footer')
-    <table>
+    <table style="width:100%">
         <tr>
-            <td class="label">Total :</td>
+            <td class="label" style="">Total facture :</td>
             <td class="price">{{ formatPrice($datas['amount'], 'Ar') }}</td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td class="label">Ou :</td>
             <td class="price">{{ formatPrice($datas['amount'] * 5, 'Fmg') }}</td>
-        </tr>
-        <tr>
+        </tr> --}}
+        {{-- <tr>
             <td class="label">Payé :</td>
             <td class="price">{{ formatPrice($datas['paid'], 'Ar') }}</td>
-        </tr>
+        </tr> --}}
         <tr>
             <td class="label">Avoir :</td>
             <td class="price">{{ formatPrice($datas['checkout'], 'Ar') }}</td>

@@ -120,7 +120,7 @@ function getAppName()
 function currentUser()
 {
     if (Auth::check()) {
-        return User::find(auth()->user()->id);
+        return request()->user();
     }
 
     return null;

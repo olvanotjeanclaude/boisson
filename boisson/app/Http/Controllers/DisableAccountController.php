@@ -5,25 +5,31 @@ namespace App\Http\Controllers;
 use App\helper\Access;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class DisableAccountController extends Controller
 {
     public function index()
     {
-        $users = User::where("permission_access", "!=", Access::ROLES["super admin"])->get();
-        return view("disable-account-form", compact("users"));
+        if (Auth::check() && currentUser()->isSuperAdmin()) {
+            $users = User::where("permission_access", "!=", Access::ROLES["super admin"])->get();
+            return view("disable-account-form", compact("users"));
+        }
+
+        abort(403);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $expiredDate = $request->expiration_date;
-        $message = "";
         $users = User::where("permission_access", "!=", Access::ROLES["super admin"]);
 
-        if($expiredDate){
+        if($expiredDate && $request->status=="1"){
             $message = "Tous les comptes seront désactivés après " . format_date_time($expiredDate);
         }
         else{
+            $expiredDate = null;
             $message = "Date d'expiration de tout utilisateur supprimée";
         }
 
@@ -50,8 +56,7 @@ class DisableAccountController extends Controller
             $users =  User::findOrFail($request->user_id);
         }
 
-        if(isset($request->deactivate)){
-
+        if (isset($request->deactivate)) {
         }
 
         if ((!$expiredDate && !$request->user_id && !isset($request->deactivate)) ||

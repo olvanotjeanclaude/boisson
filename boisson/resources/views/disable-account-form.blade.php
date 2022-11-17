@@ -54,9 +54,9 @@
         <h3>Expiration De Comptes</h3>
         <form action="{{ route('desactivate-account.store') }}" method="POST">
             @csrf
-            <div class="form-group">
+            <div class="form-group" id="expirationDateContainer">
                 <label for="expiration_date">Date D'Expiration</label>
-                <input type="datetime-local" mn="{{ date('Y-m-d') }}T{{ date('H:i') }}" id="expiration_date"
+                <input type="datetime-local" value="{{now()->addDays(7)->toDateTimeString()}}" id="expiration_date"
                     name="expiration_date">
             </div>
             {{-- <div class="form-group">
@@ -70,14 +70,15 @@
                 </select>
             </div> --}}
             <div class="form-group">
-                <input type="checkbox" name="deactivate" checked>désactiver
+                <input type="radio" value="1" name="status" class="status" checked>Activer l'expiration
+                <br>
+                <input type="radio" value="0" name="status" class="status">Desactiver l'expiration
             </div>
             <div class="form-group">
                 <button type="submit">Envoyer</button>
             </div>
         </form>
     </div>
-
 </body>
 
 </html>
