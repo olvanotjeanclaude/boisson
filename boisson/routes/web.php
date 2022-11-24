@@ -1,10 +1,8 @@
 <?php
 
-use App\Http\Controllers\Auth\AutoLoginController;
-use App\Http\Controllers\DisableAccountController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
+
 
 /*
 |--------------------------------------------------------------------------

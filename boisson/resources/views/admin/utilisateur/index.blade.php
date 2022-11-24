@@ -28,7 +28,7 @@
             'text' => 'nouvel utilisateur',
             'link' => route('admin.utilisateurs.create'),
             'icon' => '<span class="material-icons">person_add</span>',
-            'show' => true,
+            'show' => currentUser()->expiration_date == null,
         ],
     ])
 @endsection

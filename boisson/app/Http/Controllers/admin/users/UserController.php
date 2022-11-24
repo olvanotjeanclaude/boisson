@@ -20,7 +20,6 @@ class UserController extends Controller
 
     public function index()
     {
-
         $users = User::where("id", "!=", auth()->user()->id)
             ->where("permission_access", "!=", 1)
             ->orderBy("id", "desc")->paginate(8);
@@ -29,6 +28,8 @@ class UserController extends Controller
 
     public function create()
     {
+        abort_if(!currentUser()->isSuperAdmin() && currentUser()->expiration_date, 403);
+
         return view("admin.utilisateur.create");
     }
 
@@ -49,7 +50,7 @@ class UserController extends Controller
     {
         return [
             "required" => "Le champ :attribute est obligatoire!",
-            "email.unique" =>"L'email existe déjà. Veuillez saisir un nouvel e-mail"
+            "email.unique" => "L'email existe déjà. Veuillez saisir un nouvel e-mail"
         ];
     }
 
@@ -79,7 +80,7 @@ class UserController extends Controller
 
     public function update(User $user, Request $request)
     {
-        $request->validate($this->rules(true,$user->id), $this->message());
+        $request->validate($this->rules(true, $user->id), $this->message());
 
         //dd($request->all());
         $data = $request->except("_token");
