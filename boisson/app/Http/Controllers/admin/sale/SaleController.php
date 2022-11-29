@@ -58,8 +58,8 @@ class SaleController extends Controller
             ->when(is_numeric($search) && strlen($search) == 7, function ($query) use ($search) {
                 return $query->where("number", "LIKE", $search);
             })
-            ->orderByDesc("id")
             ->groupBy("number")
+            ->orderBy("rang")
             ->get()
             ->map(function ($docSale) {
                 $status = $docSale->doc_status;
@@ -68,7 +68,7 @@ class SaleController extends Controller
                 $docSale->action = $this->getActionButtons($docSale);
                 $docSale->date = format_date($docSale->doc_date);
                 $docSale->cl_code = "CL" . $customer[0] ?? "";
-                $docSale->cl_name = strtolower($customer[1] ?? "");
+                $docSale->cl_name = strtolower($customer[1]??"N'existe pas");
                 $docSale->paid = formatPrice($docSale->sum_paid ?? 0);
                 $docSale->checkout = formatPrice($docSale->sum_checkout ?? 0);
                 $docSale->amount = formatPrice($docSale->sum_amount ?? 0);
@@ -85,7 +85,7 @@ class SaleController extends Controller
         $sumAmount =  $docSales->sum("sum_amount");
         $sumPaid =  $docSales->sum("sum_paid");
         $sumCheckout =  $docSales->sum("sum_checkout");
-     
+
         return [
             "all" => [...$docSales],
             "between" => $between,
@@ -103,7 +103,7 @@ class SaleController extends Controller
             "datas" => $this->dataSales()
         ]);
 
-        return $pdf->stream();
+        return $pdf->stream("ticket-de-vente.pdf");
     }
 
     public function download()
@@ -121,6 +121,7 @@ class SaleController extends Controller
             ->select([
                 "status as doc_status",
                 "number as doc_number",
+                "range as rang",
                 DB::raw("(SELECT CONCAT(code,'-',identification) FROM customers 
                         WHERE customer_id = customers.id) as customer"),
                 DB::raw("(SELECT SUM(amount) FROM sales 
@@ -143,6 +144,7 @@ class SaleController extends Controller
             ["data" => "status", "name" => "status", "searchable" => false],
             ["data" => "doc_number", "name" => "number", "title" => "Numero"],
             ["data" => "cl_name", "name" => "client", "title" => "Client"],
+            ["data" => "rang", "name" => "rang", "title" => "Rang"],
             ["data" => "cl_code", "name" => "code_du_client", "title" => "CL code"],
             ["data" => "date", "name" => "date", "style" => "width:90px"],
             [
@@ -212,8 +214,6 @@ class SaleController extends Controller
 
     public function store(VenteValidation $request, FormatRequest $formatRequest)
     {
-        abort_if(currentUser()->cannot("make payment"), 403);
-
         $articles = $deconsignation = $errorStocks = [];
         $article = Stock::getArticleByReference($request->article_reference);
         $articleType = $article ? get_class($article) : null;
@@ -403,7 +403,6 @@ class SaleController extends Controller
 
         if ($customer && isset($request->saveData) && $preInvoice) {
             $date = $request->received_at ?? date("Y-m-d");
-
             $invoice =  DocumentVente::updateOrCreate([
                 "number" => $preInvoice->invoice_number,
                 "user_id" => auth()->user()->id
@@ -412,10 +411,11 @@ class SaleController extends Controller
                 "received_at" => $date . " " . now()->toTimeString(),
                 "comment" => $request->comment,
                 "customer_id" =>  $customer->id,
+                "range" => $this->getLastRange($preInvoice->number)
             ]);
 
             Sale::preInvoices()->update([
-                "received_at" => $date, 
+                "received_at" => $date,
                 "status" => true,
                 "customer_id" =>  $customer->id,
             ]);
@@ -424,6 +424,18 @@ class SaleController extends Controller
         }
 
         return false;
+    }
+
+    private function getLastRange($number): int
+    {
+        $lastDocSale = DocumentVente::whereDate("received_at", date("Y-m-d"))
+            ->where("number", "!=", $number)
+            ->orderByDesc("id")
+            ->first();
+
+        $range = ($lastDocSale && $lastDocSale->range > 0) ? $lastDocSale->range + 1 : 1;
+
+        return $range;
     }
 
     public function update(Articles $article, Request $request)

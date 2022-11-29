@@ -16,8 +16,11 @@
 
 <body translate="no">
     <div id="invoice-container">
+        <div class="top">
+            @yield('top')
+        </div>
         <h2 class="title">{{ getAppName() }}</h2>
-        <h3 class="invoice-title">@yield('invoice-title')</h3>
+        <h4 class="invoice-title">@yield('invoice-title')</h4>
         <div class="caption">
             @yield('header')
         </div>

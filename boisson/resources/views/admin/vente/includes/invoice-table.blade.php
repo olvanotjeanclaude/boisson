@@ -7,7 +7,11 @@
     Document Vente
 @endsection
 @section('header')
-    <p>N<sup><span>&#176;</span></sup> {{ $invoice->number }} <br>
+    <p>
+        @if ($invoice->range)
+            Rang : {{ $invoice->range }} <br>
+        @endif
+        N<sup><span>&#176;</span></sup> {{ $invoice->number }} <br>
         Date : {{ format_date_time($invoice->received_at) }} <br>
         Client : {{ Str::ucfirst($invoice->customer->identification) }}<br>
         Adresse : {{ $invoice->customer->address }}<br>

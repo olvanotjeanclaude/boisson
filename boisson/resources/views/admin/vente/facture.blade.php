@@ -18,27 +18,46 @@
             font-weight: bold;
             text-align: right;
         }
-        .price{
-            font-weight: bold;
+
+        .price {
             font-size: 1.2rem
+        }
+
+        .quantity {
+            font-size: 1.15rem !important;
+            text-align: center
+        }
+
+        .invoice-title {
+            margin-top: 15px;
+        }
+
+        .title {
+            display: none;
         }
     </style>
 @endsection
+
+@section('top')
+    @php
+        $customer = $invoice->customer;
+    @endphp
+    <h2>{{ $customer ? $customer->identification : "client n'existe pas" }}</h2>
+@endsection
 @section('header')
     <div class="header-info">
+        @if ($invoice->range)
+            <span>
+                <b>Rang : </b> {{ $invoice->range }}
+            </span>
+            <br>
+        @endif
         <span>
             <b>Facture N<sup>0</sup></b> {{ $invoice->number }}
         </span>
         <br>
         <span>
             <b>Date :</b> {{ format_date($invoice->received_at) }}
-        </span>
-        <br>
-        @php
-            $customer = $invoice->customer;
-        @endphp
-        <span>
-            <b>Client : </b> {{ $customer ? $customer->identification : '' }}
         </span>
         <br>
     </div>
@@ -62,7 +81,7 @@
                         <td>
                             {{ Str::title($data->saleable->designation) }}
                         </td>
-                        <td>
+                        <td class="quantity">
                             {{ $data->quantity }}
                         </td>
                         <td>

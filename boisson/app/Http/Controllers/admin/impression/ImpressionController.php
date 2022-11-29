@@ -42,7 +42,7 @@ class ImpressionController extends Controller
             "paid" =>$paid,
         ]);
 
-        return $pdf->stream();
+        return $pdf->stream("ticket-de-vente.pdf");
     }
 
     public function previewAchat($invoiceNumber){

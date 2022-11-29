@@ -37,3 +37,9 @@ table tbody th {
 body {
 	overflow-x: hidden
 }
+.ajaxTable td,.ajax-datatable td{
+	padding: 5px!important;
+}
+.ajaxTable th,.ajax-datatable th{
+	padding: 10px!important;
+}

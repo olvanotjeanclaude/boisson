@@ -2,11 +2,11 @@
     @include("includes.ajax-table.search-form")
     <div class="table-responsive" id="table-container">
         <table style="width: 100%;" data-columns="{{ $columns }}"
-            class="table table-hover text-nowrap table-sm ajaxTable table-striped" data-src="{{ $dataSrc }}">
+            class="table table-hover text-nowrap ajaxTable table-striped" data-src="{{ $dataSrc }}">
             <thead class="bg-light">
                 <tr>
                     @foreach (json_decode($columns, true) as $column)
-                        <th @isset($column['style']) style="{{ $column['style'] }}" @endif>
+                        <th  @isset($column['style']) style="{{ $column['style'] }}" @endif>
                                 @if (isset($column['title']))
                                     {{ Str::title($column['title']) }}
                                 @else

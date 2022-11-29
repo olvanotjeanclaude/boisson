@@ -78,9 +78,9 @@
         margin-top: 15px;
     }
 
-    .invoice-title {
+    .invoice-title,.top {
         text-align: center;
-        margin-bottom: 10px;
+       margin-top: 10px;
         /* margin: 10px auto; */
     }
 
