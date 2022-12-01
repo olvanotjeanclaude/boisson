@@ -9,9 +9,9 @@
 @section('header')
     <p>
         @if ($invoice->range)
-            Rang : {{ $invoice->range }} <br>
+            Facture : {{ $invoice->range }} <br>
         @endif
-        N<sup><span>&#176;</span></sup> {{ $invoice->number }} <br>
+        Reference : {{ $invoice->number }} <br>
         Date : {{ format_date_time($invoice->received_at) }} <br>
         Client : {{ Str::ucfirst($invoice->customer->identification) }}<br>
         Adresse : {{ $invoice->customer->address }}<br>

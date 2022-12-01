@@ -142,9 +142,9 @@ class SaleController extends Controller
     {
         return [
             ["data" => "status", "name" => "status", "searchable" => false],
-            ["data" => "doc_number", "name" => "number", "title" => "Numero"],
+            ["data" => "doc_number", "name" => "number", "title" => "Reference"],
             ["data" => "cl_name", "name" => "client", "title" => "Client"],
-            ["data" => "rang", "name" => "rang", "title" => "Rang"],
+            ["data" => "rang", "name" => "rang", "title" => "Ticket"],
             ["data" => "cl_code", "name" => "code_du_client", "title" => "CL code"],
             ["data" => "date", "name" => "date", "style" => "width:90px"],
             [
@@ -428,12 +428,9 @@ class SaleController extends Controller
 
     private function getLastRange($number): int
     {
-        $lastDocSale = DocumentVente::whereDate("received_at", date("Y-m-d"))
-            ->where("number", "!=", $number)
-            ->orderByDesc("id")
-            ->first();
+        $lastDocSale = DocumentVente::orderByDesc("id")->first();
 
-        $range = ($lastDocSale && $lastDocSale->range > 0) ? $lastDocSale->range + 1 : 1;
+        $range = $lastDocSale  ? $lastDocSale->range + 1 : 1;
 
         return $range;
     }

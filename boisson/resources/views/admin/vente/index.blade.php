@@ -63,7 +63,7 @@
                             <!-- Invoices List table -->
                             @include('includes.ajax-table.table', [
                                 'dataSrc' => route('admin.ventes.ajaxGetData'),
-                                'inputPlaceholder' => 'Ticket No Ou Client',
+                                'inputPlaceholder' => 'Reference No Ou Client',
                                 'printUrl' => route('admin.sale.print'),
                                 'downloadUrl' => route('admin.sale.download'),
                             ])

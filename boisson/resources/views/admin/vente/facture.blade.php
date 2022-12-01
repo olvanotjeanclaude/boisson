@@ -42,18 +42,18 @@
     @php
         $customer = $invoice->customer;
     @endphp
-    <h2>{{ $customer ? $customer->identification : "client n'existe pas" }}</h2>
+    <h2 style="margin-top: 20px">{{ $customer ? $customer->identification : "client n'existe pas" }}</h2>
 @endsection
 @section('header')
     <div class="header-info">
         @if ($invoice->range)
             <span>
-                <b>Rang : </b> {{ $invoice->range }}
+                <b>FACTURE : </b> {{ $invoice->range }}
             </span>
             <br>
         @endif
         <span>
-            <b>Facture N<sup>0</sup></b> {{ $invoice->number }}
+            <b>Reference :</b> {{ $invoice->number }}
         </span>
         <br>
         <span>
