@@ -132,6 +132,13 @@ Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => ["auth", "C
     // Mot de passe
     Route::get("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "index"])->name("password.index");
     Route::post("change-mot-de-passe", [\App\Http\Controllers\admin\password\PasswordController::class, "update"])->name("password.update");
+
+    /** Profile */
+    Route::group(['namespace' => 'profile', 'prefix' => 'profile', 'as' => 'profile.'], function () {
+        Route::get('/', [\App\Http\Controllers\admin\profile\ProfileController::class, "index"])->name('index');
+        Route::get('/edit', [\App\Http\Controllers\admin\profile\ProfileController::class, "edit"])->name('edit');
+        Route::post('/', [\App\Http\Controllers\admin\profile\ProfileController::class, "update"])->name('update');
+    });
 });
 
 

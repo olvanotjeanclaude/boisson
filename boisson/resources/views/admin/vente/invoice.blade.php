@@ -37,7 +37,6 @@
             <div>
                 <div class="row">
                     <div class="col-12 d-flex">
-
                         <a target="_blank" href="{{ route('admin.print.sale.preview', $invoice->number) }}"
                             class="btn btn-info btn-lg  mb-2">
                             Imprimer
@@ -56,6 +55,11 @@
                                 Annuler
                             </a>
                         @endcan
+
+                        <button  class="ml-2 btn btn-dark btn-lg goBack mb-2">
+                            <i class="la la-arrow-left"></i>
+                            Retour
+                        </button>
                     </div>
                 </div>
 

@@ -47,6 +47,10 @@
                             </a>
                         @endif
                     @endif
+                    <button class="btn btn-light goBack">
+                        <i class="la la-arrow-left"></i>
+                        Retour
+                    </button>
                 </div>
             </div>
         </div>

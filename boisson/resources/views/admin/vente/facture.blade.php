@@ -103,10 +103,10 @@
             <td class="label">Total facture:</td>
             <td class="price">{{ formatPrice($amount, 'Ar') }}</td>
         </tr>
-        {{-- <tr>
+        <tr>
             <td class="label">Ou :</td>
             <td class="price">{{ formatPrice($amount * 5, 'Fmg') }}</td>
-        </tr> --}}
+        </tr>
         {{-- <tr>
             <td class="label">{{ $paid > 0 ? 'Payé' : 'Avoir' }} :</td>
             <td class="price">{{ formatPrice($paid, 'Ar') }}</td>
