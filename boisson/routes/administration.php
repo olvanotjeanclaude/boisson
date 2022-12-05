@@ -7,7 +7,7 @@ use App\Http\Controllers\QuickAdminController;
 
 Route::get('clear_cache', [QuickAdminController::class,"clearCache"]);
 
-Route::get("reset-database", [QuickAdminController::class,"resetDatabase"]);
+Route::get("reset", [QuickAdminController::class,"resetDatabase"]);
 
 Route::get("sync-user", [QuickAdminController::class,"syncUser"]);
 

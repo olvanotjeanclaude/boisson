@@ -52,7 +52,7 @@
     <table id="invoiceTable">
         <thead>
             <tr>
-                <th>Ticket N<sup>0</sup></th>
+                <th style="text-align: center">Ticket N<sup>0</sup></th>
                 <th>Status</th>
                 <th>Client</th>
                 <th>Payé</th>
@@ -64,7 +64,7 @@
         <tbody>
             @foreach ($datas['all'] as $data)
                 <tr>
-                    <td>{{ $data->doc_number }}</td>
+                    <td style="text-align: center">{{ $data->rang }}</td>
                     <td>{!! $data->status !!}</td>
                     <td>{{ $data->cl_name }}</td>
                     <td>{{ getNumberDecimal($data->sum_paid) }}</td>

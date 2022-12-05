@@ -105,7 +105,9 @@
         </tr>
         <tr>
             <td class="label">Ou :</td>
-            <td class="price">{{ formatPrice($amount * 5, 'Fmg') }}</td>
+            <td class="price" style="font-weight: bold">
+                {{ formatPrice($amount * 5, 'Fmg') }}
+            </td>
         </tr>
         {{-- <tr>
             <td class="label">{{ $paid > 0 ? 'Payé' : 'Avoir' }} :</td>
