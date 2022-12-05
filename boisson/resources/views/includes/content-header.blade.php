@@ -47,10 +47,18 @@
                             </a>
                         @endif
                     @endif
-                    <button class="btn btn-light goBack">
-                        <i class="la la-arrow-left"></i>
-                        Retour
-                    </button>
+
+                    @if (isset($backButtonUrl))
+                        <a href="{{ $$backButtonUrl }}" class="btn btn-light">
+                            <i class="la la-arrow-left"></i>
+                            Retours
+                        </a>
+                    @else
+                        <button class="btn btn-light goBack">
+                            <i class="la la-arrow-left"></i>
+                            Retour
+                        </button>
+                    @endif
                 </div>
             </div>
         </div>

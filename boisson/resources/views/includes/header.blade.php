@@ -41,8 +41,13 @@
                             {{-- <a class="dropdown-item" href="app-chat.html"><i class="material-icons">chat_bubble_outline</i> Chats</a> --}}
                             <div class="dropdown-divider"></div>
                             <div class="dropdown-item" href="login-with-bg-image.html">
-                                <i class="material-icons">power_settings_new</i>
-                                Se déconnecter
+                                <form action="{{ route('logout') }}" method="post">
+                                    @csrf
+                                    <span id="logout"  style="cursor: pointer">
+                                        <i class="material-icons">power_settings_new</i>
+                                        Se déconnecter
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </li>
@@ -62,7 +67,7 @@
                         <div class="dropdown-menu dropdown-menu-right">
                             <form action="{{ route('logout') }}" method="post">
                                 @csrf
-                                <button type="submit" class="dropdown-item">
+                                <button type="submit" class="dropdown-item" style="cursor: pointer">
                                     <i class="material-icons">power_settings_new</i>
                                     Se déconnecter
                                 </button>

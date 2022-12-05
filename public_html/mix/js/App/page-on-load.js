@@ -10,13 +10,21 @@ export default function pageOnLoad() {
     goBackControl();
 }
 
-function goBackControl(){
+function goBackControl() {
     // if (document.referrer.indexOf(window.location.host) !== -1) {
     //     $(".goBack").removeClass("d-none");
     // }
     // else {
     //     $(".goBack").addClass("d-none");
     // }
+
+    $("#logout").on("click", function () {
+        const form = $(this).closest("form");
+
+        if (form) {
+            form.submit();
+        }
+    })
 
     $(".goBack").on("click", function () {
         if (document.referrer.indexOf(window.location.host) !== -1) {

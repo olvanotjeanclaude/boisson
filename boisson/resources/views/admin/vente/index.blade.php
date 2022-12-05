@@ -24,6 +24,7 @@
             'icon' => '<span class="material-icons">add</span>',
             'show' => currentUser()->can('make sale'),
         ],
+        // "backButtonUrl" => route('admin.ventes.index')
     ])
 @endsection
 
