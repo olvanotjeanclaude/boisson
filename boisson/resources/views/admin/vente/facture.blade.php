@@ -48,7 +48,7 @@
     <div class="header-info">
         @if ($invoice->range)
             <span>
-                <b>FACTURE : </b> {{ $invoice->range }}
+                <b>Ticket : </b> {{ $invoice->range }}
             </span>
             <br>
         @endif

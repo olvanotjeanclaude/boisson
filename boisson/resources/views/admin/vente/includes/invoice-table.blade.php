@@ -9,7 +9,7 @@
 @section('header')
     <p>
         @if ($invoice->range)
-            Facture : {{ $invoice->range }} <br>
+            Ticket : {{ $invoice->range }} <br>
         @endif
         Reference : {{ $invoice->number }} <br>
         Date : {{ format_date_time($invoice->received_at) }} <br>
