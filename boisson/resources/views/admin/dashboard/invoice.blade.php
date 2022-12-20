@@ -4,15 +4,18 @@
     Historique de vente {{ format_date($between[0]) }}-{{ format_date($between[1]) }}
 @endsection
 
+@section('invoice-title')
+    Historique de vente
+@endsection
+
 
 @section('header')
-    <h4 class="invoice-title"> Historique de vente</h4>
     <h5>Date : {{ format_date($between[0]) }}-{{ format_date($between[1]) }}</h5>
     @if (request()->get('filter_type'))
-        <h5>Type : {{App\helper\Filter::TYPES[request()->get('filter_type')]?? "" }} </h5>
+        {{-- <h5>Type : {{App\helper\Filter::TYPES[request()->get('filter_type')]?? "" }} </h5> --}}
     @endif
     @if (request()->get('chercher'))
-        <h5>Mot Clé : {{ request()->get('chercher') }}</h5>
+        {{-- <h5>Mot Clé : {{ request()->get('chercher') }}</h5> --}}
     @endif
     <h5>Caissier: {{ Str::upper(auth()->user()->full_name) }}</h5>
 @endsection

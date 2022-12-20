@@ -9,7 +9,7 @@
 
     .invoice-title {
         margin-top: 10px;
-        font-size: 1rem;
+        /* font-size: 1.2rem; */
     }
 
     #invoice-container {
@@ -17,7 +17,7 @@
         border-collapse: collapse;
         margin-left: 10px;
         text-transform: uppercase;
-        font-size: 0.8rem;
+        font-size: 1.12rem;
         /* background: red; */
     }
 
@@ -34,18 +34,13 @@
 
     #invoiceTable th,
     #invoiceTable td {
-        padding: 15px 5px;
+        padding: 7px 3px;
         text-align: start;
     }
 
     #invoiceTable th,
     #invoiceTable td {
         border: 1px solid black;
-    }
-
-    #invoiceTable th,
-    #invoiceTable td {
-        font-size: .8rem;
     }
 
     #invoiceTable tr:nth-child(even) {
@@ -76,17 +71,18 @@
     .title {
         text-align: center;
         margin-top: 15px;
+        font-size: 1.4rem
     }
 
     .invoice-title,.top {
         text-align: center;
-       margin-top: 10px;
+       /* margin-top: 10px; */
         /* margin: 10px auto; */
     }
 
     .caption {
         margin: 10px auto;
-        font-size: .9rem;
+        /* font-size: 1rem; */
         font-family: 'arial';
         text-transform: uppercase;
     }

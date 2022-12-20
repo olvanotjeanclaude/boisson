@@ -19,8 +19,8 @@
         <div class="top">
             @yield('top')
         </div>
-        <h2 class="title">{{ getAppName() }}</h2>
-        <h4 class="invoice-title">@yield('invoice-title')</h4>
+        <h3 class="title">{{ getAppName() }}</h3>
+        <h3 class="invoice-title">@yield('invoice-title')</h3>
         <div class="caption">
             @yield('header')
         </div>

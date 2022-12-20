@@ -3,10 +3,10 @@
         <table id="invoiceTable">
             <thead>
                 <tr>
-                    <th style="width: 160px">Désignation</th>
+                    <th>Désignation</th>
                     <th style="padding:0 10px">Qté</th>
-                    <th>PU</th>
-                    <th style="text-align: right">Total</th>
+                    {{-- <th>PU</th> --}}
+                    <th style="text-align: right">Montant</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,9 +19,9 @@
                             <td style="text-align:center">
                                 {{ $data->quantity }}
                             </td>
-                            <td>
+                            {{-- <td>
                                 {{ round($data->pricing) }}
-                            </td>
+                            </td> --}}
                             <td style="text-align: right">
                                 {{ $data->sub_amount }}
                             </td>

@@ -5,13 +5,13 @@
 @endsection
 
 @section('invoice-title')
-    Ticket De Vente
+    Ticket N<sup>0</sup> {{ $invoice->range }}
 @endsection
 
 @section('css')
     <style>
-        td {
-            padding: 3px;
+        #invoice-container {
+            /* font-size: .9rem; */
         }
 
         .label {
@@ -24,7 +24,6 @@
         }
 
         .quantity {
-            font-size: 1.15rem !important;
             text-align: center
         }
 
@@ -34,6 +33,10 @@
 
         .title {
             display: none;
+        }
+
+        .text-center {
+            text-align: center;
         }
     </style>
 @endsection
@@ -46,12 +49,6 @@
 @endsection
 @section('header')
     <div class="header-info">
-        @if ($invoice->range)
-            <span>
-                <b>Ticket : </b> {{ $invoice->range }}
-            </span>
-            <br>
-        @endif
         <span>
             <b>Reference :</b> {{ $invoice->number }}
         </span>
@@ -68,10 +65,10 @@
     <table id="invoiceTable">
         <thead>
             <tr>
-                <th style="width: 150px">Désignation</th>
-                <th style="min-width: 30px">Qté</th>
+                <th>Désignation</th>
+                <th>Qté</th>
                 <th>PU</th>
-                <th style="text-align: right">Montant</th>
+                <th style="text-align: right">Total</th>
             </tr>
         </thead>
         <tbody>
