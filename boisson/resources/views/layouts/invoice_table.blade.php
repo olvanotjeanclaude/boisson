@@ -5,7 +5,6 @@
                 <tr>
                     <th>Désignation</th>
                     <th style="padding:0 10px">Qté</th>
-                    {{-- <th>PU</th> --}}
                     <th style="text-align: right">Montant</th>
                 </tr>
             </thead>
@@ -16,13 +15,10 @@
                             <td>
                                 {{ Str::title($data->saleable->designation) }}
                             </td>
-                            <td style="text-align:center">
+                            <td class="number-bold" style="text-align:center">
                                 {{ $data->quantity }}
                             </td>
-                            {{-- <td>
-                                {{ round($data->pricing) }}
-                            </td> --}}
-                            <td style="text-align: right">
+                            <td class="number-bold" style="text-align: right">
                                 {{ $data->sub_amount }}
                             </td>
                         </tr>

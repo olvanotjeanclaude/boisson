@@ -44,6 +44,7 @@ class SaleController extends Controller
     private function dataSales()
     {
         $params = request()->all();
+      
         $search = strtolower($params["search"] ?? "");
         $between = $params["between"] ?? [date("Y-m-d"), date("Y-m-d")];
 
@@ -55,8 +56,9 @@ class SaleController extends Controller
             ->where(function ($query) use ($between) {
                 $query->where(fn ($query) => Filter::queryBetween($query, $between));
             })
-            ->when(is_numeric($search) && strlen($search) == 7, function ($query) use ($search) {
-                return $query->where("number", "LIKE", $search);
+            ->when(is_numeric($search), function ($query) use ($search) {
+                return $query->where("number", "LIKE", $search)
+                ->orWhere("range","LIKE",$search);
             })
             ->groupBy("number")
             ->orderBy("rang")
@@ -133,7 +135,8 @@ class SaleController extends Controller
                         WHERE users.id=document_ventes.user_id
                 ) as user")
             ])
-            ->whereNotNull("received_at");
+            ->whereNotNull("received_at")
+            ->orderByDesc("id");
 
         return $docSales;
     }

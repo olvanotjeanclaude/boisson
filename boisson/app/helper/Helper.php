@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,6 +10,19 @@ function get_file($path, $size = 150)
     }
 
     return $path && file_exists($path) ? asset($path) : "https://via.placeholder.com/$size";
+}
+
+function getDateBetween(array $between)
+{
+    $response = "";
+
+    if ($between[0] == $between[1]) {
+        $response = format_date($between[0]);
+    } else {
+        $response = format_date($between[0]) . "-" . format_date($between[1]);
+    }
+
+    return $response;
 }
 
 function getUserProfile()

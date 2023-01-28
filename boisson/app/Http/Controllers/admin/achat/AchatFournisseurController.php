@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use App\Articles\StockRequest;
 use App\Message\CustomMessage;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AchatSupplierValidation;
 use App\Printing\StockIn;
 
 class AchatFournisseurController extends Controller
@@ -18,7 +17,7 @@ class AchatFournisseurController extends Controller
     public function index()
     {
         $entries = Stock::entries();
-        // dd($entries);
+       
         return view("admin.achat-supplier.index", compact("entries"));
     }
 

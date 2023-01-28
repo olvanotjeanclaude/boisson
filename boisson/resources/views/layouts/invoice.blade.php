@@ -7,31 +7,26 @@
     <title>Facture | @yield('title') </title>
     @include('includes.invoice-style')
     @yield('css')
-    <script>
-        if (document.location.search.match(/type=embed/gi)) {
-            window.parent.postMessage("resize", "*");
-        }
-    </script>
 </head>
 
 <body translate="no">
     <div id="invoice-container">
+        <h1 class="title">{{ getAppName() }}</h1>
         <div class="top">
             @yield('top')
         </div>
-        <h3 class="title">{{ getAppName() }}</h3>
+
         <h3 class="invoice-title">@yield('invoice-title')</h3>
-        <div class="caption">
+
+        <div class="header">
             @yield('header')
         </div>
 
         @yield('table')
-        <div class="caption">
+
+        <div class="footer">
             @yield('footer')
         </div>
-        <p class="thank-text">Merci beaucoup !</p>
-        <br>
-        <h6 class="print-text">Imprimé le {{ format_date_time(now()->toDateTimeString()) }}</h6>
     </div>
 
     <!--End Invoice-->

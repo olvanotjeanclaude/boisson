@@ -1,23 +1,28 @@
 @extends('layouts.invoice')
 
 @section('title')
-    Historique de vente {{ format_date($between[0]) }}-{{ format_date($between[1]) }}
+    Historique de vente {{ getDateBetween($between) }}
 @endsection
 
-@section('invoice-title')
-    Historique de vente
-@endsection
-
-
-@section('header')
-    <h5>Date : {{ format_date($between[0]) }}-{{ format_date($between[1]) }}</h5>
+@section('top')
+    <h2 style="margin-bottom: 5px"> Historique de vente</h2>
     @if (request()->get('filter_type'))
-        {{-- <h5>Type : {{App\helper\Filter::TYPES[request()->get('filter_type')]?? "" }} </h5> --}}
+        <h3>Type : {{App\helper\Filter::TYPES[request()->get('filter_type')]?? "" }} </h3>
     @endif
     @if (request()->get('chercher'))
-        {{-- <h5>Mot Clé : {{ request()->get('chercher') }}</h5> --}}
+        <h3>Mot Clé : {{ request()->get('chercher') }}</h3>
     @endif
-    <h5>Caissier: {{ Str::upper(auth()->user()->full_name) }}</h5>
+@endsection
+
+@section('header')
+    <span>
+        <b>Date : </b>
+        {{ getDateBetween($between) }}
+    </span>
+    <span>
+        <b>Caissier:</b>
+        {{ Str::upper(auth()->user()->full_name) }}
+    </span>
 @endsection
 
 @section('table')

@@ -50,6 +50,7 @@
                                 <table class="table datatable  table-striped table-hover text-nowrap  material-table">
                                     <thead>
                                         <tr>
+                                            {{-- <th>#</th> --}}
                                             <th>Fournisseur</th>
                                             <th>Facture</th>
                                             <th>Ref Facture</th>
@@ -62,6 +63,7 @@
                                     <tbody>
                                         @foreach ($entries as $entry)
                                             <tr>
+                                                {{-- <td><b>{{ $entry->id  }}</b></td> --}}
                                                 <td>{{ $entry->supplier ? $entry->supplier->identification : 'Introuvable' }}
                                                 </td>
                                                 <td>{{ $entry->invoice_number }}</td>
