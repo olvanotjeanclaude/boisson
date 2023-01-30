@@ -32,10 +32,10 @@
             <tbody>
                 @isset($amount)
                     <tr>
-                        <td colspan="1">
+                        <td class="label" colspan="1">
                             <p style="text-align: right">Total facture :</p>
                         </td>
-                        <td colspan="3">
+                        <td class="price" colspan="3">
                             <p> &nbsp; {{ formatPrice(($amount)) }}</p>
                         </td>
                     </tr>
@@ -50,20 +50,20 @@
                     request()->get('filter_type') == 'tout')
                     @isset($paid)
                         <tr>
-                            <td colspan="1">
+                            <td class="label" colspan="1">
                                 <p style="text-align: right">Total De Vente :</p>
                             </td>
-                            <td colspan="3">
+                            <td class="price" colspan="3">
                                 <p> &nbsp; {{ formatPrice($paid) }}</p>
                             </td>
                         </tr>
                     @endisset
                     @isset($rest)
                         <tr>
-                            <td colspan="1">
-                                <p style="text-align: right">credit :</p>
+                            <td class="label" colspan="1">
+                                <p class="price" style="text-align: right">credit :</p>
                             </td>
-                            <td colspan="3">
+                            <td class="price" colspan="3">
                                 <p> &nbsp; {{ formatPrice($rest) }}</p>
                             </td>
                         </tr>
@@ -73,20 +73,20 @@
                 @if (request()->get('filter_type') == 'tout' || request()->get('filter_type') == null)
                     @isset($checkout)
                         <tr>
-                            <td colspan="1">
+                            <td class="label" colspan="1">
                                 <p style="text-align: right">Avoir :</p>
                             </td>
-                            <td colspan="3">
+                            <td class="price" colspan="3">
                                 <p> &nbsp; {{ formatPrice($checkout) }}</p>
                             </td>
                         </tr>
                     @endisset
                     @isset($caisse)
                         <tr>
-                            <td colspan="1">
+                            <td class="label" colspan="1">
                                 <p style="text-align: right">Solde En Caisse :</p>
                             </td>
-                            <td colspan="3">
+                            <td class="price" colspan="3">
                                 <p> &nbsp; {{ formatPrice(($caisse)) }}</p>
                             </td>
                         </tr>
@@ -96,10 +96,10 @@
                 @isset($recaps)
                     @foreach ($recaps as $recap => $total)
                         <tr>
-                            <td colspan="1">
+                            <td class="label" colspan="1">
                                 <p style="text-align: right">{{ $recap }} :</p>
                             </td>
-                            <td colspan="3">
+                            <td class="price" colspan="3">
                                 <p> &nbsp; {{ $total }}</p>
                             </td>
                         </tr>

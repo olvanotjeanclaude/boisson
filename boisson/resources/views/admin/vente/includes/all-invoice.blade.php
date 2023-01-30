@@ -15,7 +15,7 @@
     </span>
     <span>
         <b>Utilisateur : </b>
-        {{ Str::title(currentUser()->full_name) }}
+        {{ Str::title(currentUser()->surname) }}
     </span>
 @endsection
 
@@ -56,7 +56,7 @@
             <td class="price">{{ formatPrice($datas['checkout'], 'Ar') }}</td>
         </tr>
         <tr>
-            <td class="label">Credit :</td>
+            <td class="label">RESTE A PAYE :</td>
             <td class="price">{{ formatPrice($datas['reste'], 'Ar') }}</td>
         </tr>
     </table>

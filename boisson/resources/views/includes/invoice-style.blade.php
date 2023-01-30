@@ -70,6 +70,7 @@
     .footer {
         margin: 10px auto;
         text-transform: uppercase;
+        font-weight: bold;
     }
 
     .label {
@@ -86,5 +87,8 @@
         font-weight: bold;
         font-size: 1.2rem;
         /* color: red; */
+    }
+    .number{
+        
     }
 </style>

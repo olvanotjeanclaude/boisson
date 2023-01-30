@@ -21,7 +21,7 @@
     </span>
     <span>
         <b>Caissier:</b>
-        {{ Str::upper(auth()->user()->full_name) }}
+        {{ Str::upper(auth()->user()->surname) }}
     </span>
 @endsection
 

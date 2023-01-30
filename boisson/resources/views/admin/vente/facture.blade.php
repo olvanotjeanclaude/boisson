@@ -10,7 +10,7 @@
 
 @section('top')
     <h2>
-        {{ $invoice->customer?->identification ?? "client n'existe pas" }}
+        {{ Str::upper($invoice->customer?->identification) ?? "client n'existe pas" }}
     </h2>
 @endsection
 
@@ -41,10 +41,10 @@
                         <td class="number-bold">
                             {{ $data->quantity }}
                         </td>
-                        <td>
+                        <td class="number">
                             {{ $data->pricing }}
                         </td>
-                        <td style="text-align: right">
+                        <td class="number" style="text-align: right">
                             {{ $data->sub_amount }}
                         </td>
                     </tr>
@@ -77,7 +77,7 @@
 
         @if ($reste > 0)
             <tr>
-                <td class="label"> RESTE A PAYE :</td>
+                <td class="label">RESTE A PAYE :</td>
                 <td class="price">{{ formatPrice($reste, 'Ar') }}</td>
             </tr>
         @endif

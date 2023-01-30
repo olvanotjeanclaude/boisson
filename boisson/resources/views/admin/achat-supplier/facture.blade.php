@@ -13,7 +13,7 @@
             <b>Date :</b> {{ format_date($entry->date) }}
         </span>
         <span>
-            <b>Magasinier :</b> {{ Str::upper($entry->user ? $entry->user->full_name : 'Inconnu') }}
+            <b>Magasinier :</b> {{ Str::upper($entry->user ? $entry->user->surname : 'Inconnu') }}
         </span>
         <span>
             <b>Facture N<sup>0</sup></b> {{ $entry->invoice_number }}
