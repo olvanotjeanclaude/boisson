@@ -19,10 +19,6 @@
         <b>Date : </b>
         {{ getDateBetween($between) }}
     </span>
-    <span>
-        <b>Caissier:</b>
-        {{ Str::upper(auth()->user()->surname) }}
-    </span>
 @endsection
 
 @section('table')

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCustomerRangToDocSale extends Migration
+class AddRangeColToStocks extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddCustomerRangToDocSale extends Migration
      */
     public function up()
     {
-        Schema::table('document_ventes', function (Blueprint $table) {
-            $table->unsignedBigInteger("range")->after("customer_id")->default(0);
+        Schema::table('stocks', function (Blueprint $table) {
+            $table->unsignedBigInteger("range")->after("invoice_number")->default(0);
         });
     }
 
@@ -25,7 +25,7 @@ class AddCustomerRangToDocSale extends Migration
      */
     public function down()
     {
-        Schema::table('document_ventes', function (Blueprint $table) {
+        Schema::table('stocks', function (Blueprint $table) {
             $table->dropColumn("range");
         });
     }

@@ -66,7 +66,7 @@
                                                 {{-- <td><b>{{ $entry->id  }}</b></td> --}}
                                                 <td>{{ $entry->supplier ? $entry->supplier->identification : 'Introuvable' }}
                                                 </td>
-                                                <td>{{ $entry->invoice_number }}</td>
+                                                <td>{{ $entry->range }}</td>
                                                 <td>{{ Str::upper($entry->reference_facture) }}</td>
                                                 <td>{{ $entry->user ? Str::title($entry->user->full_name) : 'Introuvable' }}
                                                 </td>

@@ -4,6 +4,10 @@
     Facture
 @endsection
 
+@section('invoice-title')
+    Ticket N<sup>0</sup> {{ $entry->range }}
+@endsection
+
 @section('top')
    <h2>Bon D'Entrée</h2>
 @endsection
@@ -14,12 +18,6 @@
         </span>
         <span>
             <b>Magasinier :</b> {{ Str::upper($entry->user ? $entry->user->surname : 'Inconnu') }}
-        </span>
-        <span>
-            <b>Facture N<sup>0</sup></b> {{ $entry->invoice_number }}
-        </span>
-        <span>
-            <b>Reference Facture :</b> {{ $entry->reference_facture }}
         </span>
         <span>
             <b>Fournisseur :</b> {{ Str::ucfirst($supplier ? $supplier->identification : 'Introuvable') }}
@@ -50,14 +48,14 @@
                         <td>
                             {{ Str::title($data->stockable->designation) }}
                         </td>
-                        <td>
-                            {{ $data->entry }}
+                        <td class="number-bold">
+                            {{ getNumberDecimal($data->entry) }}
                         </td>
                         <td>
-                            {{ ($data->stockable->buying_price) }}
+                            {{ getNumberDecimal($data->stockable->buying_price) }}
                         </td>
                         <td style="text-align: right">
-                            {{ ($data->sub_amount) }}
+                            {{ getNumberDecimal($data->sub_amount) }}
                         </td>
                     </tr>
                 @endif
@@ -67,7 +65,18 @@
 @endsection
 
 @section('footer')
-<p class="m-0"><b>Total : </b>{{ formatPrice(abs($amount), 'Ariary') }}</p>
-<p class="m-0"><b>Total en Fmg : </b>{{ formatPrice(abs($amount*5), 'Fmg') }}</p>
-<p class="m-0"><b>Nombre d'article :</b> {{ count($datas) }}</p>
+    <table style="width:100%">
+        <tr>
+            <td class="label">Total :</td>
+            <td class="price">{{  formatPrice(abs($amount), 'Ariary') }}</td>
+        </tr>
+        <tr>
+            <td class="label">Total en Fmg :</td>
+            <td class="price">{{ formatPrice(abs($amount*5), 'Fmg') }}</td>
+        </tr>
+        <tr>
+            <td class="label">Nombre d'article :</td>
+            <td class="price">{{ count($datas) }}</td>
+        </tr>
+    </table>
 @endsection

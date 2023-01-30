@@ -27,8 +27,7 @@ class AchatFournisseurController extends Controller
         $preInvoices = Stock::preInvoices();
 
         $amount = $preInvoices->sum("sub_amount");
-        // $articles = Product::orderBy("designation")->where("buying_price", ">", 0)->get();
-        // $emballages = Emballage::orderBy("designation")->where("buying_price", ">", 0)->get();
+       
         $articles = Product::orderBy("designation")->get();
         $emballages = Emballage::orderBy("designation")->get();
 
@@ -43,7 +42,6 @@ class AchatFournisseurController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate(AchatSupplierValidation::rules(), AchatSupplierValidation::messages());
         $request->validate([
             "article_reference" => isset($request->saveData) ? "" : "required",
             "quantity" =>  isset($request->saveData) ? "" : "required",
@@ -75,130 +73,16 @@ class AchatFournisseurController extends Controller
         return back();
     }
 
-    public function saveAutoStock(Request $request)
-    {
-        $request->validate([
-            "entry" => "required|numeric|min:1",
-        ]);
-
-        $articles = [];
-
-        if ($request->article_references) {
-            foreach ($request->article_references as $reference) {
-                $article = Stock::getArticleByReference($reference);
-                if ($article) {
-                    $articles[] = $article;
-                }
-            }
-        } else {
-            $articles  = [...Product::all(), ...Emballage::all()];
-        }
-
-        $invoiceNumber = generateInteger(7);
-
-        foreach ($articles as $article) {
-            $data = [
-                "status" => Stock::STATUS["accepted"],
-                "article_reference" => $article->reference,
-                "stockable_id" => $article->id,
-                "stockable_type" => get_class($article),
-                "entry" => $request->entry,
-                "invoice_number" => $invoiceNumber,
-                "user_id" => auth()->user()->id,
-                "action_type" => Stock::ACTION_TYPES["new_stock"],
-                "date" => now()->toDateString(),
-            ];
-
-            Stock::create($data);
-        }
-
-        return redirect("admin/stocks")
-            ->with("success", CustomMessage::Success("Le stock"));
-    }
-
-    public function oldSaveAutoStock(Request $request)
-    {
-        $request->validate([
-            "entry" => "required|numeric|min:1",
-        ]);
-
-        $articles = [
-            "has_buying_price" => [],
-            "doesnt_has_buying_price" => []
-        ];
-
-        $noProducts = Product::where("buying_price", 0)->get();
-        $noEmballages = Emballage::where("buying_price", 0)->get();
-        $noBuyingPrice = [...$noProducts, ...$noEmballages];
-
-        if ($request->article_references) {
-            foreach ($request->article_references as $reference) {
-                $article = Stock::getArticleByReference($reference);
-                if ($article) {
-                    if ($article->buying_price > 0) {
-                        $articles["has_buying_price"][] = $article;
-                    } else {
-                        $articles["doesnt_has_buying_price"][] = $article;
-                    }
-                }
-            }
-        }
-
-        if (
-            $request->entry &&
-            !$request->article_references &&
-            !$request->buying_price &&
-            count($noBuyingPrice)
-        ) {
-            return back()->withErrors(["Entrer le prix d'achat par defaut pour l'articles qui n'ont pas de prix d'achat"]);
-        }
-
-        if (count($articles["doesnt_has_buying_price"]) && !$request->buying_price) {
-            $articleDesignations = [];
-            foreach ($articles["doesnt_has_buying_price"] as $article) {
-                $articleDesignations[] = $article->designation;
-            }
-            $messages[] = join(" | ", $articleDesignations) . " : pas de prix d'achat!";
-            $messages[] = "Veuillez entrer le prix d'achat par defaut";
-
-            return back()->withErrors($messages)->withInput();
-        }
-
-        // dd($articles, $request->all());
-
-        $articles = [...Product::all(), ...Emballage::all()];
-        $invoiceNumber = generateInteger(7);
-
-        foreach ($articles as $article) {
-            $article->update(["buying_price" => $request->buying_price]);
-
-            $data = [
-                "status" => Stock::STATUS["accepted"],
-                "article_reference" => $article->reference,
-                "stockable_id" => $article->id,
-                "stockable_type" => get_class($article),
-                "entry" => $request->entry,
-                "invoice_number" => $invoiceNumber,
-                "user_id" => auth()->user()->id,
-                "action_type" => Stock::ACTION_TYPES["new_stock"],
-                "date" => now()->toDateString(),
-            ];
-
-            Stock::create($data);
-        }
-
-        return redirect("admin/stocks")
-            ->with("success", CustomMessage::Success("Le stock"));
-    }
-
     private function saveAchat(Request $request)
     {
         $preInvoices = Stock::preInvoices();
+
         if (isset($request->saveData) && count($preInvoices)) {
             $invoiceNumber = (string) generateInteger(7);
 
             foreach ($preInvoices as $key => $preInvoice) {
                 $data = [
+                    "range" => $this->getLastRange(),
                     "invoice_number" => $invoiceNumber,
                     "supplier_id" => $request->supplier_id,
                     "reference_facture" => $request->reference_facture,
@@ -243,5 +127,14 @@ class AchatFournisseurController extends Controller
     public function cancel($invoiceNumber, StockIn $document)
     {
         return $document->cancel($invoiceNumber);
+    }
+
+    private function getLastRange(): int
+    {
+        $lastStock = Stock::whereNotNull("invoice_number")->orderByDesc("id")->first();
+      
+        $range = $lastStock  ? $lastStock->range + 1 : 1;
+
+        return $range;
     }
 }

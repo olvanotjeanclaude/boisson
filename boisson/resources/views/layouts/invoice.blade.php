@@ -11,7 +11,7 @@
 
 <body translate="no">
     <div id="invoice-container">
-        <h1 class="title">{{ getAppName() }}</h1>
+        {{-- <h1 class="title">{{ getAppName() }}</h1> --}}
         <div class="top">
             @yield('top')
         </div>

@@ -19,12 +19,12 @@
                 <td class="text-capitalize" style="width: 200px">
                     {{ $data->stockable->designation }}
                 </td>
-                <td>{{ $data->entry }}</td>
+                <td>{{ getNumberDecimal($data->entry) }}</td>
                 <td style="width: 50px">
-                    {{ $data->stockable->buying_price }}
+                    {{ getNumberDecimal($data->stockable->buying_price) }}
                 </td>
                 <td class="text-right">
-                    {{ $data->sub_amount }}
+                    {{ getNumberDecimal($data->sub_amount) }}
                 </td>
                 <td class="pl-1 py-0">
                     <form method="POST" action="{{ route('admin.achat-fournisseurs.destroy', $data->id) }}">
@@ -54,9 +54,4 @@
             {{ formatPrice(abs($amount * 5), 'Fmg') }}
         </td>
     </tr>
-@endsection
-
-@section('footer')
-    {{-- <p class="m-0"><b>Total : </b>{{ formatPrice(abs($amount), 'Ariary') }}</p>
-    <p class="m-0"><b>Total En Fmg : </b>{{ formatPrice(abs($amount * 5), 'Ariary') }}</p> --}}
 @endsection

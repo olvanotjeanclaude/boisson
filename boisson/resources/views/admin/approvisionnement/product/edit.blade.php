@@ -182,7 +182,7 @@
                             <div class="card-body">
                                 <div class="form-body">
                                     <div class="col-12">
-                                        <label class="label" for="simple_package_id">Consignation Simple</label>
+                                        <label class="label" for="simple_package_id">Consignation Bouteille</label>
                                         <select name="simple_package_id" class="form-control select2" id="simple_package_id">
                                             <option value="">Choisir</option>
                                             @foreach ($emballages as $emballage)

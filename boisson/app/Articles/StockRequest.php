@@ -3,7 +3,6 @@
 namespace App\Articles;
 
 use App\Models\Stock;
-use Illuminate\Http\Request;
 
 class StockRequest
 {
@@ -35,7 +34,7 @@ class StockRequest
                     $request->quantity
                 );
 
-                $articleAndConsignations = array_filter($articleAndConsignations,function($article){
+                $articleAndConsignations = array_filter($articleAndConsignations, function ($article) {
                     return count($article);
                 });
 

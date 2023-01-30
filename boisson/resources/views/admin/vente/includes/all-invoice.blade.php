@@ -24,7 +24,7 @@
     <table id="invoiceTable">
         <thead>
             <tr>
-                <th style="text-align: center">Ticket N<sup>0</sup></th>
+                <th style="text-align: center">Ticket No</th>
                 {{-- <th>Status</th> --}}
                 <th>Client</th>
                 <th>Payé</th>

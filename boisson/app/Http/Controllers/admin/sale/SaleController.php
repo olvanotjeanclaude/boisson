@@ -414,7 +414,7 @@ class SaleController extends Controller
                 "received_at" => $date . " " . now()->toTimeString(),
                 "comment" => $request->comment,
                 "customer_id" =>  $customer->id,
-                "range" => $this->getLastRange($preInvoice->number)
+                "range" => $this->getLastRange()
             ]);
 
             Sale::preInvoices()->update([
@@ -429,7 +429,7 @@ class SaleController extends Controller
         return false;
     }
 
-    private function getLastRange($number): int
+    private function getLastRange(): int
     {
         $lastDocSale = DocumentVente::orderByDesc("id")->first();
 

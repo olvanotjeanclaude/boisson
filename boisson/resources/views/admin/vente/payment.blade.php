@@ -86,7 +86,7 @@
                                     </div>
                                 @endif
 
-                                <div class="col-md-8 mt-1">
+                                <div class="col-12 mt-1">
                                     <div class="form-group">
                                         <label class="text-bold-400 text-dark" for="comment">
                                             Commentaire
@@ -95,15 +95,20 @@
                                     </div>
                                 </div>
 
-                                @if ($rest != 0)
-                                    <div class="col-12">
-                                        <button type="submit"
-                                            class="btn form-control my-1 border-top text-white btn-secondary">
+                                <div class="col-12 d-flex justify-content-end">
+                                    @if ($rest != 0)
+                                        <button type="submit" class="btn text-white btn-secondary">
                                             <i class="la la-save"></i>
                                             Payer
                                         </button>
-                                    </div>
-                                @endif
+                                    @endif
+                                    <a target="_blank" href="{{ route('admin.print.sale.preview', $invoice->number) }}"
+                                        class="btn btn-primary ml-1">
+                                        <i class="la la-print"></i>
+                                        Imprimer
+                                    </a>
+                                </div>
+
                             </div>
                         </form>
                     </div>
@@ -122,13 +127,15 @@
                     </div>
                 @endif
 
-                @include('admin.vente.includes.invoice-table', [
-                    'invoice' => $invoice,
-                    'sales' => $invoice->sales,
-                    'reste' => $rest,
-                    'paid' => $paid,
-                    'amount' => $amount,
-                ])
+                <div style="height: 600px" class="overflow-auto">
+                    @include('admin.vente.includes.invoice-table', [
+                        'invoice' => $invoice,
+                        'sales' => $invoice->sales,
+                        'reste' => $rest,
+                        'paid' => $paid,
+                        'amount' => $amount,
+                    ])
+                </div>
             </div>
 
             <!--End Invoice-->
