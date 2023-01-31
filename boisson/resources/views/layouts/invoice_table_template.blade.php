@@ -8,9 +8,9 @@
         <table id="invoiceTableTemplate" style="width: 100%" class="mx-auto">
             <thead>
                 <tr>
-                    <th style="width: 150px">Désignation</th>
-                    <th style="width: 40px">Qté</th>
-                    <th style="width: 40px">@yield('prix-title')</th>
+                    <th>Désignation</th>
+                    <th>Qté</th>
+                    <th>@yield('prix-title')</th>
                     <th style="text-align: right">Montant</th>
                     @yield('extraTH')
                 </tr>

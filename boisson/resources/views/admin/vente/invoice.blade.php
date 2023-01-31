@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="col-sm col-md col-lg-6 col-xl-5">
+        <div class="col-sm col-md col-lg-6 col-xl-5 col-xxl-4">
             @if ($invoice)
                 @include('admin.vente.includes.invoice-table', [
                     'invoice' => $invoice,

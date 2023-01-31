@@ -37,5 +37,16 @@ $(document).ready(function () {
 
             window.open(url);
         }
+    });
+
+   
+    $(document).on("click","", function () {
+        const url = $(this).data("url");
+        console.log(url);
+        return;
+         customAjaxTable(url, {
+            between: [start_date, end_date],
+            search
+        });
     })
 })

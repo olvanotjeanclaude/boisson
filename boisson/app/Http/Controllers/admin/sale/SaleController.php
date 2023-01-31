@@ -58,25 +58,32 @@ class SaleController extends Controller
             })
             ->when(is_numeric($search), function ($query) use ($search) {
                 return $query->where("number", "LIKE", $search)
-                ->orWhere("range","LIKE",$search);
+                    ->orWhere("range", "LIKE", $search);
             })
             ->groupBy("number")
             ->orderBy("rang")
-            ->get()
-            ->map(function ($docSale) {
-                $status = $docSale->doc_status;
-                $customer = explode("-", $docSale->customer);
-                $docSale->status =  Sale::getStatusHtml($status);
-                $docSale->action = $this->getActionButtons($docSale);
-                $docSale->date = format_date($docSale->doc_date);
-                $docSale->cl_code = "CL" . $customer[0] ?? "";
-                $docSale->cl_name = strtolower($customer[1]??"N'existe pas");
-                $docSale->paid = formatPrice($docSale->sum_paid ?? 0);
-                $docSale->checkout = formatPrice($docSale->sum_checkout ?? 0);
-                $docSale->amount = formatPrice($docSale->sum_amount ?? 0);
-                // $docSale->rest = $docSale->sum_amount-$docSale->sum_paid;
-                return $docSale;
-            });
+            ->paginate(10);
+
+
+        $docSales = tap($docSales, function ($paginatedInstance) {
+            return $paginatedInstance->getCollection()
+                ->transform(function ($docSale) {
+                    $status = $docSale->doc_status;
+                    $customer = explode("-", $docSale->customer);
+                    $docSale->status =  Sale::getStatusHtml($status);
+                    $docSale->action = $this->getActionButtons($docSale);
+                    $docSale->date = format_date($docSale->doc_date);
+                    $docSale->cl_code = "CL" . $customer[0] ?? "";
+                    $docSale->cl_name = strtolower($customer[1] ?? "N'existe pas");
+                    $docSale->paid = formatPrice($docSale->sum_paid ?? 0);
+                    $docSale->checkout = formatPrice($docSale->sum_checkout ?? 0);
+                    $docSale->amount = formatPrice($docSale->sum_amount ?? 0);
+                    // $docSale->rest = $docSale->sum_amount-$docSale->sum_paid;
+                    return $docSale;
+                });
+        });
+
+        // dd($docSales);
 
         if (!is_numeric($search) && $search) {
             $docSales = $docSales->filter(function ($sale) use ($search) {
@@ -89,9 +96,15 @@ class SaleController extends Controller
         $sumCheckout =  $docSales->sum("sum_checkout");
 
         return [
-            "all" => [...$docSales],
+            "all" => $docSales,
             "between" => $between,
             "columns" => $this->getFormatedCols(),
+
+            // "amount" => 1,
+            // "paid" => 1,
+            // "checkout" => 1,
+            // "reste" => 1
+
             "amount" => $sumAmount,
             "paid" => $sumPaid,
             "checkout" => $sumCheckout,

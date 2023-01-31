@@ -1,6 +1,7 @@
 <style>
    #invoiceTableTemplateContainer{
     overflow: auto;
+    max-width: 450px;
    }
 
    #invoiceTableTemplateContainer * {

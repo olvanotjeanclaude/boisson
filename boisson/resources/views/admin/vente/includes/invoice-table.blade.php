@@ -25,8 +25,8 @@
             <tr class="service">
                 <td style="width: 200px">{{ $sale->saleable->designation }} </td>
                 <td class="">{{ $sale->quantity }}</td>
-                <td>{{ $sale->pricing }}</td>
-                <td class="text-right">{{ $sale->sub_amount }}</td>
+                <td>{{formatPrice( $sale->pricing )}}</td>
+                <td class="text-right">{{ formatPrice($sale->sub_amount) }}</td>
             </tr>
         @endisset
     @empty

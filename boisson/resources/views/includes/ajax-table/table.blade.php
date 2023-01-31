@@ -19,5 +19,8 @@
             <tbody id="fetchRow" class="text-uppercase">
             </tbody>
         </table>
+        <div id="paginationContainer">
+            
+        </div>
     </div>
 </div>
