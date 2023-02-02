@@ -41,46 +41,33 @@ export function setTableBody(allData, columns) {
 
 export function setPagination(datas) {
     const links = datas?.all?.links ?? [];
-    const prevLink = datas?.all?.prev_page_url ?? null;
-    const nextLink = datas?.all?.next_page_url ?? null;
 
     if (links) {
-        const linkBtns = links.map(link =>
-        (`<li class="page-item ${link.active ? 'active' : ''}">
-             <button class="page-link" data-url="${link.url}">${link.label}</button>
-          </li>`
-        ))
+        const linkBtns = links.map((link,index) =>{
+         let label =link.label;
 
-        const prevBtn = prevLink?.url ? `
-            <li class="page-item">
-                <button class="page-link" data-url="${prevLink.url}" aria-label="Previous">
-                    <span aria-hidden="true">« </span>
-                    <span class="sr-only">Previous</span>
-                </button>
-            </li>
-        `: "";
+         if(index==0){
+            label= "Précedent";
+         }
 
-        const nextBtn = nextLink?.url ? `
-            <li class="page-item">
-              <button class="page-link" data-url="${nextLink.url}" aria-label="Next">
-                <span aria-hidden="true"> »</span>
-                <span class="sr-only">Next</span>
-             </button>
-            </li>
-        `: "";
+         if(index==links.length-1){
+            label="Suivant";
+         }
+       
+         return `<li class="page-item ${link.active ? 'active' : ''}">
+         <button class="page-link" data-url="${link.url}">${label}</button>
+      </li>`;
+
+        }).join("")
 
         const pagination = `
         <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
-                   ${prevBtn}                          
-
                    ${linkBtns}
-
-                   ${nextBtn}
                 </ul>
         </nav>`;
 
-        if($("#pagination").length){
+        if ($("#pagination").length) {
         }
         $("#paginationContainer").html(pagination);
 

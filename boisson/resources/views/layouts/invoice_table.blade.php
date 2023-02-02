@@ -19,7 +19,7 @@
                                 {{ $data->quantity }}
                             </td>
                             <td class="number-bold" style="text-align: right">
-                                {{ $data->sub_amount }}
+                                {{ formatPrice($data->sub_amount, '') }}
                             </td>
                         </tr>
                     @endisset
@@ -36,7 +36,7 @@
                             <p style="text-align: right">Total facture :</p>
                         </td>
                         <td class="price" colspan="3">
-                            <p> &nbsp; {{ formatPrice(($amount)) }}</p>
+                            <p> &nbsp; {{ formatPrice($amount) }}</p>
                         </td>
                     </tr>
                 @endisset
@@ -45,9 +45,10 @@
                     $routeName = Route::currentRouteName();
                 @endphp
 
-                @if ($routeName == 'admin.print.sale.preview' ||
-                    request()->get('filter_type') == '' ||
-                    request()->get('filter_type') == 'tout')
+                @if (
+                    $routeName == 'admin.print.sale.preview' ||
+                        request()->get('filter_type') == '' ||
+                        request()->get('filter_type') == 'tout')
                     @isset($paid)
                         <tr>
                             <td class="label" colspan="1">
@@ -87,7 +88,7 @@
                                 <p style="text-align: right">Solde En Caisse :</p>
                             </td>
                             <td class="price" colspan="3">
-                                <p> &nbsp; {{ formatPrice(($caisse)) }}</p>
+                                <p> &nbsp; {{ formatPrice($caisse) }}</p>
                             </td>
                         </tr>
                     @endisset

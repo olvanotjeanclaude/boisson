@@ -42,10 +42,10 @@
                             {{ $data->quantity }}
                         </td>
                         <td class="number">
-                            {{ $data->pricing }}
+                            {{ formatPrice($data->pricing, '') }}
                         </td>
                         <td class="number" style="text-align: right">
-                            {{ $data->sub_amount }}
+                            {{ formatPrice($data->sub_amount, '') }}
                         </td>
                     </tr>
                 @endif

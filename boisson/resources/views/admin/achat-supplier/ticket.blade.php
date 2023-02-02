@@ -16,15 +16,15 @@
     @foreach ($preInvoices as $data)
         @if ($data->stockable)
             <tr>
-                <td class="text-capitalize" style="width: 200px">
+                <td class="text-capitalize">
                     {{ $data->stockable->designation }}
                 </td>
-                <td>{{ getNumberDecimal($data->entry) }}</td>
-                <td style="width: 50px">
-                    {{ getNumberDecimal($data->stockable->buying_price) }}
+                <td>{{ formatPrice($data->entry) }}</td>
+                <td>
+                    {{ formatPrice($data->stockable->buying_price) }}
                 </td>
                 <td class="text-right">
-                    {{ getNumberDecimal($data->sub_amount) }}
+                    {{ formatPrice($data->sub_amount) }}
                 </td>
                 <td class="pl-1 py-0">
                     <form method="POST" action="{{ route('admin.achat-fournisseurs.destroy', $data->id) }}">

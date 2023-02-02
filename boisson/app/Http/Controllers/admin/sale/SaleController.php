@@ -38,19 +38,21 @@ class SaleController extends Controller
 
     public function ajaxGetData()
     {
-        return response()->json($this->dataSales());
+        return response()->json($this->dataSales(true));
     }
 
-    private function dataSales()
+    private function dataSales($paginate = false)
     {
         $params = request()->all();
-      
+
         $search = strtolower($params["search"] ?? "");
         $between = $params["between"] ?? [date("Y-m-d"), date("Y-m-d")];
 
         if (isset($params["start_date"]) && isset($params["end_date"])) {
             $between = [$params["start_date"], $params["end_date"]];
         }
+
+        // $between =["2023-01-09","2023-01-09"];
 
         $docSales = $this->docSales($params)
             ->where(function ($query) use ($between) {
@@ -61,29 +63,18 @@ class SaleController extends Controller
                     ->orWhere("range", "LIKE", $search);
             })
             ->groupBy("number")
-            ->orderBy("rang")
-            ->paginate(10);
+            ->orderBy("rang");
 
+        $docSales = $paginate ? $docSales->paginate(10) : $docSales->get();
 
-        $docSales = tap($docSales, function ($paginatedInstance) {
-            return $paginatedInstance->getCollection()
-                ->transform(function ($docSale) {
-                    $status = $docSale->doc_status;
-                    $customer = explode("-", $docSale->customer);
-                    $docSale->status =  Sale::getStatusHtml($status);
-                    $docSale->action = $this->getActionButtons($docSale);
-                    $docSale->date = format_date($docSale->doc_date);
-                    $docSale->cl_code = "CL" . $customer[0] ?? "";
-                    $docSale->cl_name = strtolower($customer[1] ?? "N'existe pas");
-                    $docSale->paid = formatPrice($docSale->sum_paid ?? 0);
-                    $docSale->checkout = formatPrice($docSale->sum_checkout ?? 0);
-                    $docSale->amount = formatPrice($docSale->sum_amount ?? 0);
-                    // $docSale->rest = $docSale->sum_amount-$docSale->sum_paid;
-                    return $docSale;
-                });
-        });
-
-        // dd($docSales);
+        if ($paginate) {
+            $docSales = tap($docSales, function ($paginatedInstance) {
+                return $paginatedInstance->getCollection()
+                    ->transform(fn ($docSale) => $this->mapSale($docSale));
+            });
+        } else {
+            $docSales = $docSales->map(fn ($docSale) => $this->mapSale($docSale));
+        }
 
         if (!is_numeric($search) && $search) {
             $docSales = $docSales->filter(function ($sale) use ($search) {
@@ -110,6 +101,22 @@ class SaleController extends Controller
             "checkout" => $sumCheckout,
             "reste" => $sumAmount - $sumPaid + $sumCheckout
         ];
+    }
+
+    public function mapSale($docSale)
+    {
+        $status = $docSale->doc_status;
+        $customer = explode("-", $docSale->customer);
+        $docSale->status =  Sale::getStatusHtml($status);
+        $docSale->action = $this->getActionButtons($docSale);
+        $docSale->date = format_date($docSale->doc_date);
+        $docSale->cl_code = "CL" . $customer[0] ?? "";
+        $docSale->cl_name = strtolower($customer[1] ?? "N'existe pas");
+        $docSale->paid = formatPrice($docSale->sum_paid ?? 0);
+        $docSale->checkout = formatPrice($docSale->sum_checkout ?? 0);
+        $docSale->amount = formatPrice($docSale->sum_amount ?? 0);
+        // $docSale->rest = $docSale->sum_amount-$docSale->sum_paid;
+        return $docSale;
     }
 
     public function print()

@@ -62,7 +62,7 @@ class ImpressionController extends Controller
                 "orders" =>$orders
             ]);
            
-            return $pdf->stream();
+            return $pdf->stream("facture-vente-$invoice->number.pdf");
         }
 
         abort(404);

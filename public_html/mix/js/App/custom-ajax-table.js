@@ -39,14 +39,16 @@ $(document).ready(function () {
         }
     });
 
-   
-    $(document).on("click","", function () {
+
+    $(document).on("click", ".page-link", async function () {
         const url = $(this).data("url");
-        console.log(url);
-        return;
-         customAjaxTable(url, {
-            between: [start_date, end_date],
-            search
-        });
+
+        if(url){
+            await customAjaxTable(url, {
+                between: [start_date, end_date],
+                search
+            });
+        }
+       
     })
 })

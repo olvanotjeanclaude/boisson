@@ -12,7 +12,7 @@ class StockIn implements Invoice
     {
         $data = $this->getDocData($invoiceNumber);
         $pdf = Pdf::loadView('admin.achat-supplier.facture', $data);
-        return $pdf->stream();
+        return $pdf->stream("achat-fournisseurs-$invoiceNumber.pdf");
     }
 
     public function download($invoiceNumber)

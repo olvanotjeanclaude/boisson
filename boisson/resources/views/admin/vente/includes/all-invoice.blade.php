@@ -24,9 +24,9 @@
     <table id="invoiceTable">
         <thead>
             <tr>
-                <th style="text-align: center">Ticket No</th>
+                <th style="text-align: center">No</th>
                 {{-- <th>Status</th> --}}
-                <th>Client</th>
+                <th style="width: auto">Client</th>
                 <th>Payé</th>
                 <th>Avoir</th>
             </tr>
@@ -37,8 +37,8 @@
                     <td style="text-align: center">{{ $data->rang }}</td>
                     {{-- <td>{!! $data->status !!}</td> --}}
                     <td>{{ $data->cl_name }}</td>
-                    <td>{{ getNumberDecimal($data->sum_paid) }}</td>
-                    <td>{{ getNumberDecimal($data->sum_checkout) }}</td>
+                    <td>{{ formatPrice($data->sum_paid,"") }}</td>
+                    <td>{{ formatPrice($data->sum_checkout,"") }}</td>
                 </tr>
             @endforeach
         </tbody>
