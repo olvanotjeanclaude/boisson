@@ -36,8 +36,8 @@
         <thead>
             <tr>
                 <th>Désignation</th>
-                <th style="min-width: 30px">Qté</th>
-                <th style="min-width:50px;">PA</th>
+                <th>Qté</th>
+                <th>PA</th>
                 <th style="text-align: right;">Total</th>
             </tr>
         </thead>
@@ -48,13 +48,13 @@
                         <td>
                             {{ Str::title($data->stockable->designation) }}
                         </td>
-                        <td class="number-bold">
+                        <td class="number number-bold">
                             {{ formatPrice($data->entry, '') }}
                         </td>
-                        <td>
+                        <td class="number">
                             {{ formatPrice($data->stockable->buying_price, '') }}
                         </td>
-                        <td style="text-align: right">
+                        <td class="number" style="text-align: right">
                             {{ formatPrice($data->sub_amount, '') }}
                         </td>
                     </tr>

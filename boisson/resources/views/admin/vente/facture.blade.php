@@ -38,7 +38,7 @@
                         <td>
                             {{ Str::title($data->saleable->designation) }}
                         </td>
-                        <td class="number-bold">
+                        <td class="number number-bold">
                             {{ $data->quantity }}
                         </td>
                         <td class="number">

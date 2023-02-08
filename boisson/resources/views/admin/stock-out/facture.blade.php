@@ -13,19 +13,15 @@
         <span>
             <b>Facture N<sup>0</sup></b> {{ $stock->invoice_number }}
         </span>
-        <br>
         <span>
             <b>Magasinier :</b> {{ Str::upper($stock->user ? $stock->user->full_name : 'Inconnu') }}
         </span>
-        <br>
         <span>
             <b>Motif :</b> {{ $stock->comment }}
         </span>
-        <br>
         <span>
             <b>Date :</b> {{ format_date($stock->date) }}
         </span>
-        <br>
     </div>
 @endsection
 
@@ -47,14 +43,14 @@
                         <td>
                             {{ Str::title($data->stockable->designation) }}
                         </td>
-                        <td>
-                            {{ getNumberDecimal($data->out) }}
+                        <td class="number">
+                            {{ formatPrice($data->out,"") }}
                         </td>
-                        <td>
-                            {{ getNumberDecimal($data->stockable->price) }}
+                        <td class="number">
+                            {{ formatPrice($data->stockable->price,"") }}
                         </td>
-                        <td style="text-align: right">
-                            {{ getNumberDecimal($data->sub_amount) }}
+                        <td class="number" style="text-align: right">
+                            {{ formatPrice($data->sub_amount,"") }}
                         </td>
                     </tr>
                 @endif
@@ -64,6 +60,14 @@
 @endsection
 
 @section('footer')
-    <p class="mt-1"><b>Total : </b>{{ formatPrice($stocks->sum('sub_amount'), 'Ariary') }}</p>
-    <p class="mt-1"><b>Total En Fmg: </b>{{ formatPrice($stocks->sum('sub_amount') * 5, 'Ariary') }}</p>
+    <table style="width:100%">
+        <tr>
+            <td class="label">Total :</td>
+            <td class="price">{{  formatPrice($stocks->sum('sub_amount'), 'Ariary') }}</td>
+        </tr>
+        <tr>
+            <td class="label">Total en Fmg :</td>
+            <td class="price">{{  formatPrice($stocks->sum('sub_amount') * 5, 'Fmg')}}</td>
+        </tr>
+    </table>
 @endsection

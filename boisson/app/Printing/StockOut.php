@@ -19,7 +19,7 @@ class StockOut implements Invoice
             "stock" => $stock,
         ]);
 
-        return $pdf->stream();
+        return $pdf->stream("facture-sorti-stock-$stock->number.pdf");
     }
 
     public function download($invoiceNumber)

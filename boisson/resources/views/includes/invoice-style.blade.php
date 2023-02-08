@@ -86,9 +86,10 @@
         text-align: center;
         font-weight: bold;
         font-size: 1.2rem;
+        white-space: nowrap;
         /* color: red; */
     }
     .number{
-        
+        white-space: nowrap;
     }
 </style>

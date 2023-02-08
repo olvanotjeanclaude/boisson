@@ -14,7 +14,6 @@ use App\Models\Supplier;
 use App\Models\Customers;
 use App\Models\Emballage;
 use App\helper\Downloader;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\DocumentVente;
 use App\Message\CustomMessage;
@@ -30,7 +29,6 @@ class SaleController extends Controller
     public function index()
     {
         $columns = json_encode($this->getFormatedCols());
-        $docSales = $this->docSales();
         $between = Stock::getDefaultBetween();
 
         return view("admin.vente.index", compact("columns", "between"));
@@ -41,29 +39,22 @@ class SaleController extends Controller
         return response()->json($this->dataSales(true));
     }
 
-    private function dataSales($paginate = false)
+    private function getBetween()
     {
         $params = request()->all();
 
-        $search = strtolower($params["search"] ?? "");
         $between = $params["between"] ?? [date("Y-m-d"), date("Y-m-d")];
 
         if (isset($params["start_date"]) && isset($params["end_date"])) {
             $between = [$params["start_date"], $params["end_date"]];
         }
 
-        // $between =["2023-01-09","2023-01-09"];
+        return $between;
+    }
 
-        $docSales = $this->docSales($params)
-            ->where(function ($query) use ($between) {
-                $query->where(fn ($query) => Filter::queryBetween($query, $between));
-            })
-            ->when(is_numeric($search), function ($query) use ($search) {
-                return $query->where("number", "LIKE", $search)
-                    ->orWhere("range", "LIKE", $search);
-            })
-            ->groupBy("number")
-            ->orderBy("rang");
+    private function dataSales($paginate = false)
+    {
+        $docSales = $this->docSales();
 
         $docSales = $paginate ? $docSales->paginate(10) : $docSales->get();
 
@@ -76,25 +67,14 @@ class SaleController extends Controller
             $docSales = $docSales->map(fn ($docSale) => $this->mapSale($docSale));
         }
 
-        if (!is_numeric($search) && $search) {
-            $docSales = $docSales->filter(function ($sale) use ($search) {
-                return Str::startsWith($sale->cl_name, $search);
-            });
-        }
-
         $sumAmount =  $docSales->sum("sum_amount");
         $sumPaid =  $docSales->sum("sum_paid");
         $sumCheckout =  $docSales->sum("sum_checkout");
 
         return [
             "all" => $docSales,
-            "between" => $between,
+            "between" => $this->getBetween(),
             "columns" => $this->getFormatedCols(),
-
-            // "amount" => 1,
-            // "paid" => 1,
-            // "checkout" => 1,
-            // "reste" => 1
 
             "amount" => $sumAmount,
             "paid" => $sumPaid,
@@ -139,24 +119,63 @@ class SaleController extends Controller
 
     private function docSales()
     {
-        $docSales = DB::table('document_ventes')
+        $params = request()->all();
+        $search = strtolower($params["search"] ?? "");
+        $between =  $this->getBetween();
+
+        $sales = DB::table("sales")
             ->select([
-                "status as doc_status",
-                "number as doc_number",
-                "range as rang",
-                DB::raw("(SELECT CONCAT(code,'-',identification) FROM customers 
-                        WHERE customer_id = customers.id) as customer"),
-                DB::raw("(SELECT SUM(amount) FROM sales 
-                        WHERE sales.invoice_number = document_ventes.number) as sum_amount"),
-                "received_at as doc_date",
-                DB::raw("SUM(paid) as sum_paid"),
-                DB::raw("SUM(checkout) as sum_checkout"),
-                DB::raw("(SELECT CONCAT(name,'-',surname) FROM users
-                        WHERE users.id=document_ventes.user_id
-                ) as user")
+                "customer_id",
+                "invoice_number",
+                "user_id",
+                "received_at",
+                DB::raw("SUM(amount) sum_amount")
             ])
-            ->whereNotNull("received_at")
-            ->orderByDesc("id");
+            ->where(function ($query) use ($between, $search) {
+                if (!$search) {
+                    $query->where(fn ($query) => Filter::queryBetween($query, $between));
+                }
+            })
+            ->groupBy("invoice_number");
+
+        $docSales = DB::table("document_ventes")
+            ->select([
+                "document_ventes.status as doc_status",
+                "document_ventes.number as doc_number",
+                "document_ventes.range as rang",
+                DB::raw("CONCAT(customers.code,'-',customers.identification) as customer"),
+                "ventes.sum_amount",
+                "document_ventes.received_at as doc_date",
+                DB::raw("SUM(document_ventes.paid) sum_paid"),
+                DB::raw("SUM(document_ventes.checkout) sum_checkout"),
+                DB::raw("CONCAT(users.name,' ',users.surname) as user"),
+                "customers.identification as customer_name",
+                "document_ventes.number as invoice_number",
+                "document_ventes.customer_id",
+            ])
+            ->where(function ($query) use ($between, $search) {
+                if (!$search) {
+                    $query->where(fn ($query) => Filter::queryBetween($query, $between, "document_ventes.received_at"));
+                }
+            })
+            ->joinSub($sales, 'ventes', function ($join) {
+                $join->on('ventes.customer_id', '=', 'document_ventes.customer_id')
+                    ->on('ventes.invoice_number', '=', 'document_ventes.number')
+                    ->on('ventes.user_id', '=', 'document_ventes.user_id');
+            })
+            ->when(is_numeric($search), function ($query) use ($search) {
+                return $query->where("document_ventes.number", $search)
+                    ->orWhere("document_ventes.range", $search);
+            })
+            ->when(!is_numeric($search) && $search, function ($query) use ($search) {
+                return $query->where("customers.identification", "LIKE", "%$search%");
+            })
+            ->join("customers", "customers.id", "document_ventes.customer_id")
+            ->join("users", "users.id", "document_ventes.user_id")
+            ->groupBy("document_ventes.number")
+            ->whereNotNull("ventes.received_at")
+            ->whereNotNull("document_ventes.received_at")
+            ->orderByDesc("document_ventes.range");
 
         return $docSales;
     }
