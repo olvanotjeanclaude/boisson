@@ -30,8 +30,9 @@ class SaleController extends Controller
     {
         $columns = json_encode($this->getFormatedCols());
         $between = Stock::getDefaultBetween();
+        $dataSale = $this->dataSales(true);
 
-        return view("admin.vente.index", compact("columns", "between"));
+        return view("admin.vente.index", compact("columns", "between", "dataSale"));
     }
 
     public function ajaxGetData()
@@ -70,7 +71,8 @@ class SaleController extends Controller
         $sumAmount =  $docSales->sum("sum_amount");
         $sumPaid =  $docSales->sum("sum_paid");
         $sumCheckout =  $docSales->sum("sum_checkout");
-
+        $reste =  $sumAmount - $sumPaid + $sumCheckout;
+        
         return [
             "all" => $docSales,
             "between" => $this->getBetween(),
@@ -79,7 +81,12 @@ class SaleController extends Controller
             "amount" => $sumAmount,
             "paid" => $sumPaid,
             "checkout" => $sumCheckout,
-            "reste" => $sumAmount - $sumPaid + $sumCheckout
+            "reste" =>$reste,
+            "summaryHtml" => view("admin.vente.includes.summary", compact(
+                "sumAmount",
+                "sumPaid",
+                "reste"
+            ))->render()
         ];
     }
 

@@ -16,7 +16,7 @@
         'page' => 'ventes',
         'breadcrumbs' => [
             ['text' => 'Vente', 'link' => route('admin.ventes.index')],
-            ['text' => 'List', 'link' => route('admin.index')],
+            ['text' => 'Liste', 'link' => route('admin.index')],
         ],
         'actionBtn' => [
             'text' => 'Nouvelle Vente',
@@ -45,20 +45,6 @@
         <div class="row">
             <div class="col-12">
                 <div class="card mb-0">
-                    <div class="card-header">
-                        <h4 class="card-title"> Liste De vente</h4>
-                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            <button type="button" id="deleteIcheckBtn" data-target="#deleteAllModal" data-toggle="modal"
-                                data-url="{{ route('admin.ventes.destroy', ['vente' => 'item']) }}"
-                                class="btn delete-btn d-none btn-danger btn-sm text-capitalize">
-                                <span class="material-icons">
-                                    delete
-                                </span>
-                                Supprimer
-                            </button>
-                        </div>
-                    </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <!-- Invoices List table -->
@@ -70,6 +56,9 @@
                             ])
                             <!--/ Invoices table -->
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <div id="summary"></div>
                     </div>
                 </div>
             </div>
@@ -84,4 +73,5 @@
 
 @section('script')
     <script src="{{asset('mix/js/App/custom-ajax-table.js')}}" type="module"></script>
+
 @endsection

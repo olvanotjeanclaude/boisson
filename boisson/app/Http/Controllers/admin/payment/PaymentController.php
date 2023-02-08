@@ -97,6 +97,7 @@ class PaymentController extends Controller
                 $data["update_user_id"] = auth()->user()->id;
                 $invoice->update($data);
             } else {
+                $data["range"] = $invoice->range;
                 DocumentVente::create($data);
             }
             DocumentVente::whereNumber($invoice->number)->update(["status" => $data["status"]]);

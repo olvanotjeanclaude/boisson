@@ -3,10 +3,13 @@ export function customAjaxTable(url, params) {
         .then((response) => {
             const datas = response.data;
             const all = datas?.all?.data ?? datas?.all ?? [];
+            const summary = datas.summaryHtml??"";
 
             setTableBody(all, datas.columns);
 
             setPagination(datas);
+
+            $("#summary").html(summary);
         })
         .catch((error) => {
             console.log(error);
@@ -28,7 +31,7 @@ export function setTableBody(allData, columns) {
 
             tbody += row;
         }
-        $("#table-container").attr("style", "height:490px");
+        $("#table-container").attr("style", "min-height:200px");
     } else {
         $("#table-container").removeAttr("style");
         tbody = `<tr>

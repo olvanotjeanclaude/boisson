@@ -96,17 +96,17 @@
                                 </div>
 
                                 <div class="col-12 d-flex justify-content-end">
+                                    <a target="_blank" href="{{ route('admin.print.sale.preview', $invoice->number) }}"
+                                        class="btn btn-secondary mr-1">
+                                        <i class="la la-print"></i>
+                                        Imprimer
+                                    </a>
                                     @if ($rest != 0)
-                                        <button type="submit" class="btn text-white btn-secondary">
+                                        <button type="submit" class="btn text-white btn-primary">
                                             <i class="la la-save"></i>
                                             Payer
                                         </button>
                                     @endif
-                                    <a target="_blank" href="{{ route('admin.print.sale.preview', $invoice->number) }}"
-                                        class="btn btn-primary ml-1">
-                                        <i class="la la-print"></i>
-                                        Imprimer
-                                    </a>
                                 </div>
 
                             </div>
