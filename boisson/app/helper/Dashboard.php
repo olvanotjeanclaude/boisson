@@ -6,6 +6,7 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Emballage;
 use App\Models\DocumentVente;
+use App\Models\SalePayment;
 
 class Dashboard
 {
@@ -55,10 +56,13 @@ class Dashboard
         $startDate = request()->get("start_date") ?? date("Y-m-d");
         $endDate = request()->get("end_date") ?? date("Y-m-d");
         $between = [$startDate, $endDate];
+
         $paymentTypes = [];
 
-        $docVente = $this->getDocVente($between);
-        $payments = $docVente->get()->groupBy("payment_type");
+        $payments = SalePayment::has("document_vente")
+            ->where(fn ($query) => Filter::queryBetween($query, $between))
+            ->get()
+            ->groupBy("payment_type");
 
         foreach (DocumentVente::PAYMENT_TYPES as $key => $name) {
             if (isset($payments[$key])) {
@@ -150,6 +154,7 @@ class Dashboard
 
     public function getDocVente($between)
     {
-        return DocumentVente::where(fn ($query) => Filter::queryBetween($query, $between));
+        return SalePayment::has("document_vente")
+            ->where(fn ($query) => Filter::queryBetween($query, $between));
     }
 }

@@ -63,9 +63,9 @@ class ImpressionController extends Controller
 
     public function downloadSale($invoiceNumber){
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
-        $amount = DocumentVente::TotalAmount($invoiceNumber);
-        $paid = DocumentVente::Paid($invoiceNumber);
-        $rest = DocumentVente::Rest($invoiceNumber);
+        $paid = $invoice->sumPaid();
+        $rest = $invoice->rest();
+        $amount =$invoice->totalAmount();
 
         $pdf = Pdf::loadView('admin.vente.facture', [
             "invoice" =>$invoice,

@@ -57,7 +57,6 @@ class SaleController extends Controller
     {
         $docSales = $this->docSales();
 
-
         $docSales = $paginate ? $docSales->paginate(10) : $docSales->get();
 
         if ($paginate) {
@@ -140,7 +139,6 @@ class SaleController extends Controller
         $search = strtolower($params["search"] ?? "");
         $between =  $this->getBetween();
 
-
         $sales = DB::table("sales")
             ->select([
                 "customer_id",
@@ -159,7 +157,6 @@ class SaleController extends Controller
 
         $docSales = DB::table("document_ventes")
             ->select([
-                // "document_ventes.status as doc_status",
                 "document_ventes.number as doc_number",
                 "document_ventes.range as rang",
                 DB::raw("CONCAT(customers.code,'-',customers.identification) as customer"),

@@ -17,14 +17,20 @@ class ModeDevMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $authorized = [
-            "olvanotjcs@gmail.com"
-        ];
+        $modeDev = false;
 
-        if (in_array(auth()->user()->email, $authorized)) {
-            return $next($request);
+        if($modeDev){
+            $authorized = [
+                "olvanotjcs@gmail.com"
+            ];
+    
+            if (in_array(auth()->user()->email, $authorized)) {
+                return $next($request);
+            }
+            
+            return "Mbola manamboatra....";
         }
-
-        return "Mbola manamboatra....";
+        
+        return $next($request);
     }
 }

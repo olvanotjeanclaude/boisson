@@ -15,13 +15,12 @@ class AdminController extends Controller
 {
     public function index(Dashboard $dashboard)
     {
-        return redirect("/admin/stocks");
-
         if (!currentUser()->can("view dashboard")) {
             return  redirect("/admin/stocks");
         }
 
         $paymentTypes = $dashboard->getPaymentTypes() ?? [];
+       
         $paymentTypes = ["paymentTypes" => $paymentTypes];
 
         $datas = array_merge($this->getDocumentData($dashboard), $paymentTypes);
@@ -49,9 +48,13 @@ class AdminController extends Controller
         $endDate = request()->get("end_date") ?? date("Y-m-d");
         $between = [$startDate, $endDate];
         $filterType = request()->get("filter_type") ?? Filter::TYPES["tout"];
+        
         $solds = $dashboard->getSolds($between, $filterType);
+      
         $docVente = $dashboard->getDocVente($between);
+        
         $recettes = $dashboard->getRecettes($solds, $docVente, $between);
+
         $recaps = $dashboard->getRecaps($between, $filterType);
        
         return  [
