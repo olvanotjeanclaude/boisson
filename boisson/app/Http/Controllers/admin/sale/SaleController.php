@@ -6,7 +6,6 @@ use App\Models\Sale;
 use App\Models\Stock;
 use App\helper\Filter;
 use App\helper\Columns;
-use App\helper\Invoice;
 use App\Models\Product;
 use App\Models\Articles;
 use App\Models\Category;
@@ -18,6 +17,7 @@ use Illuminate\Http\Request;
 use App\Models\DocumentVente;
 use App\Message\CustomMessage;
 use App\Articles\FormatRequest;
+use App\helper\Invoice;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -57,6 +57,7 @@ class SaleController extends Controller
     {
         $docSales = $this->docSales();
 
+
         $docSales = $paginate ? $docSales->paginate(10) : $docSales->get();
 
         if ($paginate) {
@@ -72,7 +73,7 @@ class SaleController extends Controller
         $sumPaid =  $docSales->sum("sum_paid");
         $sumCheckout =  $docSales->sum("sum_checkout");
         $reste =  $sumAmount - $sumPaid + $sumCheckout;
-        
+
         return [
             "all" => $docSales,
             "between" => $this->getBetween(),
@@ -81,7 +82,7 @@ class SaleController extends Controller
             "amount" => $sumAmount,
             "paid" => $sumPaid,
             "checkout" => $sumCheckout,
-            "reste" =>$reste,
+            "reste" => $reste,
             "summaryHtml" => view("admin.vente.includes.summary", compact(
                 "sumAmount",
                 "sumPaid",
@@ -92,9 +93,7 @@ class SaleController extends Controller
 
     public function mapSale($docSale)
     {
-        $status = $docSale->doc_status;
         $customer = explode("-", $docSale->customer);
-        $docSale->status =  Sale::getStatusHtml($status);
         $docSale->action = $this->getActionButtons($docSale);
         $docSale->date = format_date($docSale->doc_date);
         $docSale->cl_code = "CL" . $customer[0] ?? "";
@@ -102,7 +101,18 @@ class SaleController extends Controller
         $docSale->paid = formatPrice($docSale->sum_paid ?? 0);
         $docSale->checkout = formatPrice($docSale->sum_checkout ?? 0);
         $docSale->amount = formatPrice($docSale->sum_amount ?? 0);
-        // $docSale->rest = $docSale->sum_amount-$docSale->sum_paid;
+        $docSale->rest = $docSale->sum_amount - ($docSale->sum_paid - $docSale->sum_checkout);
+
+        if ($docSale->rest == 0) {
+            $status = Invoice::STATUS["paid"];
+        } else if ($docSale->sum_paid == 0 && $docSale->sum_checkout == 0) {
+            $status = Invoice::STATUS["pending"];
+        } else {
+            $status = Invoice::STATUS["incomplete"];
+        }
+
+        $docSale->status =  Sale::getStatusHtml($status);
+
         return $docSale;
     }
 
@@ -130,6 +140,7 @@ class SaleController extends Controller
         $search = strtolower($params["search"] ?? "");
         $between =  $this->getBetween();
 
+
         $sales = DB::table("sales")
             ->select([
                 "customer_id",
@@ -145,16 +156,17 @@ class SaleController extends Controller
             })
             ->groupBy("invoice_number");
 
+
         $docSales = DB::table("document_ventes")
             ->select([
-                "document_ventes.status as doc_status",
+                // "document_ventes.status as doc_status",
                 "document_ventes.number as doc_number",
                 "document_ventes.range as rang",
                 DB::raw("CONCAT(customers.code,'-',customers.identification) as customer"),
                 "ventes.sum_amount",
                 "document_ventes.received_at as doc_date",
-                DB::raw("SUM(document_ventes.paid) sum_paid"),
-                DB::raw("SUM(document_ventes.checkout) sum_checkout"),
+                DB::raw("SUM(COALESCE(sale_payments.paid,0)) sum_paid"),
+                DB::raw("SUM(COALESCE(sale_payments.checkout,0)) sum_checkout"),
                 DB::raw("CONCAT(users.name,' ',users.surname) as user"),
                 "customers.identification as customer_name",
                 "document_ventes.number as invoice_number",
@@ -177,12 +189,15 @@ class SaleController extends Controller
             ->when(!is_numeric($search) && $search, function ($query) use ($search) {
                 return $query->where("customers.identification", "LIKE", "%$search%");
             })
+            ->leftJoin("sale_payments", "sale_payments.invoice_number", "document_ventes.number")
             ->join("customers", "customers.id", "document_ventes.customer_id")
             ->join("users", "users.id", "document_ventes.user_id")
             ->groupBy("document_ventes.number")
             ->whereNotNull("ventes.received_at")
             ->whereNotNull("document_ventes.received_at")
             ->orderByDesc("document_ventes.range");
+
+        // dd($docSales->get());
 
         return $docSales;
     }
@@ -452,16 +467,22 @@ class SaleController extends Controller
 
         if ($customer && isset($request->saveData) && $preInvoice) {
             $date = $request->received_at ?? date("Y-m-d");
-            $invoice =  DocumentVente::updateOrCreate([
-                "number" => $preInvoice->invoice_number,
-                "user_id" => auth()->user()->id
-            ], [
-                "status" => Invoice::STATUS["no_printed"],
-                "received_at" => $date . " " . now()->toTimeString(),
-                "comment" => $request->comment,
-                "customer_id" =>  $customer->id,
-                "range" => $this->getLastRange()
-            ]);
+
+            $invoice = DocumentVente::where("number", $preInvoice->invoice_number)
+                ->where("user_id", auth()->id())
+                ->where("received_at", $date)
+                ->where("customer_id", $customer->id)
+                ->first();
+
+            if (!$invoice) {
+                $invoice = DocumentVente::create([
+                    "range" => $this->getLastRange(),
+                    "number" => $preInvoice->invoice_number,
+                    "user_id" => auth()->user()->id,
+                    "received_at" => $date,
+                    "customer_id" =>  $customer->id,
+                ]);
+            }
 
             Sale::preInvoices()->update([
                 "received_at" => $date,

@@ -24,7 +24,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::0tUJL3RWy2741Npp',
+            '_route' => 'generated::nIrTqJWEeCb3QcnB',
           ),
           1 => NULL,
           2 => 
@@ -44,7 +44,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::YlGTuZXNe875UtJ6',
+            '_route' => 'generated::7wV0HiRDrQ5OkY71',
           ),
           1 => NULL,
           2 => 
@@ -64,47 +64,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::sj8ZttyMLp28sqpm',
-          ),
-          1 => NULL,
-          2 => 
-          array (
-            'GET' => 0,
-            'HEAD' => 1,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => false,
-          6 => NULL,
-        ),
-      ),
-      '/clear_cache' => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'generated::3WGiDJwNdkvi8GpB',
-          ),
-          1 => NULL,
-          2 => 
-          array (
-            'GET' => 0,
-            'HEAD' => 1,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => false,
-          6 => NULL,
-        ),
-      ),
-      '/sync-user' => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'generated::uww66pJsVPpNm5jl',
+            '_route' => 'generated::Afkttaf3kEJOPX8m',
           ),
           1 => NULL,
           2 => 
@@ -124,7 +84,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::4O3HwDl4PDTETNsC',
+            '_route' => 'generated::7SK2OVybU6lRotAf',
           ),
           1 => NULL,
           2 => 
@@ -166,7 +126,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::KPxvrX959h9tJw21',
+            '_route' => 'generated::uK4O1ByCIQtOiqHd',
           ),
           1 => NULL,
           2 => 
@@ -221,7 +181,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::XbIaDqiCGrSTO3iX',
+            '_route' => 'generated::BUu5iUEnh4fzTgXu',
           ),
           1 => NULL,
           2 => 
@@ -312,7 +272,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::XqVyQaJ9VRkdSwLQ',
+            '_route' => 'generated::Jqltf9axavcSibEN',
           ),
           1 => NULL,
           2 => 
@@ -1954,6 +1914,62 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
+      '/admin/profile' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.profile.index',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.profile.update',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/admin/profile/edit' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'admin.profile.edit',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
       '/home' => 
       array (
         0 => 
@@ -2069,6 +2085,102 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
+      '/clear_cache' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::bqJ5RyXbfQ4G4cjs',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/reset' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::ic0ztJJ70tBpRg2N',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/sync-user' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'generated::BxFZBk2d61SHPiZM',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/desactivate-account' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'desactivate-account.index',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'GET' => 0,
+            'HEAD' => 1,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+        1 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'desactivate-account.store',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
     ),
     2 => 
     array (
@@ -2082,7 +2194,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::hAZQFQDSyDG9fpE7',
+            '_route' => 'generated::IJu3goggn5jt4y9A',
           ),
           1 => 
           array (
@@ -2105,7 +2217,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::mmXzS1ASDn4Jojd6',
+            '_route' => 'generated::2UWwrb21N6X1KMNK',
           ),
           1 => 
           array (
@@ -3786,7 +3898,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::OXQzC7TG3zc8cIxF',
+            '_route' => 'generated::fySCdO6kGZpKF2uh',
           ),
           1 => 
           array (
@@ -3818,7 +3930,7 @@ app('router')->setCompiledRoutes(
   ),
   'attributes' => 
   array (
-    'generated::0tUJL3RWy2741Npp' => 
+    'generated::nIrTqJWEeCb3QcnB' => 
     array (
       'methods' => 
       array (
@@ -3839,7 +3951,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 'web',
         ),
-        'as' => 'generated::0tUJL3RWy2741Npp',
+        'as' => 'generated::nIrTqJWEeCb3QcnB',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3855,7 +3967,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::YlGTuZXNe875UtJ6' => 
+    'generated::7wV0HiRDrQ5OkY71' => 
     array (
       'methods' => 
       array (
@@ -3867,18 +3979,19 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'api',
-          1 => 'auth:sanctum',
+          0 => 'ModeDevMiddleware',
+          1 => 'api',
+          2 => 'auth:sanctum',
         ),
         'uses' => 'O:47:"Laravel\\SerializableClosure\\SerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Signed":2:{s:12:"serializable";s:297:"O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:79:"function (\\Illuminate\\Http\\Request $request) {
     return $request->user();
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000003adf02ef000000004ac2ba37";}";s:4:"hash";s:44:"cKj2axayyIkf/Qp1VrYng91pqpA+13rDom8gYRnQWdY=";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000003866f1fe0000000015fff4f5";}";s:4:"hash";s:44:"QBWWAZDPWJvpXoYCOLeUoiEw95JNQynGrWizjoR+Jnc=";}}',
         'namespace' => NULL,
-        'prefix' => 'api',
+        'prefix' => '/api',
         'where' => 
         array (
         ),
-        'as' => 'generated::YlGTuZXNe875UtJ6',
+        'as' => 'generated::7wV0HiRDrQ5OkY71',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3894,7 +4007,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::sj8ZttyMLp28sqpm' => 
+    'generated::Afkttaf3kEJOPX8m' => 
     array (
       'methods' => 
       array (
@@ -3906,16 +4019,17 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'api',
+          0 => 'ModeDevMiddleware',
+          1 => 'api',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@allCategories',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@allCategories',
         'namespace' => NULL,
-        'prefix' => 'api',
+        'prefix' => '/api',
         'where' => 
         array (
         ),
-        'as' => 'generated::sj8ZttyMLp28sqpm',
+        'as' => 'generated::Afkttaf3kEJOPX8m',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3931,7 +4045,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::hAZQFQDSyDG9fpE7' => 
+    'generated::IJu3goggn5jt4y9A' => 
     array (
       'methods' => 
       array (
@@ -3943,16 +4057,17 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'api',
+          0 => 'ModeDevMiddleware',
+          1 => 'api',
         ),
         'uses' => 'App\\Http\\Controllers\\api\\article\\ArticleController@index',
         'controller' => 'App\\Http\\Controllers\\api\\article\\ArticleController@index',
         'namespace' => NULL,
-        'prefix' => 'api',
+        'prefix' => '/api',
         'where' => 
         array (
         ),
-        'as' => 'generated::hAZQFQDSyDG9fpE7',
+        'as' => 'generated::IJu3goggn5jt4y9A',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3968,7 +4083,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::mmXzS1ASDn4Jojd6' => 
+    'generated::2UWwrb21N6X1KMNK' => 
     array (
       'methods' => 
       array (
@@ -3980,16 +4095,17 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'api',
+          0 => 'ModeDevMiddleware',
+          1 => 'api',
         ),
         'uses' => 'App\\Http\\Controllers\\api\\article\\ArticleController@show',
         'controller' => 'App\\Http\\Controllers\\api\\article\\ArticleController@show',
         'namespace' => NULL,
-        'prefix' => 'api',
+        'prefix' => '/api',
         'where' => 
         array (
         ),
-        'as' => 'generated::mmXzS1ASDn4Jojd6',
+        'as' => 'generated::2UWwrb21N6X1KMNK',
       ),
       'fallback' => false,
       'defaults' => 
@@ -4017,12 +4133,13 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'api',
+          0 => 'ModeDevMiddleware',
+          1 => 'api',
         ),
         'uses' => 'App\\Http\\Controllers\\api\\article\\ArticleController@getArticleBySupplier',
         'controller' => 'App\\Http\\Controllers\\api\\article\\ArticleController@getArticleBySupplier',
         'namespace' => NULL,
-        'prefix' => 'api',
+        'prefix' => '/api',
         'where' => 
         array (
         ),
@@ -4042,100 +4159,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::3WGiDJwNdkvi8GpB' => 
-    array (
-      'methods' => 
-      array (
-        0 => 'GET',
-        1 => 'HEAD',
-      ),
-      'uri' => 'clear_cache',
-      'action' => 
-      array (
-        'middleware' => 
-        array (
-          0 => 'web',
-        ),
-        'uses' => 'O:47:"Laravel\\SerializableClosure\\SerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Signed":2:{s:12:"serializable";s:747:"O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:528:"function () {
-
-    \\Illuminate\\Support\\Facades\\Artisan::call(\'optimize\');
-
-    \\Illuminate\\Support\\Facades\\Artisan::call(\'cache:clear\');
-    echo "Cache cleared<br>";
-
-    \\Illuminate\\Support\\Facades\\Artisan::call(\'view:clear\');
-    echo "View cleared<br>";
-
-    \\Illuminate\\Support\\Facades\\Artisan::call(\'config:cache\');
-    echo "Config cleared<br>";
-
-    \\Illuminate\\Support\\Facades\\Artisan::call(\'cache:forget spatie.permission.cache\');
-    echo "Config spatie cleared<br>";
-
-    echo "All cache cleared";
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000003adf02e9000000004ac2ba37";}";s:4:"hash";s:44:"uZZ+d04YzZ7EMKZhGb8gmJcLuNYrW4LLvqYd53SSAtI=";}}',
-        'namespace' => NULL,
-        'prefix' => '',
-        'where' => 
-        array (
-        ),
-        'as' => 'generated::3WGiDJwNdkvi8GpB',
-      ),
-      'fallback' => false,
-      'defaults' => 
-      array (
-      ),
-      'wheres' => 
-      array (
-      ),
-      'bindingFields' => 
-      array (
-      ),
-      'lockSeconds' => NULL,
-      'waitSeconds' => NULL,
-      'withTrashed' => false,
-    ),
-    'generated::uww66pJsVPpNm5jl' => 
-    array (
-      'methods' => 
-      array (
-        0 => 'GET',
-        1 => 'HEAD',
-      ),
-      'uri' => 'sync-user',
-      'action' => 
-      array (
-        'middleware' => 
-        array (
-          0 => 'web',
-        ),
-        'uses' => 'O:47:"Laravel\\SerializableClosure\\SerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Signed":2:{s:12:"serializable";s:363:"O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:144:"function () {
-    \\Illuminate\\Support\\Facades\\Artisan::call("db:seed --class=PermissionSeeder");
-
-    echo "User permission synchronized";
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000003adf02f7000000004ac2ba37";}";s:4:"hash";s:44:"PyoMqfN6RaBAgQkXftmselXnaL6Ac/5CdJIQkfCvKHE=";}}',
-        'namespace' => NULL,
-        'prefix' => '',
-        'where' => 
-        array (
-        ),
-        'as' => 'generated::uww66pJsVPpNm5jl',
-      ),
-      'fallback' => false,
-      'defaults' => 
-      array (
-      ),
-      'wheres' => 
-      array (
-      ),
-      'bindingFields' => 
-      array (
-      ),
-      'lockSeconds' => NULL,
-      'waitSeconds' => NULL,
-      'withTrashed' => false,
-    ),
-    'generated::4O3HwDl4PDTETNsC' => 
+    'generated::7SK2OVybU6lRotAf' => 
     array (
       'methods' => 
       array (
@@ -4152,7 +4176,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => '\\Illuminate\\Routing\\RedirectController@__invoke',
         'controller' => '\\Illuminate\\Routing\\RedirectController',
@@ -4161,7 +4186,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::4O3HwDl4PDTETNsC',
+        'as' => 'generated::7SK2OVybU6lRotAf',
       ),
       'fallback' => false,
       'defaults' => 
@@ -4191,7 +4216,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\LoginController@showLoginForm',
         'controller' => 'App\\Http\\Controllers\\Auth\\LoginController@showLoginForm',
@@ -4216,7 +4242,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::KPxvrX959h9tJw21' => 
+    'generated::uK4O1ByCIQtOiqHd' => 
     array (
       'methods' => 
       array (
@@ -4227,7 +4253,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\LoginController@login',
         'controller' => 'App\\Http\\Controllers\\Auth\\LoginController@login',
@@ -4236,7 +4263,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::KPxvrX959h9tJw21',
+        'as' => 'generated::uK4O1ByCIQtOiqHd',
       ),
       'fallback' => false,
       'defaults' => 
@@ -4263,7 +4290,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\LoginController@logout',
         'controller' => 'App\\Http\\Controllers\\Auth\\LoginController@logout',
@@ -4300,7 +4328,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\RegisterController@showRegistrationForm',
         'controller' => 'App\\Http\\Controllers\\Auth\\RegisterController@showRegistrationForm',
@@ -4325,7 +4354,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::XbIaDqiCGrSTO3iX' => 
+    'generated::BUu5iUEnh4fzTgXu' => 
     array (
       'methods' => 
       array (
@@ -4336,7 +4365,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\RegisterController@register',
         'controller' => 'App\\Http\\Controllers\\Auth\\RegisterController@register',
@@ -4345,7 +4375,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::XbIaDqiCGrSTO3iX',
+        'as' => 'generated::BUu5iUEnh4fzTgXu',
       ),
       'fallback' => false,
       'defaults' => 
@@ -4373,7 +4403,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\ForgotPasswordController@showLinkRequestForm',
         'controller' => 'App\\Http\\Controllers\\Auth\\ForgotPasswordController@showLinkRequestForm',
@@ -4409,7 +4440,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\ForgotPasswordController@sendResetLinkEmail',
         'controller' => 'App\\Http\\Controllers\\Auth\\ForgotPasswordController@sendResetLinkEmail',
@@ -4446,7 +4478,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\ResetPasswordController@showResetForm',
         'controller' => 'App\\Http\\Controllers\\Auth\\ResetPasswordController@showResetForm',
@@ -4482,7 +4515,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\ResetPasswordController@reset',
         'controller' => 'App\\Http\\Controllers\\Auth\\ResetPasswordController@reset',
@@ -4519,7 +4553,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\ConfirmPasswordController@showConfirmForm',
         'controller' => 'App\\Http\\Controllers\\Auth\\ConfirmPasswordController@showConfirmForm',
@@ -4544,7 +4579,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::XqVyQaJ9VRkdSwLQ' => 
+    'generated::Jqltf9axavcSibEN' => 
     array (
       'methods' => 
       array (
@@ -4555,7 +4590,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\Auth\\ConfirmPasswordController@confirm',
         'controller' => 'App\\Http\\Controllers\\Auth\\ConfirmPasswordController@confirm',
@@ -4564,7 +4600,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::XqVyQaJ9VRkdSwLQ',
+        'as' => 'generated::Jqltf9axavcSibEN',
       ),
       'fallback' => false,
       'defaults' => 
@@ -4592,9 +4628,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.index',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@index',
@@ -4631,9 +4669,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.create',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@create',
@@ -4669,9 +4709,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.store',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@store',
@@ -4708,9 +4750,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.show',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@show',
@@ -4747,9 +4791,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@edit',
@@ -4786,9 +4832,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.update',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@update',
@@ -4824,9 +4872,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@destroy',
@@ -4863,9 +4913,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@ajaxGetData',
@@ -4901,9 +4953,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.utilisateurs.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\users\\UserController@ajaxPostData',
@@ -4940,9 +4994,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.index',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@index',
@@ -4979,9 +5035,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.create',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@create',
@@ -5017,9 +5075,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.store',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@store',
@@ -5056,9 +5116,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.show',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@show',
@@ -5095,9 +5157,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@edit',
@@ -5134,9 +5198,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.update',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@update',
@@ -5172,9 +5238,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@destroy',
@@ -5211,9 +5279,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@ajaxGetData',
@@ -5249,9 +5319,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.fournisseurs.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\supplier\\SupplierController@ajaxPostData',
@@ -5288,9 +5360,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.index',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@index',
@@ -5327,9 +5401,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.create',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@create',
@@ -5365,9 +5441,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.store',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@store',
@@ -5404,9 +5482,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.show',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@show',
@@ -5443,9 +5523,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@edit',
@@ -5482,9 +5564,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.update',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@update',
@@ -5520,9 +5604,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@destroy',
@@ -5559,9 +5645,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@ajaxGetData',
@@ -5597,9 +5685,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.achat-produits.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\PurchaseProductController@ajaxPostData',
@@ -5636,9 +5726,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.tarif-fournisseurs.index',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\PricingSupplierController@index',
@@ -5675,9 +5767,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.tarif-fournisseurs.create',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\PricingSupplierController@create',
@@ -5713,9 +5807,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.tarif-fournisseurs.store',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\PricingSupplierController@store',
@@ -5752,9 +5848,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.tarif-fournisseurs.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\PricingSupplierController@edit',
@@ -5791,9 +5889,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.tarif-fournisseurs.update',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\PricingSupplierController@update',
@@ -5829,9 +5929,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.tarif-fournisseurs.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\PricingSupplierController@destroy',
@@ -5868,9 +5970,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.tarif-fournisseurs.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\PricingSupplierController@ajaxGetData',
@@ -5906,9 +6010,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view all',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view all',
         ),
         'as' => 'admin.tarif-fournisseurs.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\PricingSupplierController@ajaxPostData',
@@ -5945,8 +6051,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\AdminController@index',
         'controller' => 'App\\Http\\Controllers\\admin\\AdminController@index',
@@ -5983,8 +6091,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\AdminController@detail',
         'controller' => 'App\\Http\\Controllers\\admin\\AdminController@detail',
@@ -6021,8 +6131,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\AdminController@exportExcel',
         'controller' => 'App\\Http\\Controllers\\admin\\AdminController@exportExcel',
@@ -6059,8 +6171,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\AdminController@detailData',
         'controller' => 'App\\Http\\Controllers\\admin\\AdminController@detailData',
@@ -6097,9 +6211,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view dashboard',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view dashboard',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\AdminController@printReport',
         'controller' => 'App\\Http\\Controllers\\admin\\AdminController@printReport',
@@ -6136,9 +6252,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view dashboard',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view dashboard',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\AdminController@download',
         'controller' => 'App\\Http\\Controllers\\admin\\AdminController@download',
@@ -6175,9 +6293,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.index',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@index',
@@ -6214,9 +6334,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.create',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@create',
@@ -6252,9 +6374,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.store',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@store',
@@ -6291,9 +6415,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.show',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@show',
@@ -6330,9 +6456,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@edit',
@@ -6369,9 +6497,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.update',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@update',
@@ -6407,9 +6537,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@destroy',
@@ -6446,9 +6578,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@ajaxGetData',
@@ -6484,9 +6618,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.articles.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@ajaxPostData',
@@ -6523,9 +6659,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.category-articles.index',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@index',
@@ -6562,9 +6700,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.category-articles.create',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@create',
@@ -6600,9 +6740,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.category-articles.store',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@store',
@@ -6639,9 +6781,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.category-articles.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@edit',
@@ -6678,9 +6822,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.category-articles.update',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@update',
@@ -6716,9 +6862,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.category-articles.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@destroy',
@@ -6755,9 +6903,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.category-articles.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@ajaxGetData',
@@ -6793,9 +6943,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.category-articles.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\CategoryArticleController@ajaxPostData',
@@ -6832,9 +6984,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.articles.index',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@index',
@@ -6871,9 +7025,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.articles.create',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@create',
@@ -6909,9 +7065,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.articles.store',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@store',
@@ -6948,9 +7106,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.articles.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@edit',
@@ -6987,9 +7147,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.articles.update',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@update',
@@ -7025,9 +7187,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.articles.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@destroy',
@@ -7064,9 +7228,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.articles.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@ajaxGetData',
@@ -7102,9 +7268,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.articles.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@ajaxPostData',
@@ -7140,9 +7308,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@getData',
         'controller' => 'App\\Http\\Controllers\\admin\\produit\\ProductController@getData',
@@ -7179,9 +7349,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.emballages.index',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\EmballageController@index',
@@ -7218,9 +7390,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.emballages.create',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\EmballageController@create',
@@ -7256,9 +7430,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.emballages.store',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\EmballageController@store',
@@ -7295,9 +7471,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.emballages.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\EmballageController@edit',
@@ -7334,9 +7512,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.emballages.update',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\EmballageController@update',
@@ -7372,9 +7552,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.emballages.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\EmballageController@destroy',
@@ -7411,9 +7593,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.emballages.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\EmballageController@ajaxGetData',
@@ -7449,9 +7633,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view article',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view article',
         ),
         'as' => 'admin.approvisionnement.emballages.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\produit\\EmballageController@ajaxPostData',
@@ -7487,8 +7673,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@preSaveArticle',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@preSaveArticle',
@@ -7524,8 +7712,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@preSaveInvoiceArticle',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\ArticleController@preSaveInvoiceArticle',
@@ -7562,9 +7752,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.index',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@index',
@@ -7601,9 +7793,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.create',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@create',
@@ -7639,9 +7833,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.store',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@store',
@@ -7678,9 +7874,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.show',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@show',
@@ -7717,9 +7915,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@edit',
@@ -7756,9 +7956,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.update',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@update',
@@ -7794,9 +7996,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@destroy',
@@ -7833,9 +8037,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@ajaxGetData',
@@ -7871,9 +8077,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'as' => 'admin.stocks.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@ajaxPostData',
@@ -7910,9 +8118,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@getData',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\StockController@getData',
@@ -7949,9 +8159,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockController@printReport',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\StockController@printReport',
@@ -7988,9 +8200,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\EtatEmballageController@index',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\EtatEmballageController@index',
@@ -8027,9 +8241,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view stock',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view stock',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\EtatEmballageController@printReport',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\EtatEmballageController@printReport',
@@ -8066,9 +8282,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view inventory',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view inventory',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@index',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@index',
@@ -8105,9 +8323,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view inventory',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view inventory',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@ajaxGetData',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@ajaxGetData',
@@ -8144,9 +8364,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view inventory',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view inventory',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@print',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@print',
@@ -8183,9 +8405,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view inventory',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view inventory',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@download',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@download',
@@ -8221,9 +8445,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view inventory',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view inventory',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@checkStock',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@checkStock',
@@ -8260,9 +8486,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view inventory',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view inventory',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@getAdjustStockForm',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@getAdjustStockForm',
@@ -8298,9 +8526,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view inventory',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view inventory',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@adjustStockRequest',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@adjustStockRequest',
@@ -8336,10 +8566,12 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view inventory',
-          3 => 'can:valid inventory',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view inventory',
+          5 => 'can:valid inventory',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@adjustStock',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\InventoryController@adjustStock',
@@ -8375,8 +8607,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\settings\\SettingController@update',
         'controller' => 'App\\Http\\Controllers\\admin\\settings\\SettingController@update',
@@ -8413,8 +8647,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@printSale',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@printSale',
@@ -8451,8 +8687,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@previewSale',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@previewSale',
@@ -8489,8 +8727,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@downloadSale',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@downloadSale',
@@ -8527,9 +8767,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:cancel sales',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:cancel sales',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@cancelSale',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@cancelSale',
@@ -8566,8 +8808,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@saleTerminate',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@saleTerminate',
@@ -8604,8 +8848,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@printAchat',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@printAchat',
@@ -8642,8 +8888,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@achatTerminate',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@achatTerminate',
@@ -8680,8 +8928,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@previewAchat',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@previewAchat',
@@ -8718,8 +8968,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@downloadAchat',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@downloadAchat',
@@ -8756,8 +9008,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@show',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@show',
@@ -8794,8 +9048,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@print',
         'controller' => 'App\\Http\\Controllers\\admin\\impression\\ImpressionController@print',
@@ -8832,8 +9088,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.index',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@index',
@@ -8870,8 +9128,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.create',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@create',
@@ -8907,8 +9167,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.store',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@store',
@@ -8945,8 +9207,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.show',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@show',
@@ -8983,8 +9247,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@edit',
@@ -9021,8 +9287,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.update',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@update',
@@ -9058,8 +9326,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@destroy',
@@ -9096,8 +9366,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@ajaxGetData',
@@ -9133,8 +9405,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.ventes.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@ajaxPostData',
@@ -9171,8 +9445,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@print',
         'controller' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@print',
@@ -9209,8 +9485,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@download',
         'controller' => 'App\\Http\\Controllers\\admin\\sale\\SaleController@download',
@@ -9247,9 +9525,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:make payment',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:make payment',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\payment\\PaymentController@paymentForm',
         'controller' => 'App\\Http\\Controllers\\admin\\payment\\PaymentController@paymentForm',
@@ -9285,9 +9565,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:make payment',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:make payment',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\payment\\PaymentController@paymentStore',
         'controller' => 'App\\Http\\Controllers\\admin\\payment\\PaymentController@paymentStore',
@@ -9324,8 +9606,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.index',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@index',
@@ -9362,8 +9646,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.create',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@create',
@@ -9399,8 +9685,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.store',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@store',
@@ -9437,8 +9725,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.show',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@show',
@@ -9475,8 +9765,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@edit',
@@ -9513,8 +9805,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.update',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@update',
@@ -9550,8 +9844,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@destroy',
@@ -9588,8 +9884,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@ajaxGetData',
@@ -9625,8 +9923,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'as' => 'admin.clients.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@ajaxPostData',
@@ -9662,8 +9962,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@getData',
         'controller' => 'App\\Http\\Controllers\\admin\\customer\\CustomerController@getData',
@@ -9700,9 +10002,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.index',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@index',
@@ -9739,9 +10043,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.create',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@create',
@@ -9777,9 +10083,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.store',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@store',
@@ -9816,9 +10124,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.show',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@show',
@@ -9855,9 +10165,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@edit',
@@ -9894,9 +10206,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.update',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@update',
@@ -9932,9 +10246,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@destroy',
@@ -9971,9 +10287,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@ajaxGetData',
@@ -10009,9 +10327,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'as' => 'admin.sorti-stocks.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@ajaxPostData',
@@ -10048,9 +10368,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@print',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@print',
@@ -10087,9 +10409,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@download',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@download',
@@ -10125,9 +10449,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@validStockOut',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@validStockOut',
@@ -10163,9 +10489,11 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
-          2 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+          4 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@cancel',
         'controller' => 'App\\Http\\Controllers\\admin\\article\\StockOutController@cancel',
@@ -10202,8 +10530,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\password\\PasswordController@index',
         'controller' => 'App\\Http\\Controllers\\admin\\password\\PasswordController@index',
@@ -10239,8 +10569,10 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'auth',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\password\\PasswordController@update',
         'controller' => 'App\\Http\\Controllers\\admin\\password\\PasswordController@update',
@@ -10265,36 +10597,110 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::OXQzC7TG3zc8cIxF' => 
+    'admin.profile.index' => 
     array (
       'methods' => 
       array (
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'connect-using-email/{email}',
+      'uri' => 'admin/profile',
       'action' => 
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
         ),
-        'uses' => 'O:47:"Laravel\\SerializableClosure\\SerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Signed":2:{s:12:"serializable";s:487:"O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:268:"function ($email) {
-    $user = \\App\\Models\\User::where("email", $email)->first();
-    // dd($user);
-    if ($user) {
-        \\Illuminate\\Support\\Facades\\Auth::loginUsingId($user->id);
-        return \\redirect("/admin");
-    }
-
-    return "Email not found";
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000003adf02f2000000004ac2ba37";}";s:4:"hash";s:44:"PrlytUtE7ItcbXuCQqHp07w+2U7kuxCmHu7hTX6sjsY=";}}',
-        'namespace' => NULL,
-        'prefix' => '',
+        'uses' => 'App\\Http\\Controllers\\admin\\profile\\ProfileController@index',
+        'controller' => 'App\\Http\\Controllers\\admin\\profile\\ProfileController@index',
+        'as' => 'admin.profile.index',
+        'namespace' => 'profile',
+        'prefix' => 'admin/profile',
         'where' => 
         array (
         ),
-        'as' => 'generated::OXQzC7TG3zc8cIxF',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.profile.edit' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'admin/profile/edit',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+        ),
+        'uses' => 'App\\Http\\Controllers\\admin\\profile\\ProfileController@edit',
+        'controller' => 'App\\Http\\Controllers\\admin\\profile\\ProfileController@edit',
+        'as' => 'admin.profile.edit',
+        'namespace' => 'profile',
+        'prefix' => 'admin/profile',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'admin.profile.update' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'POST',
+      ),
+      'uri' => 'admin/profile',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'auth',
+          3 => 'CheckUserValidityMiddleware',
+        ),
+        'uses' => 'App\\Http\\Controllers\\admin\\profile\\ProfileController@update',
+        'controller' => 'App\\Http\\Controllers\\admin\\profile\\ProfileController@update',
+        'as' => 'admin.profile.update',
+        'namespace' => 'profile',
+        'prefix' => 'admin/profile',
+        'where' => 
+        array (
+        ),
       ),
       'fallback' => false,
       'defaults' => 
@@ -10322,7 +10728,8 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
         ),
         'uses' => 'App\\Http\\Controllers\\HomeController@index',
         'controller' => 'App\\Http\\Controllers\\HomeController@index',
@@ -10359,8 +10766,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.index',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@index',
@@ -10397,8 +10805,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.create',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@create',
@@ -10434,8 +10843,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.store',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@store',
@@ -10472,8 +10882,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.show',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@show',
@@ -10510,8 +10921,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.edit',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@edit',
@@ -10548,8 +10960,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.update',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@update',
@@ -10585,8 +10998,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.destroy',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@destroy',
@@ -10623,8 +11037,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.ajaxGetData',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@ajaxGetData',
@@ -10660,8 +11075,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'as' => 'admin.achat-fournisseurs.ajaxPostData',
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@ajaxPostData',
@@ -10698,8 +11114,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@print',
         'controller' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@print',
@@ -10736,8 +11153,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@download',
         'controller' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@download',
@@ -10773,8 +11191,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@cancel',
         'controller' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@cancel',
@@ -10810,8 +11229,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@saveAutoStock',
         'controller' => 'App\\Http\\Controllers\\admin\\achat\\AchatFournisseurController@saveAutoStock',
@@ -10848,8 +11268,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\payment\\PaymentController@achatPaymentForm',
         'controller' => 'App\\Http\\Controllers\\admin\\payment\\PaymentController@achatPaymentForm',
@@ -10885,8 +11306,9 @@ app('router')->setCompiledRoutes(
       array (
         'middleware' => 
         array (
-          0 => 'web',
-          1 => 'can:view_intern_doc',
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+          2 => 'can:view_intern_doc',
         ),
         'uses' => 'App\\Http\\Controllers\\admin\\payment\\PaymentController@achatPaymentStore',
         'controller' => 'App\\Http\\Controllers\\admin\\payment\\PaymentController@achatPaymentStore',
@@ -10896,6 +11318,233 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::bqJ5RyXbfQ4G4cjs' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'clear_cache',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+        ),
+        'uses' => 'App\\Http\\Controllers\\QuickAdminController@clearCache',
+        'controller' => 'App\\Http\\Controllers\\QuickAdminController@clearCache',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::bqJ5RyXbfQ4G4cjs',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::ic0ztJJ70tBpRg2N' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'reset',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+        ),
+        'uses' => 'App\\Http\\Controllers\\QuickAdminController@resetDatabase',
+        'controller' => 'App\\Http\\Controllers\\QuickAdminController@resetDatabase',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::ic0ztJJ70tBpRg2N',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::BxFZBk2d61SHPiZM' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'sync-user',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+        ),
+        'uses' => 'App\\Http\\Controllers\\QuickAdminController@syncUser',
+        'controller' => 'App\\Http\\Controllers\\QuickAdminController@syncUser',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::BxFZBk2d61SHPiZM',
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'desactivate-account.index' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'desactivate-account',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+        ),
+        'as' => 'desactivate-account.index',
+        'uses' => 'App\\Http\\Controllers\\DisableAccountController@index',
+        'controller' => 'App\\Http\\Controllers\\DisableAccountController@index',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'desactivate-account.store' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'POST',
+      ),
+      'uri' => 'desactivate-account',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+        ),
+        'as' => 'desactivate-account.store',
+        'uses' => 'App\\Http\\Controllers\\DisableAccountController@store',
+        'controller' => 'App\\Http\\Controllers\\DisableAccountController@store',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
+    'generated::fySCdO6kGZpKF2uh' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'GET',
+        1 => 'HEAD',
+      ),
+      'uri' => 'connect-using-email/{email}',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'ModeDevMiddleware',
+          1 => 'web',
+        ),
+        'uses' => 'App\\Http\\Controllers\\Auth\\AutoLoginController@connectWithEmail',
+        'controller' => 'App\\Http\\Controllers\\Auth\\AutoLoginController@connectWithEmail',
+        'namespace' => NULL,
+        'prefix' => '',
+        'where' => 
+        array (
+        ),
+        'as' => 'generated::fySCdO6kGZpKF2uh',
       ),
       'fallback' => false,
       'defaults' => 

@@ -15,6 +15,8 @@ class AdminController extends Controller
 {
     public function index(Dashboard $dashboard)
     {
+        return redirect("/admin/stocks");
+
         if (!currentUser()->can("view dashboard")) {
             return  redirect("/admin/stocks");
         }

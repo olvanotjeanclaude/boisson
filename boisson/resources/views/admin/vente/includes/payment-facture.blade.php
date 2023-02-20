@@ -59,12 +59,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7 mt-1">
-                <div class="form-group">
-                    <label for="comment">Commentaire</label>
-                    <textarea name="comment" id="comment" class="form-control" placeholder="Note"></textarea>
-                </div>
-            </div>
+           
             <div class="col-md-5 d-flex align-items-center">
                 <button type="submit" class="btn form-control my-1 border-top text-white btn-secondary">
                     <i class="la la-save"></i>

@@ -14,9 +14,9 @@ class ImpressionController extends Controller
     public function printSale($invoiceNumber)
     {
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
-        $amount = DocumentVente::TotalAmount($invoiceNumber);
-        $paid = DocumentVente::Paid($invoiceNumber);
-        $rest = DocumentVente::Rest($invoiceNumber);
+        $paid = $invoice->sumPaid();
+        $rest = $invoice->rest();
+        $amount =$invoice->totalAmount();
 
         return view("admin.vente.invoice", compact("invoice", "amount","paid","rest"));
     }
@@ -24,17 +24,10 @@ class ImpressionController extends Controller
     public function previewSale($invoiceNumber){
         
         $invoice = DocumentVente::where("number", $invoiceNumber)->firstOrFail();
-        $amount = DocumentVente::TotalAmount($invoiceNumber);
-        $paid = DocumentVente::Paid($invoiceNumber);
-        $rest = DocumentVente::Rest($invoiceNumber);
+        $paid = $invoice->sumPaid();
+        $rest = $invoice->rest();
+        $amount =$invoice->totalAmount();
 
-        // return view('admin.vente.facture', [
-        //     "invoice" =>$invoice,
-        //     "amount" =>$amount,
-        //     "reste" =>$rest,
-        //     "paid" =>$paid,
-        // ]);
-        
         $pdf = Pdf::loadView('admin.vente.facture', [
             "invoice" =>$invoice,
             "amount" =>$amount,

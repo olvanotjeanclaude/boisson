@@ -19,7 +19,7 @@ Route::redirect("/", "/admin");
 
 Auth::routes();
 
-Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => ["auth", "CheckUserValidityMiddleware"]], function () {
+Route::group(["prefix" => "admin", "as" => "admin.", "middleware" => ["auth","ModeDevMiddleware", "CheckUserValidityMiddleware"]], function () {
     Route::group(["middleware" => ["can:view all"]], function () {
         Route::resource("utilisateurs", \App\Http\Controllers\admin\users\UserController::class);
         Route::resource("fournisseurs", \App\Http\Controllers\admin\supplier\SupplierController::class);
